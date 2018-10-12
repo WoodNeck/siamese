@@ -83,3 +83,6 @@ typings/
 .vscode/
 temp/
 data/mutable
+
+# DEV Convinient
+MEMO.md

@@ -4,7 +4,7 @@
   "description": "Korean discord bot Tataru made with js language",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage && cat ./coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "bufferutil": "^4.0.0",
+    "chalk": "^2.4.1",
     "discord.js": "^11.4.2",
     "dotenv": "^6.0.0",
     "envalid": "^4.1.4",
@@ -31,10 +32,17 @@
     "node-opus": "^0.3.0"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "jsx", "json"],
-    "moduleDirectories": ["node_modules", "src"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
     "moduleNameMapper": {
-        "^@/(.*)": "<rootDir>/src/$1"
+      "^@/(.*)": "<rootDir>/src/$1"
     }
   },
   "_moduleAliases": {

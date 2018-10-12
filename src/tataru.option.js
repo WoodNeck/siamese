@@ -1,0 +1,19 @@
+const { Constants } = require('discord.js');
+
+
+const EVENT = Constants.WSEvents;
+
+module.exports = {
+	disabledEvents: [
+		EVENT.GUILD_ROLE_CREATE,
+		EVENT.GUILD_ROLE_DELETE,
+		EVENT.GUILD_ROLE_UPDATE,
+		EVENT.GUILD_BAN_ADD,
+		EVENT.GUILD_BAN_REMOVE,
+		EVENT.USER_NOTE_UPDATE,
+		EVENT.PRESENCE_UPDATE,
+		EVENT.TYPING_START,
+		EVENT.RELATIONSHIP_ADD,
+		EVENT.RELATIONSHIP_REMOVE,
+	],
+};

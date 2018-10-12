@@ -4,7 +4,8 @@ require('module-alias/register');
 
 // Create a new bot instance, setup and start it
 const Tataru = require('@/tataru');
-const tataru = new Tataru();
+const option = require('@/tataru.option');
+const tataru = new Tataru(option);
 
 tataru.setup();
 tataru.start();

@@ -1,9 +1,12 @@
 require('dotenv').config();
 const { cleanEnv, makeValidator, bool } = require('envalid');
 const fs = require('fs');
+const path = require('path');
 const Discord = require('discord.js');
-const events = require('./tataru.on');
-const { DEV } = require('./constants');
+const events = require('@/tataru.on');
+const Logger = require('@/utils/logger');
+const { ERROR } = require('@/constants');
+
 
 class Tataru extends Discord.Client {
 	setup() {
@@ -13,9 +16,15 @@ class Tataru extends Discord.Client {
 	}
 
 	start() {
-		this.login(process.env.BOT_TOKEN)
+		this.login(this.env.BOT_TOKEN)
 			.catch(console.error);
 	}
+
+	getName(guild) {
+		return guild ? guild.member(this.user).displayName : this.user.username;
+	}
+
+	get log() { return this._logger.log.bind(this._logger); }
 
 	_loadEnvironment() {
 		const notEmptyStr = makeValidator(str => {
@@ -24,7 +33,7 @@ class Tataru extends Discord.Client {
 				return str.trim();
 			}
 			else {
-				throw new Error(DEV.ENV_VAR_NO_EMPTY_STRING);
+				throw new TypeError(ERROR.ENV_VAR_NO_EMPTY_STRING);
 			}
 		});
 
@@ -32,19 +41,27 @@ class Tataru extends Discord.Client {
 			BOT_PREFIX: notEmptyStr(),
 			BOT_PREFIX_TRAILING_SPACE: bool(),
 			BOT_TOKEN: notEmptyStr(),
+			BOT_LANG: notEmptyStr(),
 		});
 
 		this.prefix = !this.env.BOT_PREFIX_TRAILING_SPACE ?
 			this.env.BOT_PREFIX : `${this.env.BOT_PREFIX} `;
 	}
 
+	_setLogger() {
+		this._logger = new Logger(this, {
+			verbose: this.env.BOT_LOG_VERBOSE_CHANNEL,
+			error: this.env.BOT_LOG_ERROR_CHANNEL,
+		});
+	}
+
 	_loadCommands() {
 		this.commands = new Discord.Collection();
-		const commandFiles = fs.readdirSync('./src/commands')
+		const commandFiles = fs.readdirSync(path.join(__dirname, 'commands'))
 			.filter(file => file.endsWith('.js'));
 
 		for (const file of commandFiles) {
-			const command = require(`./commands/${file}`);
+			const command = require(`@/commands/${file}`);
 			this.commands.set(command.name, command);
 		}
 	}
