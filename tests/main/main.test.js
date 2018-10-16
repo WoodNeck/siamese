@@ -2,14 +2,6 @@ const Tataru = require("@/tataru");
 
 
 describe('Tataru', () => {
-	it('has all env variables needed', () => {
-		const tataru = new Tataru();
-
-		expect(() => {
-			tataru._loadEnvironment();
-		}).not.toThrow();
-	});
-
 	it('can load all commands well', () => {
 		const fs = require('fs');
 		const path = require('path');

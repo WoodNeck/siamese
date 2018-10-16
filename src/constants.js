@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const dedent = require('@/utils/dedent');
 
 const constants = {
@@ -28,8 +29,8 @@ const constants = {
 };
 
 try {
-	module.exports = Object.assign(constants, require(`@/locale/${process.env.BOT_LANG}`));
+	module.exports = Object.assign(constants, require(`@/locale/${process.env.BOT_LANG.toLowerCase()}`));
 }
 catch (err) {
-	console.error(constants.BOT_LANG_NOT_SPECIFIED);
+	console.error(chalk.hex(constants.COLOR.TATARU).bold(constants.DEV.BOT_LANG_NOT_SPECIFIED));
 }
