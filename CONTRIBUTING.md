@@ -185,3 +185,25 @@ scope: {
 
 The removed `inject` wasn't generaly useful for directives so there should be no code using it.
 ```
+
+## Pre-commit
+This project is using pre-commit hook, to regenerate `.env.preset` file whenever `.env` changes.
+```sh
+yarn test
+python3 ./dev-utils/env_generate.py
+git add .
+```
+
+## VS Code
+As this project uses module alias(check `package.json`), following option can help with autocomplete in VS Code.
+
+#### Prerequisite
+- [Path Autocomplete](https://marketplace.visualstudio.com/items?itemName=ionutvmi.path-autocomplete)
+
+```json
+// .vscode/settings.json
+"path-autocomplete.pathMappings": {
+    "@": "${folder}/src",
+}
+```
+

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "coverage": "jest --coverage",
     "test-with-coverage": "jest --coverage && cat ./coverage/lcov.info | codacy-coverage"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "erlpack": "hammerandchisel/erlpack",
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
-    "node-opus": "^0.3.0"
+    "node-opus": "^0.3.0",
+    "remove-markdown": "^0.3.0"
   }
 }

@@ -15,4 +15,4 @@ describe('Commands', () => {
 			expect(typeof(command.execute)).toBe('function');
 		});
 	});
-})
+});

@@ -1,18 +1,15 @@
 // Dedent from string, useful for multiline string template
-const dedent = (callSite, ...args) => {
+module.exports = (callSite, ...args) => {
 	const format = str => {
 		const strSplitted = str.split('\n');
 
-		return strSplitted.filter(substr => substr.length > 0)
-			.map(substr => substr.trim())
+		return strSplitted.map(substr => substr.trim())
+			.filter(substr => substr.length > 0)
 			.join('\n');
 	};
 
 	if (typeof callSite === 'string') {
 		return format(callSite);
-	}
-	else if (typeof callSite === 'function') {
-		return (...arg) => format(callSite(...arg));
 	}
 
 	const output = callSite
@@ -22,5 +19,3 @@ const dedent = (callSite, ...args) => {
 
 	return format(output);
 };
-
-module.exports = dedent;

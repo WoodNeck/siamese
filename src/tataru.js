@@ -20,7 +20,7 @@ class Tataru extends Discord.Client {
 			.catch(console.error);
 	}
 
-	getName(guild) {
+	getNameIn(guild) {
 		return guild ? guild.member(this.user).displayName : this.user.username;
 	}
 

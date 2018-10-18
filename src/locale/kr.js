@@ -10,11 +10,9 @@ module.exports = {
 			- ${bot.guilds.size}개의 서버에서
 			- ${bot.users.filter(user => !user.bot).size}명이 사용 중이에용!`,
 		GUILD_JOIN_TITLE: bot => dedent`
-			안뇽하세용 ${bot.user.username}에용!
-		`,
+			안뇽하세용 ${bot.user.username}에용!`,
 		GUILD_JOIN_DESC: (bot, helpCmd) => dedent`
-			${underline(strong(helpCmd))}라고 말해주시면 ${bot.user.username}가 할 수 있는 일을 알 수 있어용!
-		`,
+			${underline(strong(helpCmd))}라고 말해주시면 ${bot.user.username}가 할 수 있는 일을 알 수 있어용!`,
 		CMD_FAILED: '명령어 실행에 실패했어용!',
 	},
 	ERROR: {

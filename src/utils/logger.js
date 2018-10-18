@@ -63,15 +63,24 @@ class EmbedLog extends Log {
 		return log;
 	}
 	setTitle(title) {
-		this._embed.setTitle(title);
+		// Check null & undefined
+		if (title && title.trim()) {
+			this._embed.setTitle(title);
+		}
 		return this;
 	}
 	setDescription(desc) {
-		this._embed.setDescription(desc);
+		if (desc && desc.trim()) {
+			this._embed.setDescription(desc);
+		}
 		return this;
 	}
 	setThumbnail(thumb) {
-		this._embed.setThumbnail(thumb);
+		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
+
+		if (thumb && urlRegex.test(thumb)) {
+			this._embed.setThumbnail(thumb);
+		}
 		return this;
 	}
 	setColor(color) {
@@ -91,7 +100,7 @@ class StringLog extends Log {
 		this._msg = {
 			title: null,
 			desc: null,
-			color: '#ffffff',
+			color: null,
 		};
 	}
 	atConsole() {
@@ -99,11 +108,15 @@ class StringLog extends Log {
 		return this;
 	}
 	setTitle(title) {
-		this._msg.title = title;
+		if (title && title.trim()) {
+			this._msg.title = title;
+		}
 		return this;
 	}
 	setDescription(desc) {
-		this._msg.desc = desc;
+		if (desc && desc.trim()) {
+			this._msg.desc = desc;
+		}
 		return this;
 	}
 	// eslint-disable-next-line
@@ -118,6 +131,7 @@ class StringLog extends Log {
 	send() {
 		const timeStamp = new Date().toLocaleString();
 		console.log(chalk.white.dim(`[${timeStamp}]`));
+		if (!this._msg.color) this.setColor(COLOR[this._mode]);
 		if (this._msg.title) {
 			console.log(chalk.hex(this._msg.color).bold(this._msg.title));
 		}
