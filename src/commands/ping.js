@@ -6,6 +6,7 @@ module.exports = {
 	name: PING.CMD,
 	description: PING.DESC,
 	usage: null,
+	hidden: false,
 	devOnly: false,
 	execute: ({ bot, channel }) => {
 		const uptime = bot.uptime / 1000;

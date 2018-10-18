@@ -21,7 +21,7 @@ const constants = {
 		LOUD_SPEAKER: '📢',
 	},
 	DEV: {
-		BOT_READY_INDICATOR: 'BOT_READY',
+		BOT_READY_INDICATOR: 'YOUR BOT IS READY AND RUNNING!',
 		BOT_LANG_NOT_SPECIFIED: dedent`
 			"BOT_LANG" is incorrect in your .env file!
 			Check "BOT_LANG".js file exists in src/locale folder.`,

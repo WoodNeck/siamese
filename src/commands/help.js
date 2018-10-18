@@ -6,9 +6,10 @@ module.exports = {
 	name: HELP.CMD,
 	description: HELP.DESC,
 	usage: null,
+	hidden: false,
 	devOnly: false,
 	execute: ({ bot, channel }) => {
-		const commands = bot.commands.filter(cmd => !cmd.devOnly);
+		const commands = bot.commands.filter(cmd => !cmd.devOnly && !cmd.hidden);
 		const msg = [];
 		const prefix = bot.prefix;
 

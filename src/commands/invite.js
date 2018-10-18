@@ -5,6 +5,7 @@ module.exports = {
 	name: INVITE.CMD,
 	description: INVITE.DESC,
 	usage: null,
+	hidden: false,
 	devOnly: false,
 	execute: ({ bot, channel }) => {
 		const botMention = bot.user.toString();
