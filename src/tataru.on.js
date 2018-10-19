@@ -1,5 +1,5 @@
 // Functions handling client.on() method
-const { COLOR, LOG, DEV, BOT, ERROR, HELP } = require('@/constants');
+const { COLOR, LOG, DEV, BOT, ERROR, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
 
 const onReady = function() {
@@ -20,17 +20,20 @@ const onReady = function() {
 };
 
 const onMessage = function(msg) {
-	const prefix = this.prefix;
+	const locale = this.getLocaleIn(msg.guild);
+	const prefix = this.getPrefixIn(msg.guild);
+
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
+	const commands = this.commands.get(locale);
 	const args = msg.content.slice(prefix.length).split(/ +/);
 	const cmdName = args.shift();
 
-	if (!this.commands.has(cmdName)) return;
+	if (!commands.has(cmdName)) return;
 
 	try {
-		const cmd = this.commands.get(cmdName);
-		if (cmd.devOnly && msg.author.id !== this.env.BOT_DEV_USER_ID) return;
+		const cmd = commands.get(cmdName);
+		if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
 		cmd.execute({
 			bot: this,
@@ -38,6 +41,7 @@ const onMessage = function(msg) {
 			guild: msg.guild,
 			channel: msg.channel,
 			args: args,
+			locale: locale,
 		});
 	}
 	catch (error) {
@@ -51,10 +55,11 @@ const onMessage = function(msg) {
 
 const onGuildJoin = function(guild) {
 	if (!(guild.systemChannel)) return;
-	const helpCmd = `${this.prefix}${HELP.CMD}`;
+	const helpCmd = `${this.getPrefixIn(guild)}${HELP.CMD}`;
 	const embedMsg = new RichEmbed().setTitle(BOT.GUILD_JOIN_TITLE(this))
 		.setDescription(BOT.GUILD_JOIN_DESC(this, helpCmd))
 		.setThumbnail(this.user.avatarURL)
+		.setFooter(BOT.GUILD_JOIN_FOOTER(this))
 		.setColor(COLOR.TATARU);
 	guild.systemChannel.send(embedMsg);
 };

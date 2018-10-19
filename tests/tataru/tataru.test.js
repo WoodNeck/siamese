@@ -40,20 +40,21 @@ describe('Tataru', () => {
 
 	it('can set good prefixes properly', () => {
 		const acceptablePrefixes = [
-			{ prefix: '$', space: '0', expected: '$' },
-			{ prefix: '타타루', space: '1', expected: '타타루 ' },
-			{ prefix: '+', space: 'true', expected: '+ ' },
-			{ prefix: 't!', space: 'false', expected: 't!' },
-			{ prefix: 'tataru ', space: 't', expected: 'tataru ' }, // trim test
-			{ prefix: ' $ ', space: 'f', expected: '$' }, // trim test
+			{ prefix: '$', expected: '$' },
+			{ prefix: '타타루 ', expected: '타타루 ' },
+			{ prefix: '+', expected: '+' },
+			{ prefix: 't!', expected: 't!' },
+			{ prefix: ' tataru ', expected: ' tataru ' },
 		];
 
 		acceptablePrefixes.forEach(env => {
+			global.env.BOT_DEFAULT_PREFIX = env.prefix;
 			tataru = new Tataru();
-			process.env.BOT_PREFIX = env.prefix;
-			process.env.BOT_PREFIX_TRAILING_SPACE = env.space;
-			expect(tataru._loadEnvironment.bind(tataru)).not.toThrow();
-			expect(tataru.prefix).toEqual(env.expected);
+			// getPrefixIn with no args returns default prefix
+			expect(tataru.getPrefixIn()).toEqual(env.expected);
 		});
+
+		// reset value
+		global.env.BOT_DEFAULT_PREFIX = '타타루 ';
 	});
 });

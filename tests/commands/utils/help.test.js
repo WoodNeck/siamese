@@ -1,5 +1,5 @@
 const Tataru = require("@/tataru");
-const Help = require("@/commands/help");
+const Help = require("@/commands/utils/help")(global.env.BOT_DEFAULT_LANG);
 
 
 describe('Command: Help', () => {
@@ -14,7 +14,8 @@ describe('Command: Help', () => {
 
 		Help.execute({
 			bot: tataru,
-			channel: channel
+			channel: channel,
+			locale: global.env.BOT_DEFAULT_LANG,
 		});
 		expect(sendMock).toBeCalled();
 	});

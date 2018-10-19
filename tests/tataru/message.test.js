@@ -1,6 +1,7 @@
+const { Collection } = require('discord.js');
 const Tataru = require('@/tataru');
 const handler = require('@/tataru.on');
-const { PING, INVITE, HELP } = require('@/constants')
+const { PING, INVITE, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 
 describe('Message handling', () => {
 	let tataru;
@@ -10,11 +11,6 @@ describe('Message handling', () => {
 		tataru.user = {
 			username: '타타루'
 		};
-		tataru.env = {
-			BOT_VERBOSE_CHANNEL: 1,
-			BOT_ERROR_CHANNEL: 2,
-		};
-		tataru.prefix = '타타루 ';
 	});
 
 	it('will set logger when ready', () => {
@@ -40,18 +36,20 @@ describe('Message handling', () => {
 			PING.CMD, INVITE.CMD, HELP.CMD
 		];
 		const isDevOnly = [false, false, true];
-		const testMessages = testCommands.map(cmd => `${tataru.prefix}${cmd}`);
+		const testMessages = testCommands.map(cmd => `${global.env.BOT_DEFAULT_PREFIX}${cmd}`);
 
-		tataru.commands = new Map();
+		tataru._commands.set(global.env.BOT_DEFAULT_LANG, new Collection());
 		testCommands.forEach((cmd, idx) => {
-			tataru.commands.set(cmd, {
+			const commands = tataru._commands.get(global.env.BOT_DEFAULT_LANG)
+			commands.set(cmd, {
 				devOnly: isDevOnly[idx],
 				execute: jest.fn(),
 			});
 		});
 
 		testMessages.forEach((cmd, idx) => {
-			const mockFn = tataru.commands.get(testCommands[idx]).execute;
+			const commands = tataru._commands.get(global.env.BOT_DEFAULT_LANG)
+			const mockFn = commands.get(testCommands[idx]).execute;
 			const msg = {
 				content: cmd,
 				author: { id: 0, bot: false },

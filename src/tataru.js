@@ -1,69 +1,84 @@
-require('dotenv').config();
-const { cleanEnv, makeValidator, bool } = require('envalid');
-const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
+const { lstatSync, readdirSync } = require('fs');
 const Discord = require('discord.js');
 const events = require('@/tataru.on');
 const Logger = require('@/utils/logger');
-const { ERROR } = require('@/constants');
+const { DEV } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 
 
 class Tataru extends Discord.Client {
+	constructor() {
+		super();
+		this._commands = new Discord.Collection();
+	}
+
 	setup() {
-		this._loadEnvironment();
 		this._loadCommands();
 		this._listenEvents();
 	}
 
 	start() {
-		this.login(this.env.BOT_TOKEN)
+		this.login(global.env.BOT_TOKEN)
 			.catch(console.error);
+	}
+
+	// eslint-disable-next-line
+	getPrefixIn(guild) {
+		return global.env.BOT_DEFAULT_PREFIX;
+	}
+
+	// eslint-disable-next-line
+	getLocaleIn(guild) {
+		return global.env.BOT_DEFAULT_LANG.toLowerCase();
 	}
 
 	getNameIn(guild) {
 		return guild ? guild.member(this.user).displayName : this.user.username;
 	}
 
+	get commands() { return this._commands; }
 	get log() { return this._logger.log.bind(this._logger); }
-
-	_loadEnvironment() {
-		const notEmptyStr = makeValidator(str => {
-			// it also handles consecutive blanks
-			if (str && str.trim()) {
-				return str.trim();
-			}
-			else {
-				throw new TypeError(ERROR.ENV_VAR_NO_EMPTY_STRING);
-			}
-		});
-
-		this.env = cleanEnv(process.env, {
-			BOT_PREFIX: notEmptyStr(),
-			BOT_PREFIX_TRAILING_SPACE: bool(),
-			BOT_TOKEN: notEmptyStr(),
-			BOT_LANG: notEmptyStr(),
-		});
-
-		this.prefix = !this.env.BOT_PREFIX_TRAILING_SPACE ?
-			this.env.BOT_PREFIX : `${this.env.BOT_PREFIX} `;
-	}
 
 	_setLogger() {
 		this._logger = new Logger(this, {
-			verbose: this.env.BOT_LOG_VERBOSE_CHANNEL,
-			error: this.env.BOT_LOG_ERROR_CHANNEL,
+			verbose: global.env.BOT_LOG_VERBOSE_CHANNEL,
+			error: global.env.BOT_LOG_ERROR_CHANNEL,
 		});
 	}
 
 	_loadCommands() {
-		this.commands = new Discord.Collection();
-		const commandFiles = fs.readdirSync(path.join(__dirname, 'commands'))
+		const commandDirBase = path.join(__dirname, 'commands');
+		const commandDirs = readdirSync(commandDirBase)
+			.filter(file => lstatSync(path.join(commandDirBase, file)).isDirectory());
+		const localeFiles = readdirSync(path.join(__dirname, 'locale'))
 			.filter(file => file.endsWith('.js'));
 
-		for (const file of commandFiles) {
-			const command = require(`@/commands/${file}`);
-			this.commands.set(command.name, command);
-		}
+		localeFiles.forEach(locale => {
+			const lang = locale.split('.')[0];
+			const langCommands = new Discord.Collection();
+
+			commandDirs.forEach(dir => {
+				try {
+					const dirMeta = require(path.join(commandDirBase, dir, 'index.js'));
+
+					// Load commands in dir
+					readdirSync(path.join(commandDirBase, dir))
+						.filter(file => file !== 'index.js')
+						.forEach(cmd => {
+							const command = require(`@/commands/${dir}/${cmd}`)(lang);
+
+							command.category = dirMeta;
+							langCommands.set(command.name, command);
+						});
+				}
+				catch (err) {
+					console.error(chalk.red(DEV.CMD_CATEGORY_LOAD_FAILED(dir)));
+					console.error(err);
+				}
+			});
+			this._commands.set(lang, langCommands);
+		});
 	}
 
 	_listenEvents() {

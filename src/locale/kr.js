@@ -12,11 +12,12 @@ module.exports = {
 		GUILD_JOIN_TITLE: bot => dedent`
 			안뇽하세용 ${bot.user.username}에용!`,
 		GUILD_JOIN_DESC: (bot, helpCmd) => dedent`
-			${underline(strong(helpCmd))}라고 말해주시면 ${bot.user.username}가 할 수 있는 일을 알 수 있어용!`,
+			${underline(strong(helpCmd))}이라고 말해주시면 ${bot.user.username}가 할 수 있는 일을 알 수 있어용!`,
+		GUILD_JOIN_FOOTER: bot => dedent`
+			여기는 ${bot.user.username}가 일하는 ${bot.guilds.size}번째 서버에용!`,
 		CMD_FAILED: '명령어 실행에 실패했어용!',
 	},
 	ERROR: {
-		ENV_VAR_NO_EMPTY_STRING: '공백이 아닌 문자를 입력해야해용!',
 		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
 		CMD_FAIL_DESC: (msg, error) => dedent`
 			${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})
@@ -25,6 +26,10 @@ module.exports = {
 			로그 모드 ${mode}는 상수로 정의되지 않았어용!`,
 		ABSTRACT_CLASS_INSTANTIZED: cls => dedent`
 			추상 클래스 ${cls}의 인스턴스가 생성되었어용!`,
+	},
+	// Command Categories
+	UTILS: {
+		NAME: '유틸리티',
 	},
 	// Commands
 	PING: {

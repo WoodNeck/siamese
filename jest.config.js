@@ -1,7 +1,6 @@
 module.exports = {
 	clearMocks: true,
 	testRegex: 'tests/.*\\.(js|jsx)$',
-	setupFiles: ['<rootDir>/tests/setups/beforeAll.js'],
 	setupTestFrameworkScriptFile: '<rootDir>/tests/setups/setup.js',
   coverageDirectory: 'coverage',
 	testEnvironment: 'node',

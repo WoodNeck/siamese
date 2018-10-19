@@ -1,5 +1,5 @@
 const Tataru = require("@/tataru");
-const Invite = require("@/commands/invite");
+const Invite = require("@/commands/utils/invite")(global.env.BOT_DEFAULT_LANG);
 
 
 describe('Command: Invite', () => {

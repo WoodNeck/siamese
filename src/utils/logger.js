@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const { COLOR, ERROR, LOG } = require('@/constants');
+const { COLOR, ERROR, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
 
 module.exports = class Logger {

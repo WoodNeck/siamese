@@ -1,4 +1,4 @@
-with open(".env") as env, open(".env.preset", 'w') as preset:
+with open("bot.env") as env, open("bot.env.preset", 'w') as preset:
     config = env.readline()
     while config:
         if config.startswith("#"):

@@ -16,7 +16,8 @@ const constants = {
 		RANDOM: 'RANDOM',
 	},
 	EMOJI: {
-		BLUE_DIAMOND: '🔷',
+		TOOLS: '🛠️',
+		SMALL_BLUE_DIAMOND: '🔹',
 		SPEAKING_HEAD: '🗣️',
 		LOUD_SPEAKER: '📢',
 	},
@@ -25,12 +26,17 @@ const constants = {
 		BOT_LANG_NOT_SPECIFIED: dedent`
 			"BOT_LANG" is incorrect in your .env file!
 			Check "BOT_LANG".js file exists in src/locale folder.`,
+		ENV_VAR_MISSING: key => `You should provide env variable ${key}.`,
+		ENV_VAR_NO_EMPTY_STRING: 'You should provide non-empty string for key',
+		CMD_CATEGORY_LOAD_FAILED: category => `Load failed for category "${category}"(Check whether "index.js" file exists!)`,
 	},
 };
 
 try {
-	module.exports = Object.assign(constants, require(`@/locale/${process.env.BOT_LANG.toLowerCase()}`));
+	module.exports = lang => lang ?
+		Object.assign(constants, require(`@/locale/${lang.toLowerCase()}`)) :
+		constants;
 }
 catch (err) {
-	console.error(chalk.hex(constants.COLOR.TATARU).bold(constants.DEV.BOT_LANG_NOT_SPECIFIED));
+	console.error(chalk.hex(constants.COLOR.ERROR).bold(constants.DEV.BOT_LANG_NOT_SPECIFIED));
 }
