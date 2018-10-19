@@ -21,12 +21,13 @@ const onReady = function() {
 		.send();
 
 	// Set default activity
-	this.user.setActivity(global.env.BOT_DEFAULT_PREFIX, {
+	const activity = `${global.env.BOT_DEFAULT_PREFIX}${HELP.CMD}`;
+	this.user.setActivity(activity, {
 		type: 'LISTENING',
 	});
 };
 
-const onMessage = function(msg) {
+const onMessage = async function(msg) {
 	const locale = this.getLocaleIn(msg.guild);
 	const prefix = this.getPrefixIn(msg.guild);
 
@@ -47,7 +48,8 @@ const onMessage = function(msg) {
 		if (matches.length) {
 			const match = matches[0];
 			const cmdMatched = commands.array()[match.item];
-			msg.reply(BOT.CMD_INFORM_SIMILAR(cmdMatched.name));
+
+			msg.channel.send(BOT.CMD_INFORM_SIMILAR(msg.author, cmdMatched.name));
 		}
 		return;
 	}
@@ -59,6 +61,7 @@ const onMessage = function(msg) {
 		cmd.execute({
 			bot: this,
 			msg: msg,
+			author: msg.author,
 			guild: msg.guild,
 			channel: msg.channel,
 			args: args,

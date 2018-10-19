@@ -1,5 +1,5 @@
-const Tataru = require("@/tataru");
-const Help = require("@/commands/utils/help")(global.env.BOT_DEFAULT_LANG);
+const Tataru = require('@/tataru');
+const Help = require('@/commands/utils/help')(global.env.BOT_DEFAULT_LANG);
 
 
 describe('Command: Help', () => {

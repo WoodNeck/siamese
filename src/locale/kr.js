@@ -17,13 +17,8 @@ module.exports = {
 		GUILD_JOIN_FOOTER: bot => dedent`
 			여기는 ${Josa.r(bot.user.username, '이/가')} 일하는 ${bot.guilds.size}번째 서버에용!`,
 		CMD_FAILED: '명령어 실행에 실패했어용!',
-		CMD_INFORM_SIMILAR: similar => `그런 명령어는 없어용. 혹시 ${strong(similar)}${Josa.c(similar, '을/를')} 원하신건가용?`,
-	},
-	ERROR: {
-		LOG_MODE_NOT_DEFINED: mode => dedent`
-			로그 모드 ${mode}는 상수로 정의되지 않았어용!`,
-		ABSTRACT_CLASS_INSTANTIZED: cls => dedent`
-			추상 클래스 ${cls}의 인스턴스가 생성되었어용!`,
+		CMD_INFORM_SIMILAR: (user, similar) => dedent`
+			${user.toString()}님, 그런 명령어는 없어용. 혹시 ${underline(strong(similar))}${Josa.c(similar, '을/를')} 원하신건가용?`,
 	},
 	// Command Categories
 	UTILS: {
@@ -45,5 +40,20 @@ module.exports = {
 	HELP: {
 		CMD: '도움',
 		DESC: '명령어 목록을 표시해용!',
+	},
+	DICE: {
+		CMD: '주사위',
+		DESC: 'n면짜리 주사위를 굴려용! (기본값: 100)',
+		USAGE: '[n]',
+		MIN: 2,
+		MAX: 10000,
+		DEFAULT: 100,
+		MSG: (user, num, maxNum) => {
+			// Korean josa for number 0-9
+			const josa = ['이', '이', '가', '이', '가', '가', '이', '이', '이', '가'];
+			const numStr = num.toString();
+			return `${user.toString()}님이 주사위를 굴려 🎲${strong(numStr)}${josa[num % 10]} 나왔어용! (1-${maxNum})`;
+		},
+		ERROR_ARG_INCORRECT: (user, min, max) => `${user.toString()}님, ${min}에서 ${max}사이의 숫자를 주세용!`,
 	},
 };

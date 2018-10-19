@@ -1,4 +1,4 @@
-const Tataru = require("@/tataru");
+const Tataru = require('@/tataru');
 
 
 describe('Commands', () => {

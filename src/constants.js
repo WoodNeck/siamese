@@ -20,6 +20,9 @@ const constants = {
 		SMALL_BLUE_DIAMOND: '🔹',
 		SPEAKING_HEAD: '🗣️',
 		LOUD_SPEAKER: '📢',
+		EXCLAMATION: '❗',
+		BANGBANG: '‼️',
+		DICE: '🎲',
 	},
 	DEV: {
 		BOT_READY_INDICATOR: 'YOUR BOT IS READY AND RUNNING!',
@@ -33,6 +36,10 @@ const constants = {
 		CMD_FAIL_DESC: (msg, error) => dedent`
 			${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})
 			${error.stack}`,
+		LOG_MODE_NOT_DEFINED: mode => dedent`
+			Log mode "${mode}" is not defined as constant`,
+		ABSTRACT_CLASS_INSTANTIZED: cls => dedent`
+			Abstract class ${cls} is instantized.`,
 	},
 };
 

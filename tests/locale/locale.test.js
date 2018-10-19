@@ -13,6 +13,7 @@ describe('Locale', () => {
 				for (const constName in locale[category]) {
 					const constant = locale[category][constName];
 					expect(typeof(constant) === 'string' ||
+						typeof(constant) === 'number' ||
 						typeof(constant) === 'function').toBeTruthy();
 				}
 			}

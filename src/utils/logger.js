@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const { COLOR, ERROR, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { COLOR, DEV, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
 
 module.exports = class Logger {
@@ -27,10 +27,10 @@ module.exports = class Logger {
 class Log {
 	constructor(mode) {
 		if (new.target === Log) {
-			throw new TypeError(ERROR.ABSTRACT_CLASS_INSTANTIZED(Log));
+			throw new TypeError(DEV.ABSTRACT_CLASS_INSTANTIZED(Log));
 		}
 		if (!(mode in LOG)) {
-			throw new Error(ERROR.LOG_MODE_NOT_DEFINED(mode));
+			throw new Error(DEV.LOG_MODE_NOT_DEFINED(mode));
 		}
 		this._mode = mode;
 	}

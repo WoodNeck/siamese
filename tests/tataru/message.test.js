@@ -126,14 +126,19 @@ describe('Message handling', () => {
 
 	it('can find similar command when finding command fails', () => {
 		const msg = {
-			author: { bot: false },
+			author: {
+				toString: () => '타타루',
+				bot: false,
+			},
 			content: '타타루 팡',
-			reply: jest.fn()
+			channel: {
+				send: jest.fn(),
+			}
 		};
 
 		tataru._setLogger();
 		tataru._loadCommands();
 		handler.message.call(tataru, msg)
-		expect(msg.reply).toBeCalledWith(BOT.CMD_INFORM_SIMILAR('핑'));
+		expect(msg.channel.send).toBeCalledWith(BOT.CMD_INFORM_SIMILAR(msg.author, '핑'));
 	});
 });
