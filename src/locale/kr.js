@@ -62,4 +62,10 @@ module.exports = {
 		USAGE: '항목1 항목2 [항목3] [...]',
 		ERROR_ARG_NOT_SUFFICIENT: (user) => `${user.toString()}님, 고를 수 있는 항목을 충분히 주세용!`,
 	},
+	SAY: {
+		CMD: '따라해',
+		DESC: '하신 말을 지운 후에 따라해용!',
+		USAGE: '따라할 문장',
+		ERROR_EMPTY_CONTENT: user => `${user.toString()}님, 따라할 문장을 주세용!`,
+	},
 };

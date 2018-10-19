@@ -56,11 +56,13 @@ const onMessage = async function(msg) {
 
 	try {
 		const cmd = commands.get(cmdName);
+		const content = msg.content.slice(prefix.length + cmdName.length);
 		if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
 		cmd.execute({
 			bot: this,
 			msg: msg,
+			content: content,
 			author: msg.author,
 			guild: msg.guild,
 			channel: msg.channel,
