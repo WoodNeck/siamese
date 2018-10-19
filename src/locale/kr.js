@@ -56,4 +56,10 @@ module.exports = {
 		},
 		ERROR_ARG_INCORRECT: (user, min, max) => `${user.toString()}님, ${min}에서 ${max}사이의 숫자를 주세용!`,
 	},
+	CHOOSE: {
+		CMD: '골라줘',
+		DESC: '주신 항목들 중 하나를 임의로 골라드려용!',
+		USAGE: '항목1 항목2 [항목3] [...]',
+		ERROR_ARG_NOT_SUFFICIENT: (user) => `${user.toString()}님, 고를 수 있는 항목을 충분히 주세용!`,
+	},
 };
