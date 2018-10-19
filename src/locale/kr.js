@@ -1,4 +1,5 @@
 const dedent = require('@/utils/dedent');
+const Josa = require('josa-js');
 const { strong, underline } = require('@/utils/markdown');
 
 
@@ -12,16 +13,13 @@ module.exports = {
 		GUILD_JOIN_TITLE: bot => dedent`
 			안뇽하세용 ${bot.user.username}에용!`,
 		GUILD_JOIN_DESC: (bot, helpCmd) => dedent`
-			${underline(strong(helpCmd))}이라고 말해주시면 ${bot.user.username}가 할 수 있는 일을 알 수 있어용!`,
+			${underline(strong(helpCmd))}이라고 말해주시면 ${Josa.r(bot.user.username, '이/가')} 할 수 있는 일을 알 수 있어용!`,
 		GUILD_JOIN_FOOTER: bot => dedent`
-			여기는 ${bot.user.username}가 일하는 ${bot.guilds.size}번째 서버에용!`,
+			여기는 ${Josa.r(bot.user.username, '이/가')} 일하는 ${bot.guilds.size}번째 서버에용!`,
 		CMD_FAILED: '명령어 실행에 실패했어용!',
+		CMD_INFORM_SIMILAR: similar => `그런 명령어는 없어용. 혹시 ${strong(similar)}${Josa.c(similar, '을/를')} 원하신건가용?`,
 	},
 	ERROR: {
-		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
-		CMD_FAIL_DESC: (msg, error) => dedent`
-			${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})
-			${error.stack}`,
 		LOG_MODE_NOT_DEFINED: mode => dedent`
 			로그 모드 ${mode}는 상수로 정의되지 않았어용!`,
 		ABSTRACT_CLASS_INSTANTIZED: cls => dedent`
@@ -35,9 +33,9 @@ module.exports = {
 	PING: {
 		CMD: '핑',
 		DESC: '퐁을 대답해용!',
-		MSG: (ping, botMention, uptime) => dedent`
+		MSG: (ping, bot, guild, uptime) => dedent`
 			퐁이에용! 현재 API 서버와의 핑은 ${ping}에용!
-			${botMention}는 ${uptime.hours}시간 ${uptime.minutes}분 ${uptime.seconds}초동안 일하고 있어용!`,
+			${bot.user.toString()}${Josa.c(bot.getNameIn(guild), '은/는')} ${uptime.hours}시간 ${uptime.minutes}분 ${uptime.seconds}초동안 일하고 있어용!`,
 	},
 	INVITE: {
 		CMD: '초대',

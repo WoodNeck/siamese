@@ -29,6 +29,10 @@ const constants = {
 		ENV_VAR_MISSING: key => `You should provide env variable ${key}.`,
 		ENV_VAR_NO_EMPTY_STRING: 'You should provide non-empty string for key',
 		CMD_CATEGORY_LOAD_FAILED: category => `Load failed for category "${category}"(Check whether "index.js" file exists!)`,
+		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
+		CMD_FAIL_DESC: (msg, error) => dedent`
+			${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})
+			${error.stack}`,
 	},
 };
 

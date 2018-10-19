@@ -1,7 +1,7 @@
 const { Collection } = require('discord.js');
 const Tataru = require('@/tataru');
 const handler = require('@/tataru.on');
-const { PING, INVITE, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { PING, BOT, INVITE, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 
 describe('Message handling', () => {
 	let tataru;
@@ -9,7 +9,8 @@ describe('Message handling', () => {
 	beforeEach(() => {
 		tataru = new Tataru();
 		tataru.user = {
-			username: '타타루'
+			username: '타타루',
+			setActivity: jest.fn(),
 		};
 	});
 
@@ -121,5 +122,18 @@ describe('Message handling', () => {
 		};
 
 		expect(handler.guildCreate.bind(tataru, guildMock)).not.toThrow();
+	});
+
+	it('can find similar command when finding command fails', () => {
+		const msg = {
+			author: { bot: false },
+			content: '타타루 팡',
+			reply: jest.fn()
+		};
+
+		tataru._setLogger();
+		tataru._loadCommands();
+		handler.message.call(tataru, msg)
+		expect(msg.reply).toBeCalledWith(BOT.CMD_INFORM_SIMILAR('핑'));
 	});
 });

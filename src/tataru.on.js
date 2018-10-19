@@ -1,5 +1,7 @@
 // Functions handling client.on() method
-const { COLOR, LOG, DEV, BOT, ERROR, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const Fuse = require('fuse.js');
+const Hangul = require('hangul-js');
+const { COLOR, LOG, DEV, BOT, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
 
 const onReady = function() {
@@ -17,6 +19,11 @@ const onReady = function() {
 		.setThumbnail(this.user.avatarURL)
 		.setColor(COLOR.GOOD)
 		.send();
+
+	// Set default activity
+	this.user.setActivity(global.env.BOT_DEFAULT_PREFIX, {
+		type: 'LISTENING',
+	});
 };
 
 const onMessage = function(msg) {
@@ -29,7 +36,21 @@ const onMessage = function(msg) {
 	const args = msg.content.slice(prefix.length).split(/ +/);
 	const cmdName = args.shift();
 
-	if (!commands.has(cmdName)) return;
+	if (!commands.has(cmdName)) {
+		// Do fuzzy matching, to check whether similar command exists
+		const cmdDisassembled = Hangul.disassemble(cmdName).join('');
+		const fuse = new Fuse(commands.array().map(cmd => Hangul.disassemble(cmd.name).join('')), {
+			shouldSort: true,
+			includeScore: true,
+		});
+		const matches = fuse.search(cmdDisassembled);
+		if (matches.length) {
+			const match = matches[0];
+			const cmdMatched = commands.array()[match.item];
+			msg.reply(BOT.CMD_INFORM_SIMILAR(cmdMatched.name));
+		}
+		return;
+	}
 
 	try {
 		const cmd = commands.get(cmdName);
@@ -47,8 +68,8 @@ const onMessage = function(msg) {
 	catch (error) {
 		msg.reply(BOT.CMD_FAILED);
 		this.log(LOG.ERROR)
-			.setTitle(ERROR.CMD_FAIL_TITLE(error))
-			.setDescription(ERROR.CMD_FAIL_DESC(msg, error))
+			.setTitle(DEV.CMD_FAIL_TITLE(error))
+			.setDescription(DEV.CMD_FAIL_DESC(msg, error))
 			.send();
 	}
 };
