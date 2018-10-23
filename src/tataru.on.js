@@ -1,7 +1,9 @@
 // Functions handling client.on() method
 const Fuse = require('fuse.js');
 const Hangul = require('hangul-js');
-const { COLOR, LOG, DEV, BOT, HELP } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const error = require('@/utils/error');
+const dedent = require('@/utils/dedent');
+const { COLOR, LOG, ACTIVITY, DEV, ERROR, BOT, HELP, EMOJI } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
 
 const onReady = function() {
@@ -23,7 +25,7 @@ const onReady = function() {
 	// Set default activity
 	const activity = `${global.env.BOT_DEFAULT_PREFIX}${HELP.CMD}`;
 	this.user.setActivity(activity, {
-		type: 'LISTENING',
+		type: ACTIVITY.LISTENING,
 	});
 };
 
@@ -59,7 +61,7 @@ const onMessage = async function(msg) {
 		const content = msg.content.slice(prefix.length + cmdName.length);
 		if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
-		cmd.execute({
+		await cmd.execute({
 			bot: this,
 			msg: msg,
 			content: content,
@@ -70,11 +72,14 @@ const onMessage = async function(msg) {
 			locale: locale,
 		});
 	}
-	catch (error) {
-		msg.reply(BOT.CMD_FAILED);
+	catch (err) {
+		msg.channel.send(error(BOT.CMD_FAILED, locale).by(msg.author));
 		this.log(LOG.ERROR)
-			.setTitle(DEV.CMD_FAIL_TITLE(error))
-			.setDescription(DEV.CMD_FAIL_DESC(msg, error))
+			.setTitle(ERROR.CMD_FAIL_TITLE(err))
+			.setDescription(dedent`
+				${ERROR.CMD_FAIL_PLACE(msg)}
+				${ERROR.CMD_FAIL_CMD(msg)}
+				${ERROR.CMD_FAIL_DESC(err)}`)
 			.send();
 	}
 };
@@ -90,8 +95,25 @@ const onGuildJoin = function(guild) {
 	guild.systemChannel.send(embedMsg);
 };
 
+const onError = function(err) {
+	this.log(LOG.ERROR)
+		.setTitle(ERROR.CMD_FAIL_TITLE(err))
+		.setDescription(ERROR.CMD_FAIL_DESC(err))
+		.send();
+};
+
+const onWarning = function(info) {
+	this.log(LOG.ERROR)
+		.setTitle(`${EMOJI.WARNING} Warning`)
+		.setDescription(info.toString())
+		.setColor(COLOR.WARNING)
+		.send();
+};
+
 module.exports = {
-	'ready': onReady,
-	'message': onMessage,
-	'guildCreate': onGuildJoin,
+	ready: onReady,
+	message: onMessage,
+	guildCreate: onGuildJoin,
+	error: onError,
+	warn: onWarning,
 };

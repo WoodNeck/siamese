@@ -2,19 +2,9 @@ const Logger = require('@/utils/logger');
 const { LOG, COLOR } = global.CONSTANT;
 
 
-const invalidStrings = [null, undefined, '', '   ', '\t', '\n']
-describe('Logger', () => {
-	let botMock;
-	beforeAll(() => {
-		botMock = {
-			channels: new Map(),
-		};
-		botMock.channels.set(1, 'Channel1');
-		botMock.channels.set(2, 'Channel2');
-	});
-
+describe('Logger', () => {;
 	it('can be instantized with proper logging modes', () => {
-		const logger = new Logger(botMock);
+		const logger = new Logger(global.botMock);
 
 		for (const mode in LOG) {
 			const modeStr = LOG[mode];
@@ -26,7 +16,7 @@ describe('Logger', () => {
 	});
 
 	it('can\'t be instantized with proper logging modes', () => {
-		const logger = new Logger(botMock);
+		const logger = new Logger(global.botMock);
 		const invalidModes = [undefined, '', ' ', '??', '타타루'];
 
 		for (const mode in invalidModes) {
@@ -37,7 +27,7 @@ describe('Logger', () => {
 	});
 
 	it('instantize proper subclass logger', () => {
-		let logger = new Logger(botMock, {
+		let logger = new Logger(global.botMock, {
 			verbose: 1,
 			error: 0
 		});
@@ -47,7 +37,7 @@ describe('Logger', () => {
 		expect(logger.log.call(logger, LOG.ERROR).constructor.name)
 			.toEqual('StringLog');
 
-		logger = new Logger(botMock, {
+		logger = new Logger(global.botMock, {
 			verbose: 3,
 			error: 2
 		});
@@ -62,12 +52,9 @@ describe('Logger', () => {
 describe('EmbedLog', () => {
 	let embedLog;
 	const resetLog = mode => {
-		const botMock = {
-			channels: new Map(),
-		};
-		botMock.channels.set(1, 'Channel1');
-		botMock.channels.set(2, 'Channel2');
-		embedLog = new Logger(botMock, {
+		global.botMock.channels.set(1, 'Channel1');
+		global.botMock.channels.set(2, 'Channel2');
+		embedLog = new Logger(global.botMock, {
 			verbose: 1, error: 2
 		}).log(mode);
 	};
@@ -77,64 +64,6 @@ describe('EmbedLog', () => {
 
 	it('is EmbedLog', () => {
 		expect(embedLog.constructor.name).toEqual('EmbedLog');
-	});
-
-	it('can set title properly', () => {
-		const title = '타타루 제목';
-		embedLog.setTitle(title);
-		expect(embedLog._embed.title).toEqual(title);
-
-		invalidStrings.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			embedLog.setTitle(text);
-			expect(embedLog._embed.title).toBeUndefined();
-		});
-	});
-
-	it('can set description properly', () => {
-		const desc = '타타루 내용';
-		embedLog.setDescription(desc);
-		expect(embedLog._embed.description).toEqual(desc);
-
-		invalidStrings.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			embedLog.setDescription(text);
-			expect(embedLog._embed.description).toBeUndefined();
-		});
-	});
-
-	it('can set thumbnail properly', () => {
-		const thumb = 'https://some.url/to/tataru/image.png';
-		embedLog.setThumbnail(thumb);
-		expect(embedLog._embed.thumbnail.url).toEqual(thumb);
-
-		invalidStrings.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			embedLog.setThumbnail(text);
-			expect(embedLog._embed.thumbnail).toBeUndefined();
-		});
-
-		const invalidUrls = [
-			'htt://www.google.com',
-			'://www.google.com',
-			'ftp://www.google.com'
-		];
-
-		invalidUrls.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			embedLog.setThumbnail(text);
-			expect(embedLog._embed.thumbnail).toBeUndefined();
-		});
-	});
-
-	it('can set color', () => {
-		const colors = ['#deadbf', 0xdeadbf];
-		const expected = [0xdeadbf, 0xdeadbf]
-
-		colors.forEach((col, idx) => {
-			embedLog.setColor(col);
-			expect(embedLog._embed.color).toEqual(expected[idx]);
-		});
 	});
 
 	it('can send message to channel', () => {
@@ -190,14 +119,11 @@ describe('EmbedLog', () => {
 describe('StringLog', () => {
 	let stringLog;
 	const resetLog = mode => {
-		const botMock = {
-			channels: new Map(),
-		};
-		botMock.channels.set(1, 'Channel1');
-		botMock.channels.set(2, 'Channel2');
+		global.botMock.channels.set(1, 'Channel1');
+		global.botMock.channels.set(2, 'Channel2');
 		// it will return StringLog, which logs to console.log
 		// as channels given not listed in bot's channels
-		stringLog = new Logger(botMock, {
+		stringLog = new Logger(global.botMock, {
 			verbose: 3, error: 4
 		}).log(mode);
 	};
@@ -207,45 +133,6 @@ describe('StringLog', () => {
 
 	it('is StringLog', () => {
 		expect(stringLog.constructor.name).toEqual('StringLog');
-	});
-
-	it('can set title properly', () => {
-		const title = '타타루 제목';
-		stringLog.setTitle(title);
-		expect(stringLog._msg.title).toEqual(title);
-
-		invalidStrings.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			stringLog.setTitle(text);
-			expect(stringLog._msg.title).toBeNull();
-		});
-	});
-
-	it('can set description properly', () => {
-		const desc = '타타루 내용';
-		stringLog.setDescription(desc);
-		expect(stringLog._msg.desc).toEqual(desc);
-
-		invalidStrings.forEach(text => {
-			resetLog(LOG.VERBOSE);
-			stringLog.setDescription(text);
-			expect(stringLog._msg.title).toBeNull();
-		});
-	});
-
-	it('doesn\'t set thumbnail', () => {
-		const thumb = 'https://some.url/to/tataru/image.png';
-		stringLog.setThumbnail(thumb);
-		expect(stringLog._msg.thumbnail).toBeUndefined();
-	});
-
-	it('can set color', () => {
-		const colors = ['#deadbf', 0xdeadbf];
-
-		colors.forEach((col, idx) => {
-			stringLog.setColor(col);
-			expect(stringLog._msg.color).toEqual(col);
-		});
 	});
 
 	it('can send message to console', () => {

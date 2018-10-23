@@ -19,24 +19,26 @@
   },
   "homepage": "https://github.com/WoodNeck/tataru-js#readme",
   "devDependencies": {
+    "codacy-coverage": "^3.2.0",
     "eslint": "^5.6.1",
     "jest": "^23.6.0"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bufferutil": "^4.0.0",
     "chalk": "^2.4.1",
-    "codacy-coverage": "^3.1.0",
     "discord.js": "^11.4.2",
     "dotenv": "^6.0.0",
     "envalid": "^4.1.4",
     "erlpack": "hammerandchisel/erlpack",
     "fuse.js": "^3.2.1",
     "hangul-js": "^0.2.5",
+    "htmlparser2": "^3.10.0",
     "josa-js": "^0.0.2",
+    "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
     "node-opus": "^0.3.0",
-    "remove-markdown": "^0.3.0",
-    "sodium": "^2.0.3"
+    "remove-markdown": "^0.3.0"
   },
   "_moduleAliases": {
     "@": "src"

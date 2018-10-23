@@ -4,7 +4,7 @@ const { lstatSync, readdirSync } = require('fs');
 const Discord = require('discord.js');
 const events = require('@/tataru.on');
 const Logger = require('@/utils/logger');
-const { DEV } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { ERROR } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 
 
 class Tataru extends Discord.Client {
@@ -73,7 +73,7 @@ class Tataru extends Discord.Client {
 						});
 				}
 				catch (err) {
-					console.error(chalk.red(DEV.CMD_CATEGORY_LOAD_FAILED(dir)));
+					console.error(chalk.red(ERROR.CMD_CATEGORY_LOAD_FAILED(dir)));
 					console.error(err);
 				}
 			});

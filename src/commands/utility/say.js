@@ -1,3 +1,6 @@
+const error = require('@/utils/error');
+
+
 module.exports = lang => {
 	const { SAY } = require('@/constants')(lang);
 
@@ -7,10 +10,10 @@ module.exports = lang => {
 		usage: SAY.USAGE,
 		hidden: false,
 		devOnly: false,
-		execute: ({ msg, author, channel, content }) => {
+		execute: ({ msg, author, channel, content, locale }) => {
 			// Can't react for empty content
 			if (!content) {
-				channel.send(SAY.ERROR_EMPTY_CONTENT(author));
+				channel.send(error(SAY.ERROR_EMPTY_CONTENT, locale).by(author));
 				return;
 			}
 			msg.delete();

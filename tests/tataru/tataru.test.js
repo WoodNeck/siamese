@@ -2,30 +2,22 @@ const Tataru = require("@/tataru");
 const { LOG } = global.CONSTANT
 
 describe('Tataru', () => {
-	let tataru;
-
-	beforeEach(() => { tataru = new Tataru(); })
-
 	it('can set logger', () => {
-		tataru.env = {
-			BOT_LOG_VERBOSE_CHANNEL: null,
-			BOT_LOG_ERROR_CHANNEL: null
-		};
-		tataru._setLogger();
-		expect(tataru.log(LOG.VERBOSE).constructor.name).toEqual('StringLog');
+		global.botMock._setLogger();
+		expect(global.botMock.log(LOG.VERBOSE).constructor.name).toEqual('StringLog');
 	});
 
 	it('can load commands', () => {
-		tataru._loadCommands();
-		expect(tataru.commands.size).toBeGreaterThan(0);
+		global.botMock._loadCommands();
+		expect(global.botMock.commands.size).toBeGreaterThan(0);
 	});
 
 	it('can bind handlers for events', () => {
-		expect(tataru._listenEvents.bind(tataru)).not.toThrow();
+		expect(global.botMock._listenEvents.bind(global.botMock)).not.toThrow();
 	});
 
 	it('can setup', () => {
-		expect(tataru.setup.bind(tataru)).not.toThrow();
+		expect(global.botMock.setup.bind(global.botMock)).not.toThrow();
 	});
 
 	it('can return tataru\'s display name in guild', () => {
@@ -35,7 +27,7 @@ describe('Tataru', () => {
 				{ displayName: displayName }
 			)
 		};
-		expect(tataru.getNameIn(guildMock)).toEqual(displayName)
+		expect(global.botMock.getNameIn(guildMock)).toEqual(displayName)
 	});
 
 	it('can set good prefixes properly', () => {
@@ -49,12 +41,9 @@ describe('Tataru', () => {
 
 		acceptablePrefixes.forEach(env => {
 			global.env.BOT_DEFAULT_PREFIX = env.prefix;
-			tataru = new Tataru();
+			global.botMock = new Tataru();
 			// getPrefixIn with no args returns default prefix
-			expect(tataru.getPrefixIn()).toEqual(env.expected);
+			expect(global.botMock.getPrefixIn()).toEqual(env.expected);
 		});
-
-		// reset value
-		global.env.BOT_DEFAULT_PREFIX = '타타루 ';
 	});
 });

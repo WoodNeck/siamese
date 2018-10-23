@@ -1,6 +1,6 @@
 const chalk = require('chalk');
-const { COLOR, DEV, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
-const { RichEmbed } = require('discord.js');
+const { COLOR, ERROR, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { EmbedPage, StringPage } = require('@/utils/page');
 
 module.exports = class Logger {
 	constructor(bot, channelIds = {
@@ -18,37 +18,19 @@ module.exports = class Logger {
 	}
 
 	log(mode) {
-		return (this._channels[mode]) ?
-			new EmbedLog(mode, this._channels[mode]) :
-			new StringLog(mode);
+		if (!(mode in LOG)) {
+			throw new Error(ERROR.LOG_MODE_NOT_DEFINED(mode));
+		}
+		return (this._channels[mode])
+			? new EmbedLog(mode, this._channels[mode])
+			: new StringLog(mode);
 	}
 };
 
-class Log {
-	constructor(mode) {
-		if (new.target === Log) {
-			throw new TypeError(DEV.ABSTRACT_CLASS_INSTANTIZED(Log));
-		}
-		if (!(mode in LOG)) {
-			throw new Error(DEV.LOG_MODE_NOT_DEFINED(mode));
-		}
-		this._mode = mode;
-	}
-
-	/* eslint-disable */
-	atConsole() {}
-	setTitle(title) {}
-	setDescription(desc) {}
-	setThumbnail(thumb) {}
-	setColor(color) {}
-	send() {}
-	/* eslint-enable */
-}
-
-class EmbedLog extends Log {
+class EmbedLog extends EmbedPage {
 	constructor(mode, channel) {
-		super(mode);
-		this._embed = new RichEmbed();
+		super();
+		this._mode = mode;
 		this._channel = channel;
 	}
 	atConsole() {
@@ -62,31 +44,6 @@ class EmbedLog extends Log {
 
 		return log;
 	}
-	setTitle(title) {
-		// Check null & undefined
-		if (title && title.trim()) {
-			this._embed.setTitle(title);
-		}
-		return this;
-	}
-	setDescription(desc) {
-		if (desc && desc.trim()) {
-			this._embed.setDescription(desc);
-		}
-		return this;
-	}
-	setThumbnail(thumb) {
-		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-
-		if (thumb && urlRegex.test(thumb)) {
-			this._embed.setThumbnail(thumb);
-		}
-		return this;
-	}
-	setColor(color) {
-		this._embed.setColor(color);
-		return this;
-	}
 	send() {
 		if (!this._embed.color) this._embed.setColor(COLOR[this._mode]);
 		this._embed.setTimestamp(new Date());
@@ -94,38 +51,13 @@ class EmbedLog extends Log {
 	}
 }
 
-class StringLog extends Log {
+class StringLog extends StringPage {
 	constructor(mode) {
-		super(mode);
-		this._msg = {
-			title: null,
-			desc: null,
-			color: null,
-		};
+		super();
+		this._mode = mode;
 	}
 	atConsole() {
 		// DO NOTHING
-		return this;
-	}
-	setTitle(title) {
-		if (title && title.trim()) {
-			this._msg.title = title;
-		}
-		return this;
-	}
-	setDescription(desc) {
-		if (desc && desc.trim()) {
-			this._msg.desc = desc;
-		}
-		return this;
-	}
-	// eslint-disable-next-line
-	setThumbnail(thumb) {
-		// DO NOTHING
-		return this;
-	}
-	setColor(color) {
-		this._msg.color = color;
 		return this;
 	}
 	send() {

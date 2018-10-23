@@ -20,9 +20,17 @@ module.exports = {
 		CMD_INFORM_SIMILAR: (user, similar) => dedent`
 			${user.toString()}님, 그런 명령어는 없어용. 혹시 ${underline(strong(similar))}${Josa.c(similar, '을/를')} 원하신건가용?`,
 	},
+	FORMAT: {
+		ERROR_MSG: user => `${user.toString()}님, `,
+	},
 	// Command Categories
-	UTILS: {
+	UTILITY: {
 		NAME: '유틸리티',
+		DESC: '유용한 명령어들을 모아놨어용!',
+	},
+	SEARCH: {
+		NAME: '검색',
+		DESC: '인터넷으로 검색한 결과를 보여드리는 명령어들이에용!',
 	},
 	// Commands
 	PING: {
@@ -45,27 +53,32 @@ module.exports = {
 		CMD: '주사위',
 		DESC: 'n면짜리 주사위를 굴려용! (기본값: 100)',
 		USAGE: '[n]',
-		MIN: 2,
-		MAX: 10000,
-		DEFAULT: 100,
 		MSG: (user, num, maxNum) => {
 			// Korean josa for number 0-9
 			const josa = ['이', '이', '가', '이', '가', '가', '이', '이', '이', '가'];
 			const numStr = num.toString();
 			return `${user.toString()}님이 주사위를 굴려 🎲${strong(numStr)}${josa[num % 10]} 나왔어용! (1-${maxNum})`;
 		},
-		ERROR_ARG_INCORRECT: (user, min, max) => `${user.toString()}님, ${min}에서 ${max}사이의 숫자를 주세용!`,
+		ERROR_ARG_INCORRECT: (min, max) => `${min}에서 ${max}사이의 숫자를 주세용!`,
 	},
 	CHOOSE: {
 		CMD: '골라줘',
 		DESC: '주신 항목들 중 하나를 임의로 골라드려용!',
 		USAGE: '항목1 항목2 [항목3] [...]',
-		ERROR_ARG_NOT_SUFFICIENT: (user) => `${user.toString()}님, 고를 수 있는 항목을 충분히 주세용!`,
+		ERROR_ARG_NOT_SUFFICIENT: '고를 수 있는 항목을 충분히 주세용!',
 	},
 	SAY: {
 		CMD: '따라해',
 		DESC: '하신 말을 지운 후에 따라해용!',
 		USAGE: '따라할 문장',
-		ERROR_EMPTY_CONTENT: user => `${user.toString()}님, 따라할 문장을 주세용!`,
+		ERROR_EMPTY_CONTENT: '따라할 문장을 주세용!',
+	},
+	IMAGE: {
+		CMD: '이미지',
+		DESC: '구글 이미지를 검색해용!',
+		USAGE: '검색어',
+		SEARCH_URL: query => `https://www.google.co.kr/search?q=${query}&tbm=isch`,
+		ERROR_EMPTY_CONTENT: '검색할 내용을 주세용!',
+		ERROR_EMPTY_RESULT: '그 검색어로는 이미지를 하나도 찾을수가 없었어용!',
 	},
 };
