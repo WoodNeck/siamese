@@ -34,6 +34,7 @@
     "fuse.js": "^3.2.1",
     "hangul-js": "^0.2.5",
     "htmlparser2": "^3.10.0",
+    "iso8601-duration": "^1.1.6",
     "josa-js": "^0.0.2",
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",

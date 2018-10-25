@@ -1,7 +1,6 @@
 // Functions handling client.on() method
 const Fuse = require('fuse.js');
 const Hangul = require('hangul-js');
-const error = require('@/utils/error');
 const dedent = require('@/utils/dedent');
 const { COLOR, LOG, ACTIVITY, DEV, ERROR, BOT, HELP, EMOJI } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { RichEmbed } = require('discord.js');
@@ -61,6 +60,12 @@ const onMessage = async function(msg) {
 		const content = msg.content.slice(prefix.length + cmdName.length);
 		if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
+		// override msg reply method
+		msg.reply = async errorMsg => {
+			const { FORMAT } = require('@/constants')(locale);
+			await msg.channel.send(`${FORMAT.ERROR_MSG(msg.author)}${errorMsg}`);
+		};
+
 		await cmd.execute({
 			bot: this,
 			msg: msg,
@@ -73,7 +78,7 @@ const onMessage = async function(msg) {
 		});
 	}
 	catch (err) {
-		msg.channel.send(error(BOT.CMD_FAILED, locale).by(msg.author));
+		msg.reply(BOT.CMD_FAILED);
 		this.log(LOG.ERROR)
 			.setTitle(ERROR.CMD_FAIL_TITLE(err))
 			.setDescription(dedent`

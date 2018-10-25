@@ -2,7 +2,7 @@ const path = require('path');
 const { readdirSync } = require('fs');
 const { Collection } = require('discord.js');
 const dedent = require('@/utils/dedent');
-const { strong } = require('@/utils/markdown');
+const { strong, code } = require('@/utils/markdown');
 
 const constants = {
 	LOG: {
@@ -34,6 +34,8 @@ const constants = {
 		CROSS: '❌',
 		WARNING: '⚠️',
 		WAVY_DASH: '〰️',
+		ALARM: '⏰',
+		CLOCK_3: '🕒',
 	},
 	ACTIVITY: {
 		PLAYING: 'PLAYING',
@@ -51,6 +53,7 @@ const constants = {
 		ENV_VAR_MISSING: key => `You should provide env variable ${key}.`,
 		ENV_VAR_NO_EMPTY_STRING: 'You should provide non-empty string for key',
 		CMD_CATEGORY_LOAD_FAILED: category => `Load failed for category "${category}"(Check whether "index.js" file exists!)`,
+		CMD_LOAD_FAILED: cmd => `Load failed for command "${cmd}".`,
 		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
 		CMD_FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
 		CMD_FAIL_CMD: msg => `While running command: ${strong(msg.content)}`,
@@ -75,7 +78,16 @@ const constants = {
 		DEFAULT: 100,
 	},
 	IMAGE: {
+		SEARCH_URL: query => `https://www.google.co.kr/search?q=${query}&tbm=isch`,
 		RECITAL_TIME: 30,
+	},
+	YOUTUBE: {
+		VIDEO_URL: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
+		SEARCH_URL: (query, apiKey) => `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}&prettyPrint=false&type=video&safeSearch=none&maxResults=${constants.YOUTUBE.MAX_RESULT}`,
+		DETAIL_URL: (videoIds, apiKey) => `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}&prettyPrint=false&maxResults=${constants.YOUTUBE.MAX_RESULT}`,
+		MAX_RESULT: 10,
+		RECITAL_TIME: 30,
+		TIME_NOT_DEFINED: '??:??',
 	},
 };
 

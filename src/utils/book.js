@@ -41,7 +41,7 @@ module.exports = class Book {
 			throw new Error(ERROR.BOOK_EMPTY);
 		}
 		const currentPage = this._pages[this._pageIdx];
-		if (!currentPage.footer) {
+		if (currentPage.isEmbed && !currentPage.footer) {
 			currentPage.setFooter(`${this._pageIdx + 1}/${this.length}`);
 		}
 		return currentPage;

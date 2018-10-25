@@ -83,6 +83,7 @@ lib/
 # -----------------------
 # TATARU CONTROLLED FILES
 # -----------------------
+bot.env
 .vscode/
 temp/
 data/mutable

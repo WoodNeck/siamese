@@ -65,11 +65,18 @@ class Tataru extends Discord.Client {
 					// Load commands in dir
 					readdirSync(path.join(commandDirBase, dir))
 						.filter(file => file !== 'index.js')
-						.forEach(cmd => {
+						.forEach(async cmd => {
 							const command = require(`@/commands/${dir}/${cmd}`)(lang);
-
-							command.category = dirMeta;
-							langCommands.set(command.name, command);
+							const isLoadable = command.checkLoadable
+								? await command.checkLoadable()
+								: true;
+							if (isLoadable) {
+								command.category = dirMeta;
+								langCommands.set(command.name, command);
+							}
+							else {
+								console.error(chalk.red(ERROR.CMD_LOAD_FAILED(command.name)));
+							}
 						});
 				}
 				catch (err) {

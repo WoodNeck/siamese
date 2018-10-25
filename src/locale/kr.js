@@ -31,6 +31,8 @@ module.exports = {
 	SEARCH: {
 		NAME: '검색',
 		DESC: '인터넷으로 검색한 결과를 보여드리는 명령어들이에용!',
+		ERROR_EMPTY_CONTENT: '검색할 내용을 주세용!',
+		ERROR_EMPTY_RESULT: target => `그 검색어로는 ${target}${Josa.c(target, '을/를')} 하나도 찾을수가 없었어용!`,
 	},
 	// Commands
 	PING: {
@@ -77,8 +79,12 @@ module.exports = {
 		CMD: '이미지',
 		DESC: '구글 이미지를 검색해용!',
 		USAGE: '검색어',
-		SEARCH_URL: query => `https://www.google.co.kr/search?q=${query}&tbm=isch`,
-		ERROR_EMPTY_CONTENT: '검색할 내용을 주세용!',
-		ERROR_EMPTY_RESULT: '그 검색어로는 이미지를 하나도 찾을수가 없었어용!',
+		TARGET: '이미지',
+	},
+	YOUTUBE: {
+		CMD: '유튜브',
+		DESC: '유튜브 동영상을 검색해용!',
+		USAGE: '검색어',
+		TARGET: '동영상',
 	},
 };

@@ -2,18 +2,12 @@ const Tataru = require('@/tataru');
 jest.mock('@/utils/recital');
 const Recital = require('@/utils/recital');
 const Image = require('@/commands/search/image')(global.env.BOT_DEFAULT_LANG);
-const error = require('@/utils/error');
-const { IMAGE } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { SEARCH, IMAGE } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 
 
 describe('Command: Image', () => {
 	beforeEach(() => {
 		global.botMock._loadCommands();
-	});
-
-	it('will anyway send message', async () => {
-		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.channel.sendMock).toBeCalled();
 	});
 
 	it('will send typing annotator', async () => {
@@ -25,9 +19,7 @@ describe('Command: Image', () => {
 	it('will send error to channel if msg content is empty', async () => {
 		global.cmdObjMock.content = '';
 		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.channel.sendMock).toBeCalledWith(
-			error(IMAGE.ERROR_EMPTY_CONTENT, global.cmdObjMock.locale).by(global.cmdObjMock.author)
-		);
+		expect(global.cmdObjMock.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_CONTENT);
 	});
 
 	it('will send error to channel if image is not found', async () => {
@@ -43,9 +35,7 @@ describe('Command: Image', () => {
 			});
 		}
 		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.channel.sendMock).toBeCalledWith(
-			error(IMAGE.ERROR_EMPTY_RESULT, global.cmdObjMock.locale).by(global.cmdObjMock.author)
-		);
+		expect(global.cmdObjMock.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_RESULT(IMAGE.TARGET));
 	});
 
 	it('will start recital session if image found', async () => {

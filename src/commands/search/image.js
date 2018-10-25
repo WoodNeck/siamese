@@ -1,12 +1,11 @@
 const axios = require('axios');
 const { Parser } = require('htmlparser2');
 const Recital = require('@/utils/recital');
-const error = require('@/utils/error');
 const { EmbedPage } = require('@/utils/page');
 
 
 module.exports = lang => {
-	const { IMAGE, AXIOS_HEADER } = require('@/constants')(lang);
+	const { IMAGE, SEARCH, AXIOS_HEADER } = require('@/constants')(lang);
 
 	return {
 		name: IMAGE.CMD,
@@ -14,12 +13,12 @@ module.exports = lang => {
 		usage: IMAGE.USAGE,
 		hidden: false,
 		devOnly: false,
-		execute: async ({ bot, msg, author, channel, content, locale }) => {
+		execute: async ({ bot, msg, channel, content }) => {
 			if (!content) {
-				channel.send(error(IMAGE.ERROR_EMPTY_CONTENT, locale).by(author));
+				msg.reply(SEARCH.ERROR_EMPTY_CONTENT);
 				return;
 			}
-			await msg.channel.startTyping();
+			await channel.startTyping();
 
 			const searchText = encodeURIComponent(content);
 			await axios.get(IMAGE.SEARCH_URL(searchText), {
@@ -27,7 +26,7 @@ module.exports = lang => {
 			}).then(body => {
 				const images = findAllImages(body.data);
 				if (!images.length) {
-					channel.send(error(IMAGE.ERROR_EMPTY_RESULT, locale).by(author));
+					msg.reply(SEARCH.ERROR_EMPTY_RESULT(IMAGE.TARGET));
 					return;
 				}
 
@@ -40,7 +39,7 @@ module.exports = lang => {
 				recital.start(IMAGE.RECITAL_TIME);
 			});
 
-			await msg.channel.stopTyping();
+			await channel.stopTyping();
 		},
 	};
 };

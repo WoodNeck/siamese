@@ -1,6 +1,3 @@
-const error = require('@/utils/error');
-
-
 module.exports = lang => {
 	const { DICE } = require('@/constants')(lang);
 
@@ -10,20 +7,20 @@ module.exports = lang => {
 		usage: DICE.USAGE,
 		hidden: false,
 		devOnly: false,
-		execute: ({ author, channel, args, locale }) => {
+		execute: ({ msg, author, channel, args }) => {
 			const isNum = /^\d+$/;
 			// Non-number case
 			if (args.length && !isNum.test(args[0])) {
-				channel.send(error(DICE.ERROR_ARG_INCORRECT(DICE.MIN, DICE.MAX), locale).by(author));
+				msg.reply(DICE.ERROR_ARG_INCORRECT(DICE.MIN, DICE.MAX));
 				return;
 			}
 
 			const diceNum = args.length && isNum.test(args[0]) ?
-				parseInt(args[0]) : DICE.DEFAULT;
+				parseInt(args[0], 10) : DICE.DEFAULT;
 
 			// Out-of-range case
 			if (diceNum > DICE.MAX || diceNum < DICE.MIN) {
-				channel.send(error(DICE.ERROR_ARG_INCORRECT(DICE.MIN, DICE.MAX), locale).by(author));
+				msg.reply(DICE.ERROR_ARG_INCORRECT(DICE.MIN, DICE.MAX));
 				return;
 			}
 
