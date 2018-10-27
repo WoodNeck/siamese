@@ -1,10 +1,12 @@
 const Logger = require('@/utils/logger');
-const { LOG, COLOR } = global.CONSTANT;
+const { LOG, COLOR } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { makeBotMock } = require('../setups/mock');
 
 
 describe('Logger', () => {;
 	it('can be instantized with proper logging modes', () => {
-		const logger = new Logger(global.botMock);
+		const tataru = makeBotMock();
+		const logger = new Logger(tataru);
 
 		for (const mode in LOG) {
 			const modeStr = LOG[mode];
@@ -16,7 +18,8 @@ describe('Logger', () => {;
 	});
 
 	it('can\'t be instantized with proper logging modes', () => {
-		const logger = new Logger(global.botMock);
+		const tataru = makeBotMock();
+		const logger = new Logger(tataru);
 		const invalidModes = [undefined, '', ' ', '??', '타타루'];
 
 		for (const mode in invalidModes) {
@@ -27,7 +30,8 @@ describe('Logger', () => {;
 	});
 
 	it('instantize proper subclass logger', () => {
-		let logger = new Logger(global.botMock, {
+		const tataru = makeBotMock();
+		let logger = new Logger(tataru, {
 			verbose: 1,
 			error: 0
 		});
@@ -37,7 +41,7 @@ describe('Logger', () => {;
 		expect(logger.log.call(logger, LOG.ERROR).constructor.name)
 			.toEqual('StringLog');
 
-		logger = new Logger(global.botMock, {
+		logger = new Logger(tataru, {
 			verbose: 3,
 			error: 2
 		});
@@ -52,9 +56,10 @@ describe('Logger', () => {;
 describe('EmbedLog', () => {
 	let embedLog;
 	const resetLog = mode => {
-		global.botMock.channels.set(1, 'Channel1');
-		global.botMock.channels.set(2, 'Channel2');
-		embedLog = new Logger(global.botMock, {
+		const tataru = makeBotMock();
+		tataru.channels.set(1, 'Channel1');
+		tataru.channels.set(2, 'Channel2');
+		embedLog = new Logger(tataru, {
 			verbose: 1, error: 2
 		}).log(mode);
 	};
@@ -119,11 +124,12 @@ describe('EmbedLog', () => {
 describe('StringLog', () => {
 	let stringLog;
 	const resetLog = mode => {
-		global.botMock.channels.set(1, 'Channel1');
-		global.botMock.channels.set(2, 'Channel2');
+		const tataru = makeBotMock();
+		tataru.channels.set(1, 'Channel1');
+		tataru.channels.set(2, 'Channel2');
 		// it will return StringLog, which logs to console.log
 		// as channels given not listed in bot's channels
-		stringLog = new Logger(global.botMock, {
+		stringLog = new Logger(tataru, {
 			verbose: 3, error: 4
 		}).log(mode);
 	};

@@ -66,6 +66,10 @@ const constants = {
 	AXIOS_HEADER: {
 		'user-agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
 	},
+	NAVER_HEADER: {
+		'X-Naver-Client-Id': global.env.NAVER_ID,
+		'X-Naver-Client-Secret': global.env.NAVER_SECRET,
+	},
 	RECITAL: {
 		SHOULD_NOT_END: 'SHOULD_NOT_END',
 		END_AND_DELETE_ALL_MESSAGES: 'END_AND_DELETE_ALL_MESSAGE',
@@ -82,12 +86,16 @@ const constants = {
 		RECITAL_TIME: 30,
 	},
 	YOUTUBE: {
-		VIDEO_URL: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
 		SEARCH_URL: (query, apiKey) => `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}&prettyPrint=false&type=video&safeSearch=none&maxResults=${constants.YOUTUBE.MAX_RESULT}`,
 		DETAIL_URL: (videoIds, apiKey) => `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}&prettyPrint=false&maxResults=${constants.YOUTUBE.MAX_RESULT}`,
+		VIDEO_URL: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
 		MAX_RESULT: 10,
 		RECITAL_TIME: 30,
 		TIME_NOT_DEFINED: '??:??',
+	},
+	KIN: {
+		SEARCH_URL: query => `https://openapi.naver.com/v1/search/kin.json?query=${query}&display=${constants.KIN.MAX_RESULT}&sort=sim`,
+		MAX_RESULT: 10,
 	},
 };
 

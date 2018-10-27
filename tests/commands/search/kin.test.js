@@ -1,11 +1,11 @@
 jest.mock('@/utils/recital');
 const Recital = require('@/utils/recital');
-const Youtube = require('@/commands/search/youtube')(global.env.BOT_DEFAULT_LANG);
-const { SEARCH, YOUTUBE } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const Kin = require('@/commands/search/kin')(global.env.BOT_DEFAULT_LANG);
+const { SEARCH, KIN } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { makeBotMock, makeContextMock } = require('../../setups/mock');
 
 
-describe('Command: Youtube', () => {
+describe('Command: Kin', () => {
 	let tataru;
 	let context;
 	beforeEach(() => {
@@ -13,16 +13,16 @@ describe('Command: Youtube', () => {
 		tataru._loadCommands();
 		context = makeContextMock();
 
+		global.env.NAVER_ID = 123;
+		global.env.NAVER_SECRET = 123;
+
 		jest.mock('axios');
 		const axios = require('axios');
 		axios.get = () => {
 			return new Promise((resolve, reject) => {
 				resolve({
 					data: {
-						pageInfo: {
-							totalResults: 0
-						},
-						items: [],
+						total: 0,
 					},
 				});
 			});
@@ -30,28 +30,35 @@ describe('Command: Youtube', () => {
 	});
 
 	it('not loadable if there\'s no API key', async () => {
-		global.env.YOUTUBE_KEY = undefined;
-		const isLoadable = await Youtube.checkLoadable();
+		global.env.NAVER_ID = undefined;
+		global.env.NAVER_SECRET = undefined;
+		let isLoadable = await Kin.checkLoadable();
+		expect(isLoadable).toEqual(false);
+
+		global.env.NAVER_ID = 123;
+		global.env.NAVER_SECRET = undefined;
+		isLoadable = await Kin.checkLoadable();
+		expect(isLoadable).toEqual(false);
+
+		global.env.NAVER_ID = undefined;
+		global.env.NAVER_SECRET = 123;
+		isLoadable = await Kin.checkLoadable();
 		expect(isLoadable).toEqual(false);
 	});
 
-	it('is loadable when it can search videos', async () => {
+	it('is loadable when it can search results', async () => {
 		const axios = require('axios');
 		axios.get = () => {
 			return new Promise((resolve, reject) => {
 				resolve({
 					data: {
-						pageInfo: {
-							totalResults: 1,
-						},
-						items: [],
+						total: 1
 					},
 				});
 			});
 		};
 
-		global.env.YOUTUBE_KEY = 'SOME_TEST_KEY';
-		const isLoadable = await Youtube.checkLoadable();
+		const isLoadable = await Kin.checkLoadable();
 		expect(isLoadable).toEqual(true);
 	});
 
@@ -63,24 +70,23 @@ describe('Command: Youtube', () => {
 			});
 		};
 
-		global.env.YOUTUBE_KEY = 'SOME_TEST_KEY';
-		const isLoadable = await Youtube.checkLoadable();
+		const isLoadable = await Kin.checkLoadable();
 		expect(isLoadable).toEqual(false);
 	});
 
 	it('will send typing annotator', async () => {
 		context.content = '123';
-		await Youtube.execute(context);
+		await Kin.execute(context);
 		expect(context.channel.startTyping).toBeCalled();
 	});
 
 	it('will send error to channel if msg content is empty', async () => {
 		context.content = '';
-		await Youtube.execute(context);
+		await Kin.execute(context);
 		expect(context.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_CONTENT);
 	});
 
-	it('will send error to channel if video is not found', async () => {
+	it('will send error to channel if result is not found', async () => {
 		context.content = '123';
 		jest.mock('axios');
 		const axios = require('axios');
@@ -88,19 +94,17 @@ describe('Command: Youtube', () => {
 			return new Promise((resolve, reject) => {
 				resolve({
 					data: {
-						pageInfo: {
-							totalResults: 0
-						},
+						total: 0,
 						items: [],
 					},
 				});
 			});
 		}
-		await Youtube.execute(context);
-		expect(context.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_RESULT(YOUTUBE.TARGET));
+		await Kin.execute(context);
+		expect(context.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_RESULT(KIN.TARGET));
 	});
 
-	it('will start recital session if video found', async () => {
+	it('will start recital session if result is found', async () => {
 		context.content = '123';
 		jest.mock('axios');
 		const axios = require('axios');
@@ -108,16 +112,10 @@ describe('Command: Youtube', () => {
 			return new Promise((resolve, reject) => {
 				resolve({
 					data: {
-						pageInfo: {
-							totalResults: 1
-						},
+						total: 1,
 						items: [{
-							id: {
-								videoId: '426'
-							},
-							contentDetails: {
-								duration: 'PT4M13S',
-							},
+							title: '디스코드 봇 타타루가 뭔가요?',
+							description: '타타루에용~~',
 						}],
 					},
 				});
@@ -129,8 +127,8 @@ describe('Command: Youtube', () => {
 			this.book = new Book();
 		}
 		Recital.prototype.start = jest.fn();
-		await Youtube.execute(context);
-		expect(Recital.prototype.start).toBeCalledWith(YOUTUBE.RECITAL_TIME);
+		await Kin.execute(context);
+		expect(Recital.prototype.start).toBeCalledWith(KIN.RECITAL_TIME);
 		expect(context.channel.stopTyping).toBeCalled();
-	})
+	});
 })

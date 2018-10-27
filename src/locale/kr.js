@@ -87,4 +87,10 @@ module.exports = {
 		USAGE: '검색어',
 		TARGET: '동영상',
 	},
+	KIN: {
+		CMD: '지식인',
+		DESC: '네이버 지식인을 검색해용!',
+		USAGE: '검색어',
+		TARGET: '지식인 항목',
+	},
 };

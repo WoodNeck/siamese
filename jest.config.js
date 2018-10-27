@@ -1,7 +1,8 @@
 module.exports = {
 	clearMocks: true,
 	testRegex: 'tests/.*\\.(js|jsx)$',
-	setupTestFrameworkScriptFile: '<rootDir>/tests/setups/setup.js',
+	setupFiles: ['<rootDir>/tests/setups/init.js'],
+	setupTestFrameworkScriptFile: '<rootDir>/tests/setups/beforeEach.js',
   coverageDirectory: 'coverage',
 	testEnvironment: 'node',
 	modulePathIgnorePatterns: [

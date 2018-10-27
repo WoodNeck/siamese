@@ -1,4 +1,5 @@
 const { EmbedPage, StringPage } = require('@/utils/page.js');
+const { invalidStrings, invalidUrls } = require('../setups/testcase')
 
 
 describe('EmbedPage', () => {
@@ -12,7 +13,7 @@ describe('EmbedPage', () => {
 		page.setTitle(title);
 		expect(page._embed.title).toEqual(title);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new EmbedPage();
 			page.setTitle(text);
 			expect(page._embed.title).toBeUndefined();
@@ -24,7 +25,7 @@ describe('EmbedPage', () => {
 		page.setDescription(desc);
 		expect(page._embed.description).toEqual(desc);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new EmbedPage();
 			page.setDescription(text);
 			expect(page._embed.description).toBeUndefined();
@@ -36,7 +37,7 @@ describe('EmbedPage', () => {
 		page.setFooter(footer);
 		expect(page._embed.footer.text).toEqual(footer);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new EmbedPage();
 			page.setFooter(text);
 			expect(page._embed.footer).toBeUndefined();
@@ -46,7 +47,7 @@ describe('EmbedPage', () => {
 		page.setFooter(footer, validUrl);
 		expect(page._embed.footer.icon_url).toEqual(validUrl);
 
-		global.invalidUrls.forEach(url => {
+		invalidUrls.forEach(url => {
 			page = new EmbedPage();
 			page.setFooter(footer, url);
 			expect(page._embed.footer.icon_url).toBeUndefined();
@@ -58,13 +59,13 @@ describe('EmbedPage', () => {
 		page.setImage(imageUrl);
 		expect(page._embed.image.url).toEqual(imageUrl);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new EmbedPage();
 			page.setImage(text);
 			expect(page._embed.image).toBeUndefined();
 		});
 
-		global.invalidUrls.forEach(text => {
+		invalidUrls.forEach(text => {
 			page = new EmbedPage();
 			page.setImage(text);
 			expect(page._embed.image).toBeUndefined();
@@ -76,13 +77,13 @@ describe('EmbedPage', () => {
 		page.setThumbnail(thumb);
 		expect(page._embed.thumbnail.url).toEqual(thumb);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new EmbedPage();
 			page.setThumbnail(text);
 			expect(page._embed.thumbnail).toBeUndefined();
 		});
 
-		global.invalidUrls.forEach(text => {
+		invalidUrls.forEach(text => {
 			page = new EmbedPage();
 			page.setThumbnail(text);
 			expect(page._embed.thumbnail).toBeUndefined();
@@ -119,7 +120,7 @@ describe('StringPage', () => {
 		page.setTitle(title);
 		expect(page._msg.title).toEqual(title);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new StringPage();
 			page.setTitle(text);
 			expect(page._msg.title).toBeNull();
@@ -131,7 +132,7 @@ describe('StringPage', () => {
 		page.setDescription(desc);
 		expect(page._msg.desc).toEqual(desc);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new StringPage();
 			page.setDescription(text);
 			expect(page._msg.title).toBeNull();
@@ -143,7 +144,7 @@ describe('StringPage', () => {
 		page.setFooter(footer);
 		expect(page._msg.footer).toEqual(footer);
 
-		global.invalidStrings.forEach(text => {
+		invalidStrings.forEach(text => {
 			page = new StringPage();
 			page.setFooter(text);
 			expect(page._msg.footer).toBeNull();

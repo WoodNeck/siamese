@@ -3,27 +3,32 @@ jest.mock('@/utils/recital');
 const Recital = require('@/utils/recital');
 const Image = require('@/commands/search/image')(global.env.BOT_DEFAULT_LANG);
 const { SEARCH, IMAGE } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { makeBotMock, makeContextMock } = require('../../setups/mock');
 
 
 describe('Command: Image', () => {
+	let tataru;
+	let context;
 	beforeEach(() => {
-		global.botMock._loadCommands();
+		tataru = makeBotMock();
+		tataru._loadCommands();
+		context = makeContextMock();
 	});
 
 	it('will send typing annotator', async () => {
-		global.cmdObjMock.content = '123';
-		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.channel.typeStartMock).toBeCalled();
+		context.content = '123';
+		await Image.execute(context);
+		expect(context.channel.startTyping).toBeCalled();
 	});
 
 	it('will send error to channel if msg content is empty', async () => {
-		global.cmdObjMock.content = '';
-		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_CONTENT);
+		context.content = '';
+		await Image.execute(context);
+		expect(context.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_CONTENT);
 	});
 
 	it('will send error to channel if image is not found', async () => {
-		global.cmdObjMock.content = '123';
+		context.content = '123';
 		jest.mock('axios');
 		const axios = require('axios');
 		axios.get = () => {
@@ -34,12 +39,12 @@ describe('Command: Image', () => {
 				reject();
 			});
 		}
-		await Image.execute(global.cmdObjMock);
-		expect(global.cmdObjMock.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_RESULT(IMAGE.TARGET));
+		await Image.execute(context);
+		expect(context.msg.reply).toBeCalledWith(SEARCH.ERROR_EMPTY_RESULT(IMAGE.TARGET));
 	});
 
 	it('will start recital session if image found', async () => {
-		global.cmdObjMock.content = '123';
+		context.content = '123';
 		jest.mock('axios');
 		const axios = require('axios');
 		axios.get = () => {
@@ -55,8 +60,8 @@ describe('Command: Image', () => {
 			this.book = new Book();
 		}
 		Recital.prototype.start = jest.fn();
-		await Image.execute(global.cmdObjMock);
+		await Image.execute(context);
 		expect(Recital.prototype.start).toBeCalledWith(IMAGE.RECITAL_TIME);
-		expect(global.channelMock.typeStopMock);
+		expect(context.channel.stopTyping).toBeCalled();
 	})
 })

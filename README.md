@@ -22,4 +22,6 @@ Korean Discord bot for multiple purpose.
 ```
 yarn install
 ```
+Before run, please fill out `bot.env` file using `bot.env.preset`.
+
 Then, run with `node .` at project root folder.
