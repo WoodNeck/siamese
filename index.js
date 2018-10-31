@@ -10,5 +10,4 @@ const Tataru = require('@/tataru');
 const option = require('@/tataru.option');
 const tataru = new Tataru(option);
 
-tataru.setup();
 tataru.start();

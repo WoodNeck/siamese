@@ -5,7 +5,7 @@ const { makeContextMock } = require('../../setups/mock');
 
 describe('Command: Help', () => {
 	it('will send help message', async () => {
-		const context = makeContextMock();
+		const context = await makeContextMock();
 		await Help.execute(context);
 		expect(context.channel.send).toBeCalled();
 	});

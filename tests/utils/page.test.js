@@ -90,6 +90,24 @@ describe('EmbedPage', () => {
 		});
 	});
 
+	it('can set url properly', () => {
+		const url = 'https://some.url/to/tataru/';
+		page.setUrl(url);
+		expect(page._embed.url).toEqual(url);
+
+		invalidStrings.forEach(text => {
+			page = new EmbedPage();
+			page.setUrl(text);
+			expect(page._embed.url).toBeUndefined();
+		});
+
+		invalidUrls.forEach(text => {
+			page = new EmbedPage();
+			page.setUrl(text);
+			expect(page._embed.url).toBeUndefined();
+		});
+	});
+
 	it('can set color', () => {
 		const colors = ['#deadbf', 0xdeadbf];
 		const expected = [0xdeadbf, 0xdeadbf]
@@ -163,6 +181,13 @@ describe('StringPage', () => {
 		page.setThumbnail(thumb);
 		expect(page._msg.thumb).toBeUndefined();
 		expect(page._msg.thumbnail).toBeUndefined();
+	});
+
+	it('can\'t set url', () => {
+		const url = 'https://some.url/to/tataru/';
+		page.setUrl(url);
+		expect(page._msg.url).toBeUndefined();
+		expect(page._msg.URL).toBeUndefined();
 	});
 
 	it('can set color', () => {

@@ -19,3 +19,5 @@ const essentialConfigs = {
 	BOT_DEFAULT_LANG: validator.notEmptyStr,
 };
 typetest(global.env, essentialConfigs);
+
+global.env = Object.freeze(global.env);

@@ -1,11 +1,10 @@
-const Tataru = require('@/tataru');
 const Invite = require('@/commands/utility/invite')(global.env.BOT_DEFAULT_LANG);
-const { makeBotMock, makeContextMock } = require('../../setups/mock');
+const { makeContextMock } = require('../../setups/mock');
 
 
 describe('Command: Invite', () => {
 	it('will send invite message', async () => {
-		const context = makeContextMock();
+		const context = await makeContextMock();
 		context.bot.generateInvite = () => {
 			return new Promise(resolve => {
 				resolve();

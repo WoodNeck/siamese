@@ -3,9 +3,9 @@ const { makeBotMock } = require('../setups/mock');
 
 
 describe('Commands', () => {
-	it('has correct meta datas', () => {
+	it('has correct meta datas', async () => {
 		const tataru = makeBotMock();
-		tataru._loadCommands();
+		await tataru._loadCommands();
 
 		const commands = tataru.commands.get(global.env.BOT_DEFAULT_LANG);
 		commands.tap(command => {

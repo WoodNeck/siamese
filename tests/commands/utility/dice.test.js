@@ -1,16 +1,12 @@
-const Tataru = require('@/tataru');
 const Dice = require('@/commands/utility/dice')(global.env.BOT_DEFAULT_LANG);
 const { DICE } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
 const { makeBotMock, makeContextMock } = require('../../setups/mock');
 
 
 describe('Command: Dice', () => {
-	let tataru;
 	let context;
-	beforeEach(() => {
-		tataru = makeBotMock();
-		tataru._loadCommands();
-		context = makeContextMock();
+	beforeEach(async () => {
+		context = await makeContextMock();
 	});
 
 	it('will send corect message for correct args', () => {

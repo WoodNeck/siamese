@@ -96,10 +96,10 @@ const makeMessageMock = () => {
 	}
 };
 
-const makeContextMock = () => {
+const makeContextMock = async () => {
 	const msg = makeMessageMock();
 	const bot = makeBotMock();
-	bot._loadCommands();
+	await bot._loadCommands();
 	return {
 		bot: bot,
 		content: msg.content,

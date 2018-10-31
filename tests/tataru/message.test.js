@@ -50,21 +50,21 @@ describe('Message handling', () => {
 		});
 	});
 
-	it('will not send message when message has no prefix', () => {
+	it('will not send message when message has no prefix', async () => {
 		const msg = makeMessageMock();
 		msg.content = '타타루의 접두사가 붙지 않은 문장',
 		tataru._setLogger();
-		tataru._loadCommands();
+		await tataru._loadCommands();
 		expect(async () => {
 			await handler.message.call(tataru, msg);
 		}).not.toThrow();
 	});
 
-	it('will not send message when command not exist', () => {
+	it('will not send message when command not exist', async () => {
 		const msg = makeMessageMock();
 		msg.content ='타타루 가갖고있지않은명령어';
 		tataru._setLogger();
-		tataru._loadCommands();
+		await tataru._loadCommands();
 		expect(async () => {
 			await handler.message.call(tataru, msg)
 		}).not.toThrow();
@@ -77,7 +77,7 @@ describe('Message handling', () => {
 		msg.content = '타타루 핑';
 
 		tataru._setLogger();
-		tataru._loadCommands();
+		await tataru._loadCommands();
 
 		await handler.message.call(tataru, msg);
 		expect(msg.channel.send).toBeCalled();
@@ -94,11 +94,11 @@ describe('Message handling', () => {
 		expect(handler.guildCreate.bind(tataru, guild)).not.toThrow();
 	});
 
-	it('can find similar command when finding command fails', () => {
+	it('can find similar command when finding command fails', async () => {
 		const msg = makeMessageMock();
 		msg.content = '타타루 팡',
 		tataru._setLogger();
-		tataru._loadCommands();
+		await tataru._loadCommands();
 		handler.message.call(tataru, msg)
 		expect(msg.channel.send).toBeCalledWith(BOT.CMD_INFORM_SIMILAR(msg.author, '핑'));
 	});

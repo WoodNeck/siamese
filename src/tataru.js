@@ -1,10 +1,7 @@
-const path = require('path');
-const chalk = require('chalk');
-const { lstatSync, readdirSync } = require('fs');
 const Discord = require('discord.js');
 const events = require('@/tataru.on');
 const Logger = require('@/utils/logger');
-const { ERROR } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const { loadAllCommands } = require('@/utils/command');
 
 
 class Tataru extends Discord.Client {
@@ -13,23 +10,25 @@ class Tataru extends Discord.Client {
 		this._commands = new Discord.Collection();
 	}
 
-	setup() {
-		this._loadCommands();
+	async start() {
+		// Setup bot
+		await this._loadCommands();
 		this._listenEvents();
-	}
 
-	start() {
+		// Start bot
 		this.login(global.env.BOT_TOKEN)
 			.catch(console.error);
 	}
 
 	// eslint-disable-next-line
 	getPrefixIn(guild) {
+		// TODO: FIX AFTER DB SETUP
 		return global.env.BOT_DEFAULT_PREFIX;
 	}
 
 	// eslint-disable-next-line
 	getLocaleIn(guild) {
+		// TODO: FIX AFTER DB SETUP
 		return global.env.BOT_DEFAULT_LANG.toLowerCase();
 	}
 
@@ -47,45 +46,8 @@ class Tataru extends Discord.Client {
 		});
 	}
 
-	_loadCommands() {
-		const commandDirBase = path.join(__dirname, 'commands');
-		const commandDirs = readdirSync(commandDirBase)
-			.filter(file => lstatSync(path.join(commandDirBase, file)).isDirectory());
-		const localeFiles = readdirSync(path.join(__dirname, 'locale'))
-			.filter(file => file.endsWith('.js'));
-
-		localeFiles.forEach(locale => {
-			const lang = locale.split('.')[0];
-			const langCommands = new Discord.Collection();
-
-			commandDirs.forEach(dir => {
-				try {
-					const dirMeta = require(path.join(commandDirBase, dir, 'index.js'));
-
-					// Load commands in dir
-					readdirSync(path.join(commandDirBase, dir))
-						.filter(file => file !== 'index.js')
-						.forEach(async cmd => {
-							const command = require(`@/commands/${dir}/${cmd}`)(lang);
-							const isLoadable = command.checkLoadable
-								? await command.checkLoadable()
-								: true;
-							if (isLoadable) {
-								command.category = dirMeta;
-								langCommands.set(command.name, command);
-							}
-							else {
-								console.error(chalk.red(ERROR.CMD_LOAD_FAILED(command.name)));
-							}
-						});
-				}
-				catch (err) {
-					console.error(chalk.red(ERROR.CMD_CATEGORY_LOAD_FAILED(dir)));
-					console.error(err);
-				}
-			});
-			this._commands.set(lang, langCommands);
-		});
+	async _loadCommands() {
+		this._commands = await loadAllCommands();
 	}
 
 	_listenEvents() {

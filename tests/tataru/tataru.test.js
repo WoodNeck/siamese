@@ -12,8 +12,19 @@ describe('Tataru', () => {
 		expect(tataru.log(LOG.VERBOSE).constructor.name).toEqual('StringLog');
 	});
 
-	it('can load commands', () => {
-		tataru._loadCommands();
+	it('will start after setup', async () => {
+		tataru._loadCommands = jest.fn();
+		tataru._listenEvents = jest.fn();
+		tataru.login = jest.fn(() => new Promise(resolve => resolve()));
+
+		await tataru.start();
+		expect(tataru._loadCommands).toBeCalled();
+		expect(tataru._listenEvents).toBeCalled();
+		expect(tataru.login).toBeCalled();
+	});
+
+	it('can load commands', async () => {
+		await tataru._loadCommands();
 		expect(tataru.commands.size).toBeGreaterThan(0);
 	});
 
@@ -21,15 +32,14 @@ describe('Tataru', () => {
 		expect(tataru._listenEvents.bind(tataru)).not.toThrow();
 	});
 
-	it('can setup', () => {
-		expect(tataru.setup.bind(tataru)).not.toThrow();
-	});
-
 	it('can return tataru\'s display name in guild', () => {
 		const displayName = '개발타루';
 		const guild = makeGuildMock();
 		guild.member = user => new Object({ displayName: displayName });
-		expect(tataru.getNameIn(guild)).toEqual(displayName)
+		expect(tataru.getNameIn(guild)).toEqual(displayName);
+
+		const noGuild = undefined;
+		expect(tataru.getNameIn(noGuild)).toEqual(tataru.user.username);
 	});
 
 	it('can set good prefixes properly', () => {

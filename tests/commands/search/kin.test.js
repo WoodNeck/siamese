@@ -2,16 +2,13 @@ jest.mock('@/utils/recital');
 const Recital = require('@/utils/recital');
 const Kin = require('@/commands/search/kin')(global.env.BOT_DEFAULT_LANG);
 const { SEARCH, KIN } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
-const { makeBotMock, makeContextMock } = require('../../setups/mock');
+const { makeContextMock } = require('../../setups/mock');
 
 
 describe('Command: Kin', () => {
-	let tataru;
 	let context;
-	beforeEach(() => {
-		tataru = makeBotMock();
-		tataru._loadCommands();
-		context = makeContextMock();
+	beforeEach(async () => {
+		context = await makeContextMock();
 
 		global.env.NAVER_ID = 123;
 		global.env.NAVER_SECRET = 123;
