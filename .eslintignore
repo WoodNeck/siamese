@@ -3,8 +3,6 @@
 /docs/**
 /jsdoc/**
 /templates/**
-/tests/**
 /tmp/**
 /lib/util/unicode/is-combining-character.js
-jest.config.js
 !.eslintrc.js

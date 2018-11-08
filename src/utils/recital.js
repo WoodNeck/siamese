@@ -1,6 +1,8 @@
 const Book = require('@/utils/book');
 const { Collection } = require('discord.js');
-const { COLOR, EMOJI, RECITAL } = require('@/constants')();
+const COLOR = require('@/constants/color');
+const EMOJI = require('@/constants/emoji');
+const { RECITAL } = require('@/constants/type');
 
 
 module.exports = class Recital {
@@ -14,6 +16,7 @@ module.exports = class Recital {
 		this._defaultColor = COLOR.TATARU;
 
 		this._book = new Book();
+		this._emojis = [];
 		this._callbacks = new Collection();
 		this._reactionFilter = (reaction, user) =>
 			this._callbacks.has(reaction.emoji.name)
@@ -27,7 +30,14 @@ module.exports = class Recital {
 	// All reaction callbacks must return recital end reason
 	// else recital will be end without listening additional reactions
 	// reasons are defined in constants
-	addReactionCallback(emoji, callback) {
+	addReactionCallback(emoji, callback, index) {
+		const indexInRange = () => index !== undefined
+			&& typeof index === 'number'
+			&& Math.floor(index) < this._emojis.length;
+
+		indexInRange()
+			? this._emojis.splice(Math.floor(index), 0, emoji)
+			: this._emojis.push(emoji);
 		this._callbacks.set(emoji, callback.bind(this));
 		return this;
 	}
@@ -40,18 +50,20 @@ module.exports = class Recital {
 		if (firstPage.isEmbed && !firstPage.content.color) {
 			firstPage.content.setColor(this._defaultColor);
 		}
-		this._channel.send(firstPage.content).then(async msg => {
-			this._recitalMsg = msg;
 
-			const emojis = this._callbacks.keyArray();
-			for (const emoji of emojis) {
-				await this._recitalMsg.react(emoji);
-			}
+		this._channel.send(firstPage.content)
+			.then(async msg => {
+				this._recitalMsg = msg;
 
-			this._listenReaction(msg, maxWaitTime);
-		});
+				for (const emoji of this._emojis) {
+					await this._recitalMsg.react(emoji);
+				}
+
+				this._listenReaction(msg, maxWaitTime);
+			});
 	}
 	get book() { return this._book; }
+	get currentData() { return this._book.currentData; }
 
 	_listenReaction(msg, maxWaitTime) {
 		const reactionCollector = msg.createReactionCollector(this._reactionFilter, { time: maxWaitTime * 1000 });
@@ -75,6 +87,7 @@ module.exports = class Recital {
 			this._delete();
 			break;
 		// By timeout
+		// if reason not specified, it returns 'user' which also can be handled on here
 		case RECITAL.END_AND_REMOVE_ONLY_REACTIONS:
 		default:
 			// Removing bot reactions indicates that
@@ -106,7 +119,7 @@ module.exports = class Recital {
 		}
 	}
 	_delete() {
-		// Both messages could been deleted manually
+		// Both messages could been deleted manually by user
 		// So, it can throw error but don't care about it.
 		if (this._cmdMsg && !this._cmdMsg.deleted) {
 			this._cmdMsg.delete()

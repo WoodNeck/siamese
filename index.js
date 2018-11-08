@@ -1,3 +1,5 @@
+'use strict';
+
 // For require module alias, this should be required
 // check package.json/_moduleAliases
 require('module-alias/register');
@@ -10,4 +12,6 @@ const Tataru = require('@/tataru');
 const option = require('@/tataru.option');
 const tataru = new Tataru(option);
 
-tataru.start();
+tataru.setup()
+	.then(() => tataru.start())
+	.catch(console.error);

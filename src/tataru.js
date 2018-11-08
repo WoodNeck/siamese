@@ -1,23 +1,36 @@
 const Discord = require('discord.js');
+const chalk = require('chalk');
 const events = require('@/tataru.on');
 const Logger = require('@/utils/logger');
-const { loadAllCommands } = require('@/utils/command');
+const { overrideSend } = require('@/prototype/discord');
+const { DEV } = require('@/constants/message');
+const { loadAllCommands } = require('@/utils/loadcmd');
 
 
 class Tataru extends Discord.Client {
 	constructor() {
 		super();
+		// Commands handling
 		this._commands = new Discord.Collection();
+		// Music players
+		this._players = new Discord.Collection();
 	}
 
-	async start() {
+	async setup() {
 		// Setup bot
 		await this._loadCommands();
 		this._listenEvents();
+		// override channel send related discord api
+		overrideSend();
+	}
 
+	async start() {
 		// Start bot
 		this.login(global.env.BOT_TOKEN)
-			.catch(console.error);
+			.catch(err => {
+				console.error(chalk.bold.red(DEV.BOT_FAILED_TO_START));
+				console.error(chalk.dim(err));
+			});
 	}
 
 	// eslint-disable-next-line
@@ -26,18 +39,13 @@ class Tataru extends Discord.Client {
 		return global.env.BOT_DEFAULT_PREFIX;
 	}
 
-	// eslint-disable-next-line
-	getLocaleIn(guild) {
-		// TODO: FIX AFTER DB SETUP
-		return global.env.BOT_DEFAULT_LANG.toLowerCase();
-	}
-
 	getNameIn(guild) {
 		return guild ? guild.member(this.user).displayName : this.user.username;
 	}
 
+	get logger() { return this._logger; }
 	get commands() { return this._commands; }
-	get log() { return this._logger.log.bind(this._logger); }
+	get players() { return this._players; }
 
 	_setLogger() {
 		this._logger = new Logger(this, {

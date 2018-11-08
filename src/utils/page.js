@@ -59,8 +59,13 @@ class EmbedPage {
 		this._embed.setColor(color);
 		return this;
 	}
+	setData(data) {
+		this._data = data;
+		return this;
+	}
 	get isEmbed() { return true; }
 	get content() { return this._embed; }
+	get data() { return this._data; }
 }
 
 class StringPage {
@@ -106,6 +111,10 @@ class StringPage {
 		this._msg.color = color;
 		return this;
 	}
+	setData(data) {
+		this._data = data;
+		return this;
+	}
 	get isEmbed() { return false; }
 	get content() {
 		return dedent`
@@ -114,6 +123,7 @@ class StringPage {
 			${this._msg.footer ? this._msg.footer : ''}
 		`;
 	}
+	get data() { return this._data; }
 }
 
 

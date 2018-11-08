@@ -1,6 +1,5 @@
-# 타타루(Tataru) [![CircleCI](https://circleci.com/gh/WoodNeck/tataru-js/tree/devel.svg?style=svg)](https://circleci.com/gh/WoodNeck/tataru-js/tree/devel)
+# 타타루(Tataru)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740678f4912c4afab3dd179240ffddc4)](https://www.codacy.com/app/WoodNeck/tataru-js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WoodNeck/tataru-js&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/740678f4912c4afab3dd179240ffddc4)](https://www.codacy.com/app/WoodNeck/tataru-js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WoodNeck/tataru-js&amp;utm_campaign=Badge_Coverage)
 [![Dev Server](https://discordapp.com/api/guilds/498712729381634058/widget.png)](https://discord.gg/d8r6tDz)
 
 [Invite Bot](https://discordapp.com/oauth2/authorize?client_id=357073005819723777&scope=bot&permissions=-1)

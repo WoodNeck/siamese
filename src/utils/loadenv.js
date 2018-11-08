@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { typetest, validator } = require('@/utils/typetest');
 
 
 global.env = {};
@@ -12,11 +13,9 @@ fs.readFileSync(path.join(__dirname, '../..', 'bot.env'), 'utf8')
 		global.env[key] = val.replace(/^"(.+(?="$))"$/, '$1');
 	});
 
-const { typetest, validator } = require('@/utils/typetest');
 const essentialConfigs = {
 	BOT_TOKEN: validator.notEmptyStr,
 	BOT_DEFAULT_PREFIX: validator.notEmptyStr,
-	BOT_DEFAULT_LANG: validator.notEmptyStr,
 };
 typetest(global.env, essentialConfigs);
 

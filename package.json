@@ -3,11 +3,7 @@
   "version": "0.1.0",
   "description": "Korean discord bot Tataru made with js language",
   "main": "index.js",
-  "scripts": {
-    "test": "jest",
-    "coverage": "jest --coverage",
-    "test-with-coverage": "jest --coverage && cat ./coverage/lcov.info | codacy-coverage"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WoodNeck/tataru-js.git"
@@ -18,19 +14,14 @@
     "url": "https://github.com/WoodNeck/tataru-js/issues"
   },
   "homepage": "https://github.com/WoodNeck/tataru-js#readme",
-  "devDependencies": {
-    "codacy-coverage": "^3.2.0",
-    "eslint": "^5.6.1",
-    "jest": "^23.6.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "axios": "^0.18.0",
     "bufferutil": "^4.0.0",
     "chalk": "^2.4.1",
     "discord.js": "^11.4.2",
-    "dotenv": "^6.0.0",
-    "envalid": "^4.1.4",
     "erlpack": "hammerandchisel/erlpack",
+    "ffmpeg-binaries": "^4.0.0",
     "fuse.js": "^3.2.1",
     "hangul-js": "^0.2.5",
     "htmlparser2": "^3.10.0",
@@ -39,7 +30,8 @@
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
     "node-opus": "^0.3.0",
-    "remove-markdown": "^0.3.0"
+    "remove-markdown": "^0.3.0",
+    "ytdl-core": "^0.27.1"
   },
   "_moduleAliases": {
     "@": "src"

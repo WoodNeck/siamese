@@ -1,5 +1,8 @@
 const chalk = require('chalk');
-const { COLOR, ERROR, LOG } = require('@/constants')(global.env.BOT_DEFAULT_LANG);
+const dedent = require('@/utils/dedent');
+const COLOR = require('@/constants/color');
+const { DEV } = require('@/constants/message');
+const { LOG_TYPE } = require('@/constants/type');
 const { EmbedPage, StringPage } = require('@/utils/page');
 
 module.exports = class Logger {
@@ -18,12 +21,26 @@ module.exports = class Logger {
 	}
 
 	log(mode) {
-		if (!(mode in LOG)) {
-			throw new Error(ERROR.LOG_MODE_NOT_DEFINED(mode));
+		if (!(mode in LOG_TYPE)) {
+			throw new Error(DEV.LOG_MODE_NOT_DEFINED(mode));
 		}
 		return (this._channels[mode])
 			? new EmbedLog(mode, this._channels[mode])
 			: new StringLog(mode);
+	}
+
+	// Helper function for formatted error logging
+	error(err, msg) {
+		const mode = LOG_TYPE.ERROR;
+		const log = (this._channels[mode])
+			? new EmbedLog(mode, this._channels[mode])
+			: new StringLog(mode);
+		log.setTitle(DEV.CMD_FAIL_TITLE(err))
+			.setDescription(dedent`
+				${DEV.CMD_FAIL_PLACE(msg)}
+				${DEV.CMD_FAIL_CMD(msg)}
+				${DEV.CMD_FAIL_DESC(err)}`)
+			.send();
 	}
 };
 
@@ -47,7 +64,8 @@ class EmbedLog extends EmbedPage {
 	send() {
 		if (!this._embed.color) this._embed.setColor(COLOR[this._mode]);
 		this._embed.setTimestamp(new Date());
-		this._channel.send(this._embed);
+		this._channel.send(this._embed)
+			.catch(err => console.error(err));
 	}
 }
 
