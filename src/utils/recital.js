@@ -2,7 +2,7 @@ const Book = require('@/utils/book');
 const { Collection } = require('discord.js');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
-const { RECITAL } = require('@/constants/type');
+const { RECITAL_END } = require('@/constants/type');
 
 
 module.exports = class Recital {
@@ -25,7 +25,7 @@ module.exports = class Recital {
 		// Default menu
 		this.addReactionCallback(EMOJI.ARROW_LEFT, this._prev);
 		this.addReactionCallback(EMOJI.ARROW_RIGHT, this._next);
-		this.addReactionCallback(EMOJI.CROSS, () => RECITAL.END_AND_DELETE_ALL_MESSAGES);
+		this.addReactionCallback(EMOJI.CROSS, () => RECITAL_END.DELETE_ALL_MESSAGES);
 	}
 	// All reaction callbacks must return recital end reason
 	// else recital will be end without listening additional reactions
@@ -79,16 +79,16 @@ module.exports = class Recital {
 	}
 	_onEnd(collection, reason) {
 		switch (reason) {
-		case RECITAL.SHOULD_NOT_END:
+		case RECITAL_END.SHOULD_NOT_END:
 			// Start listening another reaction
 			this._listenReaction(this._recitalMsg);
 			break;
-		case RECITAL.END_AND_DELETE_ALL_MESSAGES:
+		case RECITAL_END.DELETE_ALL_MESSAGES:
 			this._delete();
 			break;
-		// By timeout
-		// if reason not specified, it returns 'user' which also can be handled on here
-		case RECITAL.END_AND_REMOVE_ONLY_REACTIONS:
+		// By timeout and not providing reason
+		case RECITAL_END.REMOVE_ONLY_REACTIONS:
+		case RECITAL_END.BY_USER:
 		default:
 			// Removing bot reactions indicates that
 			// bot won't listen to reactions anymore
@@ -100,14 +100,14 @@ module.exports = class Recital {
 		if (!this._recitalMsg || this._recitalMsg.deleted) return;
 		const prevPage = this._book.prevPage;
 		this._changePage(prevPage);
-		return RECITAL.SHOULD_NOT_END;
+		return RECITAL_END.SHOULD_NOT_END;
 	}
 	_next() {
 		// Message could been deleted
 		if (!this._recitalMsg || this._recitalMsg.deleted) return;
 		const nextPage = this._book.nextPage;
 		this._changePage(nextPage);
-		return RECITAL.SHOULD_NOT_END;
+		return RECITAL_END.SHOULD_NOT_END;
 	}
 	_changePage(page) {
 		if (page.isEmbed) {
@@ -119,15 +119,11 @@ module.exports = class Recital {
 		}
 	}
 	_delete() {
-		// Both messages could been deleted manually by user
-		// So, it can throw error but don't care about it.
 		if (this._cmdMsg && !this._cmdMsg.deleted) {
-			this._cmdMsg.delete()
-				.catch(() => {});
+			this._cmdMsg.delete();
 		}
 		if (this._recitalMsg && !this._recitalMsg.deleted) {
-			this._recitalMsg.delete()
-				.catch(() => {});
+			this._recitalMsg.delete();
 		}
 	}
 	_removeBotReactions() {

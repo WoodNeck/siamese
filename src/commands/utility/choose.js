@@ -1,5 +1,4 @@
 const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
 const { CHOOSE } = require('@/constants/command');
 
 
@@ -9,10 +8,7 @@ module.exports = {
 	usage: CHOOSE.USAGE,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
-	],
+	permissions: [],
 	execute: ({ msg, channel, args }) => {
 		// It needs least 2 arguments to choose
 		(args.length >= 2)

@@ -1,4 +1,3 @@
-const PERMISSION = require('@/constants/permission');
 const { PING } = require('@/constants/command');
 const { strong } = require('@/utils/markdown');
 
@@ -7,10 +6,7 @@ module.exports = {
 	description: PING.DESC,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
-	],
+	permissions: [],
 	execute: ({ bot, guild, channel }) => {
 		const uptime = bot.uptime / 1000;
 		const ping = strong(`${bot.ping.toFixed(1)}ms`);

@@ -1,16 +1,18 @@
-const axios = require('axios');
-const { parse } = require('iso8601-duration');
+const YouTube = require('simple-youtube-api');
 const Song = require('@/music/song');
 const Recital = require('@/utils/recital');
 const { StringPage } = require('@/utils/page');
-const { play } = require('@/music/music');
+const { aquirePlayer } = require('@/music/helper');
 const ERROR = require('@/constants/error');
 const EMOJI = require('@/constants/emoji');
 const PERMISSION = require('@/constants/permission');
+const FORMAT = require('@/constants/format');
 const { DEV } = require('@/constants/message');
 const { YOUTUBE } = require('@/constants/command');
-const { RECITAL, MUSIC_TYPE } = require('@/constants/type');
+const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
 
+
+const api = new YouTube(global.env.YOUTUBE_KEY);
 
 module.exports = {
 	name: YOUTUBE.CMD,
@@ -18,30 +20,25 @@ module.exports = {
 	usage: YOUTUBE.USAGE,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
+	permissions: [
 		PERMISSION.EMBED_LINKS,
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
 		PERMISSION.CONNECT,
 		PERMISSION.SPEAK,
 	],
+	api: api,
 	checkLoadable: async () => {
 		if (!global.env.YOUTUBE_KEY) {
 			throw new Error(DEV.API_KEY_MISSING);
 		}
-		await axios.get(YOUTUBE.SEARCH_URL, {
-			params: YOUTUBE.SEARCH_PARAMS('TEST'),
-		}).then(body => {
-			const result = body.data;
-			if (!result.pageInfo || !result.pageInfo.totalResults) {
-				throw new Error(DEV.API_TEST_EMPTY_RESULT);
-			}
-		}).catch(err => { throw err; });
+		const videos = await api.searchVideos('TEST', 1);
+		if (!videos.length) {
+			throw new Error(DEV.API_TEST_EMPTY_RESULT);
+		}
 	},
 	execute: async context => {
-		const { bot, msg, channel, content } = context;
+		const { bot, author, msg, channel, content } = context;
 		if (!content) {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
@@ -49,63 +46,45 @@ module.exports = {
 		await channel.startTyping();
 
 		const searchText = content;
-		const videos = await axios.get(YOUTUBE.SEARCH_URL, {
-			params: YOUTUBE.SEARCH_PARAMS(searchText),
-		}).then(body => {
-			return body.data.items.map(video => {
-				return {
-					id: video.id.videoId,
-					title: video.snippet.title,
-				};
-			});
-		});
+		let videos = await api.searchVideos(searchText, YOUTUBE.MAX_RESULTS);
 
-		if (!videos || !videos.length) {
+		if (!videos.length) {
 			msg.error(ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
 			return;
 		}
 
-		const videoIds = videos.map(video => video.id);
-		// Get video length
-		const videoLengths = await axios.get(YOUTUBE.DETAIL_URL, {
-			params: YOUTUBE.DETAIL_PARAMS(videoIds.join(',')),
-		}).then(body => {
-			return body.data.items.reduce((mapped, videoInfo) => {
-				const videoLength = parse(videoInfo.contentDetails.duration);
-				videoLength.toString = function() {
-					return `${EMOJI.CLOCK_3}${this.hours * 60 + this.minutes}:${('0' + this.seconds).slice(-2)}`;
-				};
-				return mapped.set(videoInfo.id, videoLength);
-			}, new Map());
-		});
+		const getVideoDetail = async video => video.fetch();
+		const getAllVideoDetails = videos.map(video => getVideoDetail(video));
+
+		videos = await Promise.all(getAllVideoDetails);
 
 		const recital = new Recital(bot, msg);
 		const pages = videos.map(video => {
-			const videoLengthStr = videoLengths.has(video.id)
-				? videoLengths.get(video.id).toString()
+			const videoLengthStr = video.duration
+				? FORMAT.MUSIC_LENGTH(video.duration)
 				: YOUTUBE.TIME_NOT_DEFINED;
 
 			return new StringPage()
 				.setTitle(YOUTUBE.VIDEO_URL_WITH_TIME(video.id, videoLengthStr))
-				.setData({
-					url: YOUTUBE.VIDEO_URL(video.id),
-					title: video.title,
-					length: videoLengths.has(video.id)
-						? videoLengths.get(video.id)
-						: undefined,
-				});
+				.setData(new Song(
+					YOUTUBE.VIDEO_URL(video.id),
+					MUSIC_TYPE.YOUTUBE,
+					video.title,
+					video.duration,
+					author
+				));
 		});
 		recital.book.addPages(pages);
-		recital.addReactionCallback(EMOJI.PLAY, () => {
-			const video = recital.currentData;
-			const song = new Song(video.url, MUSIC_TYPE.YOUTUBE, {
-				title: video.title,
-				length: video.length,
-			});
+		recital.addReactionCallback(EMOJI.PLAY, async () => {
+			const song = recital.currentData;
+			const player = await aquirePlayer(context);
 
-			play(context, song);
-			return RECITAL.END_AND_DELETE_ALL_MESSAGES;
+			if (player) {
+				player.enqueue(song, channel);
+			}
+			return RECITAL_END.DELETE_ALL_MESSAGES;
 		}, 1);
+
 		recital.start(YOUTUBE.RECITAL_TIME);
 	},
 };

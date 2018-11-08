@@ -10,14 +10,10 @@ module.exports = {
 	description: HELP.DESC,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
-		PERMISSION.EMBED_LINKS,
-	],
-	execute: async ({ bot, guild, channel }) => {
+	permissions: [PERMISSION.EMBED_LINKS],
+	execute: async ({ bot, channel }) => {
 		const allCommands = bot.commands.filter(cmd => !cmd.devOnly && !cmd.hidden);
-		const prefix = bot.getPrefixIn(guild);
+		const prefix = bot.prefix;
 
 		const categories = allCommands
 			.reduce((categoryCollection, cmd) => {
@@ -32,8 +28,8 @@ module.exports = {
 		for (const commands of categories.values()) {
 			const category = commands[0].category;
 			// Set description also to prevent multiline command description
-			const msg = new RichEmbed().setTitle(`${category.categoryEmoji} ${category.name}`)
-				.setDescription(category.description)
+			const msg = new RichEmbed()
+				.setDescription(`${category.categoryEmoji} ${strong(category.name)}\n${category.description}`)
 				.setColor(COLOR.TATARU);
 
 			commands.forEach(cmd => {

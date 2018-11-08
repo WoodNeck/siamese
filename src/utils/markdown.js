@@ -15,4 +15,6 @@ module.exports = {
 		`\`${Util.escapeMarkdown(word.trim().replace(/^[`]{1,}|[`]{1,}$/gm, ''), false, true)}\`` : '',
 	block: (word, lang = '') => word ?
 		`\`\`\`${removeMd(lang.trim())}\n${removeMd(word.trim())}\`\`\`` : '',
+	blockMd: (word, lang = '') => word ?
+		`\`\`\`${lang}\n${word}\`\`\`` : '',
 };

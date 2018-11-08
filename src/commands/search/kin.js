@@ -1,6 +1,8 @@
 const axios = require('axios');
+const unescape = require('unescape');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
+const { blockMd } = require('@/utils/markdown');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { DEV } = require('@/constants/message');
@@ -13,9 +15,7 @@ module.exports = {
 	usage: KIN.USAGE,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
+	permissions: [
 		PERMISSION.EMBED_LINKS,
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
@@ -24,14 +24,13 @@ module.exports = {
 		if (!global.env.NAVER_ID || !global.env.NAVER_SECRET) {
 			throw new Error(DEV.API_KEY_MISSING);
 		}
-		await axios.get(KIN.SEARCH_URL, {
+		const body = await axios.get(KIN.SEARCH_URL, {
 			params: KIN.SEARCH_PARAMS('TEST'),
 			headers: NAVER_HEADER,
-		}).then(body => {
-			if (!body.data.total || body.data.total <= 0) {
-				throw new Error(DEV.API_TEST_EMPTY_RESULT);
-			}
-		}).catch(err => { throw err; });
+		});
+		if (!body.data.total || body.data.total <= 0) {
+			throw new Error(DEV.API_TEST_EMPTY_RESULT);
+		}
 	},
 	execute: async ({ bot, msg, channel, content }) => {
 		if (!content) {
@@ -51,15 +50,27 @@ module.exports = {
 			}
 
 			const items = body.data.items;
-			const pages = items.map(searchResult => {
+			const pages = [];
+			const lastPage = items.reduce((page, searchResult) => {
 				// Result emphasis query with <b></b> tag, so have to escape it
 				const bTag = /<(\/)*b>/gi;
-				const title = searchResult.title.replace(bTag, '');
-				const desc = searchResult.description.replace(bTag, '');
-				return new EmbedPage()
-					.setTitle(title)
-					.setDescription(desc);
-			});
+				const title = unescape(searchResult.title.replace(bTag, ''));
+				const desc = blockMd(unescape(searchResult.description.replace(bTag, '')));
+
+				if (page.content.fields.length < KIN.ITEMS_PER_PAGE) {
+					page.addField(title, desc);
+					return page;
+				}
+				else {
+					pages.push(page);
+					const newPage = new EmbedPage();
+					newPage.addField(title, desc);
+					return newPage;
+				}
+			}, new EmbedPage());
+			if (lastPage.content.fields.length > 0) {
+				pages.push(lastPage);
+			}
 
 			const recital = new Recital(bot, msg);
 			recital.book.addPages(pages);

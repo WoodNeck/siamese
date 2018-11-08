@@ -1,5 +1,4 @@
 const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
 const { DICE } = require('@/constants/command');
 
 
@@ -9,10 +8,7 @@ module.exports = {
 	usage: DICE.USAGE,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
-	],
+	permissions: [],
 	execute: ({ msg, author, channel, args }) => {
 		const isNum = /^\d+$/;
 		// Non-number case

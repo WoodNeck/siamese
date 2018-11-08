@@ -14,9 +14,7 @@ module.exports = {
 	usage: IMAGE.USAGE,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
+	permissions: [
 		PERMISSION.EMBED_LINKS,
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,

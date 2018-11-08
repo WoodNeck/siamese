@@ -65,35 +65,16 @@ module.exports = {
 		TARGET: '동영상',
 		TIME_NOT_DEFINED: '??:??',
 		RECITAL_TIME: 30,
-		SEARCH_URL: 'https://www.googleapis.com/youtube/v3/search',
-		DETAIL_URL: 'https://www.googleapis.com/youtube/v3/videos',
+		MAX_RESULTS: 10,
 		VIDEO_URL: videoId => `https://youtu.be/${videoId}`,
 		VIDEO_URL_WITH_TIME: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
-		SEARCH_PARAMS: query => {
-			return {
-				q: query,
-				key: global.env.YOUTUBE_KEY,
-				maxResults: 10,
-				part: 'snippet',
-				prettyPrint: 'false',
-				type: 'video',
-			};
-		},
-		DETAIL_PARAMS: videoIds => {
-			return {
-				id: videoIds,
-				key: global.env.YOUTUBE_KEY,
-				maxResults: 10,
-				part: 'contentDetails',
-				prettyPrint: 'false',
-			};
-		},
 	},
 	KIN: {
 		CMD: '지식인',
 		DESC: '네이버 지식인을 검색해용!',
 		USAGE: '검색어',
 		TARGET: '지식인 항목',
+		ITEMS_PER_PAGE: 5,
 		SEARCH_URL: 'https://openapi.naver.com/v1/search/kin.json',
 		SEARCH_PARAMS: query => {
 			return {
@@ -110,5 +91,38 @@ module.exports = {
 	OUT: {
 		CMD: '나가',
 		DESC: '참가한 음성채널에서 나가용!',
+	},
+	LOOP: {
+		CMD: '루프',
+		DESC: '음악 재생 반복 여부를 설정해용!',
+	},
+	PLAY: {
+		CMD: '재생해줘',
+		DESC: '새로운 음악을 재생목록에 추가해용!',
+		USAGE: '유튜브주소',
+	},
+	RESUME: {
+		CMD: '재생',
+		DESC: '일시정지/정지했던 음악을 재개해용!',
+	},
+	PAUSE: {
+		CMD: '일시정지',
+		DESC: '재생중인 음악을 일시정지해용!',
+	},
+	SKIP: {
+		CMD: '스킵',
+		DESC: '재생중인 음악을 스킵하고 다음곡으로 넘어가용!',
+	},
+	CURRENT: {
+		CMD: '현재곡',
+		DESC: '현재 재생중인 음악의 정보를 보여드려용!',
+	},
+	PLAYLIST: {
+		CMD: '재생목록',
+		DESC: '현재 서버의 음악 재생목록을 보여드려용!',
+	},
+	CANCEL: {
+		CMD: '취소',
+		DESC: '재생목록에서 곡을 삭제해용!',
 	},
 };

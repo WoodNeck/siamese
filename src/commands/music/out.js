@@ -1,6 +1,6 @@
 const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
 const { OUT } = require('@/constants/command');
+const { PLAYER_END } = require('@/constants/type');
 
 
 module.exports = {
@@ -8,16 +8,22 @@ module.exports = {
 	description: OUT.DESC,
 	hidden: false,
 	devOnly: false,
-	permission: [
-		PERMISSION.VIEW_CHANNEL,
-		PERMISSION.SEND_MESSAGES,
-	],
+	permissions: [],
 	execute: ({ msg, bot, guild }) => {
 		const connection = bot.voiceConnections.get(guild.id);
 		if (!connection) {
 			msg.error(ERROR.MUSIC.NO_VOICE_CHANNEL_IN);
 			return;
 		}
-		connection.disconnect();
+		// kill player
+		if (connection.dispatcher) {
+			connection.dispatcher.end(PLAYER_END.KILL);
+		}
+		else {
+			if (bot.players.has(guild.id)) {
+				bot.players.delete(guild.id);
+			}
+			connection.disconnect();
+		}
 	},
 };

@@ -3,6 +3,7 @@ module.exports = {
 	SMALL_BLUE_DIAMOND: '🔹',
 	SMALL_ORANGE_DIAMOND: '🔸',
 	SMALL_WHITE_SQUARE: '▫️',
+	SMALL_BLACK_SQUARE: '▪️',
 	UP_TRIANGLE: '🔺',
 	SPEAKING_HEAD: '🗣️',
 	LOUD_SPEAKER: '📢',
@@ -14,6 +15,7 @@ module.exports = {
 	ARROW_LEFT: '⬅',
 	ARROW_RIGHT: '➡',
 	PLAY: '▶',
+	PAUSE: '⏸️',
 	CROSS: '❌',
 	WARNING: '⚠️',
 	WAVY_DASH: '〰️',
@@ -24,4 +26,6 @@ module.exports = {
 	MUSIC_NOTE: '🎵',
 	MUSIC_NOTES: '🎶',
 	MUSIC_8TH: '♪',
+	LOOP: '🔁',
+	HOURGLASS_NOT_DONE: '⏳',
 };

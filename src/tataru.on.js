@@ -34,7 +34,7 @@ const onReady = function() {
 };
 
 const onMessage = async function(msg) {
-	const prefix = this.getPrefixIn(msg.guild);
+	const prefix = this.prefix;
 
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
@@ -60,9 +60,18 @@ const onMessage = async function(msg) {
 
 	const cmd = this.commands.get(cmdName);
 	// Exclude one blank after command name
-	const content = msg.content.slice(prefix.length + cmdName.length + 1);
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
+	// Check any permission for executing command is missing
+	const permissionsGranted = msg.channel.permissionsFor(this.user);
+	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
+		const neededPermissionList = cmd.permissions.reduce((prevStr, permission) => {
+			return `${prevStr}\n- ${permission.message}`;
+		}, '');
+		msg.channel.send(ERROR.CMD_PERMISSION_IS_MISSING(neededPermissionList));
+		return;
+	}
 
+	const content = msg.content.slice(prefix.length + cmdName.length + 1);
 	try {
 		await cmd.execute({
 			bot: this,

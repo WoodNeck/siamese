@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const { FORMAT } = require('@/constants/message');
+const FORMAT = require('@/constants/format');
 const { DISCORD_ERROR_CODE } = require('@/constants/discord');
 
-module.exports.overrideSend = () => {
+module.exports.overrideDiscord = () => {
 	const originalSend = Discord.TextChannel.prototype.send;
 	Discord.TextChannel.prototype.send = async function(...sendArgs) {
 		await this.stopTyping();
@@ -20,4 +20,5 @@ module.exports.overrideSend = () => {
 	Discord.Message.prototype.error = async function(errorMsg) {
 		return await this.channel.send(`${FORMAT.ERROR_MSG(this.author)}${errorMsg}`);
 	};
+
 };

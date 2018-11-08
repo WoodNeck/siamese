@@ -3,20 +3,24 @@ const { DEV } = require('@/constants/message');
 const { MUSIC_TYPE } = require('@/constants/type');
 
 module.exports = class Song {
-	constructor(musicResolvable, musicType, meta) {
+	constructor(musicResolvable, musicType, title, duration, member) {
 		if (!(musicType in MUSIC_TYPE)) {
 			throw new Error(DEV.MUSIC_TYPE_NOT_DEFINED(musicType));
 		}
 
 		this._song = musicResolvable;
-		this._meta = meta;
 		this._type = musicType;
+		this._title = title;
+		this._duration = duration;
+		this._member = member;
 	}
 
 	// is musicResolvable is valid
 	// TODO: set valid check fn for each types
 	get valid() { return true; }
-	get meta() { return this._meta; }
+	get title() { return this._title; }
+	get duration() { return this._duration; }
+	get member() { return this._member; }
 
 	createStream() {
 		switch (this._type) {

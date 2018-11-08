@@ -1,6 +1,7 @@
 const dedent = require('@/utils/dedent');
 const Josa = require('josa-js');
 const EMOJI = require('@/constants/emoji');
+const FORMAT = require('@/constants/format');
 const { strong, underline, code } = require('@/utils/markdown');
 
 
@@ -42,11 +43,19 @@ module.exports = {
 		GUILD_JOIN_FOOTER: bot => dedent`
 			여기는 ${Josa.r(bot.user.username, '이/가')} 일하는 ${bot.guilds.size}번째 서버에용!`,
 	},
-	FORMAT: {
-		ERROR_MSG: user => `${user.toString()}님, `,
-	},
 	PLAYER: {
 		PLAYING_NEW_SONG: song => dedent`
-			${EMOJI.MUSIC_NOTE} ${strong(song.meta.title)}${Josa.c(song.meta.title, '을/를')} 재생해용! ${code(song.meta.length ? song.meta.length.toString() : '')}`,
+			${EMOJI.MUSIC_NOTE} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생해용! ${song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : ''}`,
+		ENQUEUE_NEW_SONG: song => dedent`
+			${EMOJI.MUSIC_NOTE} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생목록에 추가했어용! ${code(song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : '')}`,
+		ENQUEUE_NEW_LIST: playlist => dedent`
+			${EMOJI.MUSIC_NOTES} ${strong(playlist.title)}의 ${strong(playlist.length.toString())}개 노래를 재생목록에 추가했어용!`,
+		ENABLE_LOOP: `${EMOJI.LOOP} 루프를 설정했어용!`,
+		DISABLE_LOOP: `${EMOJI.ARROW_RIGHT} 루프를 해제했어용!`,
+		RESUME: `${EMOJI.PLAY} 음악을 다시 재생할게용!`,
+		PAUSE: `${EMOJI.PAUSE} 음악을 일시정지했어용!`,
+		CANCLE: song => `${EMOJI.CROSS} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생목록에서 제거했어용!`,
+		SONG_TITLE: song => `${EMOJI.MUSIC_NOTE} ${strong(song.title)}`,
+		SONG_PROGRESS: (song, progressed, statusEmoji, loop) => `${statusEmoji}${FORMAT.MUSIC_PROGRESS(progressed, song.duration)}[${FORMAT.MUSIC_LENGTH_NO_CLOCK(progressed)}/${FORMAT.MUSIC_LENGTH_NO_CLOCK(song.duration)}]${loop ? EMOJI.LOOP : ''}`,
 	},
 };

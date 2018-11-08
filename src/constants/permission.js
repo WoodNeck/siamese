@@ -1,118 +1,118 @@
 module.exports = {
 	ADMINISTRATOR: {
-		flag: 0x00000008,
+		flag: 'ADMINISTRATOR',
 		message: '관리자',
 	},
 	CREATE_INSTANT_INVITE: {
-		flag: 0x00000001,
+		flag: 'CREATE_INSTANT_INVITE',
 		message: '초대 코드 만들기',
 	},
 	KICK_MEMBERS: {
-		flag: 0x00000002,
+		flag: 'KICK_MEMBERS',
 		message: '멤버 추방',
 	},
 	BAN_MEMBERS: {
-		flag: 0x00000004,
+		flag: 'BAN_MEMBERS',
 		message: '멤버 차단',
 	},
 	MANAGE_CHANNELS: {
-		flag: 0x00000010,
+		flag: 'MANAGE_CHANNELS',
 		message: '채널 관리',
 	},
 	MANAGE_GUILD: {
-		flag: 0x00000020,
+		flag: 'MANAGE_GUILD',
 		message: '서버 관리',
 	},
 	ADD_REACTIONS: {
-		flag: 0x00000040,
+		flag: 'ADD_REACTIONS',
 		message: '반응 추가',
 	},
 	VIEW_AUDIT_LOG: {
-		flag: 0x00000080,
+		flag: 'VIEW_AUDIT_LOG',
 		message: '감사 로그 보기',
 	},
 	VIEW_CHANNEL: {
-		flag: 0x00000400,
+		flag: 'VIEW_CHANNEL',
 		message: '채팅 채널 읽기 및 음성 채널 보기',
 	},
 	SEND_MESSAGES: {
-		flag: 0x00000800,
+		flag: 'SEND_MESSAGES',
 		message: '메시지 보내기',
 	},
 	SEND_TTS_MESSAGES: {
-		flag: 0x00001000,
+		flag: 'SEND_TTS_MESSAGES',
 		message: 'TTS 메시지 보내기',
 	},
 	MANAGE_MESSAGES: {
-		flag: 0x00002000,
+		flag: 'MANAGE_MESSAGES',
 		message: '메시지 관리',
 	},
 	EMBED_LINKS: {
-		flag: 0x00004000,
+		flag: 'EMBED_LINKS',
 		message: '링크 첨부',
 	},
 	ATTACH_FILES: {
-		flag: 0x00008000,
+		flag: 'ATTACH_FILES',
 		message: '파일 첨부',
 	},
 	READ_MESSAGE_HISTORY: {
-		flag: 0x00010000,
+		flag: 'READ_MESSAGE_HISTORY',
 		message: '메시지 기록 보기',
 	},
 	MENTION_EVERYONE: {
-		flag: 0x00020000,
+		flag: 'MENTION_EVERYONE',
 		message: '모두를 호출하기',
 	},
 	USE_EXTERNAL_EMOJIS: {
-		flag: 0x00040000,
+		flag: 'USE_EXTERNAL_EMOJIS',
 		message: '외부 스티커를 사용',
 	},
 	CONNECT: {
-		flag: 0x00100000,
+		flag: 'CONNECT',
 		message: '연결',
 	},
 	SPEAK: {
-		flag: 0x00200000,
+		flag: 'SPEAK',
 		message: '발언권',
 	},
 	MUTE_MEMBERS: {
-		flag: 0x00400000,
+		flag: 'MUTE_MEMBERS',
 		message: '멤버 마이크 끄기',
 	},
 	DEAFEN_MEMBERS: {
-		flag: 0x00800000,
+		flag: 'DEAFEN_MEMBERS',
 		message: '멤버 소리 끄기',
 	},
 	MOVE_MEMBERS: {
-		flag: 0x01000000,
+		flag: 'MOVE_MEMBERS',
 		message: '멤버 이동',
 	},
 	USE_VAD: {
-		flag: 0x02000000,
+		flag: 'USE_VAD',
 		message: '음성 감지 사용',
 	},
 	PRIORITY_SPEAKER: {
-		flag: 0x00000100,
+		flag: 'PRIORITY_SPEAKER',
 		message: 'Priority Speaker',
 	},
 	CHANGE_NICKNAME: {
-		flag: 0x04000000,
+		flag: 'CHANGE_NICKNAME',
 		message: '별명 변경',
 	},
 	MANAGE_NICKNAMES: {
-		flag: 0x08000000,
+		flag: 'MANAGE_NICKNAMES',
 		message: '별명 관리',
 	},
 	MANAGE_ROLES: {
-		flag: 0x10000000,
+		flag: 'MANAGE_ROLES',
 		message: '역할 관리',
 	},
 	MANAGE_WEBHOOKS: {
-		flag: 0x20000000,
+		flag: 'MANAGE_WEBHOOKS',
 		message: '웹훅 관리',
 	},
 	MANAGE_EMOJIS: {
-		flag: 0x40000000,
+		flag: 'MANAGE_EMOJIS',
 		message: '이모지 관리',
 	},
 };
