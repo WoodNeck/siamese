@@ -46,6 +46,7 @@ module.exports = class Recital {
 		return this;
 	}
 	start(maxWaitTime) {
+		this._maxWaitTime = maxWaitTime;
 		const firstPage = this._book.firstPage;
 		if (firstPage.isEmbed && !firstPage.content.color) {
 			firstPage.content.setColor(this._defaultColor);
@@ -59,14 +60,16 @@ module.exports = class Recital {
 					await this._recitalMsg.react(emoji);
 				}
 
-				this._listenReaction(msg, maxWaitTime);
+				this._listenReaction();
 			});
 	}
 	get book() { return this._book; }
 	get currentData() { return this._book.currentData; }
 
-	_listenReaction(msg, maxWaitTime) {
-		const reactionCollector = msg.createReactionCollector(this._reactionFilter, { time: maxWaitTime * 1000 });
+	_listenReaction() {
+		const reactionCollector = this._recitalMsg.createReactionCollector(this._reactionFilter, {
+			time: this._maxWaitTime * 1000,
+		});
 		reactionCollector.on('collect', reaction => {
 			this._onCollect.call(this, reaction, reactionCollector);
 		});
@@ -130,7 +133,10 @@ module.exports = class Recital {
 		if (!this._recitalMsg.deleted) {
 			this._recitalMsg.reactions
 				.filter(reaction => reaction.me)
-				.tap(reaction => reaction.remove().catch(() => {}));
+				.tap(reaction => reaction
+					.remove(this._bot.user)
+					.catch(() => {})
+				);
 		}
 	}
 };

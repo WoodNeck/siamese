@@ -19,6 +19,7 @@ module.exports = {
 	HELP: {
 		CMD: '도움',
 		DESC: '명령어 목록을 표시해용!',
+		RECITAL_TIME: 30,
 	},
 	DICE: {
 		CMD: '주사위',
@@ -49,6 +50,7 @@ module.exports = {
 		DESC: '구글 이미지를 검색해용!',
 		USAGE: '검색어',
 		TARGET: '이미지',
+		RECITAL_TIME: 30,
 		SEARCH_URL: 'https://www.google.co.kr/search',
 		SEARCH_PARAMS: query => {
 			return {
@@ -56,7 +58,6 @@ module.exports = {
 				tbm: 'isch',
 			};
 		},
-		RECITAL_TIME: 30,
 	},
 	YOUTUBE: {
 		CMD: '유튜브',
@@ -75,6 +76,7 @@ module.exports = {
 		USAGE: '검색어',
 		TARGET: '지식인 항목',
 		ITEMS_PER_PAGE: 5,
+		RECITAL_TIME: 30,
 		SEARCH_URL: 'https://openapi.naver.com/v1/search/kin.json',
 		SEARCH_PARAMS: query => {
 			return {

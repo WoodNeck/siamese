@@ -19,7 +19,7 @@ module.exports = {
 		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
 		CMD_FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
 		CMD_FAIL_CMD: msg => `While running command: ${strong(msg.content)}`,
-		CMD_FAIL_DESC: error => `${error.stack}`,
+		CMD_FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
 		LOG_MODE_NOT_DEFINED: mode => dedent`
 			Log mode "${mode}" is not defined as constant`,
 		BOOK_CAN_ADD_ONLY_PAGE: 'Only page instance can be added to a book!',
