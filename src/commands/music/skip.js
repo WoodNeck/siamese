@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { SKIP } = require('@/constants/command');
+const { SKIP } = require('@/constants/commands/music');
 
 
 module.exports = {

@@ -4,7 +4,7 @@ const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { IMAGE } = require('@/constants/command');
+const { IMAGE } = require('@/constants/commands/search');
 const { AXIOS_HEADER } = require('@/constants/header');
 
 

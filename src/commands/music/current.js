@@ -2,7 +2,7 @@ const { RichEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { CURRENT } = require('@/constants/command');
+const { CURRENT } = require('@/constants/commands/music');
 const { PLAYER } = require('@/constants/message');
 const { PLAYER_STATE_EMOJI } = require('@/constants/type');
 

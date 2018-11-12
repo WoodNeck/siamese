@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { DICE } = require('@/constants/command');
+const { DICE } = require('@/constants/commands/utility');
 
 
 module.exports = {

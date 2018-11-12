@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { LOOP } = require('@/constants/command');
+const { LOOP } = require('@/constants/commands/music');
 const { PLAYER } = require('@/constants/message');
 
 module.exports = {

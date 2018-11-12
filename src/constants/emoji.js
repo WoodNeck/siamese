@@ -28,4 +28,5 @@ module.exports = {
 	MUSIC_8TH: '♪',
 	LOOP: '🔁',
 	HOURGLASS_NOT_DONE: '⏳',
+	DOLLAR: '💵',
 };

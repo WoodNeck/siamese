@@ -1,4 +1,4 @@
-const { INVITE } = require('@/constants/command');
+const { INVITE } = require('@/constants/commands/utility');
 
 
 module.exports = {

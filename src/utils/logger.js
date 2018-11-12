@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const dedent = require('@/utils/dedent');
 const COLOR = require('@/constants/color');
+const ERROR = require('@/constants/error');
 const { DEV } = require('@/constants/message');
 const { LOG_TYPE } = require('@/constants/type');
 const { EmbedPage, StringPage } = require('@/utils/page');
@@ -35,11 +36,11 @@ module.exports = class Logger {
 		const log = (this._channels[mode])
 			? new EmbedLog(mode, this._channels[mode])
 			: new StringLog(mode);
-		log.setTitle(DEV.CMD_FAIL_TITLE(err))
+		log.setTitle(ERROR.CMD.FAIL_TITLE(err))
 			.setDescription(dedent`
-				${DEV.CMD_FAIL_PLACE(msg)}
-				${DEV.CMD_FAIL_CMD(msg)}
-				${DEV.CMD_FAIL_DESC(err)}`)
+				${ERROR.CMD.FAIL_PLACE(msg)}
+				${ERROR.CMD.FAIL_CMD(msg)}
+				${ERROR.CMD.FAIL_DESC(err)}`)
 			.send();
 	}
 };

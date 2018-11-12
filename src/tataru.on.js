@@ -5,7 +5,7 @@ const ERROR = require('@/constants/error');
 const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
 const { RichEmbed } = require('discord.js');
 const { DEV, BOT } = require('@/constants/message');
-const { HELP } = require('@/constants/command');
+const { HELP } = require('@/constants/commands/utility');
 
 
 const onReady = function() {
@@ -52,7 +52,7 @@ const onMessage = async function(msg) {
 		const neededPermissionList = cmd.permissions.reduce((prevStr, permission) => {
 			return `${prevStr}\n- ${permission.message}`;
 		}, '');
-		msg.channel.send(ERROR.CMD_PERMISSION_IS_MISSING(neededPermissionList));
+		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
 		return;
 	}
 
@@ -72,7 +72,7 @@ const onMessage = async function(msg) {
 	catch (err) {
 		await msg.channel.stopTyping();
 
-		msg.channel.send(ERROR.CMD_FAILED);
+		msg.channel.send(ERROR.CMD.FAILED);
 		this.logger.error(err, msg);
 	}
 };
@@ -92,8 +92,8 @@ const onError = function(err) {
 	// Known error
 	if (err.message === 'read ECONNRESET') return;
 	this.logger.log(LOG_TYPE.ERROR)
-		.setTitle(DEV.CMD_FAIL_TITLE(err))
-		.setDescription(DEV.CMD_FAIL_DESC(err))
+		.setTitle(ERROR.CMD.FAIL_TITLE(err))
+		.setDescription(ERROR.CMD.FAIL_DESC(err))
 		.send();
 };
 

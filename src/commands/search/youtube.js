@@ -8,7 +8,7 @@ const EMOJI = require('@/constants/emoji');
 const PERMISSION = require('@/constants/permission');
 const FORMAT = require('@/constants/format');
 const { DEV } = require('@/constants/message');
-const { YOUTUBE } = require('@/constants/command');
+const { YOUTUBE } = require('@/constants/commands/search');
 const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
 
 

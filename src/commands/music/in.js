@@ -1,7 +1,7 @@
 const { joinVoice } = require('@/music/helper');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { IN } = require('@/constants/command');
+const { IN } = require('@/constants/commands/music');
 
 
 module.exports = {

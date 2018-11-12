@@ -6,7 +6,7 @@ const { blockMd } = require('@/utils/markdown');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { DEV } = require('@/constants/message');
-const { KIN } = require('@/constants/command');
+const { KIN } = require('@/constants/commands/search');
 const { NAVER_HEADER } = require('@/constants/header');
 
 module.exports = {

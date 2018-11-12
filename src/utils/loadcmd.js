@@ -43,11 +43,7 @@ const loadCategory = async (category, commands) => {
 
 const loadCommand = async cmd => {
 	try {
-		const command = require(cmd);
-		if (command.checkLoadable) {
-			await command.checkLoadable();
-		}
-		return command;
+		return require(cmd);
 	}
 	catch (err) {
 		console.error(chalk.red(DEV.CMD_LOAD_FAILED(`${cmd}`)));

@@ -3,7 +3,8 @@ const { aquirePlayer } = require('@/music/helper');
 const Song = require('@/music/song');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { PLAY, YOUTUBE } = require('@/constants/command');
+const { PLAY } = require('@/constants/commands/music');
+const { YOUTUBE } = require('@/constants/commands/search');
 const { DEV } = require('@/constants/message');
 const { MUSIC_TYPE } = require('@/constants/type');
 

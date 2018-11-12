@@ -1,18 +1,22 @@
-const { Collection, RichEmbed } = require('discord.js');
+const { Collection } = require('discord.js');
 const EMOJI = require('@/constants/emoji');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
 const { strong, block } = require('@/utils/markdown.js');
 const COLOR = require('@/constants/color');
 const PERMISSION = require('@/constants/permission');
-const { HELP } = require('@/constants/command');
+const { HELP } = require('@/constants/commands/utility');
 
 module.exports = {
 	name: HELP.CMD,
 	description: HELP.DESC,
 	hidden: false,
 	devOnly: false,
-	permissions: [PERMISSION.EMBED_LINKS],
+	permissions: [
+		PERMISSION.EMBED_LINKS,
+		PERMISSION.ADD_REACTIONS,
+		PERMISSION.MANAGE_MESSAGES,
+	],
 	execute: async ({ bot, msg }) => {
 		const allCommands = bot.commands.filter(cmd => !cmd.devOnly && !cmd.hidden);
 		const prefix = bot.prefix;

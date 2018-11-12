@@ -7,7 +7,13 @@ const { strong, underline, code } = require('@/utils/markdown');
 
 module.exports = {
 	DEV: {
-		BOT_READY_INDICATOR: 'YOUR BOT IS READY AND RUNNING!',
+		BOT_READY_INDICATOR: ` _____     _
+|_   _|   | |
+  | | __ _| |_ __ _ _ __ _   _
+  | |/ _\` | __/ _\` | '__| | | |
+  | | (_| | || (_| | |  | |_| |
+  \\_/\\__,_|\\__\\__,_|_|   \\__,_|
+  YOUR BOT IS READY AND RUNNING!`,
 		BOT_FAILED_TO_START: '❗ Your bot failed to start ❗',
 		BOT_LANG_NOT_SPECIFIED: dedent`
 			"BOT_LANG" is incorrect in your bot.env file!
@@ -16,10 +22,6 @@ module.exports = {
 		ENV_VAR_NO_EMPTY_STRING: 'You should provide non-empty string for key',
 		CMD_CATEGORY_LOAD_FAILED: category => `Load failed for category "${category}"(Check whether "index.js" file exists!)`,
 		CMD_LOAD_FAILED: cmd => `Load failed for command "${cmd}".`,
-		CMD_FAIL_TITLE: error => `${error.name}: ${error.message}`,
-		CMD_FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
-		CMD_FAIL_CMD: msg => `While running command: ${strong(msg.content)}`,
-		CMD_FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
 		LOG_MODE_NOT_DEFINED: mode => dedent`
 			Log mode "${mode}" is not defined as constant`,
 		BOOK_CAN_ADD_ONLY_PAGE: 'Only page instance can be added to a book!',

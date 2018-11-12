@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { CANCEL } = require('@/constants/command');
+const { CANCEL } = require('@/constants/commands/music');
 const { PLAYER } = require('@/constants/message');
 
 

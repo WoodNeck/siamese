@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { PAUSE } = require('@/constants/command');
+const { PAUSE } = require('@/constants/commands/music');
 const { PLAYER } = require('@/constants/message');
 const { PLAYER_STATE } = require('@/constants/type');
 

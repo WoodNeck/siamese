@@ -1,13 +1,17 @@
 const dedent = require('@/utils/dedent');
 const Josa = require('josa-js');
-const { strong, underline, block } = require('@/utils/markdown');
+const { strong, block } = require('@/utils/markdown');
 
 
 module.exports = {
-	CMD_FAILED: '명령어 실행에 실패했어용!',
-	CMD_INFORM_SIMILAR: (user, similar) => dedent`
-		${user.toString()}님, 그런 명령어는 없어용. 혹시 ${underline(strong(similar))}${Josa.c(similar, '을/를')} 원하신건가용?`,
-	CMD_PERMISSION_IS_MISSING: permissions => `명령어를 실행하기 위한 권한이 없어용! 아래 권한들이 저한테 있는지 확인해주세용!${block(permissions)}`,
+	CMD: {
+		FAILED: '명령어 실행에 실패했어용!',
+		PERMISSION_IS_MISSING: permissions => `명령어를 실행하기 위한 권한이 없어용! 아래 권한들이 저한테 있는지 확인해주세용!${block(permissions)}`,
+		FAIL_TITLE: error => `${error.name}: ${error.message}`,
+		FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
+		FAIL_CMD: msg => `While running command: ${strong(msg.content)}`,
+		FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
+	},
 	DICE: {
 		ARG_INCORRECT: (min, max) => `${min}에서 ${max}사이의 숫자를 주세용!`,
 	},

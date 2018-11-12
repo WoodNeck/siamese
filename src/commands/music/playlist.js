@@ -1,5 +1,5 @@
 const ERROR = require('@/constants/error');
-const { PLAYLIST } = require('@/constants/command');
+const { PLAYLIST } = require('@/constants/commands/music');
 const { PLAYLIST_ENTRY } = require('@/constants/format');
 const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
 

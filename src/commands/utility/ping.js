@@ -1,4 +1,4 @@
-const { PING } = require('@/constants/command');
+const { PING } = require('@/constants/commands/utility');
 const { strong } = require('@/utils/markdown');
 
 module.exports = {
