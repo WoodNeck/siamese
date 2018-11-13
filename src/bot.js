@@ -2,10 +2,9 @@ const Discord = require('discord.js');
 const chalk = require('chalk');
 const events = require('@/bot.on');
 const Logger = require('@/utils/logger');
-const { overrideDiscord } = require('@/prototype/discord');
 const PERMISSION = require('@/constants/permission');
 const { DEV } = require('@/constants/message');
-const { loadAllCommands } = require('@/utils/loadcmd');
+const { loadAllCommands } = require('@/load/command');
 
 
 class Bot extends Discord.Client {
@@ -25,8 +24,6 @@ class Bot extends Discord.Client {
 		// Setup bot
 		await this._loadCommands();
 		this._listenEvents();
-		// override channel send related discord api
-		overrideDiscord();
 	}
 
 	async start() {

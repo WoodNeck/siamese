@@ -5,7 +5,10 @@
 require('module-alias/register');
 
 // Load env file first before any of file, to load constants correctly
-require('@/utils/loadenv');
+require('@/load/env');
+
+// Load all prototype redefinitions
+require('@/load/prototype');
 
 // Create a new bot instance, setup and start it
 const Bot = require('@/bot');

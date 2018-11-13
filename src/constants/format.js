@@ -7,7 +7,8 @@ module.exports = {
 	MUSIC_PROGRESS: (progressed, total) => {
 		const totalPlaytime = 3600 * total.hours + 60 * total.minutes + total.seconds;
 		const progressedTime = 3600 * progressed.hours + 60 * progressed.minutes + progressed.seconds;
-		const ratio_10 = Math.round((progressedTime / totalPlaytime) * 10);
+		// Make sure it's in 0 ~ 9
+		const ratio_10 = Math.round((progressedTime / totalPlaytime) * 10).clamp(0, 9);
 		const progress = [];
 		for(const i of [...Array(10).keys()]) {
 			i === ratio_10
