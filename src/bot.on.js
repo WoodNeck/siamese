@@ -14,7 +14,7 @@ const onReady = function() {
 	this.logger.log(LOG_TYPE.VERBOSE)
 		.atConsole()
 		.setTitle(DEV.BOT_READY_INDICATOR)
-		.setColor(COLOR.TATARU)
+		.setColor(COLOR.BOT)
 		.send();
 
 	this.logger.log(LOG_TYPE.VERBOSE)
@@ -84,7 +84,7 @@ const onGuildJoin = function(guild) {
 		.setDescription(BOT.GUILD_JOIN_DESC(this, helpCmd))
 		.setThumbnail(this.user.avatarURL)
 		.setFooter(BOT.GUILD_JOIN_FOOTER(this))
-		.setColor(COLOR.TATARU);
+		.setColor(COLOR.BOT);
 	guild.systemChannel.send(embedMsg);
 };
 

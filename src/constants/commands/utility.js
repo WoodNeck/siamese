@@ -45,4 +45,12 @@ module.exports = {
 		DESC: '하신 말을 지운 후에 따라해용!',
 		USAGE: '따라할 문장',
 	},
+	DEV_SERVER: {
+		CMD: '개발서버',
+		DESC: '개발 서버로 오실 수 있는 초대 링크를 드려용!',
+		INVITE_LINK: (bot, invite) => dedent`
+			${bot.user.toString()}의 개발 서버 초대 링크를 드릴게용!
+			오셔서 사용/개발에 관한 질문, 기능요청, 버그제보 등을 하실 수 있어용!
+			${invite}`,
+	},
 };

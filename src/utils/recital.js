@@ -13,7 +13,7 @@ module.exports = class Recital {
 		this._author = msg.author;
 		this._channel = msg.channel;
 		this._recitalMsg = null;
-		this._defaultColor = COLOR.TATARU;
+		this._defaultColor = COLOR.BOT;
 
 		this._book = new Book();
 		this._emojis = [];

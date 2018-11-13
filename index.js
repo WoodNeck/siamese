@@ -8,10 +8,10 @@ require('module-alias/register');
 require('@/utils/loadenv');
 
 // Create a new bot instance, setup and start it
-const Tataru = require('@/tataru');
-const option = require('@/tataru.option');
-const tataru = new Tataru(option);
+const Bot = require('@/bot');
+const option = require('@/bot.option');
+const bot = new Bot(option);
 
-tataru.setup()
-	.then(() => tataru.start())
+bot.setup()
+	.then(() => bot.start())
 	.catch(console.error);

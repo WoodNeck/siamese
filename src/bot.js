@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const chalk = require('chalk');
-const events = require('@/tataru.on');
+const events = require('@/bot.on');
 const Logger = require('@/utils/logger');
 const { overrideDiscord } = require('@/prototype/discord');
 const PERMISSION = require('@/constants/permission');
@@ -8,7 +8,7 @@ const { DEV } = require('@/constants/message');
 const { loadAllCommands } = require('@/utils/loadcmd');
 
 
-class Tataru extends Discord.Client {
+class Bot extends Discord.Client {
 	constructor() {
 		super();
 		// Commands handling
@@ -73,4 +73,4 @@ class Tataru extends Discord.Client {
 	}
 }
 
-module.exports = Tataru;
+module.exports = Bot;

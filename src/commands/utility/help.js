@@ -34,7 +34,7 @@ module.exports = {
 				const category = commands[0].category;
 				const embed = new EmbedPage()
 					.setDescription(`${category.categoryEmoji} ${strong(category.name)}\n${category.description}`)
-					.setColor(COLOR.TATARU);
+					.setColor(COLOR.BOT);
 				commands.forEach(cmd => {
 					// Works whether space exist in prefix or not
 					const commandTitle = strong(`${category.commandEmoji} ${cmd.name}`);

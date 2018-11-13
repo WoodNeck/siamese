@@ -26,7 +26,7 @@ module.exports = {
 		const embed = new RichEmbed()
 			.setDescription(`${PLAYER.SONG_TITLE(song)}\n${PLAYER.SONG_PROGRESS(song, progressed, statusEmoji, player.loop)}`)
 			.setFooter(song.member.displayName, song.member.user.avatarURL)
-			.setColor(COLOR.TATARU);
+			.setColor(COLOR.BOT);
 
 		channel.send(embed);
 	},

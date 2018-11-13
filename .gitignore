@@ -81,9 +81,9 @@ typings/
 lib/
 
 # -----------------------
-# TATARU CONTROLLED FILES
+# BOT CONTROLLED FILES
 # -----------------------
-bot.env
+*.env
 .vscode/
 temp/
 data/mutable

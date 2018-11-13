@@ -1,19 +1,19 @@
 {
-  "name": "tataru-js",
+  "name": "siamese",
   "version": "0.1.0",
-  "description": "Korean discord bot Tataru made with js language",
+  "description": "Korean discord bot Siamese written in js language",
   "main": "index.js",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WoodNeck/tataru-js.git"
+    "url": "git+https://github.com/WoodNeck/siamese.git"
   },
   "author": "WoodNeck",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WoodNeck/tataru-js/issues"
+    "url": "https://github.com/WoodNeck/siamese/issues"
   },
-  "homepage": "https://github.com/WoodNeck/tataru-js#readme",
+  "homepage": "https://github.com/WoodNeck/siamese#readme",
   "devDependencies": {
     "eslint": "^5.8.0"
   },

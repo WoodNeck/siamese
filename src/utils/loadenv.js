@@ -16,6 +16,7 @@ fs.readFileSync(path.join(__dirname, '../..', 'bot.env'), 'utf8')
 const essentialConfigs = {
 	BOT_TOKEN: validator.notEmptyStr,
 	BOT_DEFAULT_PREFIX: validator.notEmptyStr,
+	BOT_DEV_SERVER_INVITE: validator.notEmptyStr,
 };
 typetest(global.env, essentialConfigs);
 
