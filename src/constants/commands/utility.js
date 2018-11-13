@@ -1,5 +1,6 @@
 const dedent = require('@/utils/dedent');
 const Josa = require('josa-js');
+const EMOJI = require('@/constants/emoji');
 const { strong } = require('@/utils/markdown');
 
 
@@ -52,5 +53,9 @@ module.exports = {
 			${bot.user.toString()}의 개발 서버 초대 링크다냥!
 			와서 사용/개발에 관한 질문, 기능요청, 버그제보 등을 할 수 있다냥!
 			${invite}`,
+	},
+	ANNOUNCE: {
+		CMD: '공지',
+		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
 	},
 };
