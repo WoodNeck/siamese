@@ -6,7 +6,7 @@ const { strong, code, strike } = require('@/utils/markdown');
 module.exports = {
 	IMAGE: {
 		CMD: '이미지',
-		DESC: '구글 이미지를 검색해용!',
+		DESC: '구글 이미지를 검색한다냥!',
 		USAGE: '검색어',
 		TARGET: '이미지',
 		RECITAL_TIME: 30,
@@ -20,7 +20,7 @@ module.exports = {
 	},
 	YOUTUBE: {
 		CMD: '유튜브',
-		DESC: '유튜브 동영상을 검색해용!',
+		DESC: '유튜브 동영상을 검색한다냥!',
 		USAGE: '검색어',
 		TARGET: '동영상',
 		TIME_NOT_DEFINED: '??:??',
@@ -31,7 +31,7 @@ module.exports = {
 	},
 	KIN: {
 		CMD: '지식인',
-		DESC: '네이버 지식인을 검색해용!',
+		DESC: '네이버 지식인을 검색한다냥!',
 		USAGE: '검색어',
 		TARGET: '지식인 항목',
 		ITEMS_PER_PAGE: 5,
@@ -47,7 +47,7 @@ module.exports = {
 	},
 	CHEAPEST: {
 		CMD: '최저가',
-		DESC: '게임 최저가를 검색해용!',
+		DESC: '게임 최저가를 검색한다냥!',
 		USAGE: '게임명',
 		TARGET: '게임',
 		RECITAL_TIME: 30,
@@ -74,7 +74,7 @@ module.exports = {
 			'Very Negative': '매우 부정적',
 			'Overwhelmingly Negative': '압도적으로 부정적',
 		},
-		REVIEW_FOOTER: (text, percent, count) => text ? `${text} - 전체 사용자 평가 ${count}건 중 ${percent}%가 긍정적이에용!` : undefined,
+		REVIEW_FOOTER: (text, percent, count) => text ? `${text} - 전체 사용자 평가 ${count}건 중 ${percent}%가 긍정적이다냥!` : undefined,
 		REVIEW_ICON: percent => percent
 			? (percent >= 70) ? 'https://www.cheapshark.com/img/reviews/positive.png'
 				: (percent >= 40) ? 'https://www.cheapshark.com/img/reviews/mixed.png'

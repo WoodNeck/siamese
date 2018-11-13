@@ -80,7 +80,7 @@ const onMessage = async function(msg) {
 const onGuildJoin = function(guild) {
 	if (!(guild.systemChannel)) return;
 	const helpCmd = `${this.prefix}${HELP.CMD}`;
-	const embedMsg = new RichEmbed().setTitle(BOT.GUILD_JOIN_TITLE(this))
+	const embedMsg = new RichEmbed().setTitle(BOT.GUILD_JOIN_TITLE)
 		.setDescription(BOT.GUILD_JOIN_DESC(this, helpCmd))
 		.setThumbnail(this.user.avatarURL)
 		.setFooter(BOT.GUILD_JOIN_FOOTER(this))

@@ -1,5 +1,5 @@
 module.exports = {
-	BOT: '#eee2d5',
+	BOT: '#c6cdc7',
 	VERBOSE: '#e5e5e5',
 	ERROR: '#cc3300',
 	WARNING: '#ffcc00',

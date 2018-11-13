@@ -3,7 +3,7 @@ const { strong, code } = require('@/utils/markdown');
 
 
 module.exports = {
-	ERROR_MSG: user => `${user.toString()}님, `,
+	ERROR_MSG: user => `${user.toString()}냥, `,
 	MUSIC_PROGRESS: (progressed, total) => {
 		const totalPlaytime = 3600 * total.hours + 60 * total.minutes + total.seconds;
 		const progressedTime = 3600 * progressed.hours + 60 * progressed.minutes + progressed.seconds;
