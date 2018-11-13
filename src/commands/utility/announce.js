@@ -1,5 +1,6 @@
 const { RichEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
+const ERROR = require('@/constants/error');
 const { ANNOUNCE } = require('@/constants/commands/utility');
 
 
@@ -8,7 +9,11 @@ module.exports = {
 	hidden: true,
 	devOnly: true,
 	permissions: [],
-	execute: ({ bot, content }) => {
+	execute: ({ bot, msg, content }) => {
+		if (!content) {
+			msg.error(ERROR.SAY.EMPTY_CONTENT);
+			return;
+		}
 		const guilds = bot.guilds
 			.filter(guild => guild.systemChannel);
 		guilds.tap(guild => {

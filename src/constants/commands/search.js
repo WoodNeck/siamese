@@ -11,10 +11,13 @@ module.exports = {
 		TARGET: '이미지',
 		RECITAL_TIME: 30,
 		SEARCH_URL: 'https://www.google.co.kr/search',
-		SEARCH_PARAMS: query => {
+		SEARCH_PARAMS: (query, isSafeSearch) => {
 			return {
 				q: query,
 				tbm: 'isch',
+				// eslint-disable-next-line
+				nfpr: '1', // for no auto query correction
+				safe: isSafeSearch ? 'active' : undefined,
 			};
 		},
 	},
