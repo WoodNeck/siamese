@@ -75,4 +75,8 @@ module.exports = {
 		PLAYLIST_INDEX_NO_INTEGER: '재생목록의 몇 번째 곡을 삭제할건지 숫자를 달라냥!',
 		PLAYLIST_INDEX_OUT_OF_RANGE: (min, max) => `${min}에서 ${max}사이의 숫자를 달라냥!`,
 	},
+	RANDOM: {
+		NO_ENTRY_FOUND: '이 채널은 아직 메시지가 충분히 기록되지 않았다냥!',
+		CANT_FIND_MSG: '메시지를 하나도 가져오지 못했다냥! 다시 시도해달라냥!',
+	},
 };

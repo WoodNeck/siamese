@@ -1,5 +1,4 @@
 module.exports = {
-
 	IN: {
 		CMD: '들어와',
 		DESC: '음성 채널에 참가한다냥!',

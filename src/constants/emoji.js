@@ -29,4 +29,5 @@ module.exports = {
 	LOOP: '🔁',
 	HOURGLASS_NOT_DONE: '⏳',
 	DOLLAR: '💵',
+	BOOKS: '📚',
 };
