@@ -2,7 +2,6 @@ const chalk = require('chalk');
 const dedent = require('@/utils/dedent');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
-const { DEV } = require('@/constants/message');
 const { LOG_TYPE } = require('@/constants/type');
 const { EmbedPage, StringPage } = require('@/utils/page');
 
@@ -23,7 +22,7 @@ module.exports = class Logger {
 
 	log(mode) {
 		if (!(mode in LOG_TYPE)) {
-			throw new Error(DEV.LOG_MODE_NOT_DEFINED(mode));
+			throw new Error(ERROR.LOGGER.TYPE_NOT_DEFINED(mode));
 		}
 		return (this._channels[mode])
 			? new EmbedLog(mode, this._channels[mode])
@@ -65,7 +64,7 @@ class EmbedLog extends EmbedPage {
 	send() {
 		if (!this._embed.color) this._embed.setColor(COLOR[this._mode]);
 		this._embed.setTimestamp(new Date());
-		this._channel.send(this._embed)
+		return this._channel.send(this._embed)
 			.catch(err => console.error(err));
 	}
 }

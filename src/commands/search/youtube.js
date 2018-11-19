@@ -7,7 +7,6 @@ const ERROR = require('@/constants/error');
 const EMOJI = require('@/constants/emoji');
 const PERMISSION = require('@/constants/permission');
 const FORMAT = require('@/constants/format');
-const { DEV } = require('@/constants/message');
 const { YOUTUBE } = require('@/constants/commands/search');
 const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
 
@@ -28,15 +27,6 @@ module.exports = {
 		PERMISSION.SPEAK,
 	],
 	api: api,
-	checkLoadable: async () => {
-		if (!global.env.YOUTUBE_KEY) {
-			throw new Error(DEV.API_KEY_MISSING);
-		}
-		const videos = await api.searchVideos('TEST', 1);
-		if (!videos.length) {
-			throw new Error(DEV.API_TEST_EMPTY_RESULT);
-		}
-	},
 	execute: async context => {
 		const { bot, author, msg, channel, content } = context;
 		if (!content) {

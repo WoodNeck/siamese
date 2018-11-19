@@ -5,7 +5,6 @@ const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { PLAY } = require('@/constants/commands/music');
 const { YOUTUBE } = require('@/constants/commands/search');
-const { DEV } = require('@/constants/message');
 const { MUSIC_TYPE } = require('@/constants/type');
 
 
@@ -20,11 +19,6 @@ module.exports = {
 		PERMISSION.CONNECT,
 		PERMISSION.SPEAK,
 	],
-	checkLoadable: async () => {
-		if (!global.env.YOUTUBE_KEY) {
-			throw new Error(DEV.API_KEY_MISSING);
-		}
-	},
 	execute: async context => {
 		const { author, content, msg, channel } = context;
 		if (!content.length) {

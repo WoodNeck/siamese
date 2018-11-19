@@ -13,6 +13,7 @@ Korean Discord bot for multiple purpose.
 # Prerequisites
 - [Node.js](https://nodejs.org/ko/download/package-manager/) 9.10.0 or newer
 - [yarn](https://yarnpkg.com/lang/en/docs/install/#debian-stable) 1.10.1 or newer
+- [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) 4.0.4 or newer
 
 # Installing
 ## Linux

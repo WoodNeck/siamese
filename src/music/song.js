@@ -1,11 +1,11 @@
 const ytdl = require('ytdl-core');
-const { DEV } = require('@/constants/message');
+const ERROR = require('@/constants/error');
 const { MUSIC_TYPE } = require('@/constants/type');
 
 module.exports = class Song {
 	constructor(musicResolvable, musicType, title, duration, member) {
 		if (!(musicType in MUSIC_TYPE)) {
-			throw new Error(DEV.MUSIC_TYPE_NOT_DEFINED(musicType));
+			throw new Error(ERROR.MUSIC.TYPE_NOT_DEFINED(musicType));
 		}
 
 		this._song = musicResolvable;

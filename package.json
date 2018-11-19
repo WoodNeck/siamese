@@ -30,6 +30,7 @@
     "josa-js": "^0.0.2",
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
+    "mongoose": "^5.3.12",
     "node-opus": "^0.3.0",
     "remove-markdown": "^0.3.0",
     "simple-youtube-api": "^5.0.2",

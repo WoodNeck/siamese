@@ -1,19 +1,22 @@
-// Functions handling client.on() method
+const { RichEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
-const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
-const { RichEmbed } = require('discord.js');
-const { DEV, BOT } = require('@/constants/message');
+const { BOT } = require('@/constants/message');
 const { HELP } = require('@/constants/commands/utility');
+const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
 
 
-const onReady = function() {
+// Functions handling client.on() method
+
+
+const onReady = async function() {
 	this._setLogger();
+	await this._setUpDatabase();
 
 	this.logger.log(LOG_TYPE.VERBOSE)
 		.atConsole()
-		.setTitle(DEV.BOT_READY_INDICATOR)
+		.setTitle(BOT.READY_INDICATOR(this))
 		.setColor(COLOR.BOT)
 		.send();
 
@@ -99,7 +102,7 @@ const onError = function(err) {
 
 const onWarning = function(info) {
 	this.logger.log(LOG_TYPE.VERBOSE)
-		.setTitle(`${EMOJI.WARNING} Warning`)
+		.setTitle(`${EMOJI.WARNING} WARNING`)
 		.setDescription(info.toString())
 		.setColor(COLOR.WARNING)
 		.send();

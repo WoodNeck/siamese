@@ -6,33 +6,15 @@ const { strong, underline, code } = require('@/utils/markdown');
 
 
 module.exports = {
-	DEV: {
-		BOT_READY_INDICATOR: ` _____ _
+	BOT: {
+		READY_INDICATOR: bot => ` _____ _
 /  ___(_)
 \\ \`--. _  __ _ _ __ ___   ___  ___  ___
  \`--. \\ |/ _\` | '_ \` _ \\ / _ \\/ __|/ _ \\
 /\\__/ / | (_| | | | | | |  __/\\__ \\  __/
 \\____/|_|\\__,_|_| |_| |_|\\___||___/\\___|
-  YOUR BOT IS NOW READY AND RUNNING!`,
-		BOT_FAILED_TO_START: '❗ Your bot failed to start ❗',
-		BOT_LANG_NOT_SPECIFIED: dedent`
-			"BOT_LANG" is incorrect in your bot.env file!
-			Check "BOT_LANG".js file exists in src/locale folder.`,
-		ENV_VAR_MISSING: key => `You should provide env variable ${key}.`,
-		ENV_VAR_NO_EMPTY_STRING: 'You should provide non-empty string for key',
-		CMD_CATEGORY_LOAD_FAILED: category => `Load failed for category "${category}"(Check whether "index.js" file exists!)`,
-		CMD_LOAD_FAILED: cmd => `Load failed for command "${cmd}".`,
-		LOG_MODE_NOT_DEFINED: mode => dedent`
-			Log mode "${mode}" is not defined as constant`,
-		BOOK_CAN_ADD_ONLY_PAGE: 'Only page instance can be added to a book!',
-		BOOK_EMPTY: 'Book entry is empty!',
-		API_KEY_MISSING: 'API key is missing',
-		API_TEST_EMPTY_RESULT: 'API test case returned empty result',
-		VOICE_CANNOT_JOIN: 'Cannot join voice channel!',
-		MUSIC_TYPE_NOT_DEFINED: type => dedent`
-			Song type "${type}" is not defined in MUSIC_TYPE!`,
-	},
-	BOT: {
+
+  ${bot.user.tag} 일할 준비 됐다냥!`,
 		READY_TITLE: bot => dedent`
 			${bot.user.tag} 일할 준비 됐다냥!`,
 		READY_DESC: bot => dedent`

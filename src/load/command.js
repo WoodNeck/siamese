@@ -1,7 +1,7 @@
 const path = require('path');
 const chalk = require('chalk');
 const Discord = require('discord.js');
-const { DEV } = require('@/constants/message');
+const ERROR = require('@/constants/error');
 const { lstatSync, readdirSync } = require('fs');
 
 
@@ -36,7 +36,7 @@ const loadCategory = async (category, commands) => {
 		}
 	}
 	catch (err) {
-		console.error(chalk.red(DEV.CMD_CATEGORY_LOAD_FAILED(category)));
+		console.error(chalk.red(ERROR.CMD.CATEGORY_LOAD_FAILED(category)));
 		console.error(err);
 	}
 };
@@ -46,7 +46,7 @@ const loadCommand = async cmd => {
 		return require(cmd);
 	}
 	catch (err) {
-		console.error(chalk.red(DEV.CMD_LOAD_FAILED(`${cmd}`)));
+		console.error(chalk.red(ERROR.CMD.LOAD_FAILED(`${cmd}`)));
 		console.error(chalk.dim(err));
 	}
 };

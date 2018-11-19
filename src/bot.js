@@ -2,8 +2,9 @@ const Discord = require('discord.js');
 const chalk = require('chalk');
 const events = require('@/bot.on');
 const Logger = require('@/utils/logger');
+const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { DEV } = require('@/constants/message');
+const { loadDatabase } = require('@/load/db');
 const { loadAllCommands } = require('@/load/command');
 
 
@@ -30,7 +31,7 @@ class Bot extends Discord.Client {
 		// Start bot
 		this.login(global.env.BOT_TOKEN)
 			.catch(err => {
-				console.error(chalk.bold.red(DEV.BOT_FAILED_TO_START));
+				console.error(chalk.bold.red(ERROR.BOT.FAILED_TO_START));
 				console.error(chalk.dim(err));
 			});
 	}
@@ -39,17 +40,24 @@ class Bot extends Discord.Client {
 		return guild ? guild.member(this.user).displayName : this.user.username;
 	}
 
+	get db() { return this._db; }
 	get prefix() { return global.env.BOT_DEFAULT_PREFIX; }
 	get logger() { return this._logger; }
 	get commands() { return this._commands; }
 	get players() { return this._players; }
 	get permissions() { return this._permissions; }
 
+	// Used in ready event
 	_setLogger() {
 		this._logger = new Logger(this, {
 			verbose: global.env.BOT_LOG_VERBOSE_CHANNEL,
 			error: global.env.BOT_LOG_ERROR_CHANNEL,
 		});
+	}
+
+	// Used in ready event, as logger should be provided
+	async _setUpDatabase() {
+		this._db = await loadDatabase(this);
 	}
 
 	async _loadCommands() {

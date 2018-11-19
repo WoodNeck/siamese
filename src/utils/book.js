@@ -1,4 +1,4 @@
-const { DEV } = require('@/constants/message');
+const ERROR = require('@/constants/error');
 
 
 // Collection of sendable pages
@@ -9,7 +9,7 @@ module.exports = class Book {
 	}
 	addPage(page) {
 		if (!this._isPage(page)) {
-			throw new Error(DEV.BOOK_CAN_ADD_ONLY_PAGE);
+			throw new Error(ERROR.BOOK.CAN_ADD_ONLY_PAGE);
 		}
 
 		this._pages.push(page);
@@ -17,7 +17,7 @@ module.exports = class Book {
 	}
 	addPages(pages) {
 		if (!pages.every(page => this._isPage(page))) {
-			throw new Error(DEV.BOOK_CAN_ADD_ONLY_PAGE);
+			throw new Error(ERROR.BOOK.CAN_ADD_ONLY_PAGE);
 		}
 
 		this._pages.push(...pages);
@@ -42,7 +42,7 @@ module.exports = class Book {
 	}
 	_currentPage() {
 		if (!this.length) {
-			throw new Error(DEV.BOOK_EMPTY);
+			throw new Error(ERROR.BOOK.ENTRY_IS_EMPTY);
 		}
 		const currentPage = this._pages[this._pageIdx];
 		if (currentPage.isEmbed && !currentPage.content.footer) {

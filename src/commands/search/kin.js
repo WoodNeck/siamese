@@ -5,7 +5,6 @@ const { EmbedPage } = require('@/utils/page');
 const { blockMd } = require('@/utils/markdown');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { DEV } = require('@/constants/message');
 const { KIN } = require('@/constants/commands/search');
 const { NAVER_HEADER } = require('@/constants/header');
 
@@ -20,18 +19,6 @@ module.exports = {
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
 	],
-	checkLoadable: async () => {
-		if (!global.env.NAVER_ID || !global.env.NAVER_SECRET) {
-			throw new Error(DEV.API_KEY_MISSING);
-		}
-		const body = await axios.get(KIN.SEARCH_URL, {
-			params: KIN.SEARCH_PARAMS('TEST'),
-			headers: NAVER_HEADER,
-		});
-		if (!body.data.total || body.data.total <= 0) {
-			throw new Error(DEV.API_TEST_EMPTY_RESULT);
-		}
-	},
 	execute: async ({ bot, msg, channel, content }) => {
 		if (!content) {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
