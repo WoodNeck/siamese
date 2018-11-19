@@ -2,6 +2,8 @@ const { RichEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
+const Channel = require('@/model/channel');
+const DB = require('@/constants/db');
 const { BOT } = require('@/constants/message');
 const { HELP } = require('@/constants/commands/utility');
 const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
@@ -46,10 +48,10 @@ const onMessage = async function(msg) {
 	if (!this.commands.has(cmdName)) return;
 
 	const cmd = this.commands.get(cmdName);
-	// for Dev Only command
+	// Check whether it's dev-only command
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
-	// Check any permission for executing command is missing
+	// Check permission to execute command
 	const permissionsGranted = msg.channel.permissionsFor(this.user);
 	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
 		const neededPermissionList = cmd.permissions.reduce((prevStr, permission) => {
@@ -57,6 +59,24 @@ const onMessage = async function(msg) {
 		}, '');
 		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
 		return;
+	}
+
+	// Save the messages per channel, for later use for msg fetching
+	const channel = await Channel.findOneAndUpdate(
+		{ id: msg.channel.id },
+		{ '$inc': { msgCnt: 1 } },
+		{ upsert: true, new: true, setDefaultsOnInsert: true }
+	).exec()
+		.catch(err => this.logger.error(err, msg));
+
+	// index starts with 1, as incr happens automatically every time
+	if (channel.msgCnt % DB.MSG_SAVE_INTERVAL === 1) {
+		channel.msgCnt = 1;
+		channel.msgs.snowflakes.set(channel.msgs.index, msg.id);
+		channel.msgs.index = channel.msgs.index + 1 < DB.MSG_SAVE_PER_CHANNEL
+			? channel.msgs.index + 1
+			: 0;
+		channel.save();
 	}
 
 	// Exclude one blank after command name

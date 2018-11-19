@@ -6,7 +6,9 @@ const { LOG_TYPE } = require('@/constants/type');
 
 const loadDatabase = async bot => {
 	await mongoose.connect(DB.URI, {
+		autoIndex: false,
 		useNewUrlParser: true,
+		useFindAndModify: false,
 	}).catch(err => {
 		console.error(chalk.bold.red(ERROR.DB.FAILED_TO_CONNECT));
 		console.error(chalk.dim(err.toString()));
@@ -19,7 +21,6 @@ const loadDatabase = async bot => {
 			.setTitle(ERROR.DB.GOT_AN_ERROR)
 			.setDescription(err.toString())
 			.send();
-		throw err;
 	});
 
 	return db;
