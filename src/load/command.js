@@ -1,16 +1,16 @@
 const path = require('path');
 const chalk = require('chalk');
 const Discord = require('discord.js');
-const ERROR = require('@/constants/error');
 const { lstatSync, readdirSync } = require('fs');
+const ERROR = require('@/constants/error');
 
 
-const commandDirBase = path.join(__dirname, '..', 'commands');
+const commandRoot = path.join(__dirname, '..', 'commands');
 
 const loadAllCommands = async () => {
 	const commands = new Discord.Collection();
-	const commandDirs = readdirSync(commandDirBase)
-		.filter(file => lstatSync(path.join(commandDirBase, file)).isDirectory());
+	const commandDirs = readdirSync(commandRoot)
+		.filter(file => lstatSync(path.join(commandRoot, file)).isDirectory());
 
 	for (const category of commandDirs) {
 		await loadCategory(category, commands);
@@ -21,10 +21,10 @@ const loadAllCommands = async () => {
 
 const loadCategory = async (category, commands) => {
 	try {
-		const dirMeta = require(path.join(commandDirBase, category, 'index.js'));
+		const dirMeta = require(path.join(commandRoot, category, 'index.js'));
 
 		// Load commands in dir
-		const commandFiles = readdirSync(path.join(commandDirBase, category))
+		const commandFiles = readdirSync(path.join(commandRoot, category))
 			.filter(file => file !== 'index.js')
 			.map(cmd => `@/commands/${category}/${cmd}`);
 		for (const cmd of commandFiles) {

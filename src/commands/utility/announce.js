@@ -1,6 +1,8 @@
 const { RichEmbed } = require('discord.js');
+const dedent = require('@/utils/dedent');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
+const PERMISSION = require('@/constants/permission');
 const { ANNOUNCE } = require('@/constants/commands/utility');
 
 
@@ -17,11 +19,16 @@ module.exports = {
 		const guilds = bot.guilds
 			.filter(guild => guild.systemChannel);
 		guilds.tap(guild => {
-			const embed = new RichEmbed()
-				.setTitle(ANNOUNCE.MESSAGE_TITLE)
-				.setDescription(content)
-				.setColor(COLOR.BOT);
-			guild.systemChannel.send(embed);
+			const permissionsGranted = guild.systemChannel.permissionsFor(bot.user);
+			const announce = permissionsGranted.has(PERMISSION.EMBED_LINKS.flag)
+				? new RichEmbed()
+					.setTitle(ANNOUNCE.MESSAGE_TITLE)
+					.setDescription(content)
+					.setColor(COLOR.BOT)
+				: dedent`
+					${ANNOUNCE.MESSAGE_TITLE}
+					${content}`;
+			guild.systemChannel.send(announce);
 		});
 	},
 };

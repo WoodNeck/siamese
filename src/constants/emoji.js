@@ -30,4 +30,7 @@ module.exports = {
 	HOURGLASS_NOT_DONE: '⏳',
 	DOLLAR: '💵',
 	BOOKS: '📚',
+	MONEY_WITH_WINGS: '💸',
+	GREEN_CHECK: '✅',
+	ANGER: '💢',
 };

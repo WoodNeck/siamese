@@ -36,10 +36,19 @@ module.exports = {
 					.setDescription(`${category.categoryEmoji} ${strong(category.name)}\n${category.description}`)
 					.setColor(COLOR.BOT);
 				commands.forEach(cmd => {
-					// Works whether space exist in prefix or not
-					const commandTitle = strong(`${category.commandEmoji} ${cmd.name}`);
-					const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, cmd.usage].filter(str => str).join(' ');
-					embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description)}`);
+					if (cmd.execute) {
+						// Works whether space exist in prefix or not
+						const commandTitle = strong(`${category.commandEmoji} ${cmd.name}`);
+						const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, cmd.usage].filter(str => str).join(' ');
+						embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description)}`);
+					}
+					if (cmd.subcommands) {
+						cmd.subcommands.tap(subcmd => {
+							const commandTitle = strong(`${category.commandEmoji} ${cmd.name} ${subcmd.name}`);
+							const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name} ${subcmd.name}`, subcmd.usage].filter(str => str).join(' ');
+							embed.addField(commandTitle, `${commandUsage}\n${block(subcmd.description)}`);
+						});
+					}
 				});
 				return embed;
 			});

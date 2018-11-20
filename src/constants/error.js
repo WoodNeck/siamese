@@ -18,6 +18,7 @@ module.exports = {
 	CMD: {
 		CATEGORY_LOAD_FAILED: category => `"${category}" 명령어 카테고리를 로드하는데 실패했다냥! ("index.js"가 폴더 안에 있는지 확인하라냥!)`,
 		LOAD_FAILED: cmd => `"${cmd}" 명령어를 로드하는데 실패했다냥!`,
+		SUB_LOAD_FAILED: (cmd, sub) => `"${cmd}/${sub}" 서브 명령어를 로드하는데 실패했다냥!`,
 		FAILED: '명령어 실행에 실패했다냥!',
 		PERMISSION_IS_MISSING: permissions => `명령어를 실행할 수 있는 권한이 없다냥! 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
 		FAIL_TITLE: error => `${error.name}: ${error.message}`,
@@ -78,5 +79,8 @@ module.exports = {
 	RANDOM: {
 		NO_ENTRY_FOUND: '이 채널은 아직 메시지가 충분히 기록되지 않았다냥!',
 		CANT_FIND_MSG: '메시지를 하나도 가져오지 못했다냥! 다시 시도해달라냥!',
+	},
+	STEAM: {
+		USER_NOT_FOUND: '그 아이디로는 유저를 찾지 못했다냥!',
 	},
 };

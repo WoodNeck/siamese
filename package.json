@@ -21,6 +21,7 @@
     "axios": "^0.18.0",
     "bufferutil": "^4.0.0",
     "chalk": "^2.4.1",
+    "date-diff": "^0.2.1",
     "discord.js": "^11.4.2",
     "erlpack": "hammerandchisel/erlpack",
     "ffmpeg-binaries": "^4.0.0",

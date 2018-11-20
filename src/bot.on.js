@@ -48,7 +48,17 @@ const onMessage = async function(msg) {
 	// No command matched
 	if (!this.commands.has(cmdName)) return;
 
-	const cmd = this.commands.get(cmdName);
+	let cmd = this.commands.get(cmdName);
+	// Exclude one blank after command name
+	let content = msg.content.slice(prefix.length + cmdName.length + 1);
+
+	if (cmd.subcommands && cmd.subcommands.has(args[0])) {
+		const subcommandName = args[0];
+		// Remove first arg by calling shift
+		cmd = cmd.subcommands.get(args.shift());
+		content = content.slice(subcommandName.length + 1);
+	}
+
 	// Check whether it's dev-only command
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
@@ -62,9 +72,12 @@ const onMessage = async function(msg) {
 		return;
 	}
 
-	// Exclude one blank after command name
-	const content = msg.content.slice(prefix.length + cmdName.length + 1);
 	try {
+		if (!cmd.execute) {
+			// Case of subcommand-container
+			// Only execute if it has execute() method
+			return;
+		}
 		await cmd.execute({
 			bot: this,
 			msg: msg,

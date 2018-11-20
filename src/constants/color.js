@@ -6,4 +6,9 @@ module.exports = {
 	GOOD: '#99cc33',
 	DEFAULT: 'DEFAULT',
 	RANDOM: 'RANDOM',
+	STEAM: {
+		OFFLINE: '#6a6a6a',
+		ONLINE: '#53a4c4',
+		PLAYING: '#8fb93b',
+	},
 };
