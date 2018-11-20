@@ -6,10 +6,6 @@
 
 Korean Discord bot for multiple purpose.
 
-# Introducing
-
-- This bot is only for fun: There's no administration related commands.
-
 # Prerequisites
 - [Node.js](https://nodejs.org/ko/download/package-manager/) 9.10.0 or newer
 - [yarn](https://yarnpkg.com/lang/en/docs/install/#debian-stable) 1.10.1 or newer
