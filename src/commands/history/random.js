@@ -13,8 +13,10 @@ module.exports = {
 	devOnly: false,
 	permissions: [
 		PERMISSION.EMBED_LINKS,
+		PERMISSION.READ_MESSAGE_HISTORY,
 	],
 	execute: async ({ channel, msg }) => {
+		// Retrieve one msg from message history of channel
 		const randomLog = await Channel.aggregate([
 			{ $match: { id: channel.id } },
 			{ $unwind: '$msgs.snowflakes' },

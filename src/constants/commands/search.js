@@ -31,6 +31,11 @@ module.exports = {
 		MAX_RESULTS: 10,
 		VIDEO_URL: videoId => `https://youtu.be/${videoId}`,
 		VIDEO_URL_WITH_TIME: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
+		SEARCH_OPTION: isSafeSearch => {
+			return {
+				safeSearch: isSafeSearch ? 'strict' : 'none',
+			};
+		},
 	},
 	KIN: {
 		CMD: '지식인',

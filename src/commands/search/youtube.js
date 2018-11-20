@@ -11,7 +11,7 @@ const { YOUTUBE } = require('@/constants/commands/search');
 const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
 
 
-const api = new YouTube(global.env.YOUTUBE_KEY);
+const api = new YouTube(global.env.GOOGLE_API_KEY);
 
 module.exports = {
 	name: YOUTUBE.CMD,
@@ -36,7 +36,11 @@ module.exports = {
 		await channel.startTyping();
 
 		const searchText = content;
-		let videos = await api.searchVideos(searchText, YOUTUBE.MAX_RESULTS);
+		let videos = await api.searchVideos(
+			searchText,
+			YOUTUBE.MAX_RESULTS,
+			YOUTUBE.SEARCH_OPTION(!channel.nsfw)
+		);
 
 		if (!videos.length) {
 			msg.error(ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));

@@ -28,7 +28,7 @@ module.exports = {
 
 		const searchText = content;
 		await axios.get(IMAGE.SEARCH_URL, {
-			params: IMAGE.SEARCH_PARAMS(searchText, channel.nsfw),
+			params: IMAGE.SEARCH_PARAMS(searchText, !channel.nsfw),
 			headers: AXIOS_HEADER,
 		}).then(body => {
 			const images = findAllImages(body.data);
