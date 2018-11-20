@@ -1,9 +1,8 @@
 const { RichEmbed } = require('discord.js');
+const logMessage = require('@/helper/logMessage');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
-const Channel = require('@/model/channel');
-const DB = require('@/constants/db');
 const { BOT } = require('@/constants/message');
 const { HELP } = require('@/constants/commands/utility');
 const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
@@ -39,6 +38,8 @@ const onReady = async function() {
 const onMessage = async function(msg) {
 	const prefix = this.prefix;
 
+	logMessage(msg);
+
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
 	const args = msg.content.slice(prefix.length).split(/ +/);
@@ -59,24 +60,6 @@ const onMessage = async function(msg) {
 		}, '');
 		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
 		return;
-	}
-
-	// Save the messages per channel, for later use for msg fetching
-	const channel = await Channel.findOneAndUpdate(
-		{ id: msg.channel.id },
-		{ '$inc': { msgCnt: 1 } },
-		{ upsert: true, new: true, setDefaultsOnInsert: true }
-	).exec()
-		.catch(err => this.logger.error(err, msg));
-
-	// index starts with 1, as incr happens automatically every time
-	if (channel.msgCnt % DB.MSG_SAVE_INTERVAL === 1) {
-		channel.msgCnt = 1;
-		channel.msgs.snowflakes.set(channel.msgs.index, msg.id);
-		channel.msgs.index = channel.msgs.index + 1 < DB.MSG_SAVE_PER_CHANNEL
-			? channel.msgs.index + 1
-			: 0;
-		channel.save();
 	}
 
 	// Exclude one blank after command name
