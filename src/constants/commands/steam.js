@@ -13,6 +13,7 @@ module.exports = {
 				key: global.env.STEAM_API_KEY,
 			};
 		},
+		ICON_URL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png',
 	},
 	PROFILE: {
 		CMD: '프로필',
@@ -60,6 +61,10 @@ module.exports = {
 			6: '같이 게임해요',
 		},
 		PLAYING_STATE: game => `${strong(game)}플레이 중`,
+		REGISTERED: timestamp => {
+			const date = new Date(timestamp);
+			return `${date.getUTCFullYear()}년 ${date.getUTCMonth() + 1}월에 가입`;
+		},
 		LAST_LOGOFF: timestamp => {
 			const dateDiff = new DateDiff(new Date(), new Date(timestamp));
 			const diff = {
