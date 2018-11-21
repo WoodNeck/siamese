@@ -33,4 +33,6 @@ module.exports = {
 	MONEY_WITH_WINGS: '💸',
 	GREEN_CHECK: '✅',
 	ANGER: '💢',
+	NO_ENTRY: '⛔',
+	LARGE_CIRCLE: '⭕',
 };

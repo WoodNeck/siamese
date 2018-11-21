@@ -1,6 +1,6 @@
-const axios = require('axios');
 const { RichEmbed } = require('discord.js');
 const dedent = require('@/utils/dedent');
+const Steam = require('@/helper/steam');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
@@ -26,74 +26,51 @@ module.exports = {
 
 		// Find out 64-bit encoded steamid
 		const searchText = content;
-		const userId = await axios.get(
-			STEAM.SEARCH_BY_COMMUNITY_ID_URL,
-			{ params: STEAM.SEARCH_BY_COMMUNITY_ID_PARAMS(searchText) }
-		).then(body => body.data.response.success === 1
-			? body.data.response.steamid
-			: undefined
-		);
+		const userId = await Steam.getUserId(searchText);
+
 		if (!userId) {
 			msg.error(ERROR.STEAM.USER_NOT_FOUND);
 			return;
 		}
 
 		// Get user profile datas
-		const getUserSummary = axios.get(
-			PROFILE.SUMMARY_URL,
-			{ params: PROFILE.STEAM_IDS_PARAMS(userId) }
-		).then(body => body.data.response.players[0]);
-		const getUserBanState = axios.get(
-			PROFILE.BAN_URL,
-			{ params: PROFILE.STEAM_IDS_PARAMS(userId) }
-		).then(body => body.data.players[0]);
-		const getRecentlyPlayedGame = axios.get(
-			PROFILE.RECENT_GAME_URL,
-			{ params: PROFILE.RECENT_GAME_PARAMS(userId) }
-		).then(body => body.data.response.games);
-		const getUserLevel = axios.get(
-			PROFILE.LEVEL_URL,
-			{ params: PROFILE.STEAM_ID_PARAMS(userId) }
-		).then(body => body.data.response.player_level);
-		const getFriendList = axios.get(
-			PROFILE.FRIEND_URL,
-			{ params: PROFILE.FRIEND_PARAMS(userId) }
-		).then(body => body.data.friendslist.friends);
-		const getOwnedGames = axios.get(
-			PROFILE.OWNED_GAME_URL,
-			{ params: PROFILE.STEAM_ID_PARAMS(userId) }
-		).then(body => body.data.response.game_count);
-
-
-		const [summary, ban, games, level, friends, gamesCount] = await Promise.all([
-			getUserSummary,
-			getUserBanState,
-			getRecentlyPlayedGame,
-			getUserLevel,
-			getFriendList,
-			getOwnedGames,
+		// Catch error, and return undefined as some of these can return 401 unauthorized
+		const [summary, ban, recentGames, level, friends, ownedGames] = await Promise.all([
+			Steam.getUserSummary(userId),
+			Steam.getUserBanState(userId),
+			Steam.getRecentlyPlayedGame(userId),
+			Steam.getUserLevel(userId),
+			Steam.getFriendList(userId),
+			Steam.getOwnedGames(userId),
 		]);
+
+		if (!summary) {
+			msg.error(ERROR.STEAM.USER_NOT_FOUND);
+			return;
+		}
+
 		const profileColor = summary.gameextrainfo
 			? COLOR.STEAM.PLAYING
 			: summary.personastate
 				? COLOR.STEAM.ONLINE
 				: COLOR.STEAM.OFFLINE;
-		const regionFlag = summary.loccountrycode ? `:flag_${summary.loccountrycode.toLowerCase()}: ` : '';
+		const regionFlag = summary.loccountrycode ? `:flag_${summary.loccountrycode.toLowerCase()}: ` : undefined;
 		const banStr = dedent`
-			${ban.CommunityBanned ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${PROFILE.BAN_COMMUNITY}
-			${ban.VACBanned ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${PROFILE.BAN_VAC}
-			${ban.NumberOfGameBans > 0 ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${PROFILE.BAN_GAME}
-			${ban.EconomyBan !== 'none' ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${PROFILE.BAN_ECONOMY}`;
+			${ban.CommunityBanned ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_COMMUNITY}
+			${ban.VACBanned ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_VAC}
+			${ban.NumberOfGameBans > 0 ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_GAME}
+			${ban.EconomyBan !== 'none' ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_ECONOMY}`;
 		const profileDesc = dedent`
 			${summary.gameextrainfo ? PROFILE.PLAYING_STATE(summary.gameextrainfo) : PROFILE.PERSONA_STATE[summary.personastate]}
 			${summary.personastate === 0 ? PROFILE.LAST_LOGOFF(summary.lastlogoff * 1000) : ''}`;
 		const userDetail = dedent`
+			${regionFlag ? regionFlag : ''}
 			${level ? PROFILE.LEVEL(level) : ''}
 			${friends && friends.length ? PROFILE.FRIENDS(friends) : ''}
-			${gamesCount ? PROFILE.GAMES(gamesCount) : ''}`;
+			${ownedGames && ownedGames.game_count ? PROFILE.GAMES(ownedGames.game_count) : ''}`;
 
 		const embed = new RichEmbed()
-			.setTitle(PROFILE.TITLE(summary.personaname, regionFlag))
+			.setTitle(summary.personaname)
 			.setDescription(profileDesc)
 			.setURL(summary.profileurl)
 			.setThumbnail(summary.avatarmedium)
@@ -105,8 +82,8 @@ module.exports = {
 			embed.addField(PROFILE.FIELD_DETAIL, userDetail, true);
 		}
 		embed.addField(PROFILE.FIELD_BAN, banStr, true);
-		if (games) {
-			const recentGamesStr = games.reduce((prevStr, game) => {
+		if (recentGames) {
+			const recentGamesStr = recentGames.reduce((prevStr, game) => {
 				return `${prevStr}\n${PROFILE.GAME_DESC(game)}`;
 			}, '');
 			embed.addField(PROFILE.FIELD_RECENT_GAME, recentGamesStr);

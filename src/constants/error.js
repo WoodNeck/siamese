@@ -82,5 +82,6 @@ module.exports = {
 	},
 	STEAM: {
 		USER_NOT_FOUND: '그 아이디로는 유저를 찾지 못했다냥!',
+		EMPTY_GAMES: '계정이 비공개거나 가진 게임이 하나도 없다냥!',
 	},
 };
