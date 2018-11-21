@@ -1,4 +1,5 @@
 const axios = require('axios');
+const Fuse = require('fuse.js');
 const NodeCache = require('node-cache');
 const CACHE = require('@/constants/cache');
 const { STEAM } = require('@/constants/commands/steam');
@@ -7,10 +8,6 @@ const caches = {
 	userId: new NodeCache({
 		stdTTL: CACHE.STEAM.USER_ID.ttl,
 		checkperiod: CACHE.STEAM.USER_ID.checkPeriod,
-	}),
-	gameId: new NodeCache({
-		stdTTL: CACHE.STEAM.GAME_ID.ttl,
-		checkperiod: CACHE.STEAM.GAME_ID.checkPeriod,
 	}),
 	owningGames: new NodeCache({
 		stdTTL: CACHE.STEAM.OWNING_GAMES.ttl,
@@ -57,19 +54,25 @@ const getUserId = async searchText => {
 	}
 };
 
-const getGameId = async searchText => {
-	const cachedGameId = caches.gameId.get(searchText);
-	if (cachedGameId) {
-		return cachedGameId;
-	}
-	else {
-		return await axios.get(
-			STEAM.SEARCH_BY_GAME_NAME_URL,
-			{ params: STEAM.SEARCH_BY_GAME_NAME_PARAMS(searchText) }
-		).then(body => {
-			console.log(body.data);
-		}).catch(() => undefined);
-	}
+const getGame = async searchText => {
+	return await axios.get(
+		STEAM.SEARCH_BY_GAME_NAME_URL,
+		{ params: STEAM.SEARCH_BY_GAME_NAME_PARAMS(searchText) }
+	).then(body => {
+		if (body.data && body.data.total) {
+			const games = body.data.items;
+			// Find correct game by doing fuzzy matching
+			const game = new Fuse(games, {
+				shouldSort: true,
+				threshold: 1,
+				keys: ['name'],
+			}).search(searchText)[0];
+			return game;
+		}
+		else {
+			return undefined;
+		}
+	}).catch(() => undefined);
 };
 
 const getUserSummary = async userId => await axios.get(
@@ -125,12 +128,25 @@ const getOwningGames = async (userId, isDetailed) => {
 	}
 };
 
+const getCurrentPlayers = async appid => {
+	return await axios.get(
+		STEAM.CURRENT_PLAYERS_URL,
+		{ params: STEAM.GAME_ID_PARAMS(appid) }
+	).then(body => {
+		return body.data.response
+			? body.data.response.player_count
+			: 'N/A';
+	}).catch(() => 'N/A');
+};
+
 module.exports = {
 	getUserId: getUserId,
+	getGame: getGame,
 	getUserSummary: getUserSummary,
 	getUserBanState: getUserBanState,
 	getRecentlyPlayedGame: getRecentlyPlayedGame,
 	getUserLevel: getUserLevel,
 	getFriendList: getFriendList,
 	getOwningGames: getOwningGames,
+	getCurrentPlayers: getCurrentPlayers,
 };

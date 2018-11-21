@@ -14,9 +14,11 @@ module.exports = {
 		LEVEL_URL: 'http://api.steampowered.com/IPlayerService/GetSteamLevel/v1',
 		FRIEND_URL: 'http://api.steampowered.com/ISteamUser/GetFriendList/v1',
 		OWNING_GAME_URL: 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v1',
+		CURRENT_PLAYERS_URL: 'http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1',
 		ICON_URL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png',
 		PROFILE_GAME_URL: baseUrl => `${baseUrl}games/?tab=all`,
 		GAME_IMG_URL: (appid, url) => `http://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${url}.jpg`,
+		STORE_URL: appid => `https://store.steampowered.com/app/${appid}`,
 		SEARCH_BY_COMMUNITY_ID_PARAMS: query => {
 			return {
 				vanityurl: query,
@@ -44,6 +46,12 @@ module.exports = {
 		STEAM_ID_PARAMS: id => {
 			return {
 				steamid: id,
+				key: global.env.STEAM_API_KEY,
+			};
+		},
+		GAME_ID_PARAMS: id => {
+			return {
+				appid: id,
 				key: global.env.STEAM_API_KEY,
 			};
 		},
@@ -139,5 +147,12 @@ module.exports = {
 		GAMES_PER_PAGE: 10,
 		MAX_PAGES: 5,
 		RECITAL_TIME: 30,
+	},
+	PLAYERS: {
+		CMD: '동접',
+		DESC: '게임의 현재 접속자 수를 알려준다냥!',
+		USAGE: '게임명',
+		TARGET: '게임',
+		CURRENT: players => `현재 플레이어 수: ${players}`,
 	},
 };
