@@ -35,13 +35,13 @@ module.exports = {
 
 		// Get user profile datas
 		// Catch error, and return undefined as some of these can return 401 unauthorized
-		const [summary, ban, recentGames, level, friends, ownedGames] = await Promise.all([
+		const [summary, ban, recentGames, level, friends, owningGames] = await Promise.all([
 			Steam.getUserSummary(userId),
 			Steam.getUserBanState(userId),
 			Steam.getRecentlyPlayedGame(userId),
 			Steam.getUserLevel(userId),
 			Steam.getFriendList(userId),
-			Steam.getOwnedGames(userId),
+			Steam.getOwningGames(userId),
 		]);
 
 		if (!summary) {
@@ -67,7 +67,7 @@ module.exports = {
 			${regionFlag ? regionFlag : ''}
 			${level ? PROFILE.LEVEL(level) : ''}
 			${friends && friends.length ? PROFILE.FRIENDS(friends) : ''}
-			${ownedGames && ownedGames.game_count ? PROFILE.GAMES(ownedGames.game_count) : ''}`;
+			${owningGames && owningGames.game_count ? PROFILE.GAMES(owningGames.game_count) : ''}`;
 
 		const embed = new RichEmbed()
 			.setTitle(summary.personaname)

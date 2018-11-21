@@ -7,18 +7,25 @@ module.exports = {
 	STEAM: {
 		CMD: '스팀',
 		SEARCH_BY_COMMUNITY_ID_URL: 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/',
+		SEARCH_BY_GAME_NAME_URL: 'https://store.steampowered.com/api/storesearch/',
 		SUMMARY_URL: 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002',
 		BAN_URL: 'http://api.steampowered.com/ISteamUser/GetPlayerBans/v1',
 		RECENT_GAME_URL: 'http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1',
 		LEVEL_URL: 'http://api.steampowered.com/IPlayerService/GetSteamLevel/v1',
 		FRIEND_URL: 'http://api.steampowered.com/ISteamUser/GetFriendList/v1',
-		OWNED_GAME_URL: 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v1',
+		OWNING_GAME_URL: 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v1',
 		ICON_URL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png',
+		PROFILE_GAME_URL: baseUrl => `${baseUrl}games/?tab=all`,
 		GAME_IMG_URL: (appid, url) => `http://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${url}.jpg`,
 		SEARCH_BY_COMMUNITY_ID_PARAMS: query => {
 			return {
 				vanityurl: query,
 				key: global.env.STEAM_API_KEY,
+			};
+		},
+		SEARCH_BY_GAME_NAME_PARAMS: query => {
+			return {
+				term: query,
 			};
 		},
 		STEAM_IDS_PARAMS: id => {
@@ -40,7 +47,7 @@ module.exports = {
 				key: global.env.STEAM_API_KEY,
 			};
 		},
-		OWNED_GAME_PARAMS: (id, isDetailed) => {
+		OWNING_GAME_PARAMS: (id, isDetailed) => {
 			return {
 				steamid: id,
 				key: global.env.STEAM_API_KEY,
@@ -55,6 +62,8 @@ module.exports = {
 				relationship: 'friend',
 			};
 		},
+		PLAYTIME: minute => `총 플레이 시간: ${minute ? (minute / 60).toFixed(1) : 0}시간`,
+		PLAYTIME_SHORT: minute => `${minute ? (minute / 60).toFixed(1) : 0}시간`,
 	},
 	PROFILE: {
 		CMD: '프로필',
@@ -122,7 +131,13 @@ module.exports = {
 		CMD: '랜덤',
 		DESC: '계정에서 무작위 게임을 가져와서 보여준다냥!',
 		USAGE: '커뮤니티_ID',
-		CACHE_TTL: '3600',
-		PLAYTIME: minute => `총 플레이 시간: ${minute ? (minute / 60).toFixed(1) : 0}시간`,
+	},
+	LIBRARY: {
+		CMD: '라이브러리',
+		DESC: '계정의 게임들을 플레이 시간이 높은 것부터 보여준다냥!',
+		USAGE: '커뮤니티_ID',
+		GAMES_PER_PAGE: 10,
+		MAX_PAGES: 5,
+		RECITAL_TIME: 30,
 	},
 };

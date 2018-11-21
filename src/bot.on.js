@@ -13,7 +13,7 @@ const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
 
 const onReady = async function() {
 	this._setLogger();
-	await this._setUpDatabase();
+	await this._setupDatabase();
 
 	this.logger.log(LOG_TYPE.VERBOSE)
 		.atConsole()

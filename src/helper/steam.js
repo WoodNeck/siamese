@@ -1,34 +1,75 @@
 const axios = require('axios');
+const NodeCache = require('node-cache');
+const CACHE = require('@/constants/cache');
 const { STEAM } = require('@/constants/commands/steam');
 
+const caches = {
+	userId: new NodeCache({
+		stdTTL: CACHE.STEAM.USER_ID.ttl,
+		checkperiod: CACHE.STEAM.USER_ID.checkPeriod,
+	}),
+	gameId: new NodeCache({
+		stdTTL: CACHE.STEAM.GAME_ID.ttl,
+		checkperiod: CACHE.STEAM.GAME_ID.checkPeriod,
+	}),
+	owningGames: new NodeCache({
+		stdTTL: CACHE.STEAM.OWNING_GAMES.ttl,
+		checkperiod: CACHE.STEAM.OWNING_GAMES.checkPeriod,
+	}),
+};
 
-const getUserId = async id => {
-	const searchByCommunityId = axios.get(
-		STEAM.SEARCH_BY_COMMUNITY_ID_URL,
-		{ params: STEAM.SEARCH_BY_COMMUNITY_ID_PARAMS(id) }
-	).then(body => body.data.response.success === 1
-		? body.data.response.steamid
-		: undefined
-	);
+const getUserId = async searchText => {
+	const cachedUserId = caches.userId.get(searchText);
+	if (cachedUserId) {
+		return cachedUserId;
+	}
+	else {
+		const searchByCommunityId = axios.get(
+			STEAM.SEARCH_BY_COMMUNITY_ID_URL,
+			{ params: STEAM.SEARCH_BY_COMMUNITY_ID_PARAMS(searchText) }
+		).then(body => body.data.response.success === 1
+			? body.data.response.steamid
+			: undefined
+		);
 
-	// STEAM 64-bit ID could given as parameter
-	const searchByIdItself = /^[0-9]*$/.test(id)
-		? axios.get(
-			STEAM.SUMMARY_URL,
-			{ params: STEAM.STEAM_IDS_PARAMS(id) }
-		).then(body => body.data.response.players[0])
-			.catch(() => undefined)
-		: new Promise(resolve => { resolve(); });
+		// STEAM 64-bit ID could given as parameter
+		const searchByIdItself = /^[0-9]*$/.test(searchText)
+			? axios.get(
+				STEAM.SUMMARY_URL,
+				{ params: STEAM.STEAM_IDS_PARAMS(searchText) }
+			).then(body => body.data.response.players[0])
+				.catch(() => undefined)
+			: new Promise(resolve => { resolve(); });
 
-	const [userId, userDetail] = await Promise.all([searchByCommunityId, searchByIdItself]);
-	// return userId if community id search matched
-	// return parameter itself when it's correct 64-bit encoded steam id
-	// else return undefined
-	return userId
-		? userId
-		: userDetail
-			? id
-			: undefined;
+		// return userId if community id search matched
+		// return parameter itself when it's correct 64-bit encoded steam id
+		// else return undefined
+		const [userId, userDetail] = await Promise.all([searchByCommunityId, searchByIdItself]);
+		if (userId) {
+			caches.userId.set(searchText, userId);
+			return userId;
+		}
+		else if (userDetail) {
+			caches.userId.set(searchText, searchText);
+			return searchText;
+		}
+		return undefined;
+	}
+};
+
+const getGameId = async searchText => {
+	const cachedGameId = caches.gameId.get(searchText);
+	if (cachedGameId) {
+		return cachedGameId;
+	}
+	else {
+		return await axios.get(
+			STEAM.SEARCH_BY_GAME_NAME_URL,
+			{ params: STEAM.SEARCH_BY_GAME_NAME_PARAMS(searchText) }
+		).then(body => {
+			console.log(body.data);
+		}).catch(() => undefined);
+	}
 };
 
 const getUserSummary = async userId => await axios.get(
@@ -61,11 +102,28 @@ const getFriendList = async userId => await axios.get(
 ).then(body => body.data.friendslist.friends)
 	.catch(() => undefined);
 
-const getOwnedGames = async (userId, isDetailed) => await axios.get(
-	STEAM.OWNED_GAME_URL,
-	{ params: STEAM.OWNED_GAME_PARAMS(userId, isDetailed) }
-).then(body => body.data.response)
-	.catch(() => undefined);
+const getOwningGames = async (userId, isDetailed) => {
+	const cachedGames = caches.owningGames.get(userId);
+	if (cachedGames) {
+		return cachedGames;
+	}
+	else {
+		return await axios.get(
+			STEAM.OWNING_GAME_URL,
+			{ params: STEAM.OWNING_GAME_PARAMS(userId, isDetailed) }
+		).then(body => {
+			if (body.data.response) {
+				const owningGames = body.data.response;
+				// sort by playtime desc
+				owningGames.games = owningGames.games
+					.sort((game1, game2) => game2.playtime_forever - game1.playtime_forever);
+				caches.owningGames.set(userId, owningGames);
+				return owningGames;
+			}
+			return undefined;
+		}).catch(() => undefined);
+	}
+};
 
 module.exports = {
 	getUserId: getUserId,
@@ -74,5 +132,5 @@ module.exports = {
 	getRecentlyPlayedGame: getRecentlyPlayedGame,
 	getUserLevel: getUserLevel,
 	getFriendList: getFriendList,
-	getOwnedGames: getOwnedGames,
+	getOwningGames: getOwningGames,
 };

@@ -35,4 +35,5 @@ module.exports = {
 	ANGER: '💢',
 	NO_ENTRY: '⛔',
 	LARGE_CIRCLE: '⭕',
+	VIDEO_GAME: '🎮',
 };

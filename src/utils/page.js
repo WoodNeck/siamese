@@ -65,6 +65,7 @@ class EmbedPage {
 	}
 	addField(title, description, inline) {
 		this._embed.addField(title, description, inline);
+		return this;
 	}
 	get isEmbed() { return true; }
 	get content() { return this._embed; }
