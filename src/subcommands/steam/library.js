@@ -40,7 +40,7 @@ module.exports = {
 		}
 
 		// Get games owning
-		const owningGames = await getOwningGames(userId, true);
+		const owningGames = await getOwningGames(userId);
 		if (!owningGames || !owningGames.game_count) {
 			msg.error(ERROR.STEAM.EMPTY_GAMES);
 			return;

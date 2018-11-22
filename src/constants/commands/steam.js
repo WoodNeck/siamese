@@ -55,11 +55,11 @@ module.exports = {
 				key: global.env.STEAM_API_KEY,
 			};
 		},
-		OWNING_GAME_PARAMS: (id, isDetailed) => {
+		OWNING_GAME_PARAMS: id => {
 			return {
 				steamid: id,
 				key: global.env.STEAM_API_KEY,
-				include_appinfo: isDetailed ? '1' : '0',
+				include_appinfo: '1',
 				include_played_free_games: '1',
 			};
 		},

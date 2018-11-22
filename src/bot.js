@@ -19,8 +19,6 @@ class Bot extends Discord.Client {
 		// Least permission for a bot is defined
 		this._permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);
 		this._permissions.add(PERMISSION.SEND_MESSAGES.flag);
-		// Caches
-		this._caches = new Discord.Collection();
 	}
 
 	async setup() {

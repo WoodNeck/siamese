@@ -105,7 +105,7 @@ const getFriendList = async userId => await axios.get(
 ).then(body => body.data.friendslist.friends)
 	.catch(() => undefined);
 
-const getOwningGames = async (userId, isDetailed) => {
+const getOwningGames = async userId => {
 	const cachedGames = caches.owningGames.get(userId);
 	if (cachedGames) {
 		return cachedGames;
@@ -113,7 +113,7 @@ const getOwningGames = async (userId, isDetailed) => {
 	else {
 		return await axios.get(
 			STEAM.OWNING_GAME_URL,
-			{ params: STEAM.OWNING_GAME_PARAMS(userId, isDetailed) }
+			{ params: STEAM.OWNING_GAME_PARAMS(userId) }
 		).then(body => {
 			if (body.data.response) {
 				const owningGames = body.data.response;
