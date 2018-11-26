@@ -54,6 +54,15 @@ module.exports = {
 			와서 사용/개발에 관한 질문, 기능요청, 버그제보 등을 할 수 있다냥!
 			${invite}`,
 	},
+	INFO: {
+		CMD: '정보',
+		DESC: '봇과 관련된 정보를 볼 수 있다냥!',
+		GUILD_CNT: guildCnt => `${EMOJI.UP_TRIANGLE} 서버 수 - ${guildCnt}개`,
+		USER_CNT: userCnt => `${EMOJI.PEOPLE} 사용자 수 - ${userCnt}명`,
+		PLAYER_CNT: playerCnt => `${EMOJI.MICROPHONE} 재생중인 음악 수 - ${playerCnt}개`,
+		GITHUB_ICON_URL: 'https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png',
+		DEV_SERVER: '개발 서버',
+	},
 	ANNOUNCE: {
 		CMD: '공지',
 		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
@@ -61,6 +70,6 @@ module.exports = {
 	GUILDLIST: {
 		CMD: '서버목록',
 		GUILD_ENTRY: guild => dedent`
-		${guild.systemChannel ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${guild.name}(${guild.members.size}명)`,
+			${guild.systemChannel ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${guild.name}(${guild.members.filter(member => !member.user.bot).size}명)`,
 	},
 };

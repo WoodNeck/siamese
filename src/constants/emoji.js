@@ -22,6 +22,7 @@ module.exports = {
 	ALARM: '⏰',
 	CLOCK_3: '🕒',
 	HEADPHONES: '🎧',
+	MICROPHONE: '🎤',
 	CD: '💿',
 	MUSIC_NOTE: '🎵',
 	MUSIC_NOTES: '🎶',
@@ -36,4 +37,5 @@ module.exports = {
 	NO_ENTRY: '⛔',
 	LARGE_CIRCLE: '⭕',
 	VIDEO_GAME: '🎮',
+	PEOPLE: '👥',
 };
