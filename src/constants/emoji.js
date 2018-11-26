@@ -38,4 +38,6 @@ module.exports = {
 	LARGE_CIRCLE: '⭕',
 	VIDEO_GAME: '🎮',
 	PEOPLE: '👥',
+	NSFW: '🔞',
+	EGGPLANT: '🍆',
 };

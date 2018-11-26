@@ -39,11 +39,13 @@ module.exports = class Recital {
 			? this._emojis.splice(Math.floor(index), 0, emoji)
 			: this._emojis.push(emoji);
 		this._callbacks.set(emoji, callback.bind(this));
-		return this;
+	}
+	removeReactionCallback(emoji) {
+		this._emojis.splice(this._emojis.indexOf(emoji), 1);
+		this._callbacks.delete(emoji);
 	}
 	setDefaultColor(color) {
 		this._defaultColor = color;
-		return this;
 	}
 	start(maxWaitTime) {
 		this._maxWaitTime = maxWaitTime;

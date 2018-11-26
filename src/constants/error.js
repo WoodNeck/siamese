@@ -85,4 +85,9 @@ module.exports = {
 		USER_NOT_FOUND: '그 아이디로는 유저를 찾지 못했다냥!',
 		EMPTY_GAMES: '계정이 비공개거나 가진 게임이 하나도 없다냥!',
 	},
+	NSFW: {
+		NOT_NSFW_CHANNEL: '후방주의 채널이 아니다냥! 채널 설정을 확인해보라냥!',
+		HITOMI_PROVIDE_INTEGER_ONLY: '히토미 번호는 숫자로 된것만 달라냥!',
+		HITOMI_NUM_NOT_VALID: '페이지를 찾지 못했다냥!',
+	},
 };
