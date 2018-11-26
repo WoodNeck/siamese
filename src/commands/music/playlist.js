@@ -2,6 +2,7 @@ const ERROR = require('@/constants/error');
 const { PLAYLIST } = require('@/constants/commands/music');
 const { PLAYLIST_ENTRY } = require('@/constants/format');
 const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
+const { COOLDOWN } = require('@/constants/type');
 
 
 module.exports = {
@@ -9,6 +10,7 @@ module.exports = {
 	description: PLAYLIST.DESC,
 	hidden: false,
 	devOnly: false,
+	cooldown: COOLDOWN.PER_CHANNEL(5),
 	permissions: [],
 	execute: async ({ msg, bot, guild, channel }) => {
 		if (!bot.players.has(guild.id)) {

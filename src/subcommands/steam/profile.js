@@ -6,6 +6,7 @@ const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { STEAM, PROFILE } = require('@/constants/commands/steam');
+const { COOLDOWN } = require('@/constants/type');
 
 
 module.exports = {
@@ -14,6 +15,7 @@ module.exports = {
 	usage: PROFILE.USAGE,
 	hidden: false,
 	devOnly: false,
+	cooldown: COOLDOWN.PER_USER(5),
 	permissions: [
 		PERMISSION.EMBED_LINKS,
 	],

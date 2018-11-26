@@ -6,12 +6,14 @@ const { strong, block } = require('@/utils/markdown.js');
 const COLOR = require('@/constants/color');
 const PERMISSION = require('@/constants/permission');
 const { HELP } = require('@/constants/commands/utility');
+const { COOLDOWN } = require('@/constants/type');
 
 module.exports = {
 	name: HELP.CMD,
 	description: HELP.DESC,
 	hidden: false,
 	devOnly: false,
+	cooldown: COOLDOWN.PER_CHANNEL(5),
 	permissions: [
 		PERMISSION.EMBED_LINKS,
 		PERMISSION.ADD_REACTIONS,

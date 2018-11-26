@@ -25,6 +25,7 @@ module.exports = {
 		FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
 		FAIL_CMD: msg => `이 명령어를 실행중이었다냥: ${strong(msg.content)}`,
 		FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
+		ON_COOLDOWN: seconds => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
 	},
 	API: {
 		KEY_MISSING: 'API 키가 정의되지 않았다냥!',

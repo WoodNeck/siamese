@@ -1,7 +1,36 @@
 const EMOJI = require('@/constants/emoji');
 
 
+const COOLDOWN_TYPE = {
+	PER_SERVER: 'PER_SERVER',
+	PER_CHANNEL: 'PER_CHANNEL',
+	PER_USER: 'PER_USER',
+};
 module.exports = {
+	COOLDOWN: {
+		TYPE: COOLDOWN_TYPE,
+		PER_SERVER: seconds => {
+			return {
+				type: COOLDOWN_TYPE.PER_SERVER,
+				time: seconds,
+				key: 'guild',
+			};
+		},
+		PER_CHANNEL: seconds => {
+			return {
+				type: COOLDOWN_TYPE.PER_CHANNEL,
+				time: seconds,
+				key: 'channel',
+			};
+		},
+		PER_USER: seconds => {
+			return {
+				type: COOLDOWN_TYPE.PER_USER,
+				time: seconds,
+				key: 'author',
+			};
+		},
+	},
 	LOG_TYPE: {
 		VERBOSE: 'VERBOSE',
 		ERROR: 'ERROR',

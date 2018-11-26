@@ -2,10 +2,11 @@ const Discord = require('discord.js');
 const chalk = require('chalk');
 const events = require('@/bot.on');
 const Logger = require('@/utils/logger');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
 const { loadDatabase } = require('@/load/db');
 const { loadAllCommands } = require('@/load/command');
+const ERROR = require('@/constants/error');
+const PERMISSION = require('@/constants/permission');
+const { COOLDOWN } = require('@/constants/type');
 
 
 class Bot extends Discord.Client {
@@ -19,6 +20,11 @@ class Bot extends Discord.Client {
 		// Least permission for a bot is defined
 		this._permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);
 		this._permissions.add(PERMISSION.SEND_MESSAGES.flag);
+		// Cooldowns, per type
+		this._cooldowns = {};
+		for (const type in COOLDOWN.TYPE) {
+			this._cooldowns[type] = new Discord.Collection();
+		}
 	}
 
 	async setup() {
@@ -46,6 +52,7 @@ class Bot extends Discord.Client {
 	get commands() { return this._commands; }
 	get players() { return this._players; }
 	get permissions() { return this._permissions; }
+	get cooldowns() { return this._cooldowns; }
 
 	// Used in ready event
 	_setLogger() {

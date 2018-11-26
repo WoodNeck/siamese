@@ -59,10 +59,10 @@ const onMessage = async function(msg) {
 		content = content.slice(subcommandName.length + 1);
 	}
 
-	// Check whether it's dev-only command
+	// Dev-only check
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
-	// Check permission to execute command
+	// Permissions check
 	const permissionsGranted = msg.channel.permissionsFor(this.user);
 	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
 		const neededPermissionList = cmd.permissions.reduce((prevStr, permission) => {
@@ -70,6 +70,31 @@ const onMessage = async function(msg) {
 		}, '');
 		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
 		return;
+	}
+
+	// Cooldown check
+	if (cmd.cooldown) {
+		const key = msg[cmd.cooldown.key].id;
+		const type = cmd.cooldown.type;
+		const cooldown = this.cooldowns[type];
+		const prevExecuteTime = cooldown.get(key);
+		if (prevExecuteTime) {
+			// it's on cooldown, send inform msg
+			const timeDiff = new Date() - prevExecuteTime.start;
+			const diffInSeconds = (prevExecuteTime.duration - (timeDiff / 1000)).toFixed(1);
+			msg.error(ERROR.CMD.ON_COOLDOWN(diffInSeconds));
+			return;
+		}
+		else {
+			// it's not on cooldown
+			cooldown.set(key, {
+				start: new Date(),
+				duration: cmd.cooldown.time,
+			});
+			setTimeout(() => {
+				cooldown.delete(key);
+			}, cmd.cooldown.time * 1000);
+		}
 	}
 
 	try {
