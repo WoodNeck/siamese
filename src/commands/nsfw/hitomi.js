@@ -13,6 +13,7 @@ const { AXIOS_HEADER } = require('@/constants/header');
 module.exports = {
 	name: HITOMI.CMD,
 	description: HITOMI.DESC,
+	usage: HITOMI.USAGE,
 	hidden: false,
 	devOnly: false,
 	permissions: [

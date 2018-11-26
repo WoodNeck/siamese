@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { Parser } = require('htmlparser2');
+const cheerio = require('cheerio');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
 const ERROR = require('@/constants/error');
@@ -48,31 +48,13 @@ module.exports = {
 	},
 };
 
-const findAllImages = data => {
-	let metaFlag = false;
-	const foundImages = [];
-	const parser = new Parser({
-		ontext: text => {
-			if (metaFlag) {
-				const imageMeta = JSON.parse(text);
-				foundImages.push(imageMeta.ou);
-			}
-		},
-		onopentag: (name, attrs) => {
-			// find a div with rg_meta class
-			if (name !== 'div') return;
-			if (!attrs.class) return;
-			if (attrs.class.split(' ').some(className => className === 'rg_meta')) {
-				metaFlag = true;
-			}
-		},
-		onclosetag: () => {
-			metaFlag = false;
-		},
-	});
+const findAllImages = page => {
+	const $ = cheerio.load(page);
 
-	parser.write(data);
-	parser.end();
+	const images = $('.rg_meta').map(function() {
+		const element = $(this);
+		return JSON.parse(element.text()).ou;
+	}).toArray();
 
-	return foundImages;
+	return images;
 };

@@ -1,7 +1,7 @@
 module.exports = {
 	HITOMI: {
 		CMD: '히토미',
-		DESC: '이 채널의 랜덤한 메시지를 보여준다냥!',
+		DESC: '히토미를 검색하고 볼 수 있다냥!',
 		USAGE: '번호',
 		PREVIEW_RECITAL_TIME: 30,
 		READER_RECITAL_TIME: 60,

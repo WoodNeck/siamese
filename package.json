@@ -28,7 +28,6 @@
     "ffmpeg-binaries": "^4.0.0",
     "fuse.js": "^3.3.0",
     "hangul-js": "^0.2.5",
-    "htmlparser2": "^3.10.0",
     "josa-js": "^0.0.2",
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
