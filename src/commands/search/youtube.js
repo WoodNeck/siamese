@@ -1,3 +1,4 @@
+const axios = require('axios');
 const YouTube = require('simple-youtube-api');
 const Song = require('@/music/song');
 const Recital = require('@/utils/recital');
@@ -12,6 +13,13 @@ const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
 
 
 const api = new YouTube(global.env.GOOGLE_API_KEY);
+// Override dependency's make function to support escaping characters like '#'
+api.request.make = function(endpoint, qs = {}) {
+	qs = Object.assign({ key: this.youtube.key }, qs);
+	return axios.get(YOUTUBE.API_SEARCH_URL(endpoint), {
+		params: qs,
+	}).then(body => body.data);
+};
 
 module.exports = {
 	name: YOUTUBE.CMD,

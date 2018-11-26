@@ -32,6 +32,7 @@ module.exports = {
 		MAX_RESULTS: 10,
 		VIDEO_URL: videoId => `https://youtu.be/${videoId}`,
 		VIDEO_URL_WITH_TIME: (videoId, videoLength) => `https://youtu.be/${videoId} ${code(videoLength)}`,
+		API_SEARCH_URL: endpoint => `https://www.googleapis.com/youtube/v3/${endpoint}`,
 		SEARCH_OPTION: isSafeSearch => {
 			return {
 				safeSearch: isSafeSearch ? 'strict' : 'none',
