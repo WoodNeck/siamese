@@ -116,7 +116,7 @@ const onMessage = async function(msg) {
 	catch (err) {
 		await msg.channel.stopTyping();
 
-		msg.channel.send(ERROR.CMD.FAILED);
+		msg.error(ERROR.CMD.FAILED);
 		this.logger.error(err, msg);
 	}
 };

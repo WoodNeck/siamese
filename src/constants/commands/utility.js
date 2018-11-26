@@ -58,4 +58,9 @@ module.exports = {
 		CMD: '공지',
 		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
 	},
+	GUILDLIST: {
+		CMD: '서버목록',
+		GUILD_ENTRY: guild => dedent`
+		${guild.systemChannel ? EMOJI.GREEN_CHECK : EMOJI.CROSS} - ${guild.name}(${guild.members.size}명)`,
+	},
 };
