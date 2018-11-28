@@ -1,6 +1,7 @@
 const dedent = require('@/utils/dedent');
 const Josa = require('josa-js');
 const { strong, block } = require('@/utils/markdown');
+const { DISCHARGE_ADD } = require('@/constants/commands/history');
 
 
 module.exports = {
@@ -89,5 +90,16 @@ module.exports = {
 		NOT_NSFW_CHANNEL: '후방주의 채널이 아니다냥! 채널 설정을 확인해보라냥!',
 		HITOMI_PROVIDE_INTEGER_ONLY: '히토미 번호는 숫자로 된것만 달라냥!',
 		HITOMI_NUM_NOT_VALID: '페이지를 찾지 못했다냥!',
+	},
+	DISCHARGE: {
+		EMPTY_CONTENT: '찾을 사람을 달라냥!',
+		EMPTY_RESULT: '아직 등록되지 않은 사람이다냥!',
+		NAME_TOO_LONG: max => `이름이 너무 길다냥! ${max}자 이내로 달라냥!`,
+		PROVIDE_NAME_TO_ADD: '등록할 사람의 이름을 달라냥!',
+		JOIN_DATE_NOT_FORMATTED: '입대일자는 YYYY/MM/DD 형식으로 달라냥!',
+		FORCES_NOT_LISTED: `${Object.keys(DISCHARGE_ADD.FORCES_LENGTH).map(force => strong(force)).join(', ')} 중에 하나를 골라달라냥!`,
+	},
+	CONVERSATION: {
+		NO_RESPONSE: time => `${time}초 안에 대답해달라냥!`,
 	},
 };

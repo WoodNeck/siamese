@@ -88,14 +88,11 @@ module.exports = {
 		recital.removeReactionCallback(EMOJI.ARROW_LEFT);
 		recital.removeReactionCallback(EMOJI.ARROW_RIGHT);
 
-		// We can't play animation type article
-		if (meta.Type !== 'anime') {
-			recital.addReactionCallback(EMOJI.PLAY, async () => {
-				const readRecital = new Recital(bot, msg);
-				readHitomi(articleNum, meta, readRecital);
-				return RECITAL_END.DELETE_ALL_MESSAGES;
-			}, 0);
-		}
+		recital.addReactionCallback(EMOJI.PLAY, async () => {
+			const readRecital = new Recital(bot, msg);
+			readHitomi(articleNum, meta, readRecital);
+			return RECITAL_END.DELETE_ALL_MESSAGES;
+		}, 0);
 		recital.start(HITOMI.PREVIEW_RECITAL_TIME);
 	},
 };

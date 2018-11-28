@@ -66,4 +66,10 @@ module.exports = {
 		KILL: 'KILL',
 		SKIP: 'SKIP',
 	},
+	// End type of conversation's dialogue
+	DIALOGUE: {
+		VALID: 'VALID',
+		INVALID: 'INVALID',
+		NO_RESPONSE: 'user',
+	},
 };
