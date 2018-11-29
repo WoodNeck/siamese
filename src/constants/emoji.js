@@ -40,4 +40,6 @@ module.exports = {
 	PEOPLE: '👥',
 	NSFW: '🔞',
 	EGGPLANT: '🍆',
+	SPARKLING_HEART: '💖',
+	BLACK_HEART: '🖤',
 };

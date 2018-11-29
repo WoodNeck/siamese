@@ -15,7 +15,7 @@ module.exports = {
 	hidden: false,
 	devOnly: false,
 	permissions: [],
-	execute: async ({ author, channel, msg, content }) => {
+	execute: async ({ author, channel, guild, msg, content }) => {
 		// No multiline is allowed
 		const name = content.split('\n')[0];
 
@@ -28,9 +28,11 @@ module.exports = {
 			return;
 		}
 
+		await channel.startTyping();
+
 		const prevInfo = await Discharge.findOne({
 			name: name,
-			channelId: channel.id,
+			serverId: guild.id,
 		}).exec();
 
 		if (prevInfo) {
@@ -66,8 +68,7 @@ module.exports = {
 			.setColor(COLOR.BOT);
 		conversation.add(
 			forcesDialogue,
-			message => Object.keys(DISCHARGE_ADD.FORCES_LENGTH)
-				.some(force => force === message.content),
+			message => DISCHARGE_ADD.FORCES.some(force => force === message.content),
 		);
 
 		const result = await conversation.start(DISCHARGE_ADD.CONVERSATION_TIME);
@@ -93,7 +94,7 @@ module.exports = {
 
 		// Add new discharge info
 		await Discharge.updateOne(
-			{ name: name, channelId: channel.id },
+			{ name: name, serverId: guild.id },
 			{ joinDate: joinDate, force: forceName },
 			{ upsert: true }
 		).exec();

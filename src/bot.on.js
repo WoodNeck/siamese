@@ -40,7 +40,8 @@ const onMessage = async function(msg) {
 
 	logMessage(msg);
 
-	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+	if (msg.author.bot) return;
+	if (!msg.content.startsWith(prefix)) return;
 
 	const args = msg.content.slice(prefix.length).split(/ +/);
 	const cmdName = args.shift();

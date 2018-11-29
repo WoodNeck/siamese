@@ -97,7 +97,7 @@ module.exports = {
 		NAME_TOO_LONG: max => `이름이 너무 길다냥! ${max}자 이내로 달라냥!`,
 		PROVIDE_NAME_TO_ADD: '등록할 사람의 이름을 달라냥!',
 		JOIN_DATE_NOT_FORMATTED: '입대일자는 YYYY/MM/DD 형식으로 달라냥!',
-		FORCES_NOT_LISTED: `${Object.keys(DISCHARGE_ADD.FORCES_LENGTH).map(force => strong(force)).join(', ')} 중에 하나를 골라달라냥!`,
+		FORCES_NOT_LISTED: `${DISCHARGE_ADD.FORCES.map(force => strong(force)).join(', ')} 중에 하나를 골라달라냥!`,
 	},
 	CONVERSATION: {
 		NO_RESPONSE: time => `${time}초 안에 대답해달라냥!`,

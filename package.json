@@ -22,6 +22,7 @@
     "bufferutil": "^4.0.0",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
+    "date-and-time": "^0.6.3",
     "date-diff": "^0.2.1",
     "discord.js": "^11.4.2",
     "erlpack": "hammerandchisel/erlpack",
