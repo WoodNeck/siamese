@@ -90,6 +90,7 @@ module.exports = {
 		}
 
 		const joinDate = new Date(result.responses[0]);
+		joinDate.setHours(0, 0, 0, 0);
 		const forceName = result.responses[1];
 
 		// Add new discharge info

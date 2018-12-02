@@ -66,6 +66,7 @@ module.exports = {
 	ANNOUNCE: {
 		CMD: '공지',
 		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
+		PROMPT_TIME: 30,
 	},
 	GUILDLIST: {
 		CMD: '서버목록',

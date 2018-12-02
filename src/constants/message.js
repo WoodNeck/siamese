@@ -14,7 +14,7 @@ module.exports = {
 /\\__/ / | (_| | | | | | |  __/\\__ \\  __/
 \\____/|_|\\__,_|_| |_| |_|\\___||___/\\___|
 
-  ${bot.user.tag} 일할 준비 됐다냥!`,
+- ${bot.user.tag}(GUILDS: ${bot.guilds.size}, USERS: ${bot.users.filter(user => !user.bot).size})`,
 		READY_TITLE: bot => dedent`
 			${bot.user.tag} 일할 준비 됐다냥!`,
 		READY_DESC: bot => dedent`
