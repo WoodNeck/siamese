@@ -120,7 +120,7 @@ module.exports = class Recital {
 			this._recitalMsg.edit('', page.content).catch(() => {});
 		}
 		else {
-			this._recitalMsg.edit(page.content).catch(() => {});
+			this._recitalMsg.edit(page.content, { embed: {} }).catch(() => {});
 		}
 	}
 	_delete() {

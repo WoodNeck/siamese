@@ -1,4 +1,5 @@
 const ERROR = require('@/constants/error');
+const { PAGE } = require('@/constants/format');
 
 
 // Collection of sendable pages
@@ -45,8 +46,15 @@ module.exports = class Book {
 			throw new Error(ERROR.BOOK.ENTRY_IS_EMPTY);
 		}
 		const currentPage = this._pages[this._pageIdx];
-		if (currentPage.isEmbed && !currentPage.content.footer) {
-			currentPage.setFooter(`${this._pageIdx + 1}/${this.length}`);
+		if (currentPage.isEmbed) {
+			if (currentPage.content.footer) {
+				currentPage.content.footer.text = currentPage.content.footer.text
+					.replace(PAGE.CURRENT, (this._pageIdx + 1).toString())
+					.replace(PAGE.TOTAL, this.length.toString());
+			}
+			else {
+				currentPage.setFooter(`${this._pageIdx + 1}/${this.length}`);
+			}
 		}
 		return currentPage;
 	}

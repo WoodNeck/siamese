@@ -21,6 +21,10 @@ module.exports = {
 	MUSIC_LENGTH_NO_CLOCK: duration => musicLength(duration),
 	PLAYLIST_ENTRY: (index, song) => `${strong(index.toString())}. ${EMOJI.MUSIC_NOTE} ${strong(song.title)} ${code(musicLengthWithClock(song.duration))}`,
 	DATE: date => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`,
+	PAGE: {
+		CURRENT: '{CURRENT}',
+		TOTAL: '{TOTAL}',
+	},
 };
 
 const musicLength = duration => `${duration.hours * 60 + duration.minutes}:${('0' + duration.seconds).slice(-2)}`;
