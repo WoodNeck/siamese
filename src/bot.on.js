@@ -4,7 +4,7 @@ const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const { BOT } = require('@/constants/message');
-const { HELP } = require('@/constants/commands/utility');
+const { HELP } = require('@/constants/commands/bot');
 const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
 
 

@@ -1,7 +1,7 @@
 const { RichEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const PERMISSION = require('@/constants/permission');
-const { INFO } = require('@/constants/commands/utility');
+const { INFO } = require('@/constants/commands/bot');
 
 
 module.exports = {

@@ -1,5 +1,5 @@
 const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
-const { GUILDLIST } = require('@/constants/commands/utility');
+const { GUILDLIST } = require('@/constants/commands/bot');
 
 
 module.exports = {

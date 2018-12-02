@@ -1,4 +1,4 @@
-const { DEV_SERVER } = require('@/constants/commands/utility');
+const { DEV_SERVER } = require('@/constants/commands/bot');
 
 
 module.exports = {

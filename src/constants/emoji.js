@@ -42,4 +42,6 @@ module.exports = {
 	EGGPLANT: '🍆',
 	SPARKLING_HEART: '💖',
 	BLACK_HEART: '🖤',
+	BOT: '🤖',
+	WRENCH: '🔧',
 };
