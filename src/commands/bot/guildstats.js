@@ -23,12 +23,13 @@ module.exports = {
 	cooldown: COOLDOWN.PER_GUILD(5),
 	execute: async ({ bot, msg, channel, guild, content }) => {
 		await channel.startTyping();
+		console.log(await GuildCommand.find({guildId: guild.id}).exec());
 
 		// Specific command check
 		if (content) {
 			const cmd = await GuildCommand.findOne({
 				name: content,
-				guildID: guild.id,
+				guildId: guild.id,
 			}).exec();
 
 			if (!cmd) {
@@ -44,7 +45,7 @@ module.exports = {
 		}
 		// All command check
 		else {
-			const commands = await GuildCommand.find({ guildID: guild.id })
+			const commands = await GuildCommand.find({ guildId: guild.id })
 				.sort({ callCount: -1 })
 				.exec();
 
