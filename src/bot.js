@@ -6,7 +6,6 @@ const { loadDatabase } = require('@/load/db');
 const { loadAllCommands } = require('@/load/command');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
-const { COOLDOWN } = require('@/constants/type');
 
 
 class Bot extends Discord.Client {

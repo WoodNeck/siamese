@@ -17,6 +17,8 @@ const essentialConfigs = {
 	BOT_TOKEN: validator.notEmptyStr,
 	BOT_DEFAULT_PREFIX: validator.notEmptyStr,
 	BOT_DEV_SERVER_INVITE: validator.notEmptyStr,
+	BOT_BUG_REPORT_CHANNEL: validator.notEmptyStr,
+	BOT_FEATURE_REQUEST_CHANNEL: validator.notEmptyStr,
 };
 typetest(global.env, essentialConfigs);
 

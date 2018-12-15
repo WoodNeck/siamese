@@ -50,7 +50,7 @@ module.exports = {
 		TITLE: botOrCmd => `${botOrCmd}의 사용 통계다냥!`,
 		CMD_INFO: cmd => dedent`
 			${EMOJI.BAR_CHART} 사용 횟수: ${cmd.callCount}회
-			${EMOJI.ALARM} 평균 응답 시간: ${cmd.avgTime.toFixed(2)}ms`,
+			${EMOJI.ALARM} 평균 응답 시간: ${cmd.avgTime > 1000 ? `${(cmd.avgTime / 1000).toFixed(2)}s` : `${cmd.avgTime.toFixed(2)}ms`}`,
 		CMD_INFO_ONE_LINE: cmd => `${EMOJI.SMALL_WHITE_SQUARE}${cmd.name} - ${EMOJI.BAR_CHART} ${cmd.callCount}회 ${EMOJI.ALARM} ${cmd.avgTime.toFixed(2)}ms`,
 		CMD_PER_PAGE: 5,
 		RECITAL_TIME: 30,

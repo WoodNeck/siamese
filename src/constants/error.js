@@ -106,4 +106,7 @@ module.exports = {
 		NO_ENTRY: '명령어가 없거나 아직 한번도 사용되지 않은 것 같다냥!',
 		NOT_EXECUTED_ONCE: '아직 아무 명령어도 사용하지 않은 서버다냥!',
 	},
+	REPORT: {
+		EMPTY_CONTENT: '말할 내용을 달라냥!',
+	},
 };
