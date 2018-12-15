@@ -31,6 +31,9 @@ module.exports = content => {
 				idx = lastIdx;
 				break;
 			}
+			else {
+				idx += 1;
+			}
 		}
 		else {
 			idx += 1;
