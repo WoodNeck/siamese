@@ -1,3 +1,4 @@
+const Josa = require('josa-js');
 const EMOJI = require('@/constants/emoji');
 const { strong } = require('@/utils/markdown');
 
@@ -31,5 +32,17 @@ module.exports = {
 		CMD: '공지',
 		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
 		PROMPT_TIME: 30,
+	},
+	ANNOUNCE_CHANNEL: {
+		CMD: '공지채널',
+		DESC: '현재 채널을 공지사항을 받는 채널으로 설정한다냥!',
+		MSG_SET: channel => `${channel.toString()}${Josa.c(channel.name, '을/를')} 이 서버의 공지채널으로 설정했다냥!`,
+		MSG_DELETE: '이 서버의 공지채널을 제거했다냥!',
+	},
+	ANNOUNCE_LISTEN: {
+		CMD: '공지수신',
+		DESC: '현재 서버의 공지 수신 여부를 설정한다냥!',
+		MSG_ABLE: '공지 메시지를 받도록 설정했다냥!',
+		MSG_DISABLE: '이제 더 이상 공지 메시지를 받지 않는다냥!',
 	},
 };

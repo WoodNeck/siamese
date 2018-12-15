@@ -47,6 +47,11 @@ module.exports = {
 				.sort({ callCount: -1 })
 				.exec();
 
+			if (!commands.length) {
+				await msg.error(ERROR.STATS.NOT_EXECUTED_ONCE);
+				return;
+			}
+
 			const recital = new Recital(bot, msg);
 			const pages = [];
 			for (let i = 0; i < commands.length / STATS.CMD_PER_PAGE; i += 1) {

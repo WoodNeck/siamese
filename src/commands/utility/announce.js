@@ -1,6 +1,7 @@
 const prompt = require('@/utils/prompt');
 const { RichEmbed } = require('discord.js');
 const dedent = require('@/utils/dedent');
+const Guild = require('@/model/guild');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
@@ -28,14 +29,33 @@ module.exports = {
 		const willSend = await prompt(embedContent, channel, author, ANNOUNCE.PROMPT_TIME);
 		if (!willSend) return;
 
-		const guilds = bot.guilds
-			.filter(guild => guild.systemChannel);
+		const guildSettings = await Guild.find().exec();
+
+		const guilds = bot.guilds;
 		guilds.tap(guild => {
-			const permissionsGranted = guild.systemChannel.permissionsFor(bot.user);
+			const setting = guildSettings.find(el => el.id === guild.id);
+			if (setting && !setting.listenAnnounce) return;
+
+			let channelToSend = guild.systemChannel;
+			if (setting && setting.announceChannel) {
+				channelToSend = guild.channels.get(setting.announceChannel);
+			}
+			// Fallback, get first channel that bot can send message
+			if (!channelToSend) {
+				channelToSend = guild.channels
+					.filter(guildChannel => guildChannel.type === 'text')
+					.filter(guildChannel => guildChannel.permissionsFor(bot.user).has(PERMISSION.SEND_MESSAGES.flag))
+					.first();
+			}
+
+			// Don't send message if there's no channel to send
+			if (!channelToSend) return;
+
+			const permissionsGranted = channelToSend.permissionsFor(bot.user);
 			const announce = permissionsGranted.has(PERMISSION.EMBED_LINKS.flag)
 				? embedContent
 				: textContent;
-			guild.systemChannel.send(announce);
+			channelToSend.send(announce);
 		});
 	},
 };

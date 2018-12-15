@@ -5,6 +5,7 @@ const logCommand = require('@/helper/logCommand');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
+const PERMISSION = require('@/constants/permission');
 const { BOT } = require('@/constants/message');
 const { HELP } = require('@/constants/commands/bot');
 const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
@@ -75,6 +76,12 @@ const onMessage = async function(msg) {
 
 	// Dev-only check
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
+
+	// Admin permission check
+	if (cmd.admin && !msg.channel.permissionsFor(msg.member).has(PERMISSION.ADMINISTRATOR.flag)) {
+		msg.error(ERROR.CMD.PERMISSION_IS_MISSING(`- ${PERMISSION.ADMINISTRATOR.message}`));
+		return;
+	}
 
 	// Permissions check
 	const permissionsGranted = msg.channel.permissionsFor(this.user);

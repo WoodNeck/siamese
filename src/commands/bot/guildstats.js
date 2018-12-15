@@ -28,6 +28,7 @@ module.exports = {
 		if (content) {
 			const cmd = await GuildCommand.findOne({
 				name: content,
+				guildID: guild.id,
 			}).exec();
 
 			if (!cmd) {
@@ -43,9 +44,14 @@ module.exports = {
 		}
 		// All command check
 		else {
-			const commands = await GuildCommand.find()
+			const commands = await GuildCommand.find({ guildID: guild.id })
 				.sort({ callCount: -1 })
 				.exec();
+
+			if (!commands.length) {
+				await msg.error(ERROR.STATS.NOT_EXECUTED_ONCE);
+				return;
+			}
 
 			const recital = new Recital(bot, msg);
 			const pages = [];
