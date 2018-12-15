@@ -35,12 +35,15 @@ module.exports = class Logger {
 		const log = (this._channels[mode])
 			? new EmbedLog(mode, this._channels[mode])
 			: new StringLog(mode);
-		log.setTitle(ERROR.CMD.FAIL_TITLE(err))
-			.setDescription(dedent`
-				${ERROR.CMD.FAIL_PLACE(msg)}
-				${ERROR.CMD.FAIL_CMD(msg)}
-				${ERROR.CMD.FAIL_DESC(err)}`)
-			.send();
+		msg
+			? log.setTitle(ERROR.CMD.FAIL_TITLE(err))
+				.setDescription(dedent`
+					${ERROR.CMD.FAIL_PLACE(msg)}
+					${ERROR.CMD.FAIL_CMD(msg)}
+					${ERROR.CMD.FAIL_DESC(err)}`)
+			: log.setTitle(ERROR.CMD.FAIL_TITLE(err))
+				.setDescription(ERROR.CMD.FAIL_DESC(err));
+		log.send();
 	}
 };
 

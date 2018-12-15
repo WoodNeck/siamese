@@ -1,4 +1,5 @@
 const { RichEmbed } = require('discord.js');
+const parseArgs = require('@/helper/parseArgs');
 const logMessage = require('@/helper/logMessage');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
@@ -33,6 +34,10 @@ const onReady = async function() {
 	this.user.setActivity(activity, {
 		type: ACTIVITY.LISTENING,
 	});
+
+	// Exceptions
+	process.on('uncaughtException', err => this.logger.error(err));
+	process.on('unhandledRejection', err => this.logger.error(err));
 };
 
 const onMessage = async function(msg) {
@@ -43,8 +48,7 @@ const onMessage = async function(msg) {
 	if (msg.author.bot) return;
 	if (!msg.content.startsWith(prefix)) return;
 
-	const args = msg.content.slice(prefix.length).split(/ +/);
-	const cmdName = args.shift();
+	const cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 
 	// No command matched
 	if (!this.commands.has(cmdName)) return;
@@ -52,11 +56,11 @@ const onMessage = async function(msg) {
 	let cmd = this.commands.get(cmdName);
 	// Exclude one blank after command name
 	let content = msg.content.slice(prefix.length + cmdName.length + 1);
+	const subcommandName = content.split(/ +/)[0];
 
-	if (cmd.subcommands && cmd.subcommands.has(args[0])) {
-		const subcommandName = args[0];
-		// Remove first arg by calling shift
-		cmd = cmd.subcommands.get(args.shift());
+	// Found subcommand
+	if (cmd.subcommands && cmd.subcommands.has(subcommandName)) {
+		cmd = cmd.subcommands.get(subcommandName);
 		content = content.slice(subcommandName.length + 1);
 	}
 
@@ -66,9 +70,8 @@ const onMessage = async function(msg) {
 	// Permissions check
 	const permissionsGranted = msg.channel.permissionsFor(this.user);
 	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
-		const neededPermissionList = cmd.permissions.reduce((prevStr, permission) => {
-			return `${prevStr}\n- ${permission.message}`;
-		}, '');
+		const neededPermissionList = cmd.permissions.map(permission => `- ${permission.message}`)
+			.join('\n');
 		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
 		return;
 	}
@@ -111,7 +114,7 @@ const onMessage = async function(msg) {
 			author: msg.member,
 			guild: msg.guild,
 			channel: msg.channel,
-			args: args,
+			args: parseArgs(content),
 		});
 	}
 	catch (err) {
@@ -136,10 +139,7 @@ const onGuildJoin = function(guild) {
 const onError = function(err) {
 	// Known error
 	if (err.message === 'read ECONNRESET') return;
-	this.logger.log(LOG_TYPE.ERROR)
-		.setTitle(ERROR.CMD.FAIL_TITLE(err))
-		.setDescription(ERROR.CMD.FAIL_DESC(err))
-		.send();
+	this.logger.error(err);
 };
 
 const onWarning = function(info) {
