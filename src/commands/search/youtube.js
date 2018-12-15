@@ -9,7 +9,7 @@ const EMOJI = require('@/constants/emoji');
 const PERMISSION = require('@/constants/permission');
 const FORMAT = require('@/constants/format');
 const { YOUTUBE } = require('@/constants/commands/search');
-const { RECITAL_END, MUSIC_TYPE } = require('@/constants/type');
+const { RECITAL_END, MUSIC_TYPE, COOLDOWN } = require('@/constants/type');
 
 
 const api = new YouTube(global.env.GOOGLE_API_KEY);
@@ -35,6 +35,7 @@ module.exports = {
 		PERMISSION.SPEAK,
 	],
 	api: api,
+	cooldown: COOLDOWN.PER_USER(3),
 	execute: async context => {
 		const { bot, author, msg, channel, content } = context;
 		if (!content) {

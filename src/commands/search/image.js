@@ -6,6 +6,7 @@ const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { IMAGE } = require('@/constants/commands/search');
 const { AXIOS_HEADER } = require('@/constants/header');
+const { COOLDOWN } = require('@/constants/type');
 
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
 	],
+	cooldown: COOLDOWN.PER_USER(3),
 	execute: async ({ bot, msg, channel, content }) => {
 		if (!content) {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);

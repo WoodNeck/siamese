@@ -17,7 +17,7 @@ module.exports = {
 	name: STONESOUP.CMD,
 	description: STONESOUP.DESC,
 	usage: STONESOUP.USAGE,
-	hidden: false,
+	hidden: true,
 	devOnly: false,
 	permissions: [
 		PERMISSION.EMBED_LINKS,

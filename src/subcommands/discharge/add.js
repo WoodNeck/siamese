@@ -32,7 +32,7 @@ module.exports = {
 
 		const prevInfo = await Discharge.findOne({
 			name: name,
-			serverId: guild.id,
+			guildId: guild.id,
 		}).exec();
 
 		if (prevInfo) {
@@ -95,7 +95,7 @@ module.exports = {
 
 		// Add new discharge info
 		await Discharge.updateOne(
-			{ name: name, serverId: guild.id },
+			{ name: name, guildId: guild.id },
 			{ joinDate: joinDate, force: forceName },
 			{ upsert: true }
 		).exec();

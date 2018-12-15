@@ -31,7 +31,7 @@ module.exports = {
 
 		const info = await Discharge.findOne({
 			name: name,
-			serverId: guild.id,
+			guildId: guild.id,
 		}).exec();
 
 		if (!info) {

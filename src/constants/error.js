@@ -102,4 +102,7 @@ module.exports = {
 	CONVERSATION: {
 		NO_RESPONSE: time => `${time}초 안에 대답해달라냥!`,
 	},
+	STATS: {
+		NO_ENTRY: '명령어가 없거나 아직 한번도 사용되지 않은 것 같다냥!',
+	},
 };

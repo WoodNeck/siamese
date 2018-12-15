@@ -1,6 +1,7 @@
 const { RichEmbed } = require('discord.js');
 const parseArgs = require('@/helper/parseArgs');
 const logMessage = require('@/helper/logMessage');
+const logCommand = require('@/helper/logCommand');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
@@ -36,19 +37,26 @@ const onReady = async function() {
 	});
 
 	// Exceptions
-	process.on('uncaughtException', err => this.logger.error(err));
-	process.on('unhandledRejection', err => this.logger.error(err));
+	process.on('uncaughtException', err => {
+		console.error(err);
+		this.logger.error(err);
+	});
+	process.on('unhandledRejection', err => {
+		console.error(err);
+		this.logger.error(err);
+	});
 };
 
 const onMessage = async function(msg) {
 	const prefix = this.prefix;
 
+	// Log message per channel, for history-related commands
 	logMessage(msg);
 
 	if (msg.author.bot) return;
 	if (!msg.content.startsWith(prefix)) return;
 
-	const cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
+	let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 
 	// No command matched
 	if (!this.commands.has(cmdName)) return;
@@ -62,6 +70,7 @@ const onMessage = async function(msg) {
 	if (cmd.subcommands && cmd.subcommands.has(subcommandName)) {
 		cmd = cmd.subcommands.get(subcommandName);
 		content = content.slice(subcommandName.length + 1);
+		cmdName = `${cmdName} ${cmd.name}`;
 	}
 
 	// Dev-only check
@@ -78,10 +87,8 @@ const onMessage = async function(msg) {
 
 	// Cooldown check
 	if (cmd.cooldown) {
-		const key = msg[cmd.cooldown.key].id;
-		const type = cmd.cooldown.type;
-		const cooldown = this.cooldowns[type];
-		const prevExecuteTime = cooldown.get(key);
+		const key = `${msg[cmd.cooldown.key].id}${cmdName}`;
+		const prevExecuteTime = this.cooldowns.get(key);
 		if (prevExecuteTime) {
 			// it's on cooldown, send inform msg
 			const timeDiff = new Date() - prevExecuteTime.start;
@@ -91,12 +98,12 @@ const onMessage = async function(msg) {
 		}
 		else {
 			// it's not on cooldown
-			cooldown.set(key, {
+			this.cooldowns.set(key, {
 				start: new Date(),
 				duration: cmd.cooldown.time,
 			});
 			setTimeout(() => {
-				cooldown.delete(key);
+				this.cooldowns.delete(key);
 			}, cmd.cooldown.time * 1000);
 		}
 	}
@@ -107,6 +114,7 @@ const onMessage = async function(msg) {
 			// Only execute if it has execute() method
 			return;
 		}
+		const cmdTimeStart = new Date().getTime();
 		await cmd.execute({
 			bot: this,
 			msg: msg,
@@ -116,6 +124,8 @@ const onMessage = async function(msg) {
 			channel: msg.channel,
 			args: parseArgs(content),
 		});
+		const cmdTimeEnd = new Date().getTime();
+		logCommand(cmdName, msg, cmdTimeEnd - cmdTimeStart);
 	}
 	catch (err) {
 		await msg.channel.stopTyping();

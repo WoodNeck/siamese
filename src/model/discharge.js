@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = mongoose.model('Discharge', new mongoose.Schema({
 	name: String,
-	serverId: String,
+	guildId: String,
 	joinDate: Date,
 	force: String,
 }));

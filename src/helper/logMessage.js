@@ -8,8 +8,7 @@ module.exports = async msg => {
 		{ id: msg.channel.id },
 		{ '$inc': { msgCnt: 1 } },
 		{ upsert: true, new: true, setDefaultsOnInsert: true }
-	).exec()
-		.catch(err => this.logger.error(err, msg));
+	).exec();
 
 	// index starts with 1, as incr happens automatically every time
 	if (channel.msgCnt % DB.MSG_SAVE_INTERVAL === 1) {

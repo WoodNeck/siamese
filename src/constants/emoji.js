@@ -44,4 +44,5 @@ module.exports = {
 	BLACK_HEART: '🖤',
 	BOT: '🤖',
 	WRENCH: '🔧',
+	BAR_CHART: '📊',
 };

@@ -21,10 +21,7 @@ class Bot extends Discord.Client {
 		this._permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);
 		this._permissions.add(PERMISSION.SEND_MESSAGES.flag);
 		// Cooldowns, per type
-		this._cooldowns = {};
-		for (const type in COOLDOWN.TYPE) {
-			this._cooldowns[type] = new Discord.Collection();
-		}
+		this._cooldowns = new Discord.Collection();
 	}
 
 	async setup() {
