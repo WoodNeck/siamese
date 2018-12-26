@@ -64,4 +64,11 @@ module.exports = {
 
 		SUCCESS: name => `${strong(name)}의 정보를 추가했다냥!`,
 	},
+	DISCHARGE_LIST: {
+		CMD: '목록',
+		DESC: '전역일 목록을 확인한다냥!',
+		RECITAL_TIME: 30,
+		ENTRY_PER_PAGE: 10,
+		ENTRY: info => `${EMOJI.SMALL_WHITE_SQUARE}${info.name} - ${FORMAT.DATE(info.joinDate)}`,
+	},
 };

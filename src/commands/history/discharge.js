@@ -35,7 +35,7 @@ module.exports = {
 		}).exec();
 
 		if (!info) {
-			msg.error(ERROR.DISCHARGE.EMPTY_RESULT);
+			msg.error(ERROR.DISCHARGE.NOT_FOUND);
 			return;
 		}
 

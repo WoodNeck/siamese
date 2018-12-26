@@ -91,7 +91,8 @@ module.exports = {
 		HITOMI_NUM_NOT_VALID: '페이지를 찾지 못했다냥!',
 	},
 	DISCHARGE: {
-		EMPTY_RESULT: '아직 등록되지 않은 사람이다냥!',
+		NOT_FOUND: '아직 등록되지 않은 사람이다냥!',
+		EMPTY_RESULT: '전역일 정보가 하나도 등록되지 않았다냥!',
 		NAME_TOO_LONG: max => `이름이 너무 길다냥! ${max}자 이내로 달라냥!`,
 		PROVIDE_NAME_TO_ADD: '등록할 사람의 이름을 달라냥!',
 		JOIN_DATE_NOT_FORMATTED: '입대일자는 YYYY/MM/DD 형식으로 달라냥!',
