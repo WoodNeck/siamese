@@ -97,7 +97,7 @@ module.exports = class Player {
 
 		const song = this._queue[0];
 		const stream = song.createStream();
-		const streamOptions = { seek: 0, volume: 1 };
+		const streamOptions = { bitrate: 'auto' };
 		const dispatcher = this._connection.playStream(stream, streamOptions);
 
 		dispatcher.on('start', () => {

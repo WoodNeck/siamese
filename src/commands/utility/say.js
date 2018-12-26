@@ -12,7 +12,7 @@ module.exports = {
 	execute: ({ msg, channel, content }) => {
 		// Can't react for empty content
 		if (!content) {
-			msg.error(ERROR.SAY.EMPTY_CONTENT);
+			msg.error(ERROR.CMD.EMPTY_CONTENT(SAY.TARGET));
 			return;
 		}
 		msg.delete();

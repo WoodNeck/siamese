@@ -45,4 +45,6 @@ module.exports = {
 	BOT: '🤖',
 	WRENCH: '🔧',
 	BAR_CHART: '📊',
+	THINKING: '🤔',
+	KEYCAP: '⃣',
 };

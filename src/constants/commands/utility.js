@@ -1,6 +1,7 @@
 const Josa = require('josa-js');
-const EMOJI = require('@/constants/emoji');
+const dedent = require('@/utils/dedent');
 const { strong } = require('@/utils/markdown');
+const EMOJI = require('@/constants/emoji');
 
 
 module.exports = {
@@ -27,6 +28,7 @@ module.exports = {
 		CMD: '따라해',
 		DESC: '해준 말을 지운 후에 따라한다냥!',
 		USAGE: '따라할 문장',
+		TARGET: '따라할 문장',
 	},
 	ANNOUNCE: {
 		CMD: '공지',
@@ -49,6 +51,7 @@ module.exports = {
 		CMD: '버그제보',
 		DESC: '개발서버로 봇의 버그를 제보한다냥!',
 		USAGE: '버그내용(자세히)',
+		TARGET: '말할 내용',
 		TITLE_CONFIRM: '이렇게 제보하면 되겠냥?',
 		MSG_SUCCESS: `${EMOJI.GREEN_CHECK} 개발서버로 버그를 제보했다냥!`,
 		MSG_CANCEL: `${EMOJI.CROSS} 메시지 전송을 취소했다냥`,
@@ -58,9 +61,33 @@ module.exports = {
 		CMD: '기능제안',
 		DESC: '개발서버에 봇의 기능을 제안한다냥!',
 		USAGE: '기능(자세히)',
+		TARGET: '말할 내용',
 		TITLE_CONFIRM: '이렇게 제안하면 되겠냥?',
 		MSG_SUCCESS: `${EMOJI.GREEN_CHECK} 개발서버로 기능을 제안했다냥!`,
 		MSG_CANCEL: `${EMOJI.CROSS} 메시지 전송을 취소했다냥`,
 		PROMPT_TIME: 30,
+	},
+	VOTE: {
+		CMD: '투표',
+		DESC: '채널 내에서 간단한 투표를 할 수 있다냥!',
+		USAGE: '제목',
+		TARGET: '투표 제목',
+		CONVERSATION_TIME: 120,
+		OPTIONS_TITLE: '투표 항목들을 말해달라냥!',
+		OPTIONS_DESC: '콤마(,)로 항목들을 구분해서, 최소 2개에서 9개까지 투표 항목들을 말해달라냥!',
+		OPTIONS_FOOTER: '예) 옵션1, 옵션2, 옵션3',
+		DURATION_TITLE: '투표를 몇 분동안 하면 될까냥?',
+		DURATION_DESC: dedent`
+			투표를 종료하기까지 시간을 분 단위로 말해달라냥!
+			최소 1분에서 최대 1440분(하루)까지 가능하다냥!`,
+		DURATION_FOOTER: '예) 30',
+		DURATION_MAX: 1440,
+		HELP_DESC: dedent`
+			투표를 시작한다냥! 번호 이모지를 클릭해서 투표하라냥!
+			각자 가장 마지막에 클릭한 이모지가 최종 투표 항목이 된다냥!`,
+		RESULT_DESC: '투표 결과가 나왔다냥!',
+		TITLE: title => `${EMOJI.THINKING} ${title}`,
+		AUTHOR: name => `${name}의 투표`,
+		COUNT: cnt => `${cnt}표`,
 	},
 };

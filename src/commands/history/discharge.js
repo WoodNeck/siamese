@@ -24,7 +24,7 @@ module.exports = {
 		const name = content.split('\n')[0];
 
 		if (!name) {
-			msg.error(ERROR.DISCHARGE.EMPTY_CONTENT);
+			msg.error(ERROR.CMD.EMPTY_CONTENT(DISCHARGE.TARGET));
 			return;
 		}
 		await channel.startTyping();

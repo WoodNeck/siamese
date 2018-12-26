@@ -4,6 +4,7 @@ const Conversation = require('@/utils/conversation');
 const prompt = require('@/utils/prompt');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
+const PERMISSION = require('@/constants/permission');
 const { DISCHARGE_ADD } = require('@/constants/commands/history');
 const { DIALOGUE } = require('@/constants/type');
 
@@ -14,7 +15,7 @@ module.exports = {
 	usage: DISCHARGE_ADD.USAGE,
 	hidden: false,
 	devOnly: false,
-	permissions: [],
+	permissions: [PERMISSION.EMBED_LINKS],
 	execute: async ({ author, channel, guild, msg, content }) => {
 		// No multiline is allowed
 		const name = content.split('\n')[0];

@@ -16,7 +16,7 @@ module.exports = {
 	cooldown: COOLDOWN.PER_USER(30),
 	execute: async ({ bot, msg, author, channel, guild, content }) => {
 		if (!content) {
-			msg.error(ERROR.REPORT.EMPTY_CONTENT);
+			msg.error(ERROR.CMD.EMPTY_CONTENT(FEATURE_REQUEST.TARGET));
 			return;
 		}
 

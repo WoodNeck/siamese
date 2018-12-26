@@ -14,6 +14,7 @@ module.exports = {
 		CMD: '전역일',
 		DESC: '전역일 정보를 확인한다냥!',
 		USAGE: '이름',
+		TARGET: '찾을 사람',
 		SHORTEN_AFTER_THIS_DATE: new Date(2018, 10 - 1, 1),
 		FORCE_INFO: {
 			육군: { duration: 21, maxShortenMonth: 3 },

@@ -79,7 +79,7 @@ const onMessage = async function(msg) {
 
 	// Admin permission check
 	if (cmd.admin && !msg.channel.permissionsFor(msg.member).has(PERMISSION.ADMINISTRATOR.flag)) {
-		msg.error(ERROR.CMD.PERMISSION_IS_MISSING(`- ${PERMISSION.ADMINISTRATOR.message}`));
+		msg.error(ERROR.CMD.USER_SHOULD_BE_ADMIN);
 		return;
 	}
 
@@ -88,7 +88,7 @@ const onMessage = async function(msg) {
 	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
 		const neededPermissionList = cmd.permissions.map(permission => `- ${permission.message}`)
 			.join('\n');
-		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(neededPermissionList));
+		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(this, neededPermissionList));
 		return;
 	}
 

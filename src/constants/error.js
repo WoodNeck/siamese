@@ -21,12 +21,14 @@ module.exports = {
 		LOAD_FAILED: cmd => `"${cmd}" 명령어를 로드하는데 실패했다냥!`,
 		SUB_LOAD_FAILED: (cmd, sub) => `"${cmd}/${sub}" 서브 명령어를 로드하는데 실패했다냥!`,
 		FAILED: '명령어 실행에 실패했다냥!',
-		PERMISSION_IS_MISSING: permissions => `명령어를 실행할 수 있는 권한이 없다냥! 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
+		PERMISSION_IS_MISSING: (bot, permissions) => `명령어를 실행할 수 있는 권한이 없다냥! ${bot.user.toString()}에 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
+		USER_SHOULD_BE_ADMIN: '이 명령어는 관리자 권한이 있는 사용자만 쓸 수 있다냥!',
 		FAIL_TITLE: error => `${error.name}: ${error.message}`,
-		FAIL_PLACE: msg => `${msg.guild}(${msg.guild.id}):${msg.channel}(${msg.channel.id})`,
+		FAIL_PLACE: msg => `${msg.guild.name}(${msg.guild.id}):${msg.channel.name}(${msg.channel.id})`,
 		FAIL_CMD: msg => `이 명령어를 실행중이었다냥: ${strong(msg.content)}`,
 		FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
 		ON_COOLDOWN: seconds => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
+		EMPTY_CONTENT: target => `${Josa.r(target, '을/를')} 달라냥!`,
 	},
 	API: {
 		KEY_MISSING: 'API 키가 정의되지 않았다냥!',
@@ -44,9 +46,6 @@ module.exports = {
 	},
 	CHOOSE: {
 		ARG_NOT_SUFFICIENT: '고를 수 있는 항목을 충분히 달라냥!',
-	},
-	SAY: {
-		EMPTY_CONTENT: '따라할 문장을 달라냥!',
 	},
 	SEARCH: {
 		EMPTY_CONTENT: '검색할 내용을 달라냥!',
@@ -92,7 +91,6 @@ module.exports = {
 		HITOMI_NUM_NOT_VALID: '페이지를 찾지 못했다냥!',
 	},
 	DISCHARGE: {
-		EMPTY_CONTENT: '찾을 사람을 달라냥!',
 		EMPTY_RESULT: '아직 등록되지 않은 사람이다냥!',
 		NAME_TOO_LONG: max => `이름이 너무 길다냥! ${max}자 이내로 달라냥!`,
 		PROVIDE_NAME_TO_ADD: '등록할 사람의 이름을 달라냥!',
@@ -100,13 +98,14 @@ module.exports = {
 		FORCES_NOT_LISTED: `${DISCHARGE_ADD.FORCES.map(force => strong(force)).join(', ')} 중에 하나를 골라달라냥!`,
 	},
 	CONVERSATION: {
-		NO_RESPONSE: time => `${time}초 안에 대답해달라냥!`,
+		NO_RESPONSE: time => `${time.toFixed(0)}초 안에 대답해달라냥!`,
 	},
 	STATS: {
 		NO_ENTRY: '명령어가 없거나 아직 한번도 사용되지 않은 것 같다냥!',
 		NOT_EXECUTED_ONCE: '아직 아무 명령어도 사용하지 않은 서버다냥!',
 	},
-	REPORT: {
-		EMPTY_CONTENT: '말할 내용을 달라냥!',
+	VOTE: {
+		OPTIONS_BETWEEN_2_9: '투표 항목을 콤마(,)로 구분해서 2개에서 9개 사이로 달라냥!',
+		DURATION_SHOULD_CLAMPED: max => `투표 시간은 1에서 ${max} 사이의 숫자를 말해달라냥!`,
 	},
 };
