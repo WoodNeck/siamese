@@ -47,4 +47,5 @@ module.exports = {
 	BAR_CHART: '📊',
 	THINKING: '🤔',
 	KEYCAP: '⃣',
+	TEN: '🔟',
 };

@@ -108,4 +108,7 @@ module.exports = {
 		OPTIONS_BETWEEN_2_9: '투표 항목을 콤마(,)로 구분해서 2개에서 9개 사이로 달라냥!',
 		DURATION_SHOULD_CLAMPED: max => `투표 시간은 1에서 ${max} 사이의 숫자를 말해달라냥!`,
 	},
+	LADDER: {
+		COMPETERS_BETWEEN_2_10: '참가자는 2명에서 10명 사이로 달라냥!',
+	},
 };

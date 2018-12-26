@@ -5,8 +5,7 @@ const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { VOTE } = require('@/constants/commands/utility');
-const { COOLDOWN } = require('@/constants/type');
-const { DIALOGUE } = require('@/constants/type');
+const { COOLDOWN, DIALOGUE } = require('@/constants/type');
 
 
 module.exports = {
@@ -41,7 +40,8 @@ module.exports = {
 			// Should contain more than 1 comma, and should not empty
 			message => message.content.split(',')
 				.map(option => option.trim())
-				.filter(option => option).length.between(1, 9),
+				.filter(option => option).length.between(2, 9),
+			ERROR.VOTE.OPTIONS_BETWEEN_2_9
 		);
 
 		const durationDialogue = new RichEmbed()
@@ -54,25 +54,11 @@ module.exports = {
 			// Should in between 1 and DURATION_MAX
 			message => /^([1-9]\d*|0)$/.test(message.content)
 				&& parseInt(message.content, 10) < VOTE.DURATION_MAX,
+			ERROR.VOTE.DURATION_SHOULD_CLAMPED(VOTE.DURATION_MAX)
 		);
 
 		const result = await conversation.start(VOTE.CONVERSATION_TIME);
-		// user not responded
-		if (result.endReason === DIALOGUE.NO_RESPONSE) {
-			msg.error(ERROR.CONVERSATION.NO_RESPONSE(VOTE.CONVERSATION_TIME));
-			return;
-		}
-		else if (result.endReason === DIALOGUE.INVALID) {
-			// Failed to retrieve options
-			if (result.responses.length === 0) {
-				msg.error(ERROR.VOTE.OPTIONS_BETWEEN_2_9);
-			}
-			// Failed to retrieve duration
-			else if (result.responses.length === 1) {
-				msg.error(ERROR.VOTE.DURATION_SHOULD_CLAMPED(VOTE.DURATION_MAX));
-			}
-			return;
-		}
+		if (result.endReason !== DIALOGUE.VALID) return;
 
 		const options = result.responses[0]
 			.split(',')
@@ -124,6 +110,13 @@ module.exports = {
 			}, {});
 			voteCollection.forEach(val => voteCounts[val] += 1);
 
+			let bestIdx = 0;
+			options.forEach((option, idx) => {
+				if (voteCounts[idx] > voteCounts[bestIdx]) {
+					bestIdx = idx;
+				}
+			});
+
 			const voteResultEmbed = new RichEmbed()
 				.setTitle(VOTE.TITLE(content))
 				.setDescription(
@@ -134,7 +127,10 @@ module.exports = {
 				.setColor(COLOR.BOT)
 				.setFooter(VOTE.AUTHOR(author.displayName), author.user.avatarURL);
 
-			channel.send(VOTE.RESULT_DESC, { embed: voteResultEmbed });
+			channel.send(
+				VOTE.RESULT_DESC(options[bestIdx], voteCounts[bestIdx]),
+				{ embed: voteResultEmbed }
+			);
 		});
 	},
 };

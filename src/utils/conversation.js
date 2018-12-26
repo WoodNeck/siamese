@@ -1,3 +1,4 @@
+const ERROR = require('@/constants/error');
 const { DIALOGUE } = require('@/constants/type');
 
 
@@ -7,10 +8,11 @@ module.exports = class Conversation {
 		this._dialogues = [];
 	}
 
-	add(content, checker) {
+	add(content, checker, errMsg) {
 		this._dialogues.push({
 			content: content,
 			checker: checker,
+			errMsg: errMsg,
 		});
 	}
 
@@ -42,7 +44,9 @@ module.exports = class Conversation {
 			switch (result.reason) {
 			case DIALOGUE.VALID:
 				break;
+			// Response was invalid
 			case DIALOGUE.INVALID:
+				this._msg.error(dialogue.errMsg);
 				return {
 					responses: responses,
 					endReason: DIALOGUE.INVALID,
@@ -50,6 +54,7 @@ module.exports = class Conversation {
 			// Opponent not responded
 			case DIALOGUE.NO_RESPONSE:
 			default:
+				this._msg.error(ERROR.CONVERSATION.NO_RESPONSE(maxTime));
 				return {
 					responses: responses,
 					endReason: DIALOGUE.NO_RESPONSE,

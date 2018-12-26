@@ -11,4 +11,5 @@ module.exports = {
 		ONLINE: '#53a4c4',
 		PLAYING: '#8fb93b',
 	},
+	WHITE: '#ffffff',
 };

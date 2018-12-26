@@ -60,7 +60,8 @@ module.exports = {
 				const date = new Date(message.content);
 				return date instanceof Date
 					&& !isNaN(date);
-			}
+			},
+			ERROR.DISCHARGE.JOIN_DATE_NOT_FORMATTED
 		);
 
 		const forcesDialogue = new RichEmbed()
@@ -70,25 +71,11 @@ module.exports = {
 		conversation.add(
 			forcesDialogue,
 			message => DISCHARGE_ADD.FORCES.some(force => force === message.content),
+			ERROR.DISCHARGE.FORCES_NOT_LISTED
 		);
 
 		const result = await conversation.start(DISCHARGE_ADD.CONVERSATION_TIME);
-		// user not responded
-		if (result.endReason === DIALOGUE.NO_RESPONSE) {
-			msg.error(ERROR.CONVERSATION.NO_RESPONSE(DISCHARGE_ADD.CONVERSATION_TIME));
-			return;
-		}
-		else if (result.endReason === DIALOGUE.INVALID) {
-			// Failed to retrieve join date
-			if (result.responses.length === 0) {
-				msg.error(ERROR.DISCHARGE.JOIN_DATE_NOT_FORMATTED);
-			}
-			// Failed to retrieve forces info
-			else if (result.responses.length === 1) {
-				msg.error(ERROR.DISCHARGE.FORCES_NOT_LISTED);
-			}
-			return;
-		}
+		if (result.endReason !== DIALOGUE.VALID) return;
 
 		const joinDate = new Date(result.responses[0]);
 		joinDate.setHours(0, 0, 0, 0);

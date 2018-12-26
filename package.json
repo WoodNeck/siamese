@@ -20,6 +20,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bufferutil": "^3.0.3",
+    "canvas": "^2.2.0",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
     "date-and-time": "^0.6.3",
@@ -28,6 +29,7 @@
     "erlpack": "discordapp/erlpack",
     "ffmpeg-binaries": "^4.0.0",
     "fuse.js": "^3.3.0",
+    "gifencoder": "^2.0.1",
     "hangul-js": "^0.2.5",
     "josa-js": "^0.0.2",
     "libsodium-wrappers": "^0.7.3",
