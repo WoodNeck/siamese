@@ -11,4 +11,10 @@ module.exports = {
 		IMAGE_URL_EVEN: (articleNum, imageName) => `https://aa.hitomi.la/galleries/${articleNum}/${imageName}`,
 		READER_TITLE: (title, articleNum) => `${title}(${articleNum})`,
 	},
+	HITOMI_RANDOM: {
+		CMD: '랜덤',
+		DESC: '무작위 번호를 이용한다냥!',
+		RANDOM_URL: 'https://hiyobi.me/random',
+		ARTICLE_NUM_MAX: 10000000,
+	},
 };

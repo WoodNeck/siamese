@@ -2,11 +2,12 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
+const { loadSubcommands } = require('@/load/subcommand');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { HITOMI } = require('@/constants/commands/nsfw');
-const { RECITAL_END } = require('@/constants/type');
+const { COOLDOWN, RECITAL_END } = require('@/constants/type');
 const { AXIOS_HEADER } = require('@/constants/header');
 
 
@@ -21,6 +22,8 @@ module.exports = {
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
 	],
+	subcommands: loadSubcommands('hitomi'),
+	cooldown: COOLDOWN.PER_USER(5),
 	execute: async ({ bot, channel, msg, content }) => {
 		if (!channel.nsfw) {
 			msg.error(ERROR.NSFW.NOT_NSFW_CHANNEL);

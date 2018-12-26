@@ -10,6 +10,7 @@ const { COOLDOWN } = require('@/constants/type');
 module.exports = {
 	name: LADDER.CMD,
 	description: LADDER.DESC,
+	usage: LADDER.USAGE,
 	hidden: false,
 	devOnly: false,
 	permissions: [
