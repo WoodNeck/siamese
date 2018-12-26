@@ -52,7 +52,7 @@ module.exports = {
 		const canvas = createCanvas(args.length * gapPerEntry, imageY);
 		const ctx = canvas.getContext('2d');
 
-		ctx.font = `${fontSize}px Arial`;
+		ctx.font = `${fontSize}px NanumGothic`;
 		ctx.fillStyle = COLOR.WHITE;
 		ctx.strokeStyle = COLOR.WHITE;
 		ctx.textAlign = 'center';
