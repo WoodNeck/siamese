@@ -29,7 +29,7 @@ module.exports = {
 		const randomMsgId = randomLog[0].msgs.snowflakes;
 		const randomMsgs = await channel.fetchMessages({
 			limit: RANDOM.MSG_FETCH_LIMIT,
-			before: randomMsgId,
+			around: randomMsgId,
 		});
 
 		const randomMsg = randomMsgs
