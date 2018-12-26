@@ -1,4 +1,6 @@
 const axios = require('axios');
+const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+const tough = require('tough-cookie');
 const cheerio = require('cheerio');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
@@ -8,6 +10,10 @@ const { IMAGE } = require('@/constants/commands/search');
 const { AXIOS_HEADER } = require('@/constants/header');
 const { COOLDOWN } = require('@/constants/type');
 
+
+// Needed for nsfw search
+axiosCookieJarSupport(axios);
+const cookieJar = new tough.CookieJar();
 
 module.exports = {
 	name: IMAGE.CMD,
@@ -32,6 +38,8 @@ module.exports = {
 		await axios.get(IMAGE.SEARCH_URL, {
 			params: IMAGE.SEARCH_PARAMS(searchText, !channel.nsfw),
 			headers: AXIOS_HEADER,
+			jar: cookieJar,
+			withCredentials: true,
 		}).then(body => {
 			const images = findAllImages(body.data);
 			if (!images.length) {

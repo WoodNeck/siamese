@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "axios-cookiejar-support": "^0.4.2",
     "bufferutil": "^3.0.3",
     "canvas": "^2.2.0",
     "chalk": "^2.4.1",
