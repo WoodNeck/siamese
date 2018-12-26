@@ -10,13 +10,22 @@ module.exports = {
 		USAGE: '검색어',
 		TARGET: '이미지',
 		RECITAL_TIME: 30,
-		SEARCH_URL: 'https://www.google.com/ncr',
+		SEARCH_URL: isSafeSearch => isSafeSearch
+			? 'https://www.google.co.kr/search'
+			: 'https://www.google.com/ncr',
 		SEARCH_PARAMS: (query, isSafeSearch) => {
 			// nfpr: enable no auto query correction(ex: museuk -> museum)
 			// safe: enable safe searching
-			return {
-				prev: `/search?q=${query}&tbm=isch&nfpr=1${isSafeSearch ? '&safe=vss' : ''}`,
-			};
+			return isSafeSearch
+				? {
+					q: query,
+					tbm: 'isch',
+					nfpr: '1',
+					safe: 'active',
+				}
+				: {
+					prev: `/search?q=${query}&tbm=isch&nfpr=1`,
+				};
 		},
 	},
 	YOUTUBE: {
