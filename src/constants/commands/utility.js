@@ -102,4 +102,9 @@ module.exports = {
 			최대 참가자 수는 10명이다냥!`,
 		COMPETERS_FOOTER: '예) 참가자1, 참가자2, @WoodNeck, 참가자4',
 	},
+	AVATAR: {
+		CMD: '아바타',
+		DESC: '사용자의 아바타 이미지를 크게 보여준다냥!',
+		USAGE: '@사용자',
+	},
 };

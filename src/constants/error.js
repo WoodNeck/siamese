@@ -30,6 +30,8 @@ module.exports = {
 		ON_COOLDOWN: seconds => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
 		EMPTY_CONTENT: target => `${Josa.r(target, '을/를')} 달라냥!`,
 		ONLY_IN_TEXT_CHANNEL: '명령어는 길드 채널에서만 사용할 수 있다냥!',
+		MENTION_NEEDED: `명령어 대상을 ${strong('@멘션')}하여 사용하는 명령어다냥!`,
+		MENTION_ONLY_ONE: '한 명의 유저만 멘션해달라냥!',
 	},
 	API: {
 		KEY_MISSING: 'API 키가 정의되지 않았다냥!',
