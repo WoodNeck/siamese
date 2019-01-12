@@ -31,6 +31,7 @@ module.exports = {
 		const ytPlaylistRegex = /[&?]list=([^&]+)/i;
 
 
+		// Playlist
 		if (ytPlaylistRegex.test(content)) {
 			msg.delete();
 			const playlistId = content.match(ytPlaylistRegex)[1];
@@ -62,10 +63,11 @@ module.exports = {
 					msg.error(ERROR.MUSIC.FAILED_TO_PLAY);
 				});
 		}
+		// Single video
 		else if (ytVideoRegex.test(content)) {
 			// Video check should be after playlist test
 			// As playlist url typed https://www.youtube.com/watch?v=VIDEO_ID&list=LIST_ID
-			// Can be handled both in video/playlist
+			// Which can be handled both in video/playlist
 			msg.delete();
 			Youtube.api.getVideo(content)
 				.then(async video => {
@@ -85,8 +87,29 @@ module.exports = {
 					msg.error(ERROR.MUSIC.FAILED_TO_PLAY);
 				});
 		}
+		// First video of youtube search
 		else {
-			msg.error(ERROR.MUSIC.NOT_RESOLVABLE);
+			const searchText = content;
+			let video = (await Youtube.api.searchVideos(
+				searchText,
+				// We need only 1 video to play
+				1,
+				YOUTUBE.SEARCH_OPTION(!channel.nsfw)
+			))[0];
+
+			// Fetch the full representation of this video.
+			video = await video.fetch();
+			const player = await aquirePlayer(context);
+			if (player) {
+				const song = new Song(
+					YOUTUBE.VIDEO_URL(video.id),
+					MUSIC_TYPE.YOUTUBE,
+					video.title,
+					video.duration,
+					author
+				);
+				player.enqueue(song, channel);
+			}
 			return;
 		}
 	},

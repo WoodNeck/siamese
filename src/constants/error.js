@@ -70,7 +70,8 @@ module.exports = {
 			${block(`유튜브 동영상: https://www.youtube.com/watch?v=비디오_아이디
 			유튜브 동영상(2): https://youtu.be/비디오_아이디
 			유튜브 재생목록: https://www.youtube.com/playlist?list=재생목록_아이디
-			유튜브 재생목록(2): https://www.youtube.com/watch?v=XXX&list=재생목록_아이디`)}`,
+			유튜브 재생목록(2): https://www.youtube.com/watch?v=XXX&list=재생목록_아이디
+			또는 일반 검색어도 가능하다냥!`)}`,
 		SOMETHING_WRONG_HAPPEND: '재생중에 오류가 발생했다냥!',
 		FAILED_TO_PLAY: '재생에 실패했다냥!',
 		CANNOT_SKIP: '아직 스킵할 수 없다냥!',
