@@ -36,6 +36,7 @@ module.exports = {
 	ANGER: '💢',
 	NO_ENTRY: '⛔',
 	LARGE_CIRCLE: '⭕',
+	BLUE_CIRCLE: '🔵',
 	VIDEO_GAME: '🎮',
 	PEOPLE: '👥',
 	NSFW: '🔞',
@@ -48,4 +49,6 @@ module.exports = {
 	THINKING: '🤔',
 	KEYCAP: '⃣',
 	TEN: '🔟',
+	STAR: '⭐',
+	GLOWING_STAR: '🌟',
 };

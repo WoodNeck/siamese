@@ -20,39 +20,21 @@ class EmbedPage {
 		return this;
 	}
 	setFooter(footer, icon) {
-		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-		if (icon && !urlRegex.test(icon)) {
-			icon = undefined;
-		}
-
-		// Can't set icon only, footer string is also needed
 		if (footer && footer.trim()) {
 			this._embed.setFooter(footer, icon);
 		}
 		return this;
 	}
 	setUrl(url) {
-		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-
-		if (url && urlRegex.test(url)) {
-			this._embed.setURL(url);
-		}
+		this._embed.setURL(url);
 		return this;
 	}
 	setImage(imageUrl) {
-		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-
-		if (imageUrl && urlRegex.test(imageUrl)) {
-			this._embed.setImage(imageUrl);
-		}
+		this._embed.setImage(imageUrl);
 		return this;
 	}
 	setThumbnail(thumb) {
-		const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-
-		if (thumb && urlRegex.test(thumb)) {
-			this._embed.setThumbnail(thumb);
-		}
+		this._embed.setThumbnail(thumb);
 		return this;
 	}
 	setColor(color) {

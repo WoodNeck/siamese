@@ -129,4 +129,18 @@ module.exports = {
 			12: '판매예정상품',
 		},
 	},
+	NAMUWIKI: {
+		CMD: '나무위키',
+		DESC: '나무위키 문서를 검색한다냥!',
+		USAGE: '검색어',
+		TARGET: '문서',
+		RECITAL_TIME: 60,
+		URL_BASE: 'https://namu.wiki',
+		SEARCH_URL: searchText => `https://namu.wiki/w/${searchText}`,
+		ICON_URL: 'https://everipedia-storage.s3-accelerate.amazonaws.com/ProfilePics/%EB%82%98%EB%AC%B4%EC%9C%84%ED%82%A4__52321.png',
+		NOT_FOUND_URL: 'https://i.pinimg.com/originals/b9/09/f8/b909f84754eb25f055165d05509ed5b0.png',
+		TITLE: title => `${EMOJI.SMALL_BLUE_DIAMOND} ${title}`,
+		CATEGORY: categories => `${EMOJI.BOOKS} 분류: ${categories.join(' | ')}`,
+		TOC_ENTRY: ($, el) => `${'  '.repeat(el.level - 1)}${EMOJI.SMALL_WHITE_SQUARE}${$(el).text()}`,
+	},
 };
