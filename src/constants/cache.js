@@ -6,7 +6,13 @@ module.exports = {
 			checkPeriod: 60,
 		},
 		OWNING_GAMES: {
-			ttl: 3600,
+			ttl: 60 * 60,
+			checkPeriod: 600,
+		},
+	},
+	HITOMI: {
+		RANDOM_INDEX: {
+			ttl: 60 * 60 * 5,
 			checkPeriod: 600,
 		},
 	},

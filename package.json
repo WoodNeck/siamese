@@ -33,6 +33,7 @@
     "gifencoder": "^2.0.1",
     "hangul-js": "^0.2.5",
     "josa-js": "^0.0.2",
+    "jspack": "^0.0.4",
     "libsodium-wrappers": "^0.7.3",
     "module-alias": "^2.1.0",
     "mongoose": "^5.3.12",

@@ -13,8 +13,7 @@ module.exports = {
 	},
 	HITOMI_RANDOM: {
 		CMD: '랜덤',
-		DESC: '무작위 번호를 이용한다냥!',
-		RANDOM_URL: 'https://hiyobi.me/random',
-		ARTICLE_NUM_MAX: 10000000,
+		DESC: '무작위 번호를 이용하여 검색한다냥!',
+		INDEX_URL: 'https://ltn.hitomi.la/index-korean.nozomi',
 	},
 };

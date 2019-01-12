@@ -29,6 +29,7 @@ module.exports = {
 		FAIL_DESC: error => `${error.stack ? error.stack : ''}`,
 		ON_COOLDOWN: seconds => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
 		EMPTY_CONTENT: target => `${Josa.r(target, '을/를')} 달라냥!`,
+		ONLY_IN_TEXT_CHANNEL: '명령어는 길드 채널에서만 사용할 수 있다냥!',
 	},
 	API: {
 		KEY_MISSING: 'API 키가 정의되지 않았다냥!',

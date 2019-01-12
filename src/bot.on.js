@@ -77,6 +77,12 @@ const onMessage = async function(msg) {
 	// Dev-only check
 	if (cmd.devOnly && msg.author.id !== global.env.BOT_DEV_USER_ID) return;
 
+	// Channel type check
+	if (!msg.channel.permissionsFor) {
+		msg.error(ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
+		return;
+	}
+
 	// Admin permission check
 	if (cmd.admin && !msg.channel.permissionsFor(msg.member).has(PERMISSION.ADMINISTRATOR.flag)) {
 		msg.error(ERROR.CMD.USER_SHOULD_BE_ADMIN);
@@ -132,7 +138,7 @@ const onMessage = async function(msg) {
 			args: parseArgs(content),
 		});
 		const cmdTimeEnd = new Date().getTime();
-		logCommand(cmdName, msg, cmdTimeEnd - cmdTimeStart);
+		if (!cmd.devOnly && !cmd.hidden) logCommand(cmdName, msg, cmdTimeEnd - cmdTimeStart);
 	}
 	catch (err) {
 		await msg.channel.stopTyping();
