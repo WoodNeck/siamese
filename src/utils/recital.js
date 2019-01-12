@@ -59,7 +59,15 @@ module.exports = class Recital {
 				this._recitalMsg = msg;
 
 				for (const emoji of this._emojis) {
-					await this._recitalMsg.react(emoji);
+					await this._recitalMsg.react(emoji)
+						.catch(() => {
+							// Recital message deleted, how fast
+							if (this._recitalMsg.deleted) return;
+
+							// Retry once more, without order assurance
+							this._recitalMsg.react(emoji)
+								.catch(() => {});
+						});
 				}
 
 				this._listenReaction();
