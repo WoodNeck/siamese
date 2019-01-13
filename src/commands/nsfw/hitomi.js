@@ -107,7 +107,7 @@ const readHitomi = async (articleNum, meta, recital) => {
 	}).then(body => body.data);
 
 	const $ = cheerio.load(reader);
-	const IMAGE_URL = (articleNum % 2)
+	const IMAGE_URL = (articleNum % 2) && (articleNum % 10 !== 1)
 		? HITOMI.IMAGE_URL_ODD
 		: HITOMI.IMAGE_URL_EVEN;
 
