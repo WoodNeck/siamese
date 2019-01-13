@@ -1,4 +1,5 @@
 const Guild = require('@/model/guild');
+const PERMISSION = require('@/constants/permission');
 const { ANNOUNCE_CHANNEL } = require('@/constants/commands/utility');
 
 
@@ -8,7 +9,9 @@ module.exports = {
 	hidden: false,
 	devOnly: false,
 	admin: true,
-	permissions: [],
+	permissions: [
+		PERMISSION.EMBED_LINKS,
+	],
 	execute: async ({ channel, guild }) => {
 		const guildInfo = await Guild.findOneAndUpdate(
 			{ id: guild.id },

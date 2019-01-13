@@ -34,6 +34,10 @@ module.exports = {
 		CMD: '공지',
 		MESSAGE_TITLE: `${EMOJI.LOUD_SPEAKER} 공지사항이 도착했다냥!`,
 		PROMPT_TIME: 30,
+		FOOTER: dedent`
+			${EMOJI.SMALL_WHITE_SQUARE}\`${EMOJI.LOUD_SPEAKER}공지수신\`을 통해 공지사항 수신 여부를 설정하실 수 있습니다.
+			${EMOJI.SMALL_WHITE_SQUARE}\`${EMOJI.LOUD_SPEAKER}공지채널\`을 통해 공지사항 수신 채널을 설정하실 수 있습니다.
+			${EMOJI.SMALL_WHITE_SQUARE}\`${EMOJI.WRENCH}개발서버\`에 참가해보세요! ${global.env.BOT_DEV_SERVER_INVITE}`,
 	},
 	ANNOUNCE_CHANNEL: {
 		CMD: '공지채널',

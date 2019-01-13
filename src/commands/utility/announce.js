@@ -20,8 +20,9 @@ module.exports = {
 		}
 		const embedContent = new RichEmbed()
 			.setTitle(ANNOUNCE.MESSAGE_TITLE)
-			.setDescription(content)
-			.setColor(COLOR.BOT);
+			.setDescription(`${content}\n\n${ANNOUNCE.FOOTER}`)
+			.setColor(COLOR.BOT)
+			.setFooter(author.user.tag, author.user.avatarURL);
 		const textContent = dedent`
 			${ANNOUNCE.MESSAGE_TITLE}
 			${content}`;

@@ -92,9 +92,14 @@ const onMessage = async function(msg) {
 	// Permissions check
 	const permissionsGranted = msg.channel.permissionsFor(this.user);
 	if (cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
-		const neededPermissionList = cmd.permissions.map(permission => `- ${permission.message}`)
-			.join('\n');
-		msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(this, neededPermissionList));
+		if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
+			const neededPermissionList = cmd.permissions.map(permission => `- ${permission.message}`)
+				.join('\n');
+			msg.channel.send(ERROR.CMD.PERMISSION_IS_MISSING(this, neededPermissionList));
+		}
+		else if (permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)) {
+			msg.react(EMOJI.CROSS);
+		}
 		return;
 	}
 
