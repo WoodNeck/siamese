@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { RichEmbed } = require('discord.js');
 const { strong, strike, code, blockMd } = require('@/utils/markdown');
+const { loadSubcommands } = require('@/load/subcommand');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
 const COLOR = require('@/constants/color');
@@ -24,6 +25,7 @@ module.exports = {
 		PERMISSION.ADD_REACTIONS,
 		PERMISSION.MANAGE_MESSAGES,
 	],
+	subcommands: loadSubcommands('namuwiki'),
 	cooldown: COOLDOWN.PER_USER(5),
 	execute: async ({ bot, msg, channel, content }) => {
 		if (!content) {

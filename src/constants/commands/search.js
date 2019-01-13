@@ -143,4 +143,9 @@ module.exports = {
 		CATEGORY: categories => `${EMOJI.BOOKS} 분류: ${categories.join(' | ')}`,
 		TOC_ENTRY: ($, el) => `${'  '.repeat(el.level - 1)}${EMOJI.SMALL_WHITE_SQUARE}${$(el).text()}`,
 	},
+	NAMUWIKI_RANDOM: {
+		CMD: '랜덤',
+		DESC: '나무위키에서 무작위 문서를 검색한다냥!',
+		RANDOM_URL: 'https://namu.wiki/random',
+	},
 };
