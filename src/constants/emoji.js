@@ -51,4 +51,6 @@ module.exports = {
 	TEN: '🔟',
 	STAR: '⭐',
 	GLOWING_STAR: '🌟',
+	LOW_BRIGHTNESS: '🔅',
+	THERMOMETER: '🌡️',
 };
