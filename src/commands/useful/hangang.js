@@ -27,7 +27,7 @@ module.exports = {
 		}
 
 		const temperature = info.temp;
-		const time = new Date(info.time);
+		const time = new Date(HANGANG.DATE(info.time));
 
 		const embed = new RichEmbed()
 			.setDescription(HANGANG.RESULT(temperature))
