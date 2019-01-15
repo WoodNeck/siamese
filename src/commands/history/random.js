@@ -15,7 +15,7 @@ module.exports = {
 		PERMISSION.EMBED_LINKS,
 		PERMISSION.READ_MESSAGE_HISTORY,
 	],
-	execute: async ({ channel, msg }) => {
+	execute: async ({ guild, channel, msg }) => {
 		// Retrieve one msg from message history of channel
 		const randomLog = await Channel.aggregate([
 			{ $match: { id: channel.id } },
@@ -42,13 +42,18 @@ module.exports = {
 		}
 
 		const embed = new RichEmbed()
-			.setAuthor(randomMsg.author.username, randomMsg.author.avatarURL)
+			.setAuthor(
+				randomMsg.author.username,
+				randomMsg.author.avatarURL
+			)
 			.setDescription(randomMsg.content)
 			.setColor(COLOR.BOT)
 			.setTimestamp(randomMsg.createdTimestamp);
 		if (randomMsg.attachments.size) {
 			embed.setImage(randomMsg.attachments.random().url);
 		}
-		channel.send(embed);
+		channel.send(RANDOM.MSG_URL(guild.id, channel.id, randomMsg.id), {
+			embed: embed,
+		});
 	},
 };

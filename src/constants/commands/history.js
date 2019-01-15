@@ -9,6 +9,7 @@ module.exports = {
 		CMD: '랜덤',
 		DESC: '이 채널의 랜덤한 메시지를 보여준다냥!',
 		MSG_FETCH_LIMIT: 100,
+		MSG_URL: (guildId, channelId, msgId) => `https://discordapp.com/channels/${guildId}/${channelId}/${msgId}`,
 	},
 	DISCHARGE: {
 		CMD: '전역일',
