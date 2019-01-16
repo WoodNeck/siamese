@@ -28,6 +28,8 @@ module.exports = {
 		SEARCH_BY_GAME_NAME_PARAMS: query => {
 			return {
 				term: query,
+				l: 'english',
+				cc: 'US',
 			};
 		},
 		STEAM_IDS_PARAMS: id => {
