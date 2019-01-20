@@ -101,6 +101,10 @@ module.exports = class Player {
 		const dispatcher = this._connection.playStream(stream, streamOptions);
 
 		dispatcher.on('start', () => {
+			// 'pausedTime' is carried on new dispatcher
+			// Should manually set it for 0 to get 0-delay stream after pausing
+			// https://github.com/discordjs/discord.js/issues/1693#issuecomment-317301023
+			this._connection.player.streamingData.pausedTime = 0;
 			this._state = PLAYER_STATE.PLAYING;
 			this._textChannel.send(PLAYER.PLAYING_NEW_SONG(song));
 		});
