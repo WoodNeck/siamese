@@ -55,4 +55,6 @@ module.exports = {
 	LOW_BRIGHTNESS: '🔅',
 	THERMOMETER: '🌡️',
 	SPEECH_BUBBLE: '💬',
+	RULER: '📏',
+	SCALES: '⚖️',
 };

@@ -117,4 +117,10 @@ module.exports = {
 	LADDER: {
 		COMPETERS_BETWEEN_2_10: '참가자는 2명에서 10명 사이로 달라냥!',
 	},
+	BMI: {
+		ARGS_NOT_FORMATTED: (hMin, hMax, wMin, wMax) => dedent`
+			명령어 인자가 잘못되었다냥!
+			키는 ${hMin} ~ ${hMax}(cm) 사이의 숫자를,
+			몸무게는 ${wMin} ~ ${wMax}(kg) 사이의 숫자를 달라냥!`,
+	},
 };

@@ -29,9 +29,9 @@ module.exports = class Conversation {
 			const result = await new Promise(resolve => {
 				collector.on('collect', msg => {
 					// Check response is what we want
-					dialogue.checker(msg, collector)
-						? collector.stop(DIALOGUE.VALID)
-						: collector.stop(DIALOGUE.INVALID);
+					dialogue.checker && !dialogue.checker(msg, collector)
+						? collector.stop(DIALOGUE.INVALID)
+						: collector.stop(DIALOGUE.VALID);
 				});
 				collector.on('end', (collected, reason) => {
 					resolve({
