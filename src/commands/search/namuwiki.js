@@ -10,7 +10,7 @@ const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { NAMUWIKI } = require('@/constants/commands/search');
-const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
+const { MESSAGE_MAX_LENGTH, FOOTER_MAX_LENGTH } = require('@/constants/discord');
 const { AXIOS_HEADER } = require('@/constants/header');
 const { COOLDOWN } = require('@/constants/type');
 
@@ -49,6 +49,8 @@ module.exports = {
 			});
 		if (!document) return;
 
+		const docURL = `${NAMUWIKI.URL_BASE}${document.request.path}`;
+
 		const $ = cheerio.load(document.data);
 		const article = $('article');
 		const recital = new Recital(bot, msg);
@@ -59,6 +61,31 @@ module.exports = {
 			.split('\n')
 			.filter(str => str)
 			.splice(1);
+
+		// Table of content
+		const tocEl = article.find('.wiki-macro-toc');
+		const tocArray = [];
+		const traverseToc = (level, el) => {
+			el.level = level;
+			/toc-indent/.test(el.attribs.class)
+				? el.children.forEach(child => traverseToc(level + 1, child))
+				: tocArray.push(el);
+		};
+		if (tocEl.length) {
+			tocEl[0].children.forEach(el => traverseToc(0, el));
+		}
+		const toc = tocArray.map(el => {
+			return NAMUWIKI.TOC_ENTRY($, el);
+		});
+
+		if (toc) {
+			const tocPage = new EmbedPage()
+				.setTitle(NAMUWIKI.TITLE(title))
+				.setDescription(blockMd(toc.join('\n')))
+				.setUrl(docURL)
+				.setFooter(NAMUWIKI.CATEGORY(categories));
+			recital.book.addPage(tocPage);
+		}
 
 		// Find unordered paragraphs
 		const innerContent = article.find('.wiki-inner-content');
@@ -81,61 +108,21 @@ module.exports = {
 				};
 			})
 			.toArray()
+			// Exclude empty paragraphs
 			.filter(paragraph => paragraph && !/^\n+$/.test(paragraph));
 
-		// Table of content
-		const tocEl = article.find('.wiki-macro-toc');
-		const tocArray = [];
-		const traverseToc = (level, el) => {
-			el.level = level;
-			/toc-indent/.test(el.attribs.class)
-				? el.children.forEach(child => traverseToc(level + 1, child))
-				: tocArray.push(el);
-		};
-		if (tocEl.length) {
-			tocEl[0].children.forEach(el => traverseToc(0, el));
-		}
-		const toc = tocArray.map(el => {
-			return NAMUWIKI.TOC_ENTRY($, el);
-		});
-
-		const titlePage = new EmbedPage()
-			.setTitle(NAMUWIKI.TITLE(title))
-			.setUrl(`${NAMUWIKI.URL_BASE}${document.request.path}`);
-
-		unorderedParagraphs.push({
-			text: blockMd(toc.join('\n')),
-			refs: [],
-		});
-
-		let titlePageDesc = '';
-		let titlePageRefs = [];
 		for (const paragraph of unorderedParagraphs) {
-			if (titlePageDesc.length + paragraph.text.length <= MESSAGE_MAX_LENGTH) {
-				titlePageDesc = `${titlePageDesc}\n${paragraph.text}`;
-				titlePageRefs.push(...paragraph.refs);
-			}
-			else {
-				titlePage.setDescription(titlePageDesc);
-				titlePage.setFooter([
+			const page = new EmbedPage()
+				.setTitle(NAMUWIKI.TITLE(title))
+				.setDescription(paragraph.text)
+				.setUrl(docURL)
+				.setFooter([
 					NAMUWIKI.CATEGORY(categories),
-					titlePageRefs.join('\n'),
-				].join('\n'), NAMUWIKI.ICON_URL);
+					paragraph.refs.join('\n'),
+				].join('\n').substr(0, FOOTER_MAX_LENGTH), NAMUWIKI.ICON_URL);
 
-				recital.book.addPage(titlePage);
-
-				titlePageDesc = '';
-				titlePageRefs = [];
-			}
+			recital.book.addPage(page);
 		}
-
-		titlePage.setDescription(titlePageDesc);
-		titlePage.setFooter([
-			NAMUWIKI.CATEGORY(categories),
-			titlePageRefs.join('\n'),
-		].join('\n'), NAMUWIKI.ICON_URL);
-
-		recital.book.addPage(titlePage);
 
 		// Traverse and find contents with heading
 		const orderedParagraphs = innerContent.find('.wiki-heading-content')
@@ -190,7 +177,7 @@ module.exports = {
 						.setFooter([
 							paragraph.heading,
 							paragraph.refs.join('\n'),
-						].join('\n'), NAMUWIKI.ICON_URL)
+						].join('\n').substr(0, FOOTER_MAX_LENGTH), NAMUWIKI.ICON_URL)
 				);
 			}
 			else {
@@ -203,7 +190,7 @@ module.exports = {
 							.setFooter([
 								paragraph.heading,
 								paragraph.refs.join('\n'),
-							].join('\n'), NAMUWIKI.ICON_URL)
+							].join('\n').substr(0, FOOTER_MAX_LENGTH), NAMUWIKI.ICON_URL)
 					);
 				}
 			}
@@ -230,9 +217,9 @@ const replaceWithMarkdown = ($, el) => {
 	});
 	el.find('.wiki-fn-content').each((idx, child) => {
 		child = $(child);
+		const ref = child.text();
 
-		child.html(`${code(EMOJI.STAR)}${child.html()}`);
-
+		child.html(`${code(EMOJI.STAR)}${ref}`);
 	});
 	// Escape images
 	el.find('noscript').each((idx, child) => {
