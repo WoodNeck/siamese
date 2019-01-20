@@ -14,6 +14,7 @@ module.exports = {
 	ARROW_SHADED_RIGHT: '➩',
 	ARROW_LEFT: '⬅',
 	ARROW_RIGHT: '➡',
+	ARROW_UP: '↑',
 	PLAY: '▶',
 	PAUSE: '⏸️',
 	CROSS: '❌',
@@ -53,4 +54,5 @@ module.exports = {
 	GLOWING_STAR: '🌟',
 	LOW_BRIGHTNESS: '🔅',
 	THERMOMETER: '🌡️',
+	SPEECH_BUBBLE: '💬',
 };

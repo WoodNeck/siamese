@@ -4,6 +4,7 @@ const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { RANDOM } = require('@/constants/commands/history');
+const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
 
 
 module.exports = {
@@ -44,16 +45,16 @@ module.exports = {
 		const embed = new RichEmbed()
 			.setAuthor(
 				randomMsg.author.username,
-				randomMsg.author.avatarURL
+				randomMsg.author.avatarURL,
 			)
-			.setDescription(randomMsg.content)
+			.setDescription(`
+${randomMsg.content.substr(0, MESSAGE_MAX_LENGTH)}
+${RANDOM.MSG_CHECK(RANDOM.MSG_URL(guild.id, channel.id, randomMsg.id))}`)
 			.setColor(COLOR.BOT)
 			.setTimestamp(randomMsg.createdTimestamp);
 		if (randomMsg.attachments.size) {
 			embed.setImage(randomMsg.attachments.random().url);
 		}
-		channel.send(RANDOM.MSG_URL(guild.id, channel.id, randomMsg.id), {
-			embed: embed,
-		});
+		channel.send(embed);
 	},
 };
