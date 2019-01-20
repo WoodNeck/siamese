@@ -34,6 +34,7 @@ module.exports = {
 	},
 	MUSIC_TYPE: {
 		YOUTUBE: 'YOUTUBE',
+		TTS: 'TTS',
 	},
 	PLAYER_STATE: {
 		INIT: 'INIT',

@@ -40,4 +40,11 @@ module.exports = {
 		CMD: '취소',
 		DESC: '재생목록에서 곡을 삭제한다냥!',
 	},
+	TTS: {
+		CMD: 'tts',
+		DESC: 'Text-to-speech 메시지를 음성 채널에서 재생한다냥!',
+		USAGE: '문장',
+		TARGET: '읽을 문장',
+		MAX_LENGTH: 500,
+	},
 };

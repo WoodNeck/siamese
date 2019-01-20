@@ -52,7 +52,7 @@ module.exports = {
 
 					const player = await aquirePlayer(context);
 					if (player) {
-						player.enqueueList({
+						await player.enqueueList({
 							title: playlist.title,
 							length: songs.length,
 							songs: songs,
@@ -80,7 +80,7 @@ module.exports = {
 							video.duration,
 							author
 						);
-						player.enqueue(song, channel);
+						await player.enqueue(song, channel);
 					}
 				})
 				.catch(() => {
@@ -108,7 +108,7 @@ module.exports = {
 					video.duration,
 					author
 				);
-				player.enqueue(song, channel);
+				await player.enqueue(song, channel);
 			}
 			return;
 		}

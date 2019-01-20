@@ -19,7 +19,7 @@ module.exports = {
 	},
 	MUSIC_LENGTH: duration => code(musicLengthWithClock(duration)),
 	MUSIC_LENGTH_NO_CLOCK: duration => musicLength(duration),
-	PLAYLIST_ENTRY: (index, song) => `${strong(index.toString())}. ${EMOJI.MUSIC_NOTE} ${strong(song.title)} ${code(musicLengthWithClock(song.duration))}`,
+	PLAYLIST_ENTRY: (index, song) => `${strong(index.toString())}. ${song.emoji} ${strong(song.title)} ${song.duration ? code(musicLengthWithClock(song.duration)) : ''}`,
 	DATE: date => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`,
 	PAGE: {
 		CURRENT: '{CURRENT}',

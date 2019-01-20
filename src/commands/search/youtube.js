@@ -83,7 +83,7 @@ module.exports = {
 			const player = await aquirePlayer(context);
 
 			if (player) {
-				player.enqueue(song, channel);
+				await player.enqueue(song, channel);
 			}
 			return RECITAL_END.DELETE_ALL_MESSAGES;
 		}, 1);

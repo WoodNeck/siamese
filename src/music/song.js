@@ -1,4 +1,7 @@
 const ytdl = require('ytdl-core');
+const toReadableStream = require('to-readable-stream');
+const { TextToSpeechClient } = require('@google-cloud/text-to-speech');
+const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const { MUSIC_TYPE } = require('@/constants/type');
 
@@ -16,16 +19,33 @@ module.exports = class Song {
 	}
 
 	// is musicResolvable is valid
-	// TODO: set valid check fn for each types
 	get valid() { return true; }
 	get title() { return this._title; }
 	get duration() { return this._duration; }
 	get member() { return this._member; }
-
-	createStream() {
+	get emoji() {
 		switch (this._type) {
 		case MUSIC_TYPE.YOUTUBE:
+			return EMOJI.MUSIC_NOTE;
+		case MUSIC_TYPE.TTS:
+			return EMOJI.SPEAKING_HEAD;
+		}
+		return '';
+	}
+
+	async createStream() {
+		if (this._type === MUSIC_TYPE.YOUTUBE) {
 			return ytdl(this._song, { filter : 'audioonly' });
+		}
+		else if (this._type === MUSIC_TYPE.TTS) {
+			const ttsClient = new TextToSpeechClient();
+			const request = {
+				input: { text: this._song },
+				voice: { languageCode: 'ko-KR' },
+				audioConfig: { audioEncoding: 'OGG_OPUS' },
+			};
+			const [response] = await ttsClient.synthesizeSpeech(request);
+			return toReadableStream(response.audioContent);
 		}
 	}
 };

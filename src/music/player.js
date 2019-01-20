@@ -14,19 +14,19 @@ module.exports = class Player {
 		this._state = PLAYER_STATE.INIT;
 	}
 
-	enqueue(song, channel) {
+	async enqueue(song, channel) {
 		this._queue.push(song);
 
 		// Play the song automatically if it's first enqueue
 		this._state === PLAYER_STATE.INIT
-			? this._playNextSong()
+			? await this._playNextSong()
 			: channel.send(PLAYER.ENQUEUE_NEW_SONG(song));
 	}
 
-	enqueueList(playlist, channel) {
+	async enqueueList(playlist, channel) {
 		this._queue.push(...playlist.songs);
 		if (this._state === PLAYER_STATE.INIT) {
-			this._playNextSong();
+			await this._playNextSong();
 		}
 		channel.send(PLAYER.ENQUEUE_NEW_LIST(playlist));
 	}
@@ -66,7 +66,7 @@ module.exports = class Player {
 	}
 
 	// remove song at index
-	remove(index) {
+	async remove(index) {
 		return this._queue.splice(index, 1)[0];
 	}
 
@@ -92,11 +92,11 @@ module.exports = class Player {
 		this._loop = val;
 	}
 
-	_playNextSong() {
+	async _playNextSong() {
 		this._state = PLAYER_STATE.PREPARING;
 
 		const song = this._queue[0];
-		const stream = song.createStream();
+		const stream = await song.createStream();
 		const streamOptions = { bitrate: 'auto' };
 		const dispatcher = this._connection.playStream(stream, streamOptions);
 

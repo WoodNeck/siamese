@@ -18,6 +18,7 @@
     "eslint": "^5.8.0"
   },
   "dependencies": {
+    "@google-cloud/text-to-speech": "^0.4.0",
     "axios": "^0.18.0",
     "axios-cookiejar-support": "^0.4.2",
     "bufferutil": "^3.0.3",
@@ -43,6 +44,7 @@
     "remove-markdown": "^0.3.0",
     "simple-youtube-api": "^5.0.2",
     "sodium": "^2.0.3",
+    "to-readable-stream": "^1.0.0",
     "unescape": "^1.0.1",
     "uws": "^9.14.0",
     "ytdl-core": "^0.27.1"

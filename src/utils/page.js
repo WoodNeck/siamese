@@ -8,19 +8,19 @@ class EmbedPage {
 	}
 	setTitle(title) {
 		// Check null & undefined
-		if (title && title.trim()) {
+		if (title) {
 			this._embed.setTitle(title);
 		}
 		return this;
 	}
 	setDescription(desc) {
-		if (desc && desc.trim()) {
+		if (desc) {
 			this._embed.setDescription(desc);
 		}
 		return this;
 	}
 	setFooter(footer, icon) {
-		if (footer && footer.trim()) {
+		if (footer) {
 			this._embed.setFooter(footer, icon);
 		}
 		return this;
@@ -68,19 +68,19 @@ class StringPage {
 		};
 	}
 	setTitle(title) {
-		if (title && title.trim()) {
+		if (title) {
 			this._msg.title = title;
 		}
 		return this;
 	}
 	setDescription(desc) {
-		if (desc && desc.trim()) {
+		if (desc) {
 			this._msg.desc = desc;
 		}
 		return this;
 	}
 	setFooter(footer) {
-		if (footer && footer.trim()) {
+		if (footer) {
 			this._msg.footer = footer;
 		}
 		return this;

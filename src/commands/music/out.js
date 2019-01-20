@@ -23,6 +23,7 @@ module.exports = {
 			if (bot.players.has(guild.id)) {
 				bot.players.delete(guild.id);
 			}
+
 			connection.disconnect();
 		}
 	},

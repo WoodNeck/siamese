@@ -28,9 +28,9 @@ module.exports = {
 	},
 	PLAYER: {
 		PLAYING_NEW_SONG: song => dedent`
-			${EMOJI.MUSIC_NOTE} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생한다냥! ${song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : ''}`,
+			${song.emoji} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생한다냥! ${song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : ''}`,
 		ENQUEUE_NEW_SONG: song => dedent`
-			${EMOJI.MUSIC_NOTE} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생목록에 추가한다냥! ${code(song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : '')}`,
+			${song.emoji} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생목록에 추가한다냥! ${code(song.duration ? FORMAT.MUSIC_LENGTH(song.duration) : '')}`,
 		ENQUEUE_NEW_LIST: playlist => dedent`
 			${EMOJI.MUSIC_NOTES} ${strong(playlist.title)}의 ${strong(playlist.length.toString())}개 노래를 재생목록에 추가했다냥!`,
 		ENABLE_LOOP: `${EMOJI.LOOP} 루프를 설정했다냥!`,
@@ -38,7 +38,7 @@ module.exports = {
 		RESUME: `${EMOJI.PLAY} 음악을 다시 재생한다냥!`,
 		PAUSE: `${EMOJI.PAUSE} 음악을 일시정지한다냥!`,
 		CANCLE: song => `${EMOJI.CROSS} ${strong(song.title)}${Josa.c(song.title, '을/를')} 재생목록에서 제거했다냥!`,
-		SONG_TITLE: song => `${EMOJI.MUSIC_NOTE} ${strong(song.title)}`,
+		SONG_TITLE: song => `${song.emoji} ${strong(song.title)}`,
 		SONG_PROGRESS: (song, progressed, statusEmoji, loop) => `${statusEmoji}${FORMAT.MUSIC_PROGRESS(progressed, song.duration)}[${FORMAT.MUSIC_LENGTH_NO_CLOCK(progressed)}/${FORMAT.MUSIC_LENGTH_NO_CLOCK(song.duration)}]${loop ? EMOJI.LOOP : ''}`,
 	},
 };

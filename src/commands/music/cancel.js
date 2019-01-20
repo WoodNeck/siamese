@@ -9,7 +9,7 @@ module.exports = {
 	hidden: false,
 	devOnly: false,
 	permissions: [],
-	execute: ({ msg, bot, guild, args, channel }) => {
+	execute: async ({ msg, bot, guild, args, channel }) => {
 		if (!args.length) {
 			msg.error(ERROR.MUSIC.PLAYLIST_INDEX_NO_INTEGER);
 			return;
@@ -31,7 +31,7 @@ module.exports = {
 			msg.error(ERROR.MUSIC.PLAYLIST_INDEX_OUT_OF_RANGE(1, player.queue.length));
 			return;
 		}
-		const removedSong = player.remove(indexToRemove);
+		const removedSong = await player.remove(indexToRemove);
 		channel.send(PLAYER.CANCLE(removedSong));
 	},
 };

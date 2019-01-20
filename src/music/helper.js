@@ -1,3 +1,4 @@
+const { Constants } = require('discord.js');
 const Player = require('@/music/player');
 const ERROR = require('@/constants/error');
 
@@ -6,6 +7,11 @@ const joinVoice = async (voiceChannel, context) => {
 	const { msg, bot, channel } = context;
 	// Connection already exists
 	if (voiceChannel.connection) {
+		// Connection not established yet
+		if (voiceChannel.status !== Constants.VoiceStatus.CONNECTED) {
+			msg.error(ERROR.MUSIC.CONNECTION_NOT_ESTABLISHED_YET);
+			return;
+		}
 		return voiceChannel.connection;
 	}
 

@@ -24,7 +24,7 @@ module.exports = {
 		const progressed = player.time;
 		const statusEmoji = PLAYER_STATE_EMOJI[player.state];
 		const embed = new RichEmbed()
-			.setDescription(`${PLAYER.SONG_TITLE(song)}\n${PLAYER.SONG_PROGRESS(song, progressed, statusEmoji, player.loop)}`)
+			.setDescription(`${PLAYER.SONG_TITLE(song)}\n${song.duration ? PLAYER.SONG_PROGRESS(song, progressed, statusEmoji, player.loop) : ''}`)
 			.setFooter(song.member.displayName, song.member.user.avatarURL)
 			.setColor(COLOR.BOT);
 

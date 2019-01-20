@@ -81,6 +81,8 @@ module.exports = {
 		QUEUE_EMPTY: '재생목록이 비어있다냥!',
 		PLAYLIST_INDEX_NO_INTEGER: '재생목록의 몇 번째 곡을 삭제할건지 숫자를 달라냥!',
 		PLAYLIST_INDEX_OUT_OF_RANGE: (min, max) => `${min}에서 ${max}사이의 숫자를 달라냥!`,
+		TTS_MESSAGE_TO_LONG: max => `문장이 너무 길다냥! ${max}자 이하의 문장을 달라냥!`,
+		CONNECTION_NOT_ESTABLISHED_YET: '아직 음성채널에 연결중이다냥! 조금만 기다려달라냥!',
 	},
 	RANDOM: {
 		NO_ENTRY_FOUND: '이 채널은 아직 메시지가 충분히 기록되지 않았다냥!',

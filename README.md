@@ -14,9 +14,17 @@ Korean Discord bot for multiple purpose.
 
 # Installing
 ## Linux
-```
+```sh
 yarn install
 ```
 Before run, please fill out the `bot.env` file using `bot.env.preset`.
+
+Also, you have to set env variable `GOOGLE_APPLICATION_CREDENTIALS` to use command tts, which uses Google Cloud Text-to-Speech API
+
+```sh
+export GOOGLE_APPLICATION_CREDENTIALS="[PATH_TO_YOUR_JSON]"
+```
+
+Check [GCP Docs](https://cloud.google.com/text-to-speech/docs/quickstart-client-libraries#client-libraries-install-nodejs) for further information.
 
 Then, run with `node .` at project root folder.
