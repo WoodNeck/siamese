@@ -40,7 +40,7 @@ module.exports = {
 		const articleNum = parseInt(content, 10);
 
 		// All errors, like 404 error will return undefined
-		const article = await axios.get(HITOMI.ARTICLE_URL(articleNum), {
+		let article = await axios.get(HITOMI.ARTICLE_URL(articleNum), {
 			headers: AXIOS_HEADER,
 		}).then(body => body.data)
 			.catch(() => undefined);
@@ -51,7 +51,33 @@ module.exports = {
 		}
 
 		const meta = {};
-		const $ = cheerio.load(article);
+		let $ = cheerio.load(article);
+
+		// Check redirection
+		let redirectionUrl;
+		const pageMeta = $('meta');
+		pageMeta.each((idx, el) => {
+			const element = $(el);
+			const redirectionInfo = element.attr('http-equiv');
+			if (redirectionInfo) {
+				redirectionUrl = /(?:[\s\S];url=)([\s\S]+)/.exec(element.attr('content'))[1];
+			}
+		});
+
+		if (redirectionUrl) {
+			article = await axios.get(redirectionUrl, {
+				headers: AXIOS_HEADER,
+			}).then(body => body.data)
+				.catch(() => undefined);
+
+			if (!article) {
+				msg.error(ERROR.NSFW.HITOMI_NUM_NOT_VALID);
+				return;
+			}
+
+			$ = cheerio.load(article);
+		}
+
 		meta.cover = $('.cover').find('img').attr('src');
 		// it's missing protocol
 		meta.cover = `http:${meta.cover}`;
