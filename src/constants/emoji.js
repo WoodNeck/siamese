@@ -57,4 +57,8 @@ module.exports = {
 	SPEECH_BUBBLE: '💬',
 	RULER: '📏',
 	SCALES: '⚖️',
+	CAT: {
+		KISSING: '😽',
+		GRINNING: '😸',
+	},
 };
