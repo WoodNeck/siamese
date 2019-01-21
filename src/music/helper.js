@@ -8,7 +8,7 @@ const joinVoice = async (voiceChannel, context) => {
 	// Connection already exists
 	if (voiceChannel.connection) {
 		// Connection not established yet
-		if (voiceChannel.status !== Constants.VoiceStatus.CONNECTED) {
+		if (voiceChannel.status && voiceChannel.status !== Constants.VoiceStatus.CONNECTED) {
 			msg.error(ERROR.MUSIC.CONNECTION_NOT_ESTABLISHED_YET);
 			return;
 		}
