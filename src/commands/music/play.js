@@ -33,59 +33,62 @@ module.exports = {
 
 		// Playlist
 		if (ytPlaylistRegex.test(content)) {
-			msg.delete();
 			const playlistId = content.match(ytPlaylistRegex)[1];
-			Youtube.api.getPlaylistByID(playlistId)
-				.then(async playlist => {
-					let videos = await playlist.getVideos();
-					const getVideoDetail = async video => video.fetch();
-					const getAllVideoDetails = videos.map(video => getVideoDetail(video));
+			const playlist = await Youtube.api.getPlaylistByID(playlistId)
+				.then(data => data)
+				.catch(() => undefined);
 
-					videos = await Promise.all(getAllVideoDetails);
-					const songs = videos.map(video => new Song(
-						YOUTUBE.VIDEO_URL(video.id),
-						MUSIC_TYPE.YOUTUBE,
-						video.title,
-						video.duration,
-						author
-					));
+			if (!playlist) {
+				msg.error(ERROR.SEARCH.EMPTY_RESULT(PLAY.PLAYLIST));
+				return;
+			}
 
-					const player = await aquirePlayer(context);
-					if (player) {
-						await player.enqueueList({
-							title: playlist.title,
-							length: songs.length,
-							songs: songs,
-						}, channel);
-					}
-				})
-				.catch(() => {
-					msg.error(ERROR.MUSIC.FAILED_TO_PLAY);
-				});
+			let videos = await playlist.getVideos();
+			const getVideoDetail = async video => video.fetch();
+			const getAllVideoDetails = videos.map(video => getVideoDetail(video));
+
+			videos = await Promise.all(getAllVideoDetails);
+			const songs = videos.map(video => new Song(
+				YOUTUBE.VIDEO_URL(video.id),
+				MUSIC_TYPE.YOUTUBE,
+				video.title,
+				video.duration,
+				author
+			));
+
+			const player = await aquirePlayer(context);
+			if (player) {
+				await player.enqueueList({
+					title: playlist.title,
+					length: songs.length,
+					songs: songs,
+				}, channel);
+			}
 		}
 		// Single video
 		else if (ytVideoRegex.test(content)) {
 			// Video check should be after playlist test
 			// As playlist url typed https://www.youtube.com/watch?v=VIDEO_ID&list=LIST_ID
 			// Which can be handled both in video/playlist
-			msg.delete();
-			Youtube.api.getVideo(content)
-				.then(async video => {
-					const player = await aquirePlayer(context);
-					if (player) {
-						const song = new Song(
-							YOUTUBE.VIDEO_URL(video.id),
-							MUSIC_TYPE.YOUTUBE,
-							video.title,
-							video.duration,
-							author
-						);
-						await player.enqueue(song, channel);
-					}
-				})
-				.catch(() => {
-					msg.error(ERROR.MUSIC.FAILED_TO_PLAY);
-				});
+			const video = await Youtube.api.getVideo(content)
+				.then(data => data)
+				.catch(() => undefined);
+			if (!video) {
+				msg.error(ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
+				return;
+			}
+
+			const player = await aquirePlayer(context);
+			if (player) {
+				const song = new Song(
+					YOUTUBE.VIDEO_URL(video.id),
+					MUSIC_TYPE.YOUTUBE,
+					video.title,
+					video.duration,
+					author
+				);
+				await player.enqueue(song, channel);
+			}
 		}
 		// First video of youtube search
 		else {
@@ -96,6 +99,11 @@ module.exports = {
 				1,
 				YOUTUBE.SEARCH_OPTION(!channel.nsfw)
 			))[0];
+
+			if (!video) {
+				msg.error(ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
+				return;
+			}
 
 			// Fetch the full representation of this video.
 			video = await video.fetch();
