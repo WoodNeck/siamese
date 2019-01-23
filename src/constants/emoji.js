@@ -61,4 +61,9 @@ module.exports = {
 		KISSING: '😽',
 		GRINNING: '😸',
 	},
+	CROSSED_SWORDS: '⚔️',
+	SHIELD: '🛡️',
+	GOLD_MEDAL: '🥇',
+	SILVER_MEDAL: '🥈',
+	BRONZE_MEDAL: '🥉',
 };

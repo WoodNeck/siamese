@@ -125,4 +125,7 @@ module.exports = {
 			키는 ${hMin} ~ ${hMax}(cm) 사이의 숫자를,
 			몸무게는 ${wMin} ~ ${wMax}(kg) 사이의 숫자를 달라냥!`,
 	},
+	WOW: {
+		USER_NOT_FOUND: '해당 닉네임을 가진 유저를 한 명도 발견하지 못했다냥!',
+	},
 };
