@@ -21,3 +21,6 @@ const bot = new Bot(option);
 bot.setup()
 	.then(() => bot.start())
 	.catch(console.error);
+
+const startRestServer = require('./rest/start');
+startRestServer(bot);
