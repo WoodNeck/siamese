@@ -1,4 +1,5 @@
 const express = require('express');
+const Directory = require('../src/model/directory');
 
 module.exports = bot => {
 	const app = express();
@@ -12,7 +13,7 @@ module.exports = bot => {
 	});
 
 	// Return user guilds
-	app.get('/guilds', (req, res) => {
+	app.get('/userGuilds', (req, res) => {
 		const userId = req.query.user;
 
 		const guilds = bot.guilds.filter(guild => guild.members.has(userId));
@@ -29,7 +30,7 @@ module.exports = bot => {
 	});
 
 	// Return user permission for guild
-	app.get('/role', (req, res) => {
+	app.get('/guildInfo', async (req, res) => {
 		const guildId = req.query.guild;
 		const userId = req.query.user;
 
@@ -38,7 +39,7 @@ module.exports = bot => {
 		if (guild) {
 			const user = guild.members.get(userId);
 			if (!user) {
-				res.send({});
+				res.sendStatus(400);
 				return;
 			}
 
@@ -49,16 +50,27 @@ module.exports = bot => {
 				},
 			);
 
+			const directories = await Directory.find();
+			// Include only directory name
+			directories.map(directory => {
+				return { name: directory.name };
+			});
+
 			res.send({
 				id: guild.id,
 				iconURL: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
 				name: guild.name,
 				hasPermission,
+				directories,
 			});
 		}
 		else {
-			res.send({});
+			res.sendStatus(400);
 		}
+	});
+
+	app.post('/newFolder', async (req, res) => {
+		console.log(req.body);
 	});
 
 	app.listen(4260, () => {

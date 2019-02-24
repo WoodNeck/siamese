@@ -89,7 +89,8 @@ module.exports = {
 
 		// Find unordered paragraphs
 		const innerContent = article.find('.wiki-inner-content');
-		const unorderedParagraphs = innerContent.children('p')
+
+		const unorderedParagraphs = innerContent.children('.wiki-paragraph')
 			.filter((idx, el) => {
 				return el.children.length >= 2 || (el.children[0] && el.children[0].name !== 'br');
 			})
@@ -143,7 +144,7 @@ module.exports = {
 						return `${EMOJI.STAR}[${footnoteId}]${footnoteText}`;
 					}).toArray();
 
-				if (el.name === 'p') {
+				if (el.attribs.class === 'wiki-paragraph') {
 					replaceWithMarkdown($, el);
 					return {
 						heading: el.parent.heading,
@@ -151,8 +152,8 @@ module.exports = {
 						refs: footnoteRefs,
 					};
 				}
-				else if (el.name === 'ul') {
-					const liText = $(el).find('p')
+				else if (el.attribs.class === 'wiki-list') {
+					const liText = $(el).find('.wiki-paragraph')
 						.map((_, paragraph) => {
 							replaceWithMarkdown($, paragraph);
 							return `${EMOJI.SMALL_WHITE_SQUARE}${$(paragraph).text()}`;
@@ -195,6 +196,7 @@ module.exports = {
 				}
 			}
 		});
+		console.log(orderedParagraphs);
 
 		recital.start(NAMUWIKI.RECITAL_TIME);
 	},
