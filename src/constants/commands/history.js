@@ -73,4 +73,10 @@ module.exports = {
 		ENTRY_PER_PAGE: 10,
 		ENTRY: info => `${EMOJI.SMALL_WHITE_SQUARE}${info.name} - ${FORMAT.DATE(info.joinDate)}`,
 	},
+	DISCHARGE_REMOVE: {
+		CMD: '삭제',
+		DESC: '전역일 항목을 삭제한다냥!',
+		USAGE: '이름',
+		SUCCESS: name => `${strong(name)}의 정보를 삭제했다냥!`,
+	},
 };
