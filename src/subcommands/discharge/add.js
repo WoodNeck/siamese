@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const Discharge = require('@/model/discharge');
 const Conversation = require('@/utils/conversation');
 const prompt = require('@/utils/prompt');
@@ -29,7 +29,7 @@ module.exports = {
 			return;
 		}
 
-		await channel.startTyping();
+		channel.startTyping();
 
 		const prevInfo = await Discharge.findOne({
 			name: name,
@@ -37,7 +37,7 @@ module.exports = {
 		}).exec();
 
 		if (prevInfo) {
-			const prevInfoDescription = new RichEmbed()
+			const prevInfoDescription = new MessageEmbed()
 				.setTitle(DISCHARGE_ADD.NAME_ALREADY_EXISTS(name))
 				.setDescription(DISCHARGE_ADD.SHORT_INFO(prevInfo))
 				.setColor(COLOR.BOT);
@@ -49,7 +49,7 @@ module.exports = {
 		// Make new one, or update if user agreed
 		const conversation = new Conversation(msg);
 
-		const joinDateDialogue = new RichEmbed()
+		const joinDateDialogue = new MessageEmbed()
 			.setTitle(DISCHARGE_ADD.DIALOGUE_JOIN_DATE_TITLE(name))
 			.setDescription(DISCHARGE_ADD.DIALOGUE_JOIN_DATE_DESC)
 			.setColor(COLOR.BOT)
@@ -64,7 +64,7 @@ module.exports = {
 			ERROR.DISCHARGE.JOIN_DATE_NOT_FORMATTED
 		);
 
-		const forcesDialogue = new RichEmbed()
+		const forcesDialogue = new MessageEmbed()
 			.setTitle(DISCHARGE_ADD.DIALOGUE_FORCES_TITLE)
 			.setDescription(DISCHARGE_ADD.DIALOGUE_FORCES_EXAMPLE())
 			.setColor(COLOR.BOT);

@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const parseArgs = require('@/helper/parseArgs');
 const logMessage = require('@/helper/logMessage');
 const logCommand = require('@/helper/logCommand');
@@ -27,7 +27,7 @@ const onReady = async function() {
 	this.logger.log(LOG_TYPE.VERBOSE)
 		.setTitle(BOT.READY_TITLE(this))
 		.setDescription(BOT.READY_DESC(this))
-		.setThumbnail(this.user.avatarURL)
+		.setThumbnail(this.user.avatarURL())
 		.setColor(COLOR.GOOD)
 		.send();
 
@@ -166,9 +166,9 @@ const onMessage = async function(msg) {
 const onGuildJoin = function(guild) {
 	if (!(guild.systemChannel)) return;
 	const helpCmd = `${this.prefix}${HELP.CMD}`;
-	const embedMsg = new RichEmbed().setTitle(BOT.GUILD_JOIN_TITLE)
+	const embedMsg = new MessageEmbed().setTitle(BOT.GUILD_JOIN_TITLE)
 		.setDescription(BOT.GUILD_JOIN_DESC(this, helpCmd))
-		.setThumbnail(this.user.avatarURL)
+		.setThumbnail(this.user.avatarURL())
 		.setFooter(BOT.GUILD_JOIN_FOOTER(this))
 		.setColor(COLOR.BOT);
 	guild.systemChannel.send(embedMsg);

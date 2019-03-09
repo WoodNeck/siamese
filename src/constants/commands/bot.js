@@ -8,7 +8,7 @@ module.exports = {
 		CMD: '핑',
 		DESC: '퐁을 대답한다냥!',
 		MSG: (ping, bot, guild, uptime) => dedent`
-			퐁이다냥! 현재 API 서버와의 핑은 ${ping}다냥!
+			퐁이다냥! 현재 샴고양이 웹소켓 핑 평균은 ${ping}다냥!
 			${bot.user.toString()}${Josa.c(bot.getNameIn(guild), '은/는')} ${uptime.hours}시간 ${uptime.minutes}분 ${uptime.seconds}초동안 일하고 있다냥!`,
 	},
 	INVITE: {
@@ -35,7 +35,7 @@ module.exports = {
 		GUILD_CNT: guildCnt => `${EMOJI.UP_TRIANGLE} 서버 수 - ${guildCnt}개`,
 		USER_CNT: userCnt => `${EMOJI.PEOPLE} 사용자 수 - ${userCnt}명`,
 		PLAYER_CNT: playerCnt => `${EMOJI.MICROPHONE} 재생중인 음악 수 - ${playerCnt}개`,
-		GITHUB_ICON_URL: 'https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png',
+		GITHUB_ICON_URL: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
 		DEV_SERVER: '개발 서버',
 	},
 	GUILDLIST: {
@@ -59,6 +59,7 @@ module.exports = {
 		CMD: '서버통계',
 		DESC: '이 서버에서의 봇 명령어 사용 통계를 확인할 수 있다냥!',
 		USAGE: '[명령어 이름]',
+		TITLE: (botOrCmd, guildName) => `${botOrCmd}의 ${guildName}에서의 사용 통계다냥!`,
 		CMD_INFO: cmd => dedent`
 			${EMOJI.BAR_CHART} 사용 횟수: ${cmd.callCount}회`,
 		CMD_INFO_ONE_LINE: cmd => `${EMOJI.SMALL_WHITE_SQUARE}${cmd.name} - ${EMOJI.BAR_CHART} ${cmd.callCount}회`,

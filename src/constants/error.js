@@ -1,6 +1,7 @@
 const dedent = require('@/utils/dedent');
 const Josa = require('josa-js');
-const { strong, block } = require('@/utils/markdown');
+const { strong, code, block } = require('@/utils/markdown');
+const { YOUTUBE } = require('@/constants/commands/search');
 const { DISCHARGE_ADD } = require('@/constants/commands/history');
 
 
@@ -83,6 +84,9 @@ module.exports = {
 		PLAYLIST_INDEX_OUT_OF_RANGE: (min, max) => `${min}에서 ${max}사이의 숫자를 달라냥!`,
 		TTS_MESSAGE_TO_LONG: max => `문장이 너무 길다냥! ${max}자 이하의 문장을 달라냥!`,
 		CONNECTION_NOT_ESTABLISHED_YET: '아직 음성채널에 연결중이다냥! 조금만 기다려달라냥!',
+		CANNOT_PLAY_STREAMING: dedent`
+			실시간 스트리밍 중인 동영상은 재생할 수 없다냥!
+			${code(YOUTUBE.CMD)} 명령어를 이용해서 다른 동영상을 검색해보라냥!`,
 	},
 	RANDOM: {
 		NO_ENTRY_FOUND: '이 채널은 아직 메시지가 충분히 기록되지 않았다냥!',

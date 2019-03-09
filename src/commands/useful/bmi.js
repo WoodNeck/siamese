@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const Conversation = require('@/utils/conversation');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
@@ -17,7 +17,7 @@ module.exports = {
 		PERMISSION.EMBED_LINKS,
 	],
 	execute: async ({ msg, channel, args }) => {
-		await channel.startTyping();
+		channel.startTyping();
 		let height;
 		let weight;
 
@@ -28,12 +28,12 @@ module.exports = {
 		else {
 			const conversation = new Conversation(msg);
 
-			const heightDialogue = new RichEmbed()
+			const heightDialogue = new MessageEmbed()
 				.setTitle(BMI.DIALOGUE_HEIGHT.TITLE)
 				.setDescription(BMI.DIALOGUE_HEIGHT.DESC)
 				.setColor(COLOR.BOT)
 				.setFooter(BMI.DIALOGUE_HEIGHT.FOOTER);
-			const weightDialogue = new RichEmbed()
+			const weightDialogue = new MessageEmbed()
 				.setTitle(BMI.DIALOGUE_WEIGHT.TITLE)
 				.setDescription(BMI.DIALOGUE_WEIGHT.DESC)
 				.setColor(COLOR.BOT)
@@ -69,7 +69,7 @@ module.exports = {
 			}
 		}
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(BMI.RESULT.TITLE)
 			.setDescription(BMI.RESULT.DESC(height, weight, bmi, className))
 			.setColor(COLOR.BOT);

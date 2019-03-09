@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSSION = require('@/constants/permission');
@@ -23,12 +23,12 @@ module.exports = {
 			await msg.error(ERROR.CMD.MENTION_ONLY_ONE);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const mentioned = msg.mentions.users.first();
 
-		const embed = new RichEmbed()
-			.setImage(mentioned.avatarURL)
+		const embed = new MessageEmbed()
+			.setImage(mentioned.avatarURL())
 			.setFooter(mentioned.username, mentioned.avatarURL)
 			.setColor(COLOR.BOT);
 

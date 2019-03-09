@@ -17,7 +17,8 @@ module.exports = {
 	],
 	cooldown: COOLDOWN.PER_USER(5),
 	execute: async (ctx) => {
-		await ctx.channel.startTyping();
+		ctx.channel.startTyping();
+
 		const documentName = await axios.get(NAMUWIKI_RANDOM.RANDOM_URL, {
 			headers: AXIOS_HEADER,
 		}).then(body => {
@@ -25,9 +26,9 @@ module.exports = {
 			// If ?from= exists, captured by group 2, else 1
 			return decodeURIComponent(doc[2] ? doc[2] : doc[1]);
 		});
-		ctx.content = documentName;
 
-		await ctx.channel.stopTyping();
+		ctx.content = documentName;
+		ctx.channel.stopTyping();
 
 		const Namuwiki = ctx.bot.commands.get(NAMUWIKI.CMD);
 		Namuwiki.execute(ctx);

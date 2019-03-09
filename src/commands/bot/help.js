@@ -45,7 +45,7 @@ module.exports = {
 						embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description)}`);
 					}
 					if (cmd.subcommands) {
-						cmd.subcommands.tap(subcmd => {
+						cmd.subcommands.forEach(subcmd => {
 							const commandTitle = strong(`${category.commandEmoji} ${cmd.name} ${subcmd.name}`);
 							const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name} ${subcmd.name}`, subcmd.usage].filter(str => str).join(' ');
 							embed.addField(commandTitle, `${commandUsage}\n${block(subcmd.description)}`);

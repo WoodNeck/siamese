@@ -31,7 +31,7 @@ module.exports = {
 			msg.error(ERROR.NSFW.NOT_NSFW_CHANNEL);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		let indexArray = indexCache.get('indexArray');
 		if (!indexArray) {

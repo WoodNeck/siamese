@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { getUserId, getOwningGames } = require('@/helper/steam');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
@@ -20,7 +20,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const searchText = content;
 		const userId = await getUserId(searchText);
@@ -36,7 +36,7 @@ module.exports = {
 		}
 
 		const randomGame = owningGames.games.random();
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setAuthor(randomGame.name, STEAM.GAME_IMG_URL(randomGame.appid, randomGame.img_icon_url))
 			.setThumbnail(STEAM.GAME_IMG_URL(randomGame.appid, randomGame.img_logo_url))
 			.setDescription(STEAM.PLAYTIME(randomGame.playtime_forever))

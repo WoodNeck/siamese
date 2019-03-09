@@ -23,7 +23,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const searchText = content;
 		const games = await axios.get(CHEAPEST.SEARCH_URL, {

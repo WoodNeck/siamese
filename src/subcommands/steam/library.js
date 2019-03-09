@@ -22,7 +22,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		// Find out 64-bit encoded steamid
 		const searchText = content;

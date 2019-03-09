@@ -25,7 +25,7 @@ module.exports = {
 			msg.error(ERROR.MUSIC.NOT_RESOLVABLE);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const ytVideoRegex = /(?:.+?)?(?:\/v\/|watch\/|\?v=|&v=|youtu\.be\/|\/v=|^youtu\.be\/)([a-zA-Z0-9_-]{11})+/i;
 		const ytPlaylistRegex = /[&?]list=([^&]+)/i;
@@ -78,6 +78,11 @@ module.exports = {
 				return;
 			}
 
+			if (isStream(video)) {
+				msg.error(ERROR.MUSIC.CANNOT_PLAY_STREAMING);
+				return;
+			}
+
 			const player = await aquirePlayer(context);
 			if (player) {
 				const song = new Song(
@@ -97,7 +102,6 @@ module.exports = {
 				searchText,
 				// We need only 1 video to play
 				1,
-				YOUTUBE.SEARCH_OPTION(!channel.nsfw)
 			))[0];
 
 			if (!video) {
@@ -107,6 +111,11 @@ module.exports = {
 
 			// Fetch the full representation of this video.
 			video = await video.fetch();
+			if (isStream(video)) {
+				msg.error(ERROR.MUSIC.CANNOT_PLAY_STREAMING);
+				return;
+			}
+
 			const player = await aquirePlayer(context);
 			if (player) {
 				const song = new Song(
@@ -122,3 +131,5 @@ module.exports = {
 		}
 	},
 };
+
+const isStream = video => video.raw.snippet.liveBroadcastContent === 'live';

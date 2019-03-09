@@ -29,7 +29,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const searchText = content;
 		let files = await axios.get(STONESOUP.TRUNK_URL(searchText), {
@@ -99,7 +99,7 @@ module.exports = {
 		gameListRecital.book.addPages(gameList);
 
 		gameListRecital.addReactionCallback(EMOJI.PLAY, async () => {
-			await channel.startTyping();
+			channel.startTyping();
 
 			const game = gameListRecital.currentData;
 			const infos = game.split(/\n{2,}/);

@@ -54,10 +54,6 @@ module.exports = {
 		LISTENING: 'LISTENING',
 		WATCHING: 'WATCHING',
 	},
-	PLAYER_END: {
-		KILL: 'KILL',
-		SKIP: 'SKIP',
-	},
 	// End type of conversation's dialogue
 	DIALOGUE: {
 		VALID: 'VALID',

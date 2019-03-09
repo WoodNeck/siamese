@@ -25,6 +25,9 @@ module.exports = class Book {
 		return this;
 	}
 	get length() { return this._pages.length; }
+	get currentPage() {
+		return this._currentPage();
+	}
 	get prevPage() {
 		this._pageIdx = this._pageIdx > 0 ? this._pageIdx - 1 : this.length - 1;
 		return this._currentPage();

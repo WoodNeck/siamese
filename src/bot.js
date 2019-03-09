@@ -70,7 +70,7 @@ class Bot extends Discord.Client {
 
 	async _loadCommands() {
 		this._commands = await loadAllCommands();
-		this._commands.tap(command => {
+		this._commands.forEach(command => {
 			command.permissions.forEach(permission => {
 				this._permissions.add(permission.flag);
 			});

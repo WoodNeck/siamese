@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const dedent = require('@/utils/dedent');
 const Steam = require('@/helper/steam');
 const COLOR = require('@/constants/color');
@@ -24,7 +24,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		// Find out 64-bit encoded steamid
 		const searchText = content;
@@ -71,7 +71,7 @@ module.exports = {
 			${friends && friends.length ? PROFILE.FRIENDS(friends) : ''}
 			${owningGames && owningGames.game_count ? PROFILE.GAMES(owningGames.game_count) : ''}`;
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(summary.personaname)
 			.setDescription(profileDesc)
 			.setURL(summary.profileurl)

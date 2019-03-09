@@ -28,7 +28,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const username = content;
 		const users = await axios.get(WOW.USER_SEARCH_URL, {
@@ -71,7 +71,7 @@ module.exports = {
 		const userPages = users.map(
 			user => new EmbedPage()
 				.setTitle(`${user.name} - ${user.realm}`)
-				.setThumbnail(user.avatarURL)
+				.setThumbnail(user.avatarURL())
 				.setDescription(user.level)
 				.setData(user)
 		);
@@ -91,7 +91,7 @@ module.exports = {
 const checkDetailedProfile = async (ctx, user) => {
 	const { bot, msg, channel } = ctx;
 
-	await channel.startTyping();
+	channel.startTyping();
 
 	// username doesn't have %2F
 	user.url = user.url.substring(0, user.url.lastIndexOf('/') + 1)
@@ -190,7 +190,7 @@ const checkDetailedProfile = async (ctx, user) => {
 	});
 
 	const overviewPage = new EmbedPage()
-		.setAuthor(user.name, user.avatarURL, user.url)
+		.setAuthor(user.name, user.avatarURL(), user.url)
 		.setImage(userDetail.profileImage)
 		.setDescription(WOW.PROFILE.DETAIL(userDetail))
 		.setFooter(userDetail.details, userDetail.logo);
@@ -204,7 +204,7 @@ const checkDetailedProfile = async (ctx, user) => {
 
 	userDetail.items.forEach(item => {
 		recital.book.addPage(new EmbedPage()
-			.setAuthor(user.name, user.avatarURL, user.url)
+			.setAuthor(user.name, user.avatarURL(), user.url)
 			.setThumbnail(item.icon)
 			.setDescription(`${item.name}${item.spec}`)
 		);

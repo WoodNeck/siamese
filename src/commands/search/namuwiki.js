@@ -1,6 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { strong, strike, code, blockMd } = require('@/utils/markdown');
 const { loadSubcommands } = require('@/load/subcommand');
 const Recital = require('@/utils/recital');
@@ -32,7 +32,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const searchText = encodeURIComponent(content).replace(/%2F/g, '/');
 		const document = await axios.get(NAMUWIKI.SEARCH_URL(searchText), {
@@ -40,7 +40,7 @@ module.exports = {
 		}).then(body => body)
 			// 404(Document not found)
 			.catch(() => {
-				const embed = new RichEmbed()
+				const embed = new MessageEmbed()
 					.setTitle(ERROR.SEARCH.EMPTY_RESULT(NAMUWIKI.TARGET))
 					.setImage(NAMUWIKI.NOT_FOUND_URL)
 					.setFooter(decodeURIComponent(searchText), NAMUWIKI.ICON_URL)
@@ -196,7 +196,6 @@ module.exports = {
 				}
 			}
 		});
-		console.log(orderedParagraphs);
 
 		recital.start(NAMUWIKI.RECITAL_TIME);
 	},

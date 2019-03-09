@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
@@ -15,7 +15,7 @@ module.exports = {
 		PERMISSION.EMBED_LINKS,
 	],
 	execute: async ({ msg, channel }) => {
-		await channel.startTyping();
+		channel.startTyping();
 
 		const info = await axios.get(HANGANG.URL)
 			.then(body => body.data)
@@ -29,7 +29,7 @@ module.exports = {
 		const temperature = info.temp;
 		const time = new Date(HANGANG.DATE(info.time));
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setDescription(HANGANG.RESULT(temperature))
 			.setColor(COLOR.BOT)
 			.setTimestamp(time);

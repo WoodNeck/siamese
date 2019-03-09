@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 const toReadableStream = require('to-readable-stream');
 const { TextToSpeechClient } = require('@google-cloud/text-to-speech');
 const EMOJI = require('@/constants/emoji');
@@ -32,10 +32,25 @@ module.exports = class Song {
 		}
 		return '';
 	}
+	get streamOptions() {
+		switch (this._type) {
+		case MUSIC_TYPE.YOUTUBE:
+			return {
+				type: 'opus',
+				bitrate: 'auto',
+			};
+		case MUSIC_TYPE.TTS:
+			return {
+				type: 'ogg/opus',
+				bitrate: 'auto',
+			};
+		}
+		return {};
+	}
 
 	async createStream() {
 		if (this._type === MUSIC_TYPE.YOUTUBE) {
-			return ytdl(this._song, { filter : 'audioonly' });
+			return await ytdl(this._song, { filter : 'audioonly' });
 		}
 		else if (this._type === MUSIC_TYPE.TTS) {
 			const ttsClient = new TextToSpeechClient();

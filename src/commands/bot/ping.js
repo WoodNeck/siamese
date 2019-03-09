@@ -9,7 +9,7 @@ module.exports = {
 	permissions: [],
 	execute: ({ bot, guild, channel }) => {
 		const uptime = bot.uptime / 1000;
-		const ping = strong(`${bot.ping.toFixed(1)}ms`);
+		const ping = strong(`${bot.ws.ping.toFixed(1)}ms`);
 
 		channel.send(PING.MSG(ping, bot, guild, {
 			hours: Math.floor(uptime / 3600),

@@ -7,14 +7,13 @@ const { IN } = require('@/constants/commands/music');
 module.exports = {
 	name: IN.CMD,
 	description: IN.DESC,
-	hidden: false,
-	devOnly: false,
+	devOnly: true,
 	permissions: [
 		PERMISSION.CONNECT,
 	],
 	execute: (context) => {
 		const { author, msg } = context;
-		const voiceChannel = author.voiceChannel;
+		const voiceChannel = author.voice.channel;
 		if (!voiceChannel) {
 			msg.error(ERROR.MUSIC.JOIN_VOICE_CHANNEL_FIRST);
 			return;

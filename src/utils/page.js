@@ -1,10 +1,10 @@
 const dedent = require('@/utils/dedent');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 
 class EmbedPage {
 	constructor() {
-		this._embed = new RichEmbed();
+		this._embed = new MessageEmbed();
 	}
 	setTitle(title) {
 		// Check null & undefined

@@ -1,5 +1,5 @@
 const prompt = require('@/utils/prompt');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const { FEATURE_REQUEST } = require('@/constants/commands/utility');
@@ -22,7 +22,7 @@ module.exports = {
 
 		const featureChannel = bot.channels.get(global.env.BOT_FEATURE_REQUEST_CHANNEL);
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(FEATURE_REQUEST.TITLE_CONFIRM)
 			.setDescription(content)
 			.setColor(COLOR.BOT);
@@ -34,8 +34,8 @@ module.exports = {
 		}
 
 		embed.title = undefined;
-		embed.setAuthor(`${author.user.username}(${author.user.id})`, author.user.avatarURL);
-		embed.setFooter(`${guild.name}(${guild.id})`, guild.iconURL);
+		embed.setAuthor(`${author.user.username}(${author.user.id})`, author.user.avatarURL());
+		embed.setFooter(`${guild.name}(${guild.id})`, guild.iconURL());
 
 		featureChannel.send(embed);
 	},

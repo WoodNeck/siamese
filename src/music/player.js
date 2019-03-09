@@ -1,6 +1,6 @@
 const ERROR = require('@/constants/error');
 const { PLAYER } = require('@/constants/message');
-const { PLAYER_STATE, PLAYER_END, LOG_TYPE } = require('@/constants/type');
+const { PLAYER_STATE, LOG_TYPE } = require('@/constants/type');
 
 
 module.exports = class Player {
@@ -45,6 +45,15 @@ module.exports = class Player {
 		}
 	}
 
+	end() {
+		this._queue = [];
+		if (this._connection.dispatcher) {
+			this._connection.dispatcher.end();
+		}
+		this._connection.disconnect();
+		this._bot.players.delete(this._guild.id);
+	}
+
 	// return: successfully skipped
 	skip() {
 		if (this._state === PLAYER_STATE.INIT
@@ -53,7 +62,12 @@ module.exports = class Player {
 		}
 
 		if (this._connection.dispatcher) {
-			this._connection.dispatcher.end(PLAYER_END.SKIP);
+			if (this._connection.dispatcher.paused) {
+				// Resume first, so it won't make right after end error
+				this._connection.dispatcher.resume();
+			}
+
+			this._connection.dispatcher.end();
 			return true;
 		}
 		else {
@@ -76,9 +90,9 @@ module.exports = class Player {
 	get time() {
 		return this._connection.dispatcher
 			? {
-				hours: Math.floor((this._connection.dispatcher.time / 1000) / 3600),
-				minutes: Math.floor(((this._connection.dispatcher.time / 1000) % 3600) / 60),
-				seconds: Math.floor((this._connection.dispatcher.time / 1000) % 60),
+				hours: Math.floor((this._connection.dispatcher.streamTime / 1000) / 3600),
+				minutes: Math.floor(((this._connection.dispatcher.streamTime / 1000) % 3600) / 60),
+				seconds: Math.floor((this._connection.dispatcher.streamTime / 1000) % 60),
 			}
 			: {
 				hours: 0,
@@ -96,9 +110,12 @@ module.exports = class Player {
 		this._state = PLAYER_STATE.PREPARING;
 
 		const song = this._queue[0];
+		if (!song) {
+			return;
+		}
+
 		const stream = await song.createStream();
-		const streamOptions = { bitrate: 'auto' };
-		const dispatcher = this._connection.playStream(stream, streamOptions);
+		const dispatcher = this._connection.play(stream, song.streamOptions);
 
 		dispatcher.on('start', () => {
 			// 'pausedTime' is carried on new dispatcher
@@ -109,24 +126,14 @@ module.exports = class Player {
 			this._textChannel.send(PLAYER.PLAYING_NEW_SONG(song));
 		});
 
-		dispatcher.on('end', reason => {
+		dispatcher.on('finish', () => {
 			const oldSong = this._queue.shift();
 
-			switch (reason) {
-			// Terminate player
-			case PLAYER_END.KILL:
-				this._end();
-				break;
+			if (this._loop) this._queue.push(oldSong);
 
-			// play next song, if any
-			case PLAYER_END.SKIP:
-			default:
-				if (this._loop) this._queue.push(oldSong);
-
-				this._queue.length > 0
-					? this._playNextSong()
-					: this._end();
-			}
+			this._queue.length > 0
+				? this._playNextSong()
+				: this.end();
 		});
 
 		dispatcher.on('error', errMsg => {
@@ -135,12 +142,6 @@ module.exports = class Player {
 				.setTitle(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND)
 				.setDescription(errMsg)
 				.send();
-			dispatcher.end(PLAYER_END.SKIP);
 		});
-	}
-
-	_end() {
-		this._connection.disconnect();
-		this._bot.players.delete(this._guild.id);
 	}
 };

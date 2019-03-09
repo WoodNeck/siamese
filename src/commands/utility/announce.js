@@ -1,5 +1,5 @@
 const prompt = require('@/utils/prompt');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const dedent = require('@/utils/dedent');
 const Guild = require('@/model/guild');
 const COLOR = require('@/constants/color');
@@ -18,11 +18,11 @@ module.exports = {
 			msg.error(ERROR.SAY.EMPTY_CONTENT);
 			return;
 		}
-		const embedContent = new RichEmbed()
+		const embedContent = new MessageEmbed()
 			.setTitle(ANNOUNCE.MESSAGE_TITLE)
 			.setDescription(`${content}\n\n${ANNOUNCE.FOOTER}`)
 			.setColor(COLOR.BOT)
-			.setFooter(author.user.tag, author.user.avatarURL);
+			.setFooter(author.user.tag, author.user.avatarURL());
 		const textContent = dedent`
 			${ANNOUNCE.MESSAGE_TITLE}
 			${content}`;
@@ -33,7 +33,7 @@ module.exports = {
 		const guildSettings = await Guild.find().exec();
 
 		const guilds = bot.guilds;
-		guilds.tap(guild => {
+		guilds.forEach(guild => {
 			const setting = guildSettings.find(el => el.id === guild.id);
 			if (setting && !setting.listenAnnounce) return;
 

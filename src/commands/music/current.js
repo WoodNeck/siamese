@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
@@ -23,9 +23,9 @@ module.exports = {
 		const song = player.currentSong;
 		const progressed = player.time;
 		const statusEmoji = PLAYER_STATE_EMOJI[player.state];
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setDescription(`${PLAYER.SONG_TITLE(song)}\n${song.duration ? PLAYER.SONG_PROGRESS(song, progressed, statusEmoji, player.loop) : ''}`)
-			.setFooter(song.member.displayName, song.member.user.avatarURL)
+			.setFooter(song.member.displayName, song.member.user.avatarURL())
 			.setColor(COLOR.BOT);
 
 		channel.send(embed);

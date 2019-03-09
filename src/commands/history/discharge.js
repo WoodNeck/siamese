@@ -1,6 +1,6 @@
 const date = require('date-and-time');
 const DateDiff = require('date-diff');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const Discharge = require('@/model/discharge');
 const { loadSubcommands } = require('@/load/subcommand');
 const COLOR = require('@/constants/color');
@@ -27,7 +27,7 @@ module.exports = {
 			msg.error(ERROR.CMD.EMPTY_CONTENT(DISCHARGE.TARGET));
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const info = await Discharge.findOne({
 			name: name,
@@ -71,7 +71,7 @@ module.exports = {
 		details.push(DISCHARGE.DAYS_LEFT(Math.max(total - progressed, 0)));
 		details.push(DISCHARGE.PERCENTAGE(percentage));
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(DISCHARGE.TITLE(name))
 			.setDescription(DISCHARGE.PROGRESS_EMOJI(Math.floor(percentage)))
 			.setColor(COLOR.BOT)

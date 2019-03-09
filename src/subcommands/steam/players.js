@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { getGame, getCurrentPlayers } = require('@/helper/steam');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
@@ -20,7 +20,7 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const game = await getGame(content);
 		if (!game) {
@@ -30,7 +30,7 @@ module.exports = {
 
 		const currentPlayers = await getCurrentPlayers(game.id);
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(game.name)
 			.setDescription(PLAYERS.CURRENT(currentPlayers))
 			.setURL(STEAM.STORE_URL(game.id))

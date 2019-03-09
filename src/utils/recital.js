@@ -86,7 +86,7 @@ module.exports = class Recital {
 		reactionCollector.on('end', this._onEnd.bind(this));
 	}
 	async _onCollect(reaction, collector) {
-		reaction.remove(this._author).catch(() => {});
+		reaction.users.remove(this._author).catch(() => {});
 		const reason = await this._callbacks.get(reaction.emoji.name)();
 		collector.stop(reason);
 	}
@@ -111,24 +111,28 @@ module.exports = class Recital {
 	_prev() {
 		// Message could been deleted
 		if (!this._recitalMsg || this._recitalMsg.deleted) return;
+		const currentPage = this._book._currentPage();
 		const prevPage = this._book.prevPage;
-		this._changePage(prevPage);
+		this._changePage(prevPage, currentPage);
 		return RECITAL_END.SHOULD_NOT_END;
 	}
 	_next() {
 		// Message could been deleted
 		if (!this._recitalMsg || this._recitalMsg.deleted) return;
+		const currentPage = this._book._currentPage();
 		const nextPage = this._book.nextPage;
-		this._changePage(nextPage);
+		this._changePage(nextPage, currentPage);
 		return RECITAL_END.SHOULD_NOT_END;
 	}
-	_changePage(page) {
+	_changePage(page, prevPage) {
 		if (page.isEmbed) {
 			if (!page.content.color) page.setColor(this._defaultColor);
 			this._recitalMsg.edit('', page.content).catch(() => {});
 		}
 		else {
-			this._recitalMsg.edit(page.content, { embed: {} }).catch(() => {});
+			(prevPage && prevPage.isEmbed)
+				? this._recitalMsg.edit(page.content, { embed: {} }).catch(() => {})
+				: this._recitalMsg.edit(page.content).catch(() => {});
 		}
 	}
 	_delete() {
@@ -143,10 +147,11 @@ module.exports = class Recital {
 		if (!this._recitalMsg.deleted) {
 			this._recitalMsg.reactions
 				.filter(reaction => reaction.me)
-				.tap(reaction => reaction
-					.remove(this._bot.user)
-					.catch(() => {})
-				);
+				.forEach(reaction => {
+					reaction.users
+						.remove(this._bot.user)
+						.catch(() => {});
+				});
 		}
 	}
 };

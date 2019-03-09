@@ -1,5 +1,5 @@
 const prompt = require('@/utils/prompt');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
 const { BUG_REPORT } = require('@/constants/commands/utility');
@@ -21,7 +21,7 @@ module.exports = {
 		}
 
 		const bugChannel = bot.channels.get(global.env.BOT_BUG_REPORT_CHANNEL);
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(BUG_REPORT.TITLE_CONFIRM)
 			.setDescription(content)
 			.setColor(COLOR.BOT);
@@ -33,8 +33,8 @@ module.exports = {
 		}
 
 		embed.title = undefined;
-		embed.setAuthor(`${author.user.username}(${author.user.id})`, author.user.avatarURL);
-		embed.setFooter(`${guild.name}(${guild.id})`, guild.iconURL);
+		embed.setAuthor(`${author.user.username}(${author.user.id})`, author.user.avatarURL());
+		embed.setFooter(`${guild.name}(${guild.id})`, guild.iconURL());
 
 		await bugChannel.send(embed);
 		channel.send(BUG_REPORT.MSG_SUCCESS);

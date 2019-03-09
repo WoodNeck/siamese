@@ -1,4 +1,4 @@
-const { Collection, RichEmbed } = require('discord.js');
+const { Collection, MessageEmbed } = require('discord.js');
 const Conversation = require('@/utils/conversation');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
@@ -26,11 +26,11 @@ module.exports = {
 			return;
 		}
 
-		await channel.startTyping();
+		channel.startTyping();
 
 		// Start gathering detailed info
 		const conversation = new Conversation(msg);
-		const optionsDialogue = new RichEmbed()
+		const optionsDialogue = new MessageEmbed()
 			.setTitle(VOTE.OPTIONS_TITLE)
 			.setDescription(VOTE.OPTIONS_DESC)
 			.setColor(COLOR.BOT)
@@ -44,7 +44,7 @@ module.exports = {
 			ERROR.VOTE.OPTIONS_BETWEEN_2_9
 		);
 
-		const durationDialogue = new RichEmbed()
+		const durationDialogue = new MessageEmbed()
 			.setTitle(VOTE.DURATION_TITLE)
 			.setDescription(VOTE.DURATION_DESC)
 			.setColor(COLOR.BOT)
@@ -67,14 +67,14 @@ module.exports = {
 
 		const durationMinute = parseInt(result.responses[1], 10);
 
-		const voteEmbed = new RichEmbed()
+		const voteEmbed = new MessageEmbed()
 			.setTitle(VOTE.TITLE(content))
 			.setDescription(
 				options
 					.map((option, idx) => `${idx + 1}${EMOJI.KEYCAP} ${option}`)
 					.join('\n')
 			)
-			.setFooter(VOTE.AUTHOR(author.displayName), author.user.avatarURL)
+			.setFooter(VOTE.AUTHOR(author.displayName), author.user.avatarURL())
 			.setColor(COLOR.BOT);
 
 		const numberEmojis = options.map((option, idx) => `${idx + 1}${EMOJI.KEYCAP}`);
@@ -93,7 +93,7 @@ module.exports = {
 				const idx = numberEmojis.indexOf(reaction.emoji.name);
 				voteCollection.set(user.id, idx);
 				// Remove user reaction immediately, to hide who voted on what
-				reaction.remove(user).catch(() => {});
+				reaction.users.remove(user).catch(() => {});
 			}
 		};
 		const reactionCollector = voteMsg.createReactionCollector(reactionFilter, {
@@ -117,7 +117,7 @@ module.exports = {
 				}
 			});
 
-			const voteResultEmbed = new RichEmbed()
+			const voteResultEmbed = new MessageEmbed()
 				.setTitle(VOTE.TITLE(content))
 				.setDescription(
 					options
@@ -125,7 +125,7 @@ module.exports = {
 						.join('\n')
 				)
 				.setColor(COLOR.BOT)
-				.setFooter(VOTE.AUTHOR(author.displayName), author.user.avatarURL);
+				.setFooter(VOTE.AUTHOR(author.displayName), author.user.avatarURL());
 
 			channel.send(
 				VOTE.RESULT_DESC(options[bestIdx], voteCounts[bestIdx]),

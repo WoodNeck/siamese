@@ -42,13 +42,12 @@ module.exports = {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
 		}
-		await channel.startTyping();
+		channel.startTyping();
 
 		const searchText = content;
 		let videos = await api.searchVideos(
 			searchText,
-			YOUTUBE.MAX_RESULTS,
-			YOUTUBE.SEARCH_OPTION(!channel.nsfw)
+			YOUTUBE.MAX_RESULTS
 		);
 
 		if (!videos.length) {

@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const COLOR = require('@/constants/color');
 const PERMISSION = require('@/constants/permission');
 const { INFO } = require('@/constants/commands/bot');
@@ -16,10 +16,10 @@ module.exports = {
 		const playerCnt = bot.players.size;
 		const botName = bot.getNameIn(guild);
 
-		const embed = new RichEmbed()
-			.setAuthor(botName, bot.user.avatarURL)
+		const embed = new MessageEmbed()
+			.setAuthor(botName, bot.user.avatarURL())
 			.setColor(COLOR.BOT)
-			.setThumbnail(bot.user.avatarURL);
+			.setThumbnail(bot.user.avatarURL());
 
 		const descs = [];
 		descs.push(INFO.GUILD_CNT(guildCnt));

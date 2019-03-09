@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const Recital = require('@/utils/recital');
 const GuildCommand = require('@/model/guildcommand');
 const { EmbedPage } = require('@/utils/page');
@@ -22,8 +22,7 @@ module.exports = {
 	],
 	cooldown: COOLDOWN.PER_GUILD(5),
 	execute: async ({ bot, msg, channel, guild, content }) => {
-		await channel.startTyping();
-		console.log(await GuildCommand.find({guildId: guild.id}).exec());
+		channel.startTyping();
 
 		// Specific command check
 		if (content) {
@@ -37,8 +36,8 @@ module.exports = {
 				return;
 			}
 
-			const embed = new RichEmbed()
-				.setAuthor(STATS.TITLE(content), guild.iconURL)
+			const embed = new MessageEmbed()
+				.setAuthor(GUILDSTATS.TITLE(content, guild.name), guild.iconURL())
 				.setDescription(GUILDSTATS.CMD_INFO(cmd))
 				.setColor(COLOR.BOT);
 			channel.send(embed);
@@ -58,7 +57,7 @@ module.exports = {
 			const pages = [];
 			for (let i = 0; i < commands.length / STATS.CMD_PER_PAGE; i += 1) {
 				const page = new EmbedPage()
-					.setAuthor(STATS.TITLE(bot.getNameIn(guild)), guild.iconURL);
+					.setAuthor(GUILDSTATS.TITLE(bot.getNameIn(guild), guild.name), guild.iconURL());
 				const commandsInfo = commands.slice(i * STATS.CMD_PER_PAGE, (i + 1) * STATS.CMD_PER_PAGE)
 					.map(cmd => GUILDSTATS.CMD_INFO_ONE_LINE(cmd))
 					.join('\n');

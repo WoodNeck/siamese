@@ -27,7 +27,8 @@ module.exports = {
 			msg.error(ERROR.MUSIC.TTS_MESSAGE_TO_LONG(TTS.MAX_LENGTH));
 			return;
 		}
-		await channel.startTyping();
+
+		channel.startTyping();
 
 		const song = new Song(
 			content,
@@ -37,6 +38,7 @@ module.exports = {
 			author,
 		);
 		const player = await aquirePlayer(context);
+
 		if (player) {
 			await player.enqueue(song, channel);
 		}

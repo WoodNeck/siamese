@@ -13,7 +13,7 @@ module.exports = {
 	devOnly: false,
 	permissions: [PERMISSION.EMBED_LINKS],
 	execute: async ({ bot, channel, guild, msg }) => {
-		await channel.startTyping();
+		channel.startTyping();
 
 		const infos = await Discharge.find({
 			guildId: guild.id,

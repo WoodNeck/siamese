@@ -48,7 +48,7 @@ const aquirePlayer = async context => {
 	}
 	else {
 		// Create new player
-		const voiceChannel = author.voiceChannel;
+		const voiceChannel = author.voice.channel;
 
 		if (!voiceChannel) {
 			msg.error(ERROR.MUSIC.JOIN_VOICE_CHANNEL_FIRST);

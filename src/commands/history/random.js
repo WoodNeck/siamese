@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const Channel = require('@/model/channel');
 const COLOR = require('@/constants/color');
 const ERROR = require('@/constants/error');
@@ -28,10 +28,10 @@ module.exports = {
 			return;
 		}
 		const randomMsgId = randomLog[0].msgs.snowflakes;
-		const randomMsgs = await channel.fetchMessages({
+		const randomMsgs = await channel.messages.fetch({
 			limit: RANDOM.MSG_FETCH_LIMIT,
 			around: randomMsgId,
-		});
+		}, false);
 
 		const randomMsg = randomMsgs
 			.filter(message => !message.author.bot)
@@ -42,10 +42,10 @@ module.exports = {
 			return;
 		}
 
-		const embed = new RichEmbed()
+		const embed = new MessageEmbed()
 			.setAuthor(
 				randomMsg.author.username,
-				randomMsg.author.avatarURL,
+				randomMsg.author.avatarURL(),
 			)
 			.setDescription(`
 ${randomMsg.content.substr(0, MESSAGE_MAX_LENGTH)}

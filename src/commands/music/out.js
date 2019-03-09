@@ -1,6 +1,5 @@
 const ERROR = require('@/constants/error');
 const { OUT } = require('@/constants/commands/music');
-const { PLAYER_END } = require('@/constants/type');
 
 
 module.exports = {
@@ -16,15 +15,13 @@ module.exports = {
 			return;
 		}
 		// kill player
-		if (connection.dispatcher) {
-			connection.dispatcher.end(PLAYER_END.KILL);
-		}
-		else {
-			if (bot.players.has(guild.id)) {
-				bot.players.delete(guild.id);
-			}
-
+		if (!bot.players.has(guild.id)) {
+			// just leave voice channel
 			connection.disconnect();
+			return;
 		}
+
+		const player = bot.players.get(guild.id);
+		player.end();
 	},
 };

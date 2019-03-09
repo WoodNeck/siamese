@@ -25,6 +25,11 @@ module.exports = {
 	subcommands: loadSubcommands('hitomi'),
 	cooldown: COOLDOWN.PER_USER(5),
 	execute: async ({ bot, channel, msg, content }) => {
+		if (!content) {
+			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
+			return;
+		}
+
 		if (!channel.nsfw) {
 			msg.error(ERROR.NSFW.NOT_NSFW_CHANNEL);
 			return;
@@ -35,7 +40,7 @@ module.exports = {
 			return;
 		}
 
-		await channel.startTyping();
+		channel.startTyping();
 
 		const articleNum = parseInt(content, 10);
 
