@@ -157,4 +157,14 @@ module.exports = {
 		TARGET: '게임',
 		CURRENT: players => `현재 플레이어 수: ${players}`,
 	},
+	TOP: {
+		CMD: '동접순위',
+		DESC: '현재 동접순위를 확인한다냥!',
+		SEARCH_URL: 'https://store.steampowered.com/stats/Steam-Game-and-Player-Statistics?l=koreana',
+		GAMES_PER_PAGE: 10,
+		RECITAL_TIME: 30,
+		FORMAT_INFO: '동접순위 (현재 / 최고)',
+		GAME_TITLE: (idx, game) => `${idx}. ${strong(game[2])}`,
+		GAME_STATISTICS: game => `${game[0]} / ${game[1]}`,
+	},
 };

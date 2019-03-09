@@ -9,6 +9,10 @@ module.exports = {
 			ttl: 60 * 60,
 			checkPeriod: 600,
 		},
+		TOP_GAMES:{
+			ttl: 60 * 60,
+			checkPeriod: 600,
+		},
 	},
 	HITOMI: {
 		RANDOM_INDEX: {
