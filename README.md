@@ -13,8 +13,9 @@ Korean Discord bot for multiple purpose.
 - [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) 4.0.4 or newer
 
 # Installing
-## Linux
+## Linux - ubuntu
 ```sh
+sudo apt install ffmpeg
 yarn install
 ```
 Before run, please fill out the `bot.env` file using `bot.env.preset`.

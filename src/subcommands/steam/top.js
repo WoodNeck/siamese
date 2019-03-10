@@ -49,7 +49,7 @@ module.exports = {
 		const pages = [];
 
 		for (let pageNum = 0; pageNum < maxPage; pageNum++) {
-			const gamesSliced = games.slice(perPage * pageNum, perPage * (pageNum + 1))
+			const gamesSliced = games.slice(perPage * pageNum, perPage * (pageNum + 1));
 			const page = new EmbedPage();
 
 			gamesSliced.forEach((game, index) => page.addField(

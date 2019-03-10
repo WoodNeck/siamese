@@ -71,7 +71,7 @@ module.exports = {
 		const userPages = users.map(
 			user => new EmbedPage()
 				.setTitle(`${user.name} - ${user.realm}`)
-				.setThumbnail(user.avatarURL())
+				.setThumbnail(user.avatarURL)
 				.setDescription(user.level)
 				.setData(user)
 		);
@@ -190,7 +190,7 @@ const checkDetailedProfile = async (ctx, user) => {
 	});
 
 	const overviewPage = new EmbedPage()
-		.setAuthor(user.name, user.avatarURL(), user.url)
+		.setAuthor(user.name, user.avatarURL, user.url)
 		.setImage(userDetail.profileImage)
 		.setDescription(WOW.PROFILE.DETAIL(userDetail))
 		.setFooter(userDetail.details, userDetail.logo);
@@ -204,7 +204,7 @@ const checkDetailedProfile = async (ctx, user) => {
 
 	userDetail.items.forEach(item => {
 		recital.book.addPage(new EmbedPage()
-			.setAuthor(user.name, user.avatarURL(), user.url)
+			.setAuthor(user.name, user.avatarURL, user.url)
 			.setThumbnail(item.icon)
 			.setDescription(`${item.name}${item.spec}`)
 		);
