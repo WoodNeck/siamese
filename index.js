@@ -20,4 +20,4 @@ bot.setup()
 	.catch(console.error);
 
 const startRestServer = require('./rest/start');
-// startRestServer(bot);
+startRestServer(bot);

@@ -13,36 +13,13 @@ module.exports = bot => {
 	});
 
 	// Return user guilds
-	app.get('/userGuilds', (req, res) => {
+	app.get('/userGuilds', async (req, res) => {
 		const userId = req.query.user;
 
 		const guilds = bot.guilds.filter(guild => guild.members.has(userId));
 
-		const formattedGuild = guilds.map(guild => {
-			return {
-				id: guild.id,
-				iconURL: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
-				name: guild.name,
-			};
-		});
-
-		res.send(JSON.stringify(formattedGuild));
-	});
-
-	// Return user permission for guild
-	app.get('/guildInfo', async (req, res) => {
-		const guildId = req.query.guild;
-		const userId = req.query.user;
-
-		const guild = bot.guilds.get(guildId);
-
-		if (guild) {
+		const getGuildInfo = async guild => {
 			const user = guild.members.get(userId);
-			if (!user) {
-				res.sendStatus(400);
-				return;
-			}
-
 			const hasPermission = guild.roles.some(
 				role => {
 					return role.name === global.env.FILE_MANAGEMENT_ROLE_NAME
@@ -50,27 +27,31 @@ module.exports = bot => {
 				},
 			);
 
-			const directories = await Directory.find();
-			// Include only directory name
-			directories.map(directory => {
-				return { name: directory.name };
+			const directories = await Directory.find({
+				guildId: guild.id,
 			});
 
-			res.send({
+			// Include only name & length of directories
+			directories.map(directory => {
+				return {
+					name: directory.name,
+					length: directory.images.length,
+				};
+			});
+
+			return {
 				id: guild.id,
 				iconURL: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
 				name: guild.name,
 				hasPermission,
 				directories,
-			});
-		}
-		else {
-			res.sendStatus(400);
-		}
-	});
+			};
+		};
 
-	app.post('/newFolder', async (req, res) => {
-		console.log(req.body);
+		const getGuildsInfo = guilds.map(guild => getGuildInfo(guild));
+
+		const formattedGuilds = await Promise.all(getGuildsInfo);
+		res.send(JSON.stringify(formattedGuilds));
 	});
 
 	app.listen(4260, () => {

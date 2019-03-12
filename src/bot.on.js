@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const parseArgs = require('@/helper/parseArgs');
 const logMessage = require('@/helper/logMessage');
 const logCommand = require('@/helper/logCommand');
+const checkImageCommand = require('@/helper/checkImageCommand');
 const COLOR = require('@/constants/color');
 const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
@@ -65,7 +66,7 @@ const onMessage = async function(msg) {
 	logMessage(msg);
 
 	if (msg.author.bot) return;
-	if (!msg.content.startsWith(prefix)) return;
+	if (!msg.content.startsWith(prefix)) return checkImageCommand(msg);
 
 	let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 

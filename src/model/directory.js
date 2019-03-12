@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
+	id: String,
 	name: String,
-	path: String,
+	size: Number,
+	url: String,
+	deletehash: String,
+	author: String,
 });
 
 module.exports = mongoose.model('Directory', new mongoose.Schema({
 	name: String,
-	images: [imageSchema],
+	guildId: String,
+	images: { type: [imageSchema], default: [] },
 }));
