@@ -156,6 +156,7 @@ module.exports = {
 		USAGE: '게임명',
 		TARGET: '게임',
 		CURRENT: players => `현재 플레이어 수: ${players}`,
+		RECITAL_TIME: 30,
 	},
 	TOP: {
 		CMD: '동접순위',

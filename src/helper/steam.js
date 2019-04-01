@@ -1,5 +1,4 @@
 const axios = require('axios');
-const Fuse = require('fuse.js');
 const NodeCache = require('node-cache');
 const CACHE = require('@/constants/cache');
 const { STEAM } = require('@/constants/commands/steam');
@@ -54,25 +53,19 @@ const getUserId = async searchText => {
 	}
 };
 
-const getGame = async searchText => {
+const getGames = async searchText => {
 	return await axios.get(
 		STEAM.SEARCH_BY_GAME_NAME_URL,
 		{ params: STEAM.SEARCH_BY_GAME_NAME_PARAMS(searchText) }
 	).then(body => {
 		if (body.data && body.data.total) {
 			const games = body.data.items;
-			// Find correct game by doing fuzzy matching
-			const game = new Fuse(games, {
-				shouldSort: true,
-				threshold: 1,
-				keys: ['name'],
-			}).search(searchText)[0];
-			return game;
+			return games;
 		}
 		else {
-			return undefined;
+			return [];
 		}
-	}).catch(() => undefined);
+	}).catch(() => []);
 };
 
 const getUserSummary = async userId => await axios.get(
@@ -141,7 +134,7 @@ const getCurrentPlayers = async appid => {
 
 module.exports = {
 	getUserId: getUserId,
-	getGame: getGame,
+	getGames: getGames,
 	getUserSummary: getUserSummary,
 	getUserBanState: getUserBanState,
 	getRecentlyPlayedGame: getRecentlyPlayedGame,
