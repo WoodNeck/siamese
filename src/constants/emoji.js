@@ -66,4 +66,6 @@ module.exports = {
 	GOLD_MEDAL: '🥇',
 	SILVER_MEDAL: '🥈',
 	BRONZE_MEDAL: '🥉',
+	FILE: '📁',
+	FLOPPY_DISC: '💾',
 };
