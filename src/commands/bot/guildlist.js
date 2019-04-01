@@ -14,6 +14,7 @@ module.exports = {
 			const guildEntry = GUILDLIST.GUILD_ENTRY(guild);
 			if (guildsStr.length + guildEntry.length > MESSAGE_MAX_LENGTH) {
 				await channel.send(guildsStr);
+				guildsStr = '';
 			}
 			else {
 				guildsStr = `${guildsStr}\n${guildEntry}`;

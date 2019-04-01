@@ -66,7 +66,7 @@ const onMessage = async function(msg) {
 	logMessage(msg);
 
 	if (msg.author.bot) return;
-	if (!msg.content.startsWith(prefix)) return checkImageCommand(msg);
+	if (!msg.content.startsWith(prefix)) return checkImageCommand(this, msg);
 
 	let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 
