@@ -10,16 +10,18 @@ module.exports = {
 	permissions: [],
 	execute: ({ msg, bot, guild }) => {
 		const connection = bot.voiceConnections.get(guild.id);
-		if (!connection) {
-			msg.error(ERROR.MUSIC.NO_VOICE_CHANNEL_IN);
-			return;
-		}
-		// kill player
+
 		if (!bot.players.has(guild.id)) {
-			// just leave voice channel
-			connection.disconnect();
+			if (!connection) {
+				msg.error(ERROR.MUSIC.NO_VOICE_CHANNEL_IN);
+			}
+			else {
+				// just leave voice channel
+				connection.disconnect();
+			}
 			return;
 		}
+
 
 		const player = bot.players.get(guild.id);
 		player.end();
