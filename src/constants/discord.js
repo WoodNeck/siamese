@@ -4,4 +4,7 @@ module.exports = {
 	DISCORD_ERROR_CODE: {
 		MISSING_PERMISSION: 50013,
 	},
+	URL: {
+		GUILD_ICON: (id, icon) => `https://cdn.discordapp.com/icons/${id}/${icon}.png`,
+	},
 };
