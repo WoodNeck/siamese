@@ -1,7 +1,9 @@
 const translate = require('@k3rn31p4nic/google-translate-api');
 const { MessageEmbed } = require('discord.js');
 
+const { loadSubcommands } = require('@/load/subcommand');
 const COLOR = require('@/constants/color');
+const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { TRANSLATE } = require('@/constants/commands/useful');
@@ -15,18 +17,18 @@ module.exports = {
 	permissions: [
 		PERMISSION.EMBED_LINKS,
 	],
+	subcommands: loadSubcommands('translate'),
 	execute: async ({ channel, msg, args, content }) => {
 		channel.startTyping();
 
-		const targetLang = args[0];
-
-		if (!(targetLang in TRANSLATE.LANGS)) {
-			msg.error(ERROR.TRANSLATE.LANG_NOT_SPECIFIED);
-			return;
-		}
-
+		const langCandidate = args[0];
+		const targetLang = langCandidate in TRANSLATE.LANGS
+			? langCandidate
+			: TRANSLATE.DEFAULT_LANG;
 		const targetLangCode = TRANSLATE.LANGS[targetLang];
-		const translateContent = content.substring(content.indexOf(' ')).trim();
+		const translateContent = langCandidate in TRANSLATE.LANGS
+			? content.substring(content.indexOf(' ')).trim()
+			: content;
 
 		if (!translateContent.length) {
 			msg.error(ERROR.TRANSLATE.NO_CONTENT);
@@ -36,10 +38,13 @@ module.exports = {
 		const result = await translate(translateContent, {
 			to: targetLangCode,
 		});
+		const originalLang = Object.keys(TRANSLATE.LANGS).find(lang => {
+			return TRANSLATE.LANGS[lang] === result.from.language.iso;
+		});
 
 		const embed = new MessageEmbed()
-			.setDescription(`${result.text}`)
-			.setFooter(`${translateContent}`)
+			.setDescription(`${EMOJI.MEMO} ${result.text}`)
+			.setFooter(`${EMOJI.WWW}${originalLang}: ${translateContent}`)
 			.setColor(COLOR.BOT);
 
 		await channel.send(embed);

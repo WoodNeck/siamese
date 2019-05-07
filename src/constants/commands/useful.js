@@ -69,6 +69,7 @@ module.exports = {
 		CMD: '번역',
 		DESC: '문장을 번역한다냥!',
 		USAGE: '언어 문장',
+		DEFAULT_LANG: '한국어',
 		LANGS: {
 			'아프리칸스어': 'af',
 			'알바니아어': 'sq',
@@ -175,6 +176,13 @@ module.exports = {
 			'이디시어': 'yi',
 			'요루바어': 'yo',
 			'줄루어': 'zu',
+		},
+		LIST: {
+			CMD: '목록',
+			DESC: '번역 가능한 언어들을 보여준다냥!',
+			ENTRY_PER_PAGE: 20,
+			ENTRY: lang => `${EMOJI.SMALL_WHITE_SQUARE}${lang}`,
+			RECITAL_TIME: 30,
 		},
 	},
 };

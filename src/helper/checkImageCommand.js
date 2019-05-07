@@ -7,6 +7,8 @@ const COLOR = require('@/constants/color');
 const { LIST } = require('@/constants/commands/file');
 
 module.exports = async (bot, msg) => {
+	if (!msg.guild) return;
+
 	const guildId = msg.guild.id;
 	const dirName = msg.content.split(/ +/)[0];
 	const fileName = msg.content.slice(dirName.length + 1).trim();

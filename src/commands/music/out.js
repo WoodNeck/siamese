@@ -22,7 +22,6 @@ module.exports = {
 			return;
 		}
 
-
 		const player = bot.players.get(guild.id);
 		player.end();
 	},
