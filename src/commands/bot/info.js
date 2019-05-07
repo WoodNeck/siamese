@@ -12,7 +12,9 @@ module.exports = {
 	permissions: [PERMISSION.EMBED_LINKS],
 	execute: ({ bot, channel, guild }) => {
 		const guildCnt = bot.guilds.size;
-		const userCnt = bot.users.filter(user => !user.bot).size;
+		const userCnt = bot.guilds.reduce((total, server) => {
+			return total + server.members.size;
+		}, 0);
 		const playerCnt = bot.players.size;
 		const botName = bot.getNameIn(guild);
 

@@ -38,8 +38,9 @@ module.exports = {
 		const result = await translate(translateContent, {
 			to: targetLangCode,
 		});
+		const langISO = result.from.language.iso.toLowerCase();
 		const originalLang = Object.keys(TRANSLATE.LANGS).find(lang => {
-			return TRANSLATE.LANGS[lang] === result.from.language.iso;
+			return TRANSLATE.LANGS[lang] === langISO;
 		});
 
 		const embed = new MessageEmbed()
