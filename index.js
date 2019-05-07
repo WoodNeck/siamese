@@ -19,5 +19,6 @@ bot.setup()
 	.then(() => bot.start())
 	.catch(console.error);
 
-const startRestServer = require('./rest/start');
-startRestServer(bot);
+// Temporarily disable rest server until Siamese-web finish
+// const startRestServer = require('./rest/start');
+// startRestServer(bot);

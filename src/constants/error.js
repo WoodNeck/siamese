@@ -133,4 +133,8 @@ module.exports = {
 	WOW: {
 		USER_NOT_FOUND: '해당 닉네임을 가진 유저를 한 명도 발견하지 못했다냥!',
 	},
+	TRANSLATE: {
+		NO_CONTENT: '번역할 내용을 달라냥!',
+		LANG_NOT_SPECIFIED: '그런 언어는 없다냥! 언어 목록은 `샴 번역 목록`을 확인해보라냥!',
+	},
 };

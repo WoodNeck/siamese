@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^0.4.0",
+    "@k3rn31p4nic/google-translate-api": "github:k3rn31p4nic/google-translate-api",
     "axios": "^0.18.0",
     "axios-cookiejar-support": "^0.4.2",
     "bufferutil": "^4.0.1",

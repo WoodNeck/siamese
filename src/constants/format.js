@@ -25,6 +25,7 @@ module.exports = {
 		CURRENT: '{CURRENT}',
 		TOTAL: '{TOTAL}',
 	},
+	FLAG: iso => `${EMOJI.LETTER[iso[0].toUpperCase()]}${EMOJI.LETTER[iso[1].toUpperCase()]}`,
 };
 
 const musicLength = duration => `${duration.hours * 60 + duration.minutes}:${('0' + duration.seconds).slice(-2)}`;
