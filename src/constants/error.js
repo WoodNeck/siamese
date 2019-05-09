@@ -55,6 +55,7 @@ module.exports = {
 		EMPTY_CONTENT: '검색할 내용을 달라냥!',
 		EMPTY_RESULT: target => `그 검색어로는 ${target}${Josa.c(target, '을/를')} 하나도 찾을수가 없었다냥!`,
 		FAILED: '데이터 취득에 실패했다냥!',
+		USER_NOT_FOUND: '유저를 찾을 수 없었다냥!',
 	},
 	MUSIC: {
 		TYPE_NOT_DEFINED: type => `"${type}" -> 등록되지 않은 음악 타입이다냥!`,

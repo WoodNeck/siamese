@@ -1,4 +1,5 @@
 const dedent = require('@/utils/dedent');
+const { strong } = require('@/utils/markdown');
 const EMOJI = require('@/constants/emoji');
 
 
@@ -59,6 +60,35 @@ module.exports = {
 				'https://i.imgur.com/y4P0vfG.png',
 				'https://i.imgur.com/y3WBcdU.png',
 			],
+		},
+	},
+	LOL: {
+		CMD: '롤',
+		PROFILE: {
+			CMD: '프로필',
+			DESC: '롤 프로필을 검색한다냥!',
+			USAGE: '소환사명',
+			URL: {
+				OVERALL: userName => `https://www.op.gg/summoner/userName=${encodeURIComponent(userName)}`,
+			},
+			MSG: {
+				LEVEL: level => `LEVEL - ${strong(level)}`,
+				LADDER: (rank, percentage) => rank
+					? `래더 랭킹 ${strong(rank)}위 (상위 ${strong(percentage)})`
+					: '',
+				TIER: ({ rank, leagueName, leaguePoints, win, lose, winRatio }) => leaguePoints
+					? dedent`
+					${strong(rank)}
+					${leaguePoints} / ${win} ${lose}
+					${winRatio}
+					${leagueName}`
+					: strong(rank),
+				RECENT_MATCHES: '최근 전적',
+				RECENT_STAT: ({ total, win, lose, kill, death, assist }) => dedent`
+					${total}전 ${win}승 ${lose}패
+					🅚 ${kill} / 🅓 ${death} / 🅐 ${assist}
+				`,
+			},
 		},
 	},
 };

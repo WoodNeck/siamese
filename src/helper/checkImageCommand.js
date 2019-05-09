@@ -21,7 +21,8 @@ module.exports = async (bot, msg) => {
 		guildId,
 	}).exec();
 
-	if (!directory) {
+	// Due to rest api change
+	if (!directory || !directory.images) {
 		return;
 	}
 
