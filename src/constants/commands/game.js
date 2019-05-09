@@ -66,7 +66,7 @@ module.exports = {
 		CMD: '롤',
 		PROFILE: {
 			CMD: '프로필',
-			DESC: '롤 프로필을 검색한다냥!',
+			DESC: 'op.gg에서 롤 프로필 정보를 검색한다냥!',
 			USAGE: '소환사명',
 			URL: {
 				OVERALL: userName => `https://www.op.gg/summoner/userName=${encodeURIComponent(userName)}`,
