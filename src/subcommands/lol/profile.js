@@ -62,7 +62,7 @@ module.exports = {
 
 			const ladderRank = profileEl.find('.LadderRank');
 			profileInfo.ladderRank = ladderRank.find('.ranking').text();
-			profileInfo.ladderPercentage = ladderRank.text().match(/\d+%/);
+			profileInfo.ladderPercentage = ladderRank.text().match(/(\d+.)*\d+%/);
 			profileInfo.ladderPercentage = profileInfo.ladderPercentage && profileInfo.ladderPercentage[0];
 
 			const lastUpdate = header.find('.LastUpdate').text().trim();
