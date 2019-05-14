@@ -185,4 +185,14 @@ module.exports = {
 			RECITAL_TIME: 30,
 		},
 	},
+	LADDER: {
+		CMD: '사다리',
+		DESC: '사다리 게임을 한다냥!',
+		USAGE: '(참가항목 or @참가자), (참가항목 or @참가자), ...',
+		COMPETERS_TITLE: '참가자들을 알려달라냥!',
+		COMPETERS_DESC: dedent`
+			콤마(,)로 구분해서, 이름 또는 @멘션으로 참가자들을 알려달라냥!
+			최대 참가자 수는 10명이다냥!`,
+		COMPETERS_FOOTER: '예) 참가자1, 참가자2, @닉네임, 참가자4',
+	},
 };

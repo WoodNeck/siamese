@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Korean discord bot Siamese written in js language",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "killall ffmpeg || node ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WoodNeck/siamese.git"
@@ -24,6 +26,7 @@
     "axios": "^0.18.0",
     "axios-cookiejar-support": "^0.4.2",
     "bufferutil": "^4.0.1",
+    "canvas": "^2.5.0",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
     "date-and-time": "^0.6.3",

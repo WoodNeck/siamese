@@ -10,6 +10,9 @@ require('@/load/env');
 // Load all prototype redefinitions
 require('@/load/prototype');
 
+// Load fonts
+require('@/load/font');
+
 // Create a new bot instance, setup and start it
 const Bot = require('@/bot');
 const option = require('@/bot.option');
