@@ -35,6 +35,7 @@
     "discord.js": "discordjs/discord.js",
     "erlpack": "discordapp/erlpack",
     "express": "^4.16.4",
+    "ffmpeg-static": "^2.4.0",
     "fuse.js": "^3.3.0",
     "hangul-js": "^0.2.5",
     "josa-js": "^0.0.2",

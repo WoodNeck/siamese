@@ -8,8 +8,9 @@ module.exports = {
 	hidden: false,
 	devOnly: false,
 	permissions: [],
-	execute: ({ msg, bot, guild }) => {
-		const connection = bot.voiceConnections.get(guild.id);
+	execute: ({ msg, bot, guild, channel }) => {
+		const connection = bot.voiceConnections
+			&& bot.voiceConnections.get(guild.id);
 
 		if (!bot.players.has(guild.id)) {
 			if (!connection) {
@@ -24,5 +25,7 @@ module.exports = {
 
 		const player = bot.players.get(guild.id);
 		player.end();
+
+		channel.stopTyping();
 	},
 };

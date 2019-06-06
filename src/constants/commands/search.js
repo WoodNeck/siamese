@@ -143,4 +143,17 @@ module.exports = {
 		DESC: '나무위키에서 무작위 문서를 검색한다냥!',
 		RANDOM_URL: 'https://namu.wiki/random',
 	},
+	SEARCH: {
+		CMD: '검색',
+		DESC: '구글에서 문서를 검색한다냥!',
+		USAGE: '검색할 내용',
+		TARGET: '검색 결과',
+		RECITAL_TIME: 30,
+		URL: 'https://www.google.com/search',
+		PARAMS: query => {
+			return {
+				q: query,
+			};
+		},
+	},
 };
