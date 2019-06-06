@@ -1,13 +1,11 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
+const { MessageEmbed } = require('discord.js');
 const { loadSubcommands } = require('@/load/subcommand');
-const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const PERMISSION = require('@/constants/permission');
 const { HITOMI } = require('@/constants/commands/nsfw');
-const { COOLDOWN, RECITAL_END } = require('@/constants/type');
+const { COOLDOWN } = require('@/constants/type');
 const { AXIOS_HEADER } = require('@/constants/header');
 
 
@@ -19,12 +17,10 @@ module.exports = {
 	devOnly: false,
 	permissions: [
 		PERMISSION.EMBED_LINKS,
-		PERMISSION.ADD_REACTIONS,
-		PERMISSION.MANAGE_MESSAGES,
 	],
 	subcommands: loadSubcommands('hitomi'),
 	cooldown: COOLDOWN.PER_USER(5),
-	execute: async ({ bot, channel, msg, content }) => {
+	execute: async ({ channel, msg, content }) => {
 		if (!content) {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
@@ -108,53 +104,16 @@ module.exports = {
 			meta.details[info[0]] = info[1];
 		});
 
-		const recital = new Recital(bot, msg);
-		const page = new EmbedPage()
+		const embed = new MessageEmbed()
 			.setTitle(meta.title)
 			.setDescription(meta.artist)
 			.setUrl(HITOMI.ARTICLE_URL(articleNum))
 			.setFooter(articleNum.toString())
 			.setImage(meta.cover);
 		for (const type in meta.details) {
-			page.addField(type, meta.details[type], true);
+			embed.addField(type, meta.details[type], true);
 		}
-		recital.book.addPage(page);
-		recital.removeReactionCallback(EMOJI.ARROW_LEFT);
-		recital.removeReactionCallback(EMOJI.ARROW_RIGHT);
 
-		recital.addReactionCallback(EMOJI.PLAY, async () => {
-			const readRecital = new Recital(bot, msg);
-			readHitomi(articleNum, meta, readRecital);
-			return RECITAL_END.DELETE_ALL_MESSAGES;
-		}, 0);
-		recital.start(HITOMI.PREVIEW_RECITAL_TIME);
+		channel.send(embed);
 	},
-};
-
-const readHitomi = async (articleNum, meta, recital) => {
-	// All errors, like 404 error will return undefined
-	const reader = await axios.get(HITOMI.READER_URL(articleNum), {
-		headers: AXIOS_HEADER,
-	}).then(body => body.data);
-
-	const $ = cheerio.load(reader);
-	const IMAGE_URL = (articleNum % 2) && (articleNum % 10 !== 1)
-		? HITOMI.IMAGE_URL_ODD
-		: HITOMI.IMAGE_URL_EVEN;
-
-	const images = $('.img-url').map(function() {
-		const element = $(this);
-		const preloadUrl = element.text();
-		// Get the image name only
-		const imageName = preloadUrl.slice(preloadUrl.lastIndexOf('/') + 1);
-		return imageName;
-	}).toArray().map(imageName => IMAGE_URL(articleNum, imageName));
-
-	const pages = images.map(imageUrl => new EmbedPage()
-		.setTitle(HITOMI.READER_TITLE(meta.title, articleNum))
-		.setImage(imageUrl)
-	);
-
-	recital.book.addPages(pages);
-	recital.start(HITOMI.READER_RECITAL_TIME);
 };
