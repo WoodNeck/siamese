@@ -48,7 +48,7 @@ module.exports = {
 				return new EmbedPage()
 					.setTitle(title)
 					.setDescription(price)
-					.setUrl(item.link)
+					.setURL(item.link)
 					.setFooter(`${item.mallName} - ${productType}`)
 					.setThumbnail(item.image)
 					.setColor(COLOR.BOT);

@@ -52,7 +52,7 @@ module.exports = {
 					game.steamRatingPercent,
 					game.steamRatingCount,
 				), CHEAPEST.REVIEW_ICON(parseInt(game.steamRatingPercent, 10)))
-				.setUrl(CHEAPEST.REDIRECT_URL(game.dealID));
+				.setURL(CHEAPEST.REDIRECT_URL(game.dealID));
 		});
 		recital.book.addPages(pages);
 		recital.start(CHEAPEST.RECITAL_TIME);

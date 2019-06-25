@@ -39,7 +39,7 @@ module.exports = {
 			const page = new EmbedPage()
 				.setTitle(game.name)
 				.setDescription(PLAYERS.CURRENT(currentPlayer))
-				.setUrl(STEAM.STORE_URL(game.id));
+				.setURL(STEAM.STORE_URL(game.id));
 			if (game.tiny_image) {
 				page.setThumbnail(game.tiny_image);
 			}

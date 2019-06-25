@@ -25,7 +25,7 @@ class EmbedPage {
 		}
 		return this;
 	}
-	setUrl(url) {
+	setURL(url) {
 		this._embed.setURL(url);
 		return this;
 	}
@@ -93,7 +93,7 @@ class StringPage {
 		// DO NOTHING
 		return this;
 	}
-	setUrl() {
+	setURL() {
 		// DO NOTHING
 		return this;
 	}

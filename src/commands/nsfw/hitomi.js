@@ -107,7 +107,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setTitle(meta.title)
 			.setDescription(meta.artist)
-			.setUrl(HITOMI.ARTICLE_URL(articleNum))
+			.setURL(HITOMI.ARTICLE_URL(articleNum))
 			.setFooter(articleNum.toString())
 			.setImage(meta.cover);
 		for (const type in meta.details) {

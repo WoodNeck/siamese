@@ -56,7 +56,7 @@ module.exports = {
 			});
 			pages.push(new EmbedPage()
 				.setTitle(summary.personaname)
-				.setUrl(STEAM.PROFILE_GAME_URL(summary.profileurl))
+				.setURL(STEAM.PROFILE_GAME_URL(summary.profileurl))
 				.setThumbnail(summary.avatarmedium)
 				.setDescription(gameDescs.join('\n'))
 			);

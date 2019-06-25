@@ -58,7 +58,7 @@ module.exports = {
 				return new EmbedPage()
 					.setTitle(title)
 					.setDescription(desc)
-					.setUrl(url);
+					.setURL(url);
 			}).toArray();
 
 			const recital = new Recital(bot, msg);
