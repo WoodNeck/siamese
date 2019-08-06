@@ -110,7 +110,6 @@ module.exports = class Player {
 		this._state = PLAYER_STATE.PREPARING;
 
 		const song = this._queue[0];
-		console.log('NEXT SONG', song);
 		if (!song) {
 			return;
 		}
@@ -119,7 +118,6 @@ module.exports = class Player {
 		const dispatcher = this._connection.play(stream, song.streamOptions);
 
 		dispatcher.on('start', () => {
-			console.log('start');
 			// 'pausedTime' is carried on new dispatcher
 			// Should manually set it for 0 to get 0-delay stream after pausing
 			// https://github.com/discordjs/discord.js/issues/1693#issuecomment-317301023
@@ -129,7 +127,6 @@ module.exports = class Player {
 		});
 
 		dispatcher.on('finish', () => {
-			console.log('finish');
 			const oldSong = this._queue.shift();
 
 			if (this._loop) this._queue.push(oldSong);
