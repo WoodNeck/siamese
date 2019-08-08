@@ -20,7 +20,6 @@
     "eslint": "^5.8.0"
   },
   "dependencies": {
-    "@discordjs/uws": "^11.149.1",
     "@google-cloud/text-to-speech": "^0.4.0",
     "@k3rn31p4nic/google-translate-api": "github:k3rn31p4nic/google-translate-api",
     "axios": "^0.18.0",
@@ -47,7 +46,7 @@
     "node-opus": "^0.2.7",
     "prism-media": "^1.0.1",
     "remove-markdown": "^0.3.0",
-    "simple-youtube-api": "^5.0.2",
+    "simple-youtube-api": "^5.2.1",
     "to-readable-stream": "^1.0.0",
     "unescape": "^1.0.1",
     "ytdl-core-discord": "^1.0.3",

@@ -16,6 +16,7 @@ module.exports = {
 		DESC: '새로운 음악을 재생목록에 추가한다냥!',
 		USAGE: '유튜브주소',
 		PLAYLIST: '재생목록',
+		MAX_TIMEOUT: 15000,
 	},
 	RESUME: {
 		CMD: '재생',

@@ -50,7 +50,7 @@ module.exports = class Song {
 
 	async createStream() {
 		if (this._type === MUSIC_TYPE.YOUTUBE) {
-			return await ytdl(this._song, { filter : 'audioonly' });
+			return await ytdl(this._song, { type: 'opus', filter : 'audioonly' });
 		}
 		else if (this._type === MUSIC_TYPE.TTS) {
 			const ttsClient = new TextToSpeechClient();

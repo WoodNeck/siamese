@@ -1,3 +1,4 @@
+const { finished } = require('stream');
 const ERROR = require('@/constants/error');
 const { PLAYER } = require('@/constants/message');
 const { PLAYER_STATE, LOG_TYPE } = require('@/constants/type');
@@ -62,12 +63,13 @@ module.exports = class Player {
 		}
 
 		if (this._connection.dispatcher) {
-			if (this._connection.dispatcher.paused) {
+			const dispatcher = this._connection.dispatcher;
+			if (dispatcher.paused) {
 				// Resume first, so it won't make right after end error
-				this._connection.dispatcher.resume();
+				dispatcher.resume();
 			}
 
-			this._connection.dispatcher.end();
+			dispatcher.end();
 			return true;
 		}
 		else {
@@ -114,8 +116,32 @@ module.exports = class Player {
 			return;
 		}
 
-		const stream = await song.createStream();
+		const playNext = (shouldLoop) => {
+			const oldSong = this._queue.shift();
+
+			if (shouldLoop) this._queue.push(oldSong);
+
+			this._queue.length > 0
+				? setImmediate(() => this._playNextSong())
+				: this.end();
+		};
+
+		const stream = await song.createStream()
+			.catch(err => {
+				this._textChannel.send(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND(this.currentSong));
+				this._bot.logger.log(LOG_TYPE.ERROR)
+					.setTitle(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND(this.currentSong))
+					.setDescription(err)
+					.send();
+			});
+
+		if (!stream) {
+			playNext(false);
+			return;
+		}
+
 		const dispatcher = this._connection.play(stream, song.streamOptions);
+		this._state = PLAYER_STATE.PENDING;
 
 		dispatcher.on('start', () => {
 			// 'pausedTime' is carried on new dispatcher
@@ -126,22 +152,18 @@ module.exports = class Player {
 			this._textChannel.send(PLAYER.PLAYING_NEW_SONG(song));
 		});
 
-		dispatcher.on('finish', () => {
-			const oldSong = this._queue.shift();
-
-			if (this._loop) this._queue.push(oldSong);
-
-			this._queue.length > 0
-				? this._playNextSong()
-				: this.end();
-		});
-
-		dispatcher.on('error', errMsg => {
-			this._textChannel.send(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND);
-			this._bot.logger.log(LOG_TYPE.ERROR)
-				.setTitle(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND)
-				.setDescription(errMsg)
-				.send();
+		finished(dispatcher, (err) => {
+			if (err) {
+				this._textChannel.send(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND(this.currentSong));
+				this._bot.logger.log(LOG_TYPE.ERROR)
+					.setTitle(ERROR.MUSIC.SOMETHING_WRONG_HAPPEND(this.currentSong))
+					.setDescription(err)
+					.send();
+				playNext(false);
+			}
+			else {
+				playNext(this._loop);
+			}
 		});
 	}
 };

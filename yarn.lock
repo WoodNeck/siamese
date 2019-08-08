@@ -18,11 +18,6 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@discordjs/uws@^11.149.1":
-  version "11.149.1"
-  resolved "https://registry.yarnpkg.com/@discordjs/uws/-/uws-11.149.1.tgz#2e86f2825f43bed43d2e69eaf30a07d2dd8e8946"
-  integrity sha512-TmbwZaeXDSCq0ckmf2q10Fkt1220gu9AZJ/UvtQjsi2jyJDjy0i0OwL4/eb3vc9Cwr0mpC9EbfzltQ2si0qUiQ==
-
 "@google-cloud/text-to-speech@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/text-to-speech/-/text-to-speech-0.4.0.tgz#bf8ac3bf958cbefa69f271902fd8ab5053120ec3"
@@ -1402,7 +1397,7 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-iso8601-duration@^1.0.0:
+iso8601-duration@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/iso8601-duration/-/iso8601-duration-1.2.0.tgz#5fa6fc180a8fe95ad6a6721c9bdd9069cb59e80e"
   integrity sha512-ErTBd++b17E8nmWII1K1uZtBgD1E8RjyvwmxlCjPHNqHMD7gmcMHOw0E8Ro/6+QT4PhHRSnnMo7bxa1vFPkwhg==
@@ -1613,10 +1608,10 @@ mimic-response@^1.0.0, mimic-response@^1.0.1:
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.1.tgz#4923538878eef42063cb8a3e3b0798781487ab1b"
   integrity sha512-j5EctnkH7amfV/q5Hgmoal1g2QHFJRraOtmx0JpIqkxhBhI/lJSl1nMpQ45hVarwNETOoWEimndZ4QK0RHxuxQ==
 
-miniget@^1.4.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/miniget/-/miniget-1.5.1.tgz#4f93840d5aaed21634cd12fd07d22f7d64e9d570"
-  integrity sha512-KJ3AyIVZ76QuWAq43BWjkK+jLdhxhy3s4tsdg9Je91+cIFkeOSW2VEj2lSeKw50CPu1eCCkSbiQEBKL36mpA5w==
+miniget@^1.4.0, miniget@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/miniget/-/miniget-1.5.3.tgz#d796c7291970d1dfa28b646d9aba3fa6b377c5e8"
+  integrity sha512-6xiJs3ZGBdrNMlPNlEWirHhY53hSW33nG1Ytub9Cg5+jLhFPn9PGe4FmPZK9WlmDE1N7/8DEL7PGr7r9kbxwgw==
 
 minimatch@^3.0.4:
   version "3.0.4"
@@ -1773,7 +1768,7 @@ node-cache@^4.2.0:
     clone "2.x"
     lodash "4.x"
 
-node-fetch@^2.2.1, node-fetch@^2.3.0:
+node-fetch@^2.3.0, node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
@@ -2345,13 +2340,13 @@ simple-get@^3.0.3:
     once "^1.3.1"
     simple-concat "^1.0.0"
 
-simple-youtube-api@^5.0.2:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/simple-youtube-api/-/simple-youtube-api-5.1.1.tgz#6e6d3892f6651c87cd7591d07f8e0259860447b4"
-  integrity sha512-cbWRGTDjWDrC+8LR3gpLaXeRb0+e/eiX/bKYIS0tQ4gBUimhXVhsWWhzWJ49aTBnAA0vChrD3U0ZDL8/CUWNcA==
+simple-youtube-api@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/simple-youtube-api/-/simple-youtube-api-5.2.1.tgz#d1f6efb941ce404f50ce56e0c5e6bff249fcac6a"
+  integrity sha512-vmndP9Bkh35tifn2OwY+th2imSsfYtmDqczgdOW5yEARFzvSoR8VSQFsivJnctfV5QHQUL6VrOpNdbmDRLh9Bg==
   dependencies:
-    iso8601-duration "^1.0.0"
-    node-fetch "^2.2.1"
+    iso8601-duration "^1.2.0"
+    node-fetch "^2.6.0"
 
 slice-ansi@^2.1.0:
   version "2.1.0"
@@ -2687,13 +2682,13 @@ ytdl-core-discord@^1.0.3:
     ytdl-core "^0.29.1"
 
 ytdl-core@^0.29.1:
-  version "0.29.2"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.29.2.tgz#003e5d821aab6dcc2f5c01d10d2abc538cbd92b5"
-  integrity sha512-rQTxqxF09tKGgWxVtvFfi6ga1KWcHNbUGz09yTklirhqQlsIYvaDFCEhJ0K/RlzMH12FquAAMzh+Qi35fkwbFQ==
+  version "0.29.5"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.29.5.tgz#278052a1a5a1a75c5931c229b804c0798f18858c"
+  integrity sha512-6WOoLQCeovo/aFYeMKeEXjvS/L+0j/vq85AYF86KSmkSA3lMzUzMdtmlo0GjsrOUN79S03MDkSgXEWOZBWL1Rg==
   dependencies:
     html-entities "^1.1.3"
     m3u8stream "^0.6.2"
-    miniget "^1.4.0"
+    miniget "^1.5.3"
     sax "^1.1.3"
 
 zlib-sync@^0.1.4:

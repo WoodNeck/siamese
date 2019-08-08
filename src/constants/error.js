@@ -75,7 +75,7 @@ module.exports = {
 			유튜브 재생목록: https://www.youtube.com/playlist?list=재생목록_아이디
 			유튜브 재생목록(2): https://www.youtube.com/watch?v=XXX&list=재생목록_아이디
 			또는 일반 검색어도 가능하다냥!`)}`,
-		SOMETHING_WRONG_HAPPEND: '재생중에 오류가 발생했다냥!',
+		SOMETHING_WRONG_HAPPEND: song => `${Josa.r(song.title, '을/를')} 재생하는 도중에 오류가 발생했다냥!`,
 		FAILED_TO_PLAY: '재생에 실패했다냥!',
 		CANNOT_SKIP: '아직 스킵할 수 없다냥!',
 		STATE_MUST_BE_PLAYING: '재생중인 상태에서만 할 수 있다냥!',
