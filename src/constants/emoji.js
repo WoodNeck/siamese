@@ -68,6 +68,7 @@ module.exports = {
 	BRONZE_MEDAL: '🥉',
 	FILE: '📁',
 	FLOPPY_DISC: '💾',
+	PICTURE: '🖼️',
 	MEMO: '📝',
 	WHITE_FLOWER: '💮',
 	PUSH_PIN: '📌',

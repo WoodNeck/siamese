@@ -2,7 +2,6 @@ const Directory = require('@/model/directory');
 const Image = require('@/model/image');
 const Recital = require('@/utils/recital');
 const { EmbedPage } = require('@/utils/page');
-const EMOJI = require('@/constants/emoji');
 const ERROR = require('@/constants/error');
 const { LIST } = require('@/constants/commands/stamp');
 
@@ -22,14 +21,30 @@ module.exports = {
 			msg.error(ERROR.FILE.NO_DIRECTORY);
 			return;
 		}
+		let directories = dirName
+			? []
+			: await Directory.find({ guildId: guild.id }).exec();
+		directories = directories.map(dir => {
+			return {
+				name: dir.name,
+				type: LIST.TYPE.DIRECTORY,
+			};
+		});
 
-		const images = await Image.find({ guildId: guild.id, dirId: directory._id }).exec();
-		const pageCnt = Math.ceil(images.length / LIST.IMAGE_PER_PAGE);
+		let images = await Image.find({ guildId: guild.id, dirId: directory._id }).exec();
+		images = images.map(dir => {
+			return {
+				name: dir.name,
+				type: LIST.TYPE.IMAGE,
+			};
+		});
+		const items = [...directories, ...images];
+		const pageCnt = Math.ceil(items.length / LIST.ITEM_PER_PAGE);
 		const recital = new Recital(bot, msg);
 		const pages = [...Array(pageCnt)].map((_, idx) => idx).map(pageIdx =>{
-			const imageStr = images
-				.slice(pageIdx * LIST.IMAGE_PER_PAGE, (pageIdx + 1) * LIST.IMAGE_PER_PAGE)
-				.map(image => `${EMOJI.SMALL_WHITE_SQUARE} ${image.name}`)
+			const imageStr = items
+				.slice(pageIdx * LIST.ITEM_PER_PAGE, (pageIdx + 1) * LIST.ITEM_PER_PAGE)
+				.map(item => `${LIST.EMOJI[item.type]} ${item.name}`)
 				.join('\n');
 			const page = new EmbedPage()
 				.setDescription(imageStr);

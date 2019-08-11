@@ -1,4 +1,5 @@
 const dedent = require('@/utils/dedent');
+const EMOJI = require('@/constants/emoji');
 
 module.exports = {
 	MANAGE: {
@@ -14,7 +15,15 @@ module.exports = {
 			폴더 안의 스탬프 목록을 표시한다냥!
 			폴더명을 주지 않을 경우 기본 폴더에 있는 스탬프 목록을 표시한다냥!`,
 		USAGE: '폴더명',
-		IMAGE_PER_PAGE: 10,
+		ITEM_PER_PAGE: 10,
 		RECITAL_TIME: 30,
+		TYPE: {
+			DIRECTORY: 'DIRECTORY',
+			IMAGE: 'IMAGE',
+		},
+		EMOJI: {
+			DIRECTORY: EMOJI.FILE,
+			IMAGE: EMOJI.PICTURE,
+		},
 	},
 };

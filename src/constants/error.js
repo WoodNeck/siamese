@@ -33,6 +33,8 @@ module.exports = {
 		ONLY_IN_TEXT_CHANNEL: '명령어는 길드 채널에서만 사용할 수 있다냥!',
 		MENTION_NEEDED: `명령어 대상을 ${strong('@멘션')}하여 사용하는 명령어다냥!`,
 		MENTION_ONLY_ONE: '한 명의 유저만 멘션해달라냥!',
+		NOT_FOUND: target => `${Josa.r(target, '을/를')} 찾을 수 없다냥!`,
+		PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`,
 	},
 	API: {
 		KEY_MISSING: 'API 키가 정의되지 않았다냥!',

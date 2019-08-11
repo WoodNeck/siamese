@@ -101,4 +101,10 @@ module.exports = {
 		DESC: '사용자의 아바타 이미지를 크게 보여준다냥!',
 		USAGE: '@사용자',
 	},
+	REPLY: {
+		CMD: '답변',
+		DESC: '답변을 보낸다냥!',
+		USAGE: '길드_아이디/채널_아이디 메시지',
+		PROMPT_TIME: 60,
+	},
 };
