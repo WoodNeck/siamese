@@ -7,7 +7,7 @@ module.exports = async (cmdName, msg, execTime) => {
 	GuildCommand.findOneAndUpdate(
 		{ name: cmdName, guildId: msg.guild.id },
 		{ '$inc': { callCount: 1 } },
-		{ upsert: true, new: true, setDefaultsOnInsert: true }
+		{ upsert: true, setDefaultsOnInsert: true }
 	).exec();
 
 	// Update global command data
@@ -21,4 +21,11 @@ module.exports = async (cmdName, msg, execTime) => {
 	command.avgTime = (command.avgTime * (command.callCount - 1) + execTime) / command.callCount;
 
 	await command.save();
+
+	// Daily command data
+	await Command.findOneAndUpdate(
+		{ name: cmdName, time: new Date().toDateString() },
+		{ '$inc': { callCount: 1 } },
+		{ upsert: true, setDefaultsOnInsert: true }
+	).exec();
 };

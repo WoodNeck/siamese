@@ -1,4 +1,5 @@
 const express = require('express');
+require('express-async-errors');
 const bodyParser = require('body-parser');
 
 const { checkPermission, hasPermission } = require('./helper');
@@ -47,7 +48,6 @@ module.exports = bot => {
 	 */
 	app.get(URL.GUILDS, async (req, res) => {
 		const userId = req.query.id;
-
 		const guilds = bot.guilds
 			.filter(guild => guild.members.has(userId))
 			.map(guild => {
@@ -231,7 +231,7 @@ module.exports = bot => {
 			.then(() => res.sendStatus(200))
 			.catch(() => res.status(402).send(ERROR.FAILED_TO_REMOVE('폴더')));
 
-		await Image.remove({
+		await Image.deleteMany({
 			dirId,
 		}).exec();
 	});
@@ -252,6 +252,108 @@ module.exports = bot => {
 		res.json(images);
 	});
 
+	/**
+	 * @query
+	 * images - image id array to change directory
+	 * guild - guild.id
+	 * user - user.id
+	 *
+	 * @return
+	 * 200 - OK
+	 * 400 - Invalid arguments
+	 * 401 - Unauthorized
+	 * 402 - DB update failed
+	 * 404 - Directory not exists
+	 */
+	app.delete(URL.IMAGES, async (req, res) => {
+		const { images, guild: guildId, user: userId } = req.body;
+		const imageIds = JSON.parse(images);
+
+		if (!guildId || !userId || !imageIds) {
+			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
+		}
+
+		if (!hasPermission(bot, userId, guildId)) {
+			return res.status(401).send(ERROR.UNAUTHORIZED);
+		}
+
+		Promise.all(imageIds.map(id => {
+			return Image.findByIdAndRemove(id).exec();
+		})).then(() => res.sendStatus(200))
+			.catch(() => res.status(402).send(ERROR.FAILED_TO_REMOVE('이미지')));
+	});
+
+	/**
+	 * change images directory it belongs to
+	 *
+	 * @query
+	 * user - user.id
+	 * guild - guild.id
+	 * images - image id array to change directory
+	 * directory - directory.id to move images
+	 *
+	 * @return
+	 * 200 - Partially success, returns duplicated ones in json format
+	 * 301 - File with same name exists
+	 * 400 - Invalid arguments
+	 * 401 - Unauthorized
+	 * 402 - DB update failed
+	 * 404 - Directory not exists
+	 */
+	app.patch(URL.IMAGES, async (req, res) => {
+		const { guild: guildId, user: userId, images: imageIds, directory } = req.body;
+
+		if (!guildId || !userId || !imageIds) {
+			return res.status(400).send('인자가 잘못되었습니다.');
+		}
+
+		if (!hasPermission(bot, userId, guildId)) {
+			return res.status(401).send('길드에 스탬프관리 권한이 없습니다.');
+		}
+
+		if (directory) {
+			const targetDir = await Directory.findById(directory);
+			if (!targetDir) {
+				return res.status(404).send('디렉토리가 존재하지 않습니다.');
+			}
+		}
+
+		const dirId = directory ? directory : 0;
+		const images = await Promise.all(imageIds.map(id => Image.findById(id).exec()))
+			.catch(() => undefined);
+		if (!images) {
+			return res.status(402).send('이미지를 가져오는 중에 오류가 발생했습니다.');
+		}
+		if (images.some(image => !image)) {
+			return res.status(404).send('이미가 존재하지 않습니다.');
+		}
+		const names = images.map(image => image.name);
+		const exists = await Promise.all(names.map(name => Image.findOne({ name: name, dirId }).exec()))
+			.catch(() => undefined);
+		if (!images) {
+			return res.status(402).send('이미지를 가져오는 중에 오류가 발생했습니다.');
+		}
+
+		Promise.all(
+			images
+				.filter((_, index) => !exists[index])
+				.map(image => {
+					image.dirId = dirId;
+					return image.save();
+				})
+		).then(() => {
+			res.json(
+				images.map((image, index) => {
+					return {
+						new: image,
+						prev: exists[index],
+					};
+				}).filter((_, index) => Boolean(exists[index]))
+			);
+		}).catch(() => {
+			return res.status(402).send('이미지를 옮기는데 실패했습니다.');
+		});
+	});
 
 	/**
 	 * Add new image
@@ -272,7 +374,7 @@ module.exports = bot => {
 	 * 404 - Directory not exists
 	 */
 	app.post(URL.IMAGE, async (req, res) => {
-		const { guild: guildId, user: userId, name: imageName, url: imageUrl, directory: directoryId } = req.body;
+		const { guild: guildId, user: userId, name: imageName, url: imageUrl, directory } = req.body;
 
 		if (!guildId || !userId || !imageName || !imageUrl) {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
@@ -287,21 +389,19 @@ module.exports = bot => {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
-		const alreadyExists = await Image.findOne({ name: newName, dirId: directoryId, guildId }).exec();
+		const dirId = directory ? directory : 0;
+
+		const alreadyExists = await Image.findOne({ name: newName, dirId, guildId }).exec();
 		if (alreadyExists) {
 			return res.status(301).send(ERROR.ALREADY_EXISTS('파일'));
 		}
 
-		if (directoryId) {
-			const directory = await Directory.findById(directoryId).exec();
-			if (!directory || directory.guildId !== guildId) {
+		if (dirId) {
+			const dir = await Directory.findById(dirId).exec();
+			if (!dir || dir.guildId !== guildId) {
 				return res.status(404).send(ERROR.NOT_EXISTS('디렉토리'));
 			}
 		}
-
-		const dirId = directoryId
-			? directoryId
-			: 0;
 
 		Image.updateOne(
 			{ name: newName, url: imageUrl, guildId, author: userId, dirId },
@@ -341,7 +441,7 @@ module.exports = bot => {
 		}
 
 		if (!hasPermission(bot, userId, guildId)) {
-			return res.status(401).send('길드에 파일관리 권한이 없습니다.');
+			return res.status(401).send('길드에 스탬프관리 권한이 없습니다.');
 		}
 
 		const alreadyExists = await Image.findOne({ name: newName, guildId }).exec();

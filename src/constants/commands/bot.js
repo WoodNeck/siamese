@@ -64,4 +64,15 @@ module.exports = {
 			${EMOJI.BAR_CHART} 사용 횟수: ${cmd.callCount}회`,
 		CMD_INFO_ONE_LINE: cmd => `${EMOJI.SMALL_WHITE_SQUARE}${cmd.name} - ${EMOJI.BAR_CHART} ${cmd.callCount}회`,
 	},
+	DAILYSTATS: {
+		CMD: '일일통계',
+		DESC: '봇 명령어 일일 통계를 확인할 수 있다냥!',
+		USAGE: '[명령어 이름]',
+		TITLE: botOrCmd => `${botOrCmd}의 사용 통계다냥!`,
+		CMD_INFO: cmd => dedent`
+			${EMOJI.BAR_CHART} 사용 횟수: ${cmd.callCount}회`,
+		CMD_INFO_ONE_LINE: cmd => `${EMOJI.SMALL_WHITE_SQUARE}${cmd.name} - ${EMOJI.BAR_CHART} ${cmd.callCount}회`,
+		CMD_PER_PAGE: 5,
+		RECITAL_TIME: 30,
+	},
 };

@@ -57,6 +57,7 @@ module.exports = class Recital {
 		this._channel.send(firstPage.content)
 			.then(async msg => {
 				this._recitalMsg = msg;
+				if (this._book.length <= 1) return;
 
 				for (const emoji of this._emojis) {
 					await this._recitalMsg.react(emoji)

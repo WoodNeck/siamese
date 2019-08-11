@@ -138,4 +138,7 @@ module.exports = {
 		NO_CONTENT: '번역할 내용을 달라냥!',
 		LANG_NOT_SPECIFIED: '그런 언어는 없다냥! 언어 목록은 `샴 번역 목록`을 확인해보라냥!',
 	},
+	FILE: {
+		NO_DIRECTORY: '디렉토리가 존재하지 않는다냥!',
+	},
 };

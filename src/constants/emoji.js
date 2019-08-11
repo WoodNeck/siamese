@@ -69,6 +69,8 @@ module.exports = {
 	FILE: '📁',
 	FLOPPY_DISC: '💾',
 	MEMO: '📝',
+	WHITE_FLOWER: '💮',
+	PUSH_PIN: '📌',
 	LETTER: {
 		A: '🇦',
 		B: '🇧',
