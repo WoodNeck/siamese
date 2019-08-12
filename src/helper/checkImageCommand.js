@@ -15,6 +15,7 @@ module.exports = async (bot, msg) => {
 		const image = await Image.findOne({
 			name: dirName,
 			dirId: 0,
+			guildId,
 		}).exec();
 		if (!image) return;
 
