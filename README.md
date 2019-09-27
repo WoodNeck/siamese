@@ -1,3 +1,5 @@
+<h6 align="center">이 봇은 2019/09/18부로 더 이상 운영되지 않습니다.</h6>
+
 # 샴고양이(Siamese)
 [![Discord Bots](https://discordbots.org/api/widget/status/357073005819723777.svg)](https://discordbots.org/bot/357073005819723777)
 [![Dev Server](https://discordapp.com/api/guilds/498712729381634058/widget.png)](https://discord.gg/d8r6tDz)
