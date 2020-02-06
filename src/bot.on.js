@@ -47,16 +47,6 @@ const onReady = async function() {
 		console.error(err);
 		this.logger.error(err);
 	});
-
-	// Discord bot lists update interval setting
-	if (this._dbl) {
-		// Update immediately
-		this._dbl.postStats(this.guilds.size);
-		// Update every 30 minute
-		setInterval(() => {
-			this._dbl.postStats(this.guilds.size);
-		}, 30 * 60 * 1000);
-	}
 };
 
 const onMessage = async function(msg) {

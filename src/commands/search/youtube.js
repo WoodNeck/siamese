@@ -1,15 +1,12 @@
 const axios = require('axios');
 const YouTube = require('simple-youtube-api');
-const Song = require('@/music/song');
 const Recital = require('@/utils/recital');
 const { StringPage } = require('@/utils/page');
-const { aquirePlayer } = require('@/music/helper');
 const ERROR = require('@/constants/error');
-const EMOJI = require('@/constants/emoji');
 const PERMISSION = require('@/constants/permission');
 const FORMAT = require('@/constants/format');
 const { YOUTUBE } = require('@/constants/commands/search');
-const { RECITAL_END, MUSIC_TYPE, COOLDOWN } = require('@/constants/type');
+const { COOLDOWN } = require('@/constants/type');
 
 
 const api = new YouTube(global.env.GOOGLE_API_KEY);
@@ -37,7 +34,7 @@ module.exports = {
 	api: api,
 	cooldown: COOLDOWN.PER_USER(3),
 	execute: async context => {
-		const { bot, author, msg, channel, content } = context;
+		const { bot, msg, channel, content } = context;
 		if (!content) {
 			msg.error(ERROR.SEARCH.EMPTY_CONTENT);
 			return;
@@ -67,25 +64,9 @@ module.exports = {
 				: YOUTUBE.TIME_NOT_DEFINED;
 
 			return new StringPage()
-				.setTitle(YOUTUBE.VIDEO_URL_WITH_TIME(video.id, videoLengthStr))
-				.setData(new Song(
-					YOUTUBE.VIDEO_URL(video.id),
-					MUSIC_TYPE.YOUTUBE,
-					video.title,
-					video.duration,
-					author
-				));
+				.setTitle(YOUTUBE.VIDEO_URL_WITH_TIME(video.id, videoLengthStr));
 		});
 		recital.book.addPages(pages);
-		recital.addReactionCallback(EMOJI.PLAY, async () => {
-			const song = recital.currentData;
-			const player = await aquirePlayer(context);
-
-			if (player) {
-				await player.enqueue(song, channel);
-			}
-			return RECITAL_END.DELETE_ALL_MESSAGES;
-		}, 1);
 
 		recital.start(YOUTUBE.RECITAL_TIME);
 	},
