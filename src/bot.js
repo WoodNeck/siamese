@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const DBL = require('dblapi.js');
 const chalk = require('chalk');
 const events = require('@/bot.on');
 const Logger = require('@/utils/logger');
@@ -22,10 +21,6 @@ class Bot extends Discord.Client {
 		this._permissions.add(PERMISSION.SEND_MESSAGES.flag);
 		// Cooldowns, per type
 		this._cooldowns = new Discord.Collection();
-		// Discord bot lists
-		if (global.env.DBL_KEY) {
-			this._dbl = new DBL(global.env.DBL_KEY, this);
-		}
 	}
 
 	async setup() {

@@ -27,7 +27,7 @@ module.exports = {
 		channel.startTyping();
 
 		const searchText = content;
-		await axios.get(IMAGE.SEARCH_URL(!channel.nsfw), {
+		await axios.get(IMAGE.SEARCH_URL, {
 			params: IMAGE.SEARCH_PARAMS(searchText, !channel.nsfw),
 			headers: AXIOS_HEADER,
 		}).then(body => {
