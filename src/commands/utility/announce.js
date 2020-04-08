@@ -32,18 +32,18 @@ module.exports = {
 
 		const guildSettings = await Guild.find().exec();
 
-		const guilds = bot.guilds;
-		guilds.forEach(guild => {
+		const guilds = bot.guilds.cache;
+		guilds.forEach(async guild => {
 			const setting = guildSettings.find(el => el.id === guild.id);
 			if (setting && !setting.listenAnnounce) return;
 
 			let channelToSend = guild.systemChannel;
 			if (setting && setting.announceChannel) {
-				channelToSend = guild.channels.get(setting.announceChannel);
+				channelToSend = await guild.channels.fetch(setting.announceChannel);
 			}
 			// Fallback, get first channel that bot can send message
 			if (!channelToSend) {
-				channelToSend = guild.channels
+				channelToSend = guild.channels.cache
 					.filter(guildChannel => guildChannel.type === 'text')
 					.filter(guildChannel => guildChannel.permissionsFor(bot.user).has(PERMISSION.SEND_MESSAGES.flag))
 					.first();

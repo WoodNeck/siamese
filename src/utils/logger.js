@@ -6,14 +6,12 @@ const { LOG_TYPE } = require('@/constants/type');
 const { EmbedPage, StringPage } = require('@/utils/page');
 
 module.exports = class Logger {
-	constructor(bot, channelIds = {
+	async setChannels(bot, channelIds = {
 		verbose: null,
 		error: null,
 	}) {
-		const verboseChannel = bot.channels.has(channelIds.verbose) ?
-			bot.channels.get(channelIds.verbose) : null;
-		const errorChannel = bot.channels.has(channelIds.error) ?
-			bot.channels.get(channelIds.error) : null;
+		const verboseChannel = await bot.channels.fetch(channelIds.verbose);
+		const errorChannel = await bot.channels.fetch(channelIds.error);
 		this._channels = {
 			VERBOSE: verboseChannel,
 			ERROR: errorChannel,

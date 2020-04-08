@@ -20,7 +20,7 @@ module.exports = {
 			return;
 		}
 
-		const featureChannel = bot.channels.get(global.env.BOT_FEATURE_REQUEST_CHANNEL);
+		const featureChannel = await bot.channels.fetch(global.env.BOT_FEATURE_REQUEST_CHANNEL);
 
 		const embed = new MessageEmbed()
 			.setTitle(FEATURE_REQUEST.TITLE_CONFIRM)

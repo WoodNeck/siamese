@@ -16,8 +16,8 @@ const { LOG_TYPE, ACTIVITY } = require('@/constants/type');
 
 
 const onReady = async function() {
-	this._setLogger();
-	await this._setupDatabase();
+	await this._setLogger();
+	// await this._setupDatabase();
 
 	this.logger.log(LOG_TYPE.VERBOSE)
 		.atConsole()
@@ -47,6 +47,16 @@ const onReady = async function() {
 		console.error(err);
 		this.logger.error(err);
 	});
+
+	// Discord bot lists update interval setting
+	if (this._dbl) {
+		// Update immediately
+		this._dbl.postStats(this.guilds.cache.size);
+		// Update every 30 minute
+		setInterval(() => {
+			this._dbl.postStats(this.guilds.cache.size);
+		}, 30 * 60 * 1000);
+	}
 };
 
 const onMessage = async function(msg) {

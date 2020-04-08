@@ -31,7 +31,7 @@ module.exports = bot => {
 	 */
 	app.get(URL.USER, async (req, res) => {
 		const userId = req.query.id;
-		const user = bot.users.get(userId);
+		const user = await bot.users.fetch(userId);
 
 		res.json(user);
 	});
@@ -48,7 +48,7 @@ module.exports = bot => {
 	 */
 	app.get(URL.GUILDS, async (req, res) => {
 		const userId = req.query.id;
-		const guilds = bot.guilds
+		const guilds = bot.guilds.cache
 			.filter(guild => guild.members.has(userId))
 			.map(guild => {
 				const user = guild.members.get(userId);
@@ -130,7 +130,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
@@ -174,7 +174,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
@@ -215,7 +215,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
@@ -273,7 +273,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
@@ -307,7 +307,7 @@ module.exports = bot => {
 			return res.status(400).send('인자가 잘못되었습니다.');
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send('길드에 스탬프관리 권한이 없습니다.');
 		}
 
@@ -385,7 +385,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 
@@ -440,7 +440,7 @@ module.exports = bot => {
 			return res.status(400).send('인자가 잘못되었습니다.');
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send('길드에 스탬프관리 권한이 없습니다.');
 		}
 
@@ -476,7 +476,7 @@ module.exports = bot => {
 			return res.status(400).send(ERROR.INVALID_ARGUMENTS);
 		}
 
-		if (!hasPermission(bot, userId, guildId)) {
+		if (!await hasPermission(bot, userId, guildId)) {
 			return res.status(401).send(ERROR.UNAUTHORIZED);
 		}
 

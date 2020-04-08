@@ -7,7 +7,7 @@ module.exports = {
 	devOnly: true,
 	permissions: [],
 	execute: async ({ bot, channel }) => {
-		const guilds = bot.guilds;
+		const guilds = bot.guilds.cache;
 
 		let guildsStr = '';
 		for (const guild of guilds.values()) {

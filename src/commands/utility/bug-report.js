@@ -20,7 +20,7 @@ module.exports = {
 			return;
 		}
 
-		const bugChannel = bot.channels.get(global.env.BOT_BUG_REPORT_CHANNEL);
+		const bugChannel = await bot.channels.fetch(global.env.BOT_BUG_REPORT_CHANNEL);
 		const embed = new MessageEmbed()
 			.setTitle(BUG_REPORT.TITLE_CONFIRM)
 			.setDescription(content)

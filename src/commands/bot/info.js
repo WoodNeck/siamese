@@ -11,11 +11,8 @@ module.exports = {
 	devOnly: false,
 	permissions: [PERMISSION.EMBED_LINKS],
 	execute: ({ bot, channel, guild }) => {
-		const guildCnt = bot.guilds.size;
-		const userCnt = bot.guilds.reduce((total, server) => {
-			return total + server.members.size;
-		}, 0);
-		const playerCnt = bot.players.size;
+		const guildCnt = bot.guilds.cache.size;
+		const userCnt = bot.users.cache.size;
 		const botName = bot.getNameIn(guild);
 
 		const embed = new MessageEmbed()
@@ -26,7 +23,6 @@ module.exports = {
 		const descs = [];
 		descs.push(INFO.GUILD_CNT(guildCnt));
 		descs.push(INFO.USER_CNT(userCnt));
-		descs.push(INFO.PLAYER_CNT(playerCnt));
 		embed.setDescription(descs.join('\n'));
 
 		if (global.env.BOT_GITHUB_URL) {

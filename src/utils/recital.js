@@ -146,7 +146,7 @@ module.exports = class Recital {
 	}
 	_removeBotReactions() {
 		if (!this._recitalMsg.deleted) {
-			this._recitalMsg.reactions
+			this._recitalMsg.reactions.cache
 				.filter(reaction => reaction.me)
 				.forEach(reaction => {
 					reaction.users

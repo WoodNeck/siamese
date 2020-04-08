@@ -37,8 +37,8 @@ module.exports = {
 		const willSend = await prompt(embedContent, channel, author, REPLY.PROMPT_TIME);
 		if (!willSend) return;
 
-		const targetGuild = bot.guilds.get(guildId);
-		const targetChannel = targetGuild && targetGuild.channels.get(channelId);
+		const targetGuild = await bot.guilds.fetch(guildId);
+		const targetChannel = targetGuild && await targetGuild.channels.fetch(channelId);
 		if (!targetGuild || !targetChannel) {
 			msg.error(ERROR.CMD.NOT_FOUND('길드 혹은 채널'));
 			return;

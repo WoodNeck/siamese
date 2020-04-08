@@ -3,9 +3,9 @@ const checkPermission = (user, guild) => guild.roles.some(
 		&& user.roles.has(role.id)
 );
 
-const hasPermission = (bot, userId, guildId) => {
-	const guild = bot.guilds.get(guildId);
-	const user = guild && guild.members.get(userId);
+const hasPermission = async (bot, userId, guildId) => {
+	const guild = await bot.guilds.fetch(guildId);
+	const user = guild && await guild.members.fetch(userId);
 
 	return guild && user && checkPermission(user, guild);
 };
