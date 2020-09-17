@@ -1,8 +1,8 @@
-const Book = require('@/utils/book');
+const Book = require('~/utils/book');
 const { Collection } = require('discord.js');
-const COLOR = require('@/constants/color');
-const EMOJI = require('@/constants/emoji');
-const { RECITAL_END } = require('@/constants/type');
+const COLOR = require('~/constants/color');
+const EMOJI = require('~/constants/emoji');
+const { RECITAL_END } = require('~/constants/type');
 
 
 module.exports = class Recital {

@@ -1,13 +1,13 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const EMOJI = require('@/constants/emoji');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { WOW } = require('@/constants/commands/game');
-const { AXIOS_HEADER } = require('@/constants/header');
-const { RECITAL_END, COOLDOWN } = require('@/constants/type');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const EMOJI = require('~/constants/emoji');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { WOW } = require('~/constants/commands/game');
+const { AXIOS_HEADER } = require('~/constants/header');
+const { RECITAL_END, COOLDOWN } = require('~/constants/type');
 
 
 const insideQuotesRegex = /"([^"]+)"/;

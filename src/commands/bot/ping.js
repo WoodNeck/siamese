@@ -1,5 +1,5 @@
-const { PING } = require('@/constants/commands/bot');
-const { strong } = require('@/utils/markdown');
+const { PING } = require('~/constants/commands/bot');
+const { strong } = require('~/utils/markdown');
 
 module.exports = {
 	name: PING.CMD,

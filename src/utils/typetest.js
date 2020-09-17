@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const ERROR = require('@/constants/error');
+const ERROR = require('~/constants/error');
 
 
 const typetest = (target, checkList) => {

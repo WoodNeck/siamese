@@ -1,8 +1,13 @@
-const chalk = require('chalk');
-const mongoose = require('mongoose');
-const DB = require('@/constants/db');
-const ERROR = require('@/constants/error');
-const { LOG_TYPE } = require('@/constants/type');
+import chalk from "chalk";
+import mongoose from "mongoose";
+import DB from "~/consts/db";
+
+
+const chalk = require("chalk");
+const mongoose = require("mongoose");
+const DB = require("~/constants/db");
+const ERROR = require("~/constants/error");
+const { LOG_TYPE } = require("~/constants/type");
 
 const loadDatabase = async bot => {
 	await mongoose.connect(DB.URI, {
@@ -16,7 +21,7 @@ const loadDatabase = async bot => {
 	});
 
 	const db = mongoose.connection;
-	db.on('error', async err => {
+	db.on("error", async err => {
 		await bot.logger.log(LOG_TYPE.ERROR)
 			.setTitle(ERROR.DB.GOT_AN_ERROR)
 			.setDescription(err.toString())

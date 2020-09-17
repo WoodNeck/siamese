@@ -1,8 +1,8 @@
-const dedent = require('@/utils/dedent');
+const dedent = require('~/utils/dedent');
 const Josa = require('josa-js');
-const { strong, code, block } = require('@/utils/markdown');
-const { YOUTUBE } = require('@/constants/commands/search');
-const { DISCHARGE_ADD } = require('@/constants/commands/history');
+const { strong, code, block } = require('~/utils/markdown');
+const { YOUTUBE } = require('~/constants/commands/search');
+const { DISCHARGE_ADD } = require('~/constants/commands/history');
 
 
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
 		ON_COOLDOWN: seconds => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
 		EMPTY_CONTENT: target => `${Josa.r(target, '을/를')} 달라냥!`,
 		ONLY_IN_TEXT_CHANNEL: '명령어는 길드 채널에서만 사용할 수 있다냥!',
-		MENTION_NEEDED: `명령어 대상을 ${strong('@멘션')}하여 사용하는 명령어다냥!`,
+		MENTION_NEEDED: `명령어 대상을 ${strong('~멘션')}하여 사용하는 명령어다냥!`,
 		MENTION_ONLY_ONE: '한 명의 유저만 멘션해달라냥!',
 		NOT_FOUND: target => `${Josa.r(target, '을/를')} 찾을 수 없다냥!`,
 		PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`,

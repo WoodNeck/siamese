@@ -1,12 +1,12 @@
 const { Collection } = require('discord.js');
-const EMOJI = require('@/constants/emoji');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const { strong, block } = require('@/utils/markdown.js');
-const COLOR = require('@/constants/color');
-const PERMISSION = require('@/constants/permission');
-const { HELP } = require('@/constants/commands/bot');
-const { COOLDOWN } = require('@/constants/type');
+const EMOJI = require('~/constants/emoji');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const { strong, block } = require('~/utils/markdown.js');
+const COLOR = require('~/constants/color');
+const PERMISSION = require('~/constants/permission');
+const { HELP } = require('~/constants/commands/bot');
+const { COOLDOWN } = require('~/constants/type');
 
 module.exports = {
 	name: HELP.CMD,

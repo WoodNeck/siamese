@@ -1,5 +1,5 @@
-const ERROR = require('@/constants/error');
-const { PAGE } = require('@/constants/format');
+const ERROR = require('~/constants/error');
+const { PAGE } = require('~/constants/format');
 
 
 // Collection of sendable pages

@@ -1,9 +1,9 @@
 const { MessageEmbed } = require('discord.js');
-const { getUserId, getOwningGames } = require('@/helper/steam');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { STEAM, RANDOM } = require('@/constants/commands/steam');
+const { getUserId, getOwningGames } = require('~/helper/steam');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { STEAM, RANDOM } = require('~/constants/commands/steam');
 
 
 module.exports = {

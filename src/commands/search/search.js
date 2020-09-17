@@ -1,12 +1,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { SEARCH } = require('@/constants/commands/search');
-const { AXIOS_HEADER } = require('@/constants/header');
-const { COOLDOWN } = require('@/constants/type');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { SEARCH } = require('~/constants/commands/search');
+const { AXIOS_HEADER } = require('~/constants/header');
+const { COOLDOWN } = require('~/constants/type');
 
 module.exports = {
 	name: SEARCH.CMD,

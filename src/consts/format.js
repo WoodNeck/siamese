@@ -1,5 +1,5 @@
-const EMOJI = require('@/constants/emoji');
-const { strong, code } = require('@/utils/markdown');
+const EMOJI = require('~/constants/emoji');
+const { strong, code } = require('~/utils/markdown');
 
 
 module.exports = {

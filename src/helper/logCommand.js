@@ -1,5 +1,5 @@
-const Command = require('@/model/command');
-const GuildCommand = require('@/model/guildcommand');
+const Command = require('~/model/command');
+const GuildCommand = require('~/model/guildcommand');
 
 
 module.exports = async (cmdName, msg, execTime) => {

@@ -1,9 +1,9 @@
 const chalk = require('chalk');
-const dedent = require('@/utils/dedent');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const { LOG_TYPE } = require('@/constants/type');
-const { EmbedPage, StringPage } = require('@/utils/page');
+const dedent = require('~/utils/dedent');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const { LOG_TYPE } = require('~/constants/type');
+const { EmbedPage, StringPage } = require('~/utils/page');
 
 module.exports = class Logger {
 	async setChannels(bot, channelIds = {

@@ -1,9 +1,9 @@
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const Discharge = require('@/model/discharge');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { DISCHARGE_LIST } = require('@/constants/commands/history');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const Discharge = require('~/model/discharge');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { DISCHARGE_LIST } = require('~/constants/commands/history');
 
 
 module.exports = {

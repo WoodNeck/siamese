@@ -2,7 +2,7 @@ const path = require('path');
 const chalk = require('chalk');
 const Discord = require('discord.js');
 const { readdirSync } = require('fs');
-const ERROR = require('@/constants/error');
+const ERROR = require('~/constants/error');
 
 
 const subcommandRoot = path.join(__dirname, '..', 'subcommands');

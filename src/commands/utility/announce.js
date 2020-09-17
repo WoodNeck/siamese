@@ -1,11 +1,11 @@
-const prompt = require('@/utils/prompt');
+const prompt = require('~/utils/prompt');
 const { MessageEmbed } = require('discord.js');
-const dedent = require('@/utils/dedent');
-const Guild = require('@/model/guild');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { ANNOUNCE } = require('@/constants/commands/utility');
+const dedent = require('~/utils/dedent');
+const Guild = require('~/model/guild');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { ANNOUNCE } = require('~/constants/commands/utility');
 
 
 module.exports = {

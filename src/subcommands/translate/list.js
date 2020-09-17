@@ -1,8 +1,8 @@
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const PERMISSION = require('@/constants/permission');
-const { TRANSLATE } = require('@/constants/commands/useful');
-const { COOLDOWN } = require('@/constants/type');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const PERMISSION = require('~/constants/permission');
+const { TRANSLATE } = require('~/constants/commands/useful');
+const { COOLDOWN } = require('~/constants/type');
 
 module.exports = {
 	name: TRANSLATE.LIST.CMD,

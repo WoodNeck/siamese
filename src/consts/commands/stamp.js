@@ -1,5 +1,5 @@
-const dedent = require('@/utils/dedent');
-const EMOJI = require('@/constants/emoji');
+const dedent = require('~/utils/dedent');
+const EMOJI = require('~/constants/emoji');
 
 module.exports = {
 	MANAGE: {

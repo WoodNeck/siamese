@@ -1,6 +1,6 @@
-const Discharge = require('@/model/discharge');
-const ERROR = require('@/constants/error');
-const { DISCHARGE_REMOVE } = require('@/constants/commands/history');
+const Discharge = require('~/model/discharge');
+const ERROR = require('~/constants/error');
+const { DISCHARGE_REMOVE } = require('~/constants/commands/history');
 
 
 module.exports = {

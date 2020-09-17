@@ -1,6 +1,6 @@
-const dedent = require('@/utils/dedent');
-const EMOJI = require('@/constants/emoji');
-const { strong, code, strike } = require('@/utils/markdown');
+const dedent = require('~/utils/dedent');
+const EMOJI = require('~/constants/emoji');
+const { strong, code, strike } = require('~/utils/markdown');
 
 
 module.exports = {

@@ -1,12 +1,12 @@
 const axios = require('axios');
 const unescape = require('unescape');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const { blockMd } = require('@/utils/markdown');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { KIN } = require('@/constants/commands/search');
-const { NAVER_HEADER } = require('@/constants/header');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const { blockMd } = require('~/utils/markdown');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { KIN } = require('~/constants/commands/search');
+const { NAVER_HEADER } = require('~/constants/header');
 
 module.exports = {
 	name: KIN.CMD,

@@ -1,7 +1,7 @@
 const Josa = require('josa-js');
-const dedent = require('@/utils/dedent');
-const { strong } = require('@/utils/markdown');
-const EMOJI = require('@/constants/emoji');
+const dedent = require('~/utils/dedent');
+const { strong } = require('~/utils/markdown');
+const EMOJI = require('~/constants/emoji');
 
 
 module.exports = {
@@ -99,7 +99,7 @@ module.exports = {
 	AVATAR: {
 		CMD: '아바타',
 		DESC: '사용자의 아바타 이미지를 크게 보여준다냥!',
-		USAGE: '@사용자',
+		USAGE: '~사용자',
 	},
 	REPLY: {
 		CMD: '답변',

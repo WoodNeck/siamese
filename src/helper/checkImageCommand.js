@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
-const Directory = require('@/model/directory');
-const Image = require('@/model/image');
-const COLOR = require('@/constants/color');
+const Directory = require('~/model/directory');
+const Image = require('~/model/image');
+const COLOR = require('~/constants/color');
 
 module.exports = async (bot, msg) => {
 	if (!msg.guild) return;

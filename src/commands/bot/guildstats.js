@@ -1,12 +1,12 @@
 const { MessageEmbed } = require('discord.js');
-const Recital = require('@/utils/recital');
-const GuildCommand = require('@/model/guildcommand');
-const { EmbedPage } = require('@/utils/page');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { STATS, GUILDSTATS } = require('@/constants/commands/bot');
-const { COOLDOWN } = require('@/constants/type');
+const Recital = require('~/utils/recital');
+const GuildCommand = require('~/model/guildcommand');
+const { EmbedPage } = require('~/utils/page');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { STATS, GUILDSTATS } = require('~/constants/commands/bot');
+const { COOLDOWN } = require('~/constants/type');
 
 
 module.exports = {

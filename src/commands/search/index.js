@@ -1,5 +1,5 @@
-const EMOJI = require('@/constants/emoji');
-const { SEARCH } = require('@/constants/category');
+const EMOJI = require('~/constants/emoji');
+const { SEARCH } = require('~/constants/category');
 
 module.exports = {
 	name: SEARCH.NAME,

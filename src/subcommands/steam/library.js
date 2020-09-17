@@ -1,10 +1,10 @@
-const { getUserId, getUserSummary, getOwningGames } = require('@/helper/steam');
-const Recital = require('@/utils/recital');
-const { EmbedPage } = require('@/utils/page');
-const EMOJI = require('@/constants/emoji');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { STEAM, LIBRARY } = require('@/constants/commands/steam');
+const { getUserId, getUserSummary, getOwningGames } = require('~/helper/steam');
+const Recital = require('~/utils/recital');
+const { EmbedPage } = require('~/utils/page');
+const EMOJI = require('~/constants/emoji');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { STEAM, LIBRARY } = require('~/constants/commands/steam');
 
 module.exports = {
 	name: LIBRARY.CMD,

@@ -87,9 +87,7 @@ lib/
 .vscode/
 temp/
 data/mutable
-
-# DEV Convinient
-MEMO.md
+bin/
 
 # Google credential
 Siamese-*.json

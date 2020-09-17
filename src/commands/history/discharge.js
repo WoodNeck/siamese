@@ -1,12 +1,12 @@
 const date = require('date-and-time');
 const DateDiff = require('date-diff');
 const { MessageEmbed } = require('discord.js');
-const Discharge = require('@/model/discharge');
-const { loadSubcommands } = require('@/load/subcommand');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { DISCHARGE } = require('@/constants/commands/history');
+const Discharge = require('~/model/discharge');
+const { loadSubcommands } = require('~/load/subcommand');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { DISCHARGE } = require('~/constants/commands/history');
 
 
 module.exports = {

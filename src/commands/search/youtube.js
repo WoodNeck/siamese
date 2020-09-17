@@ -1,12 +1,12 @@
 const axios = require('axios');
 const YouTube = require('simple-youtube-api');
-const Recital = require('@/utils/recital');
-const { StringPage } = require('@/utils/page');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const FORMAT = require('@/constants/format');
-const { YOUTUBE } = require('@/constants/commands/search');
-const { COOLDOWN } = require('@/constants/type');
+const Recital = require('~/utils/recital');
+const { StringPage } = require('~/utils/page');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const FORMAT = require('~/constants/format');
+const { YOUTUBE } = require('~/constants/commands/search');
+const { COOLDOWN } = require('~/constants/type');
 
 
 const api = new YouTube(global.env.GOOGLE_API_KEY);

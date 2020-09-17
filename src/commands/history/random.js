@@ -1,10 +1,10 @@
 const { MessageEmbed } = require('discord.js');
-const Channel = require('@/model/channel');
-const COLOR = require('@/constants/color');
-const ERROR = require('@/constants/error');
-const PERMISSION = require('@/constants/permission');
-const { RANDOM } = require('@/constants/commands/history');
-const { MESSAGE_MAX_LENGTH } = require('@/constants/discord');
+const Channel = require('~/model/channel');
+const COLOR = require('~/constants/color');
+const ERROR = require('~/constants/error');
+const PERMISSION = require('~/constants/permission');
+const { RANDOM } = require('~/constants/commands/history');
+const { MESSAGE_MAX_LENGTH } = require('~/constants/discord');
 
 
 module.exports = {

@@ -1,5 +1,5 @@
-const { loadSubcommands } = require('@/load/subcommand');
-const { LOL } = require('@/constants/commands/game');
+const { loadSubcommands } = require('~/load/subcommand');
+const { LOL } = require('~/constants/commands/game');
 
 
 module.exports = {

@@ -1,4 +1,4 @@
-const dedent = require('@/utils/dedent');
+const dedent = require('~/utils/dedent');
 const { MessageEmbed } = require('discord.js');
 
 

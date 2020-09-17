@@ -1,5 +1,5 @@
-const ERROR = require('@/constants/error');
-const { DIALOGUE } = require('@/constants/type');
+const ERROR = require('~/constants/error');
+const { DIALOGUE } = require('~/constants/type');
 
 
 module.exports = class Conversation {
