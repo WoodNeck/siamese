@@ -22,10 +22,6 @@ module.exports = {
 			};
 		},
 	},
-	LOG_TYPE: {
-		VERBOSE: 'VERBOSE',
-		ERROR: 'ERROR',
-	},
 	RECITAL_END: {
 		SHOULD_NOT_END: 'SHOULD_NOT_END',
 		DELETE_ALL_MESSAGES: 'END_AND_DELETE_ALL_MESSAGE',

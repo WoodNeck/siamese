@@ -2,7 +2,7 @@ import path from "path";
 import chalk from "chalk";
 import Discord from "discord.js";
 import { lstatSync, readdirSync } from "fs";
-import ERROR from "~/consts/error";
+import ERROR from "~/const/error";
 import Command from "~/commands/Command";
 
 const commandRoot = path.join(__dirname, "..", "commands");

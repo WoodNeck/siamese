@@ -7,7 +7,7 @@ Korean Discord bot for multiple purpose.
 
 # Prerequisites
 - [Node.js](https://nodejs.org/ko/download/package-manager/) 12+
-- [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) 4.0.4 or newer
+  - Tested with Node v14.15.4
 
 # Installing
 ## Linux - ubuntu
