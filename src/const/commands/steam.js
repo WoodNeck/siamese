@@ -1,6 +1,6 @@
 const DateDiff = require('date-diff');
 const { strong } = require('~/utils/markdown');
-const EMOJI = require('~/constants/emoji');
+const EMOJI = require('~/const/emoji');
 
 
 module.exports = {

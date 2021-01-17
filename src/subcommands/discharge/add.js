@@ -2,11 +2,11 @@ const { MessageEmbed } = require('discord.js');
 const Discharge = require('~/model/discharge');
 const Conversation = require('~/utils/conversation');
 const prompt = require('~/utils/prompt');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { DISCHARGE_ADD } = require('~/constants/commands/history');
-const { DIALOGUE } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { DISCHARGE_ADD } = require('~/const/commands/history');
+const { DIALOGUE } = require('~/const/type');
 
 
 module.exports = {

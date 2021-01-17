@@ -1,6 +1,6 @@
 const Guild = require('~/model/guild');
-const PERMISSION = require('~/constants/permission');
-const { ANNOUNCE_CHANNEL } = require('~/constants/commands/utility');
+const PERMISSION = require('~/const/permission');
+const { ANNOUNCE_CHANNEL } = require('~/const/commands/utility');
 
 
 module.exports = {

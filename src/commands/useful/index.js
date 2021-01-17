@@ -1,5 +1,5 @@
-const EMOJI = require('~/constants/emoji');
-const { USEFUL } = require('~/constants/category');
+const EMOJI = require('~/const/emoji');
+const { USEFUL } = require('~/const/category');
 
 module.exports = {
 	name: USEFUL.NAME,

@@ -1,5 +1,5 @@
 const Channel = require('~/model/channel');
-const DB = require('~/constants/db');
+const DB = require('~/const/db');
 
 
 // Save the messages per channel, for later use for msg fetching

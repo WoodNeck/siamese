@@ -27,7 +27,7 @@ export const CMD = {
   FAIL_PLACE: (msg: Discord.Message) => `${msg.guild?.name}(${msg.guild?.id}):${(msg.channel as Discord.TextChannel).name}(${msg.channel.id})`,
   FAIL_CMD: (msg: Discord.Message) => `이 명령어를 실행중이었다냥: ${strong(msg.content)}`,
   FAIL_DESC: (error: Error) => `${error.stack ? error.stack : ""}`,
-  ON_COOLDOWN: (seconds: number) => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
+  ON_COOLDOWN: (seconds: string) => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
   EMPTY_CONTENT: (target: string) => `${Josa.r(target, "을/를")} 달라냥!`,
   ONLY_IN_TEXT_CHANNEL: "명령어는 길드 채널에서만 사용할 수 있다냥!",
   MENTION_NEEDED: `명령어 대상을 ${strong("~멘션")}하여 사용하는 명령어다냥!`,

@@ -1,12 +1,12 @@
 const { MessageEmbed } = require('discord.js');
 const dedent = require('~/utils/dedent');
 const Steam = require('~/helper/steam');
-const COLOR = require('~/constants/color');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { STEAM, PROFILE } = require('~/constants/commands/steam');
-const { COOLDOWN } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { STEAM, PROFILE } = require('~/const/commands/steam');
+const { COOLDOWN } = require('~/const/type');
 
 
 module.exports = {

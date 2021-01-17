@@ -1,7 +1,7 @@
 const axios = require('axios');
 const NodeCache = require('node-cache');
-const CACHE = require('~/constants/cache');
-const { STEAM } = require('~/constants/commands/steam');
+const CACHE = require('~/const/cache');
+const { STEAM } = require('~/const/commands/steam');
 
 const caches = {
 	userId: new NodeCache({

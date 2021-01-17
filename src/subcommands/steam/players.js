@@ -1,9 +1,9 @@
 const { getGames, getCurrentPlayers } = require('~/helper/steam');
 const Recital = require('~/utils/recital');
 const { EmbedPage } = require('~/utils/page');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { STEAM, PLAYERS } = require('~/constants/commands/steam');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { STEAM, PLAYERS } = require('~/const/commands/steam');
 
 
 module.exports = {

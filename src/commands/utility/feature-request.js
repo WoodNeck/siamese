@@ -1,9 +1,9 @@
 const prompt = require('~/utils/prompt');
 const { MessageEmbed } = require('discord.js');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const { FEATURE_REQUEST } = require('~/constants/commands/utility');
-const { COOLDOWN } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const { FEATURE_REQUEST } = require('~/const/commands/utility');
+const { COOLDOWN } = require('~/const/type');
 
 
 module.exports = {

@@ -1,10 +1,10 @@
 const { MessageEmbed } = require('discord.js');
 const Conversation = require('~/utils/conversation');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { BMI } = require('~/constants/commands/useful');
-const { DIALOGUE } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { BMI } = require('~/const/commands/useful');
+const { DIALOGUE } = require('~/const/type');
 
 
 module.exports = {

@@ -1,3 +1,4 @@
+import Discord from "discord.js";
 import Josa from "josa-js";
 
 import Siamese from "~/Siamese";
@@ -12,7 +13,7 @@ export const BOT = {
 /\\__/ / | (_| | | | | | |  __/\\__ \\  __/
 \\____/|_|\\__,_|_| |_| |_|\\___||___/\\___|
 
-- ${bot.user?.tag}(GUILDS: ${bot.guilds.cache.size}, USERS: ${bot.users.cache.filter(user => !user.bot).size})`,
+- ${bot.user?.tag}`,
   READY_TITLE: (bot: Siamese) => dedent`
     ${bot.user.tag} 일할 준비 됐다냥!`,
   READY_DESC: (bot: Siamese) => dedent`
@@ -22,5 +23,6 @@ export const BOT = {
   GUILD_JOIN_DESC: (bot: Siamese, helpCmd) => dedent`
     ${underline(strong(helpCmd))}이라고 말하면 ${Josa.r(bot.user.username, "이/가")} 할 수 있는 일을 알 수 있다냥!`,
   GUILD_JOIN_FOOTER: (bot: Siamese) => dedent`
-    여기는 ${Josa.r(bot.user.username, "이/가")} 일하는 ${bot.guilds.cache.size.toString()}번째 서버다냥!`
+    여기는 ${Josa.r(bot.user.username, "이/가")} 일하는 ${bot.guilds.cache.size.toString()}번째 서버다냥!`,
+  ERROR_MSG: (user: Discord.User, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`
 };

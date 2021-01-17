@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
-const COLOR = require('~/constants/color');
-const PERMISSION = require('~/constants/permission');
-const { INFO } = require('~/constants/commands/bot');
+const COLOR = require('~/const/color');
+const PERMISSION = require('~/const/permission');
+const { INFO } = require('~/const/commands/bot');
 
 
 module.exports = {

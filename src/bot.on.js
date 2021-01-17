@@ -3,13 +3,13 @@ const parseArgs = require('~/helper/parseArgs');
 const logMessage = require('~/helper/logMessage');
 const logCommand = require('~/helper/logCommand');
 const checkImageCommand = require('~/helper/checkImageCommand');
-const COLOR = require('~/constants/color');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { BOT } = require('~/constants/message');
-const { HELP } = require('~/constants/commands/bot');
-const { LOG_TYPE, ACTIVITY } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { BOT } = require('~/const/message');
+const { HELP } = require('~/const/commands/bot');
+const { LOG_TYPE, ACTIVITY } = require('~/const/type');
 
 
 // Functions handling client.on() method

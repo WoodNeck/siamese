@@ -1,5 +1,5 @@
-const EMOJI = require('~/constants/emoji');
-const { STEAM } = require('~/constants/category');
+const EMOJI = require('~/const/emoji');
+const { STEAM } = require('~/const/category');
 
 module.exports = {
 	name: STEAM.NAME,

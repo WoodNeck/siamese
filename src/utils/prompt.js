@@ -1,4 +1,4 @@
-const EMOJI = require('~/constants/emoji');
+const EMOJI = require('~/const/emoji');
 
 
 module.exports = async (

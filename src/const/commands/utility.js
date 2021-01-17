@@ -1,7 +1,7 @@
 const Josa = require('josa-js');
 const dedent = require('~/utils/dedent');
 const { strong } = require('~/utils/markdown');
-const EMOJI = require('~/constants/emoji');
+const EMOJI = require('~/const/emoji');
 
 
 module.exports = {

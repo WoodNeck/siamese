@@ -5,9 +5,9 @@ import DB from "~/const/db";
 
 const chalk = require("chalk");
 const mongoose = require("mongoose");
-const DB = require("~/constants/db");
-const ERROR = require("~/constants/error");
-const { LOG_TYPE } = require("~/constants/type");
+const DB = require("~/const/db");
+const ERROR = require("~/const/error");
+const { LOG_TYPE } = require("~/const/type");
 
 const loadDatabase = async bot => {
 	await mongoose.connect(DB.URI, {

@@ -1,11 +1,11 @@
 const axios = require('axios');
 const Recital = require('~/utils/recital');
 const { EmbedPage } = require('~/utils/page');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { IMAGE } = require('~/constants/commands/search');
-const { AXIOS_HEADER } = require('~/constants/header');
-const { COOLDOWN } = require('~/constants/type');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { IMAGE } = require('~/const/commands/search');
+const { AXIOS_HEADER } = require('~/const/header');
+const { COOLDOWN } = require('~/const/type');
 
 module.exports = {
 	name: IMAGE.CMD,

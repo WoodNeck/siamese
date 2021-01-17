@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const FORMAT = require('~/constants/format');
-const { DISCORD_ERROR_CODE } = require('~/constants/discord');
+const FORMAT = require('~/const/format');
+const { DISCORD_ERROR_CODE } = require('~/const/discord');
 
 // Override send function to enable automatic stop typing
 const originalSend = Discord.TextChannel.prototype.send;

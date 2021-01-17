@@ -1,10 +1,10 @@
 const prompt = require('~/utils/prompt');
 const { MessageEmbed } = require('discord.js');
-const COLOR = require('~/constants/color');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { REPLY } = require('~/constants/commands/utility');
+const COLOR = require('~/const/color');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { REPLY } = require('~/const/commands/utility');
 
 
 module.exports = {

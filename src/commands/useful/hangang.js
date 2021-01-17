@@ -1,9 +1,9 @@
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { HANGANG } = require('~/constants/commands/useful');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { HANGANG } = require('~/const/commands/useful');
 
 
 module.exports = {

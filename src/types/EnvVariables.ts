@@ -7,7 +7,7 @@ interface EnvVariables {
   BOT_DEV_SERVER_INVITE?: string;
   BOT_DEV_USER_ID?: string;
   BOT_DEV_SERVER_ID?: string;
-  BOT_LOG_VERBOSE_CHANNEL?: string;
+  BOT_LOG_INFO_CHANNEL?: string;
   BOT_LOG_ERROR_CHANNEL?: string;
   BOT_GITHUB_URL?: string;
 

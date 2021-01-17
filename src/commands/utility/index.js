@@ -1,5 +1,5 @@
-const EMOJI = require('~/constants/emoji');
-const { UTILITY } = require('~/constants/category');
+const EMOJI = require('~/const/emoji');
+const { UTILITY } = require('~/const/category');
 
 
 module.exports = {

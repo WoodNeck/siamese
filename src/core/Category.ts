@@ -1,3 +1,5 @@
+import Command from "./Command";
+
 /**
  * Command category
  */
@@ -7,7 +9,9 @@ class Category {
   public readonly categoryEmoji: string;
   public readonly commandEmoji: string;
 
-  constructor({
+  public readonly commands: Command[];
+
+  public constructor({
     name,
     description,
     categoryEmoji,
@@ -22,6 +26,11 @@ class Category {
     this.description = description;
     this.categoryEmoji = categoryEmoji;
     this.commandEmoji = commandEmoji;
+    this.commands = [];
+  }
+
+  public add(...command: Command[]) {
+    this.commands.push(...command);
   }
 }
 

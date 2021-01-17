@@ -3,14 +3,14 @@ const cheerio = require('cheerio');
 const Recital = require('~/utils/recital');
 const { EmbedPage, StringPage } = require('~/utils/page');
 const { blockMd } = require('~/utils/markdown');
-const COLOR = require('~/constants/emoji');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { STONESOUP } = require('~/constants/commands/game');
-const { AXIOS_HEADER } = require('~/constants/header');
-const { RECITAL_END } = require('~/constants/type');
-const { PAGE } = require('~/constants/format');
+const COLOR = require('~/const/emoji');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { STONESOUP } = require('~/const/commands/game');
+const { AXIOS_HEADER } = require('~/const/header');
+const { RECITAL_END } = require('~/const/type');
+const { PAGE } = require('~/const/format');
 
 
 module.exports = {

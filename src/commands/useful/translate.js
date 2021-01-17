@@ -2,11 +2,11 @@ const translate = require('@k3rn31p4nic/google-translate-api');
 const { MessageEmbed } = require('discord.js');
 
 const { loadSubcommands } = require('~/load/subcommand');
-const COLOR = require('~/constants/color');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { TRANSLATE } = require('~/constants/commands/useful');
+const COLOR = require('~/const/color');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { TRANSLATE } = require('~/const/commands/useful');
 
 
 module.exports = {

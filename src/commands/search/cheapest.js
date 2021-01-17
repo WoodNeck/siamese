@@ -1,10 +1,10 @@
 const axios = require('axios');
 const Recital = require('~/utils/recital');
 const { EmbedPage } = require('~/utils/page');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { CHEAPEST } = require('~/constants/commands/search');
-const { AXIOS_HEADER } = require('~/constants/header');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { CHEAPEST } = require('~/const/commands/search');
+const { AXIOS_HEADER } = require('~/const/header');
 
 
 module.exports = {

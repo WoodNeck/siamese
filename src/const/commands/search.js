@@ -1,5 +1,5 @@
 const dedent = require('~/utils/dedent');
-const EMOJI = require('~/constants/emoji');
+const EMOJI = require('~/const/emoji');
 const { strong, code, strike } = require('~/utils/markdown');
 
 

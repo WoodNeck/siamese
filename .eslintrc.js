@@ -89,7 +89,6 @@ module.exports = {
       }
     ],
     "@typescript-eslint/member-ordering": "error",
-    "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/no-explicit-any": "off",
@@ -104,6 +103,7 @@ module.exports = {
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/prefer-namespace-keyword": "error",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/quotes": [
       "error",
       "double"
@@ -213,6 +213,7 @@ module.exports = {
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/require-await": "off",
     "@typescript-eslint/naming-convention": [
       "error",
       {
@@ -248,9 +249,14 @@ module.exports = {
         "trailingUnderscore": "forbid"
       },
       {
-        "selector": "memberLike",
+        "selector": "classProperty",
         "modifiers": ["static"],
-        "format": ["camelCase"]
+        "format": ["camelCase", "UPPER_CASE"]
+      },
+      {
+        "selector": "classMethod",
+        "modifiers": ["static"],
+        "format": ["camelCase", "UPPER_CASE"]
       },
       {
         "selector": "property",

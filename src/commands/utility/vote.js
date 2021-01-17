@@ -1,11 +1,11 @@
 const { Collection, MessageEmbed } = require('discord.js');
 const Conversation = require('~/utils/conversation');
-const COLOR = require('~/constants/color');
-const EMOJI = require('~/constants/emoji');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { VOTE } = require('~/constants/commands/utility');
-const { COOLDOWN, DIALOGUE } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const EMOJI = require('~/const/emoji');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { VOTE } = require('~/const/commands/utility');
+const { COOLDOWN, DIALOGUE } = require('~/const/type');
 
 
 module.exports = {

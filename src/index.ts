@@ -5,14 +5,10 @@ import Siamese from "~/Siamese";
 const logger = pino({ prettyPrint: { translateTime: "SYS:standard" } }, pino.destination("./siamese.log"));
 
 // Create a new bot instance, setup and start it
-const bot = new Siamese(env, {
-  presence: {
-    activity: {
-      name: "Nekopara Vol 1.",
-      type: "PLAYING",
-      url: env.BOT_GITHUB_URL
-    }
-  }
+const bot = new Siamese({
+  env,
+  logger,
+  options: {}
 });
 
 
@@ -41,7 +37,8 @@ process.on("uncaughtException", err => {
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  logger.error("Unhandled rejection at ", promise, `reason: ${reason}`);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  logger.error(`Unhandled rejection at ${(reason as any).stack || reason}`);
   process.exit(1);
 });
 

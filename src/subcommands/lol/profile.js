@@ -3,12 +3,12 @@ const cheerio = require('cheerio');
 const { MessageEmbed } = require('discord.js');
 
 const dedent = require('~/utils/dedent');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { LOL } = require('~/constants/commands/game');
-const { AXIOS_HEADER } = require('~/constants/header');
-const { COOLDOWN } = require('~/constants/type');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { LOL } = require('~/const/commands/game');
+const { AXIOS_HEADER } = require('~/const/header');
+const { COOLDOWN } = require('~/const/type');
 
 
 module.exports = {

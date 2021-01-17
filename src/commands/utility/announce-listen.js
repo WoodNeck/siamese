@@ -1,5 +1,5 @@
 const Guild = require('~/model/guild');
-const { ANNOUNCE_LISTEN } = require('~/constants/commands/utility');
+const { ANNOUNCE_LISTEN } = require('~/const/commands/utility');
 
 
 module.exports = {

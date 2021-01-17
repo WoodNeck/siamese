@@ -3,10 +3,10 @@ const DateDiff = require('date-diff');
 const { MessageEmbed } = require('discord.js');
 const Discharge = require('~/model/discharge');
 const { loadSubcommands } = require('~/load/subcommand');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { DISCHARGE } = require('~/constants/commands/history');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { DISCHARGE } = require('~/const/commands/history');
 
 
 module.exports = {

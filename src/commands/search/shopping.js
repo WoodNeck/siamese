@@ -1,11 +1,11 @@
 const axios = require('axios');
 const Recital = require('~/utils/recital');
 const { EmbedPage } = require('~/utils/page');
-const COLOR = require('~/constants/color');
-const ERROR = require('~/constants/error');
-const PERMISSION = require('~/constants/permission');
-const { SHOPPING } = require('~/constants/commands/search');
-const { NAVER_HEADER } = require('~/constants/header');
+const COLOR = require('~/const/color');
+const ERROR = require('~/const/error');
+const PERMISSION = require('~/const/permission');
+const { SHOPPING } = require('~/const/commands/search');
+const { NAVER_HEADER } = require('~/const/header');
 
 module.exports = {
 	name: SHOPPING.CMD,

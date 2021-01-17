@@ -1,7 +1,7 @@
 const dedent = require('~/utils/dedent');
 const { strong } = require('~/utils/markdown');
-const EMOJI = require('~/constants/emoji');
-const FORMAT = require('~/constants/format');
+const EMOJI = require('~/const/emoji');
+const FORMAT = require('~/const/format');
 
 
 module.exports = {

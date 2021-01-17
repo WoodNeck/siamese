@@ -1,5 +1,5 @@
-const ERROR = require('~/constants/error');
-const { SAY } = require('~/constants/commands/utility');
+const ERROR = require('~/const/error');
+const { SAY } = require('~/const/commands/utility');
 
 
 module.exports = {

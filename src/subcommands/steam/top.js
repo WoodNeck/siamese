@@ -4,11 +4,11 @@ const NodeCache = require('node-cache');
 
 const Recital = require('~/utils/recital');
 const { EmbedPage } = require('~/utils/page');
-const PERMISSION = require('~/constants/permission');
-const CACHE = require('~/constants/cache');
-const { STEAM, TOP } = require('~/constants/commands/steam');
-const { AXIOS_HEADER } = require('~/constants/header');
-const { PAGE } = require('~/constants/format');
+const PERMISSION = require('~/const/permission');
+const CACHE = require('~/const/cache');
+const { STEAM, TOP } = require('~/const/commands/steam');
+const { AXIOS_HEADER } = require('~/const/header');
+const { PAGE } = require('~/const/format');
 
 
 const cache = new NodeCache({

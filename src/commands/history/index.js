@@ -1,5 +1,5 @@
-const EMOJI = require('~/constants/emoji');
-const { HISTORY } = require('~/constants/category');
+const EMOJI = require('~/const/emoji');
+const { HISTORY } = require('~/const/category');
 
 module.exports = {
 	name: HISTORY.NAME,

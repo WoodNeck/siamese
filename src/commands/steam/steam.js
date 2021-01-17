@@ -1,5 +1,5 @@
 const { loadSubcommands } = require('~/load/subcommand');
-const { STEAM } = require('~/constants/commands/steam');
+const { STEAM } = require('~/const/commands/steam');
 
 
 module.exports = {
