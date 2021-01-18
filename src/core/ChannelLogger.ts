@@ -31,8 +31,16 @@ class ChannelLogger {
       .catch(err => console.error(err));
   }
 
+  public async warn(msg: MessageEmbed) {
+    if (!msg.color) msg.setColor(COLOR.WARNING);
+    msg.setTimestamp(new Date());
+
+    await this._channels.ERROR.send(msg)
+      .catch(err => console.error(err));
+  }
+
   // Helper function for formatted error logging
-  public async error(err: Error, msg: Discord.Message) {
+  public async error(err: Error, msg?: Discord.Message) {
     const log = new MessageEmbed();
     if (msg) {
       log.setTitle(ERROR.CMD.FAIL_TITLE(err))

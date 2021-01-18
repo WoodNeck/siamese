@@ -128,6 +128,18 @@ class Siamese extends Discord.Client {
     await this.user.setActivity(activity, {
       type: ACTIVITY.LISTENING
     });
+
+    const dbl = this._dbl;
+    // Discord bot lists update interval setting
+    if (dbl) {
+      // Update immediately at startup
+      await dbl.postStats(this.guilds.cache.size);
+
+      // Update every 30 minute
+      setInterval(() => {
+        void dbl.postStats(this.guilds.cache.size);
+      }, 30 * 60 * 1000);
+    }
   };
 
   private async _setLogger() {
@@ -177,6 +189,9 @@ class Siamese extends Discord.Client {
 
   private _listenEvents() {
     this.on("message", this._onMessage);
+    this.on("guildCreate", this._onGuildJoin);
+    this.on("error", this._onError);
+    this.on("warn", this._onWarn);
   }
 
   private _onMessage = async (msg: Discord.Message) => {
@@ -326,6 +341,31 @@ class Siamese extends Discord.Client {
     // For blank arg, add double quotes for it as Discord won't accept blank message
     return args.map(arg => arg === " " ? `"${arg}"` : arg);
   }
+
+  private _onGuildJoin = async (guild: Discord.Guild) => {
+    if (!(guild.systemChannel)) return;
+
+    const helpCmd = `${this.prefix}${HELP.CMD}`;
+    const embedMsg = new MessageEmbed().setTitle(MSG.BOT.GUILD_JOIN_TITLE)
+      .setDescription(MSG.BOT.GUILD_JOIN_DESC(this, helpCmd))
+      .setThumbnail(this.user.avatarURL() || "")
+      .setFooter(MSG.BOT.GUILD_JOIN_FOOTER(this))
+      .setColor(COLOR.BOT);
+    await this.send(guild.systemChannel, embedMsg);
+  };
+
+  private _onError = async (err: Error) => {
+    await this._logger.error(err);
+
+  };
+
+  private _onWarn = async (info: string) => {
+    const msg = new MessageEmbed()
+      .setTitle(`${EMOJI.WARNING} WARNING`)
+      .setDescription(info.toString());
+
+    await this._logger.warn(msg);
+  };
 }
 
 export default Siamese;

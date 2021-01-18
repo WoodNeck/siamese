@@ -5,7 +5,7 @@ import * as EMOJI from "~/const/emoji";
 import CommandContext from "~/types/CommandContext";
 
 enum END_TYPE {
-  NONE = "NONE",
+  IGNORE = "IGNORE",
   CONTINUE = "CONTINUE",
   DELETE_ALL_MESSAGES = "DELETE_ALL_MESSAGES",
   REMOVE_ONLY_REACTIONS = "REMOVE_ONLY_REACTIONS"
@@ -111,7 +111,7 @@ class Menu {
 
   public prev = () => {
     // Message could been deleted
-    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.NONE;
+    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
     if (this._pageIndex === 0) return END_TYPE.CONTINUE;
 
     const currentPage = this._pages[this._pageIndex];
@@ -123,7 +123,7 @@ class Menu {
 
   public next = () => {
     // Message could been deleted
-    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.NONE;
+    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
     if (this._pageIndex === this._pages.length - 1) return END_TYPE.CONTINUE;
 
     const currentPage = this._pages[this._pageIndex];
@@ -182,6 +182,9 @@ class Menu {
         break;
       case END_TYPE.DELETE_ALL_MESSAGES:
         this.delete();
+        break;
+      case END_TYPE.IGNORE:
+        // Ignore it, can be used when a message is removed already
         break;
       // By timeout
       case END_TYPE.REMOVE_ONLY_REACTIONS:

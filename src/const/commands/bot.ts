@@ -35,9 +35,8 @@ export const DEV_SERVER = {
 export const INFO = {
   CMD: "정보",
   DESC: "봇과 관련된 정보를 볼 수 있다냥!",
-  GUILD_CNT: guildCnt => `${EMOJI.UP_TRIANGLE} 서버 수 - ${guildCnt}개`,
-  USER_CNT: userCnt => `${EMOJI.PEOPLE} 사용자 수 - ${userCnt}명`,
-  PLAYER_CNT: playerCnt => `${EMOJI.MICROPHONE} 재생중인 음악 수 - ${playerCnt}개`,
-  GITHUB_ICON_URL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-  DEV_SERVER: "개발 서버"
+  GUILD_CNT: (guildCnt: number) => `${EMOJI.UP_TRIANGLE} 서버 수 - ${guildCnt}개`,
+  USER_CNT: (userCnt: number) => `${EMOJI.PEOPLE} 사용자 수 - ${userCnt}명`,
+  DEV_SERVER: (server: Discord.Guild, inviteLink: string) => `${EMOJI.ENVELOPE_WITH_ARROW} [${server.name}](${inviteLink})`,
+  GITHUB_ICON_URL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
 };

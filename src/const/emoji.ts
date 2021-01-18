@@ -71,6 +71,7 @@ export const PICTURE = "🖼️";
 export const MEMO = "📝";
 export const WHITE_FLOWER = "💮";
 export const PUSH_PIN = "📌";
+export const ENVELOPE_WITH_ARROW = "📩";
 export const LETTER = {
   A: "🇦",
   B: "🇧",

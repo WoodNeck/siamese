@@ -1,6 +1,8 @@
 import Category from "~/core/Category";
 import Help from "./help";
 import Ping from "./ping";
+import Invite from "./invite";
+import Info from "./info";
 
 import { BOT } from "~/const/category";
 import * as EMOJI from "~/const/emoji";
@@ -12,6 +14,8 @@ const category = new Category({
   commandEmoji: EMOJI.WRENCH
 });
 
-category.add(Help, Ping);
+category.add(
+  Help, Ping, Invite, Info
+);
 
 export default category;

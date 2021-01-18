@@ -168,12 +168,6 @@ module.exports = {
     "no-invalid-this": "off",
     "no-multiple-empty-lines": "error",
     "no-new-wrappers": "error",
-    "no-shadow": [
-      "error",
-      {
-        "hoist": "all"
-      }
-    ],
     "no-throw-literal": "error",
     "no-trailing-spaces": "error",
     "no-undef-init": "error",
@@ -210,10 +204,12 @@ module.exports = {
     ],
     "use-isnan": "error",
     "valid-typeof": "off",
+    "no-shadow": "off",
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/naming-convention": [
       "error",
       {

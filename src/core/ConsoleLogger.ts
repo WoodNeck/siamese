@@ -20,8 +20,22 @@ class ConsoleLogger {
     return Promise.resolve();
   }
 
+  public async warn(msg: MessageEmbed) {
+    const color = msg.hexColor || COLOR.WARNING;
+
+    const strMsg = dedent`
+			${chalk.hex(color)(msg.title ? msg.title : "")}
+			${msg.description ? msg.description : ""}
+      ${msg.footer ? (msg.footer.text ? msg.footer.text : msg.footer as string) : ""}
+      ${new Date().toLocaleString()}
+		`;
+
+    console.log(strMsg);
+    return Promise.resolve();
+  }
+
   // Helper function for formatted error logging
-  public async error(err: Error, msg: Discord.Message) {
+  public async error(err: Error, msg?: Discord.Message) {
     const strMsg = dedent`
       ${ERROR.CMD.FAIL_TITLE(err)}
       ${msg ? `${ERROR.CMD.FAIL_PLACE(msg)}\n${ERROR.CMD.FAIL_CMD(msg)}\n${ERROR.CMD.FAIL_DESC(err)}` : ERROR.CMD.FAIL_DESC(err)}
