@@ -2,7 +2,7 @@ import Discord from "discord.js";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
-import CommandContext from "~/types/CommandContext";
+import CommandContext from "~/type/CommandContext";
 
 enum END_TYPE {
   IGNORE = "IGNORE",
@@ -19,6 +19,7 @@ class Menu {
   private _menuMsg: Discord.Message | null;
   private _maxWaitTime: number;
   private _defaultColor: string;
+  private _circular: boolean;
 
   // Internal States
   private _pageIndex: number;
@@ -29,17 +30,20 @@ class Menu {
   public constructor(ctx: CommandContext, options: {
     maxWaitTime: number;
     defaultColor?: string;
+    circular?: boolean;
   }) {
     this._ctx = ctx;
     this._menuMsg = null;
 
     const {
       maxWaitTime,
-      defaultColor = COLOR.BOT
+      defaultColor = COLOR.BOT,
+      circular = true
     } = options;
 
     this._maxWaitTime = maxWaitTime;
     this._defaultColor = defaultColor;
+    this._circular = circular;
 
     this._pageIndex = 0;
     this._pages = [];
@@ -52,14 +56,19 @@ class Menu {
     this.addReactionCallback(EMOJI.CROSS, () => END_TYPE.DELETE_ALL_MESSAGES);
   }
 
-  public add(...pages: Array<Discord.MessageEmbed | string>) {
-    pages.forEach(page => {
-      if (page instanceof Discord.MessageEmbed && !page.color) {
-        page.setColor(this._defaultColor);
+  public setPages(pages: Array<Discord.MessageEmbed | string>) {
+    pages.forEach((page, pageIdx) => {
+      if (page instanceof Discord.MessageEmbed) {
+        if (!page.color) {
+          page.setColor(this._defaultColor);
+        }
+        if (!page.footer) {
+          page.setFooter(`${pageIdx + 1}/${pages.length}`);
+        }
       }
     });
 
-    this._pages.push(...pages);
+    this._pages = pages;
   }
 
   // All reaction callbacks must return recital end reason
@@ -101,8 +110,8 @@ class Menu {
           // Recital message deleted, how fast
           if (menuMsg.deleted) return;
 
-          // Retry once more, without order assurance
-          menuMsg.react(emoji).catch(() => {}); // eslint-disable-line @typescript-eslint/no-empty-function
+          // Retry one more time, without order assurance
+          menuMsg.react(emoji).catch(() => void 0);
         });
     }
 
@@ -112,11 +121,16 @@ class Menu {
   public prev = () => {
     // Message could been deleted
     if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
-    if (this._pageIndex === 0) return END_TYPE.CONTINUE;
+    if (!this._circular && this._pageIndex === 0) return END_TYPE.CONTINUE;
 
-    const currentPage = this._pages[this._pageIndex];
-    const prevPage = this._pages[this._pageIndex - 1];
+    const pages = this._pages;
+    const currentPage = pages[this._pageIndex];
+    const pageCount = pages.length;
+
+    const prevIndex = this._circular ? (pageCount + this._pageIndex - 1) % pageCount : this._pageIndex - 1;
+    const prevPage = this._pages[prevIndex];
     this._changePage(prevPage, currentPage);
+    this._pageIndex = prevIndex;
 
     return END_TYPE.CONTINUE;
   };
@@ -124,11 +138,16 @@ class Menu {
   public next = () => {
     // Message could been deleted
     if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
-    if (this._pageIndex === this._pages.length - 1) return END_TYPE.CONTINUE;
+    if (!this._circular && this._pageIndex === this._pages.length - 1) return END_TYPE.CONTINUE;
 
-    const currentPage = this._pages[this._pageIndex];
-    const nextPage = this._pages[this._pageIndex + 1];
+    const pages = this._pages;
+    const currentPage = pages[this._pageIndex];
+    const pageCount = pages.length;
+
+    const nextIndex = this._circular ? (this._pageIndex + 1) % pageCount : this._pageIndex + 1;
+    const nextPage = this._pages[nextIndex];
     this._changePage(nextPage, currentPage);
+    this._pageIndex = nextIndex;
 
     return END_TYPE.CONTINUE;
   };
@@ -159,14 +178,14 @@ class Menu {
       (reaction: Discord.MessageReaction, user: Discord.User) => this._callbacks.has(reaction.emoji.name) && user.id === this._ctx.author.id,
       { time: this._maxWaitTime * 1000 }
     );
-    reactionCollector.on("collect", reaction => {
-      this._onCollect(reaction, reactionCollector);
+    reactionCollector.on("collect", async reaction => {
+      await this._onCollect(reaction, reactionCollector);
     });
     reactionCollector.on("end", this._onEnd);
   }
 
-  private _onCollect = (reaction: Discord.MessageReaction, collector: Discord.ReactionCollector) => {
-    reaction.users.remove(this._ctx.author).catch(() => void 0);
+  private _onCollect = async (reaction: Discord.MessageReaction, collector: Discord.ReactionCollector) => {
+    await reaction.users.remove(this._ctx.author).catch(() => void 0);
     const callback = this._callbacks.get(reaction.emoji.name);
     if (!callback) return;
 
@@ -174,7 +193,7 @@ class Menu {
     collector.stop(endReason as string);
   };
 
-  private _onEnd = (collection: Discord.Collection<string, Discord.MessageReaction>, reason: END_TYPE) => {
+  private _onEnd = async (collection: Discord.Collection<string, Discord.MessageReaction>, reason: END_TYPE) => {
     switch (reason) {
       case END_TYPE.CONTINUE:
         // Start listening another reaction
@@ -191,7 +210,7 @@ class Menu {
       default:
         // Removing bot reactions indicates that
         // bot won't listen to reactions anymore
-        this._removeBotReactions();
+        await this._removeBotReactions();
     }
   };
 
@@ -210,17 +229,23 @@ class Menu {
     }
   }
 
-  private _removeBotReactions() {
+  private async _removeBotReactions() {
+    const bot = this._ctx.bot;
     const msg = this._menuMsg;
 
     if (msg && !msg.deleted) {
-      msg.reactions.cache
-        .filter(reaction => reaction.me)
-        .forEach(reaction => {
-          reaction.users
-            .remove(this._ctx.bot.user)
-            .catch(() => void 0);
-        });
+      const reactions = msg.reactions.cache;
+
+      for (const [, reaction] of reactions) {
+        if (reaction.users.cache.has(bot.user.id)) {
+          await reaction.users.remove(bot.user)
+            .catch(async () => {
+              if (msg.deleted) return;
+              // Try one more time
+              await reaction.users.remove().catch(() => void 0);
+            });
+        }
+      }
     }
   }
 }

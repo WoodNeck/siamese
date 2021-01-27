@@ -1,6 +1,7 @@
 import Josa from "josa-js";
 import Discord from "discord.js";
-import { strong, block } from "~/utils/markdown";
+
+import { strong, block } from "~/util/markdown";
 
 export const BOT = {
   FAILED_TO_START: "❗ 봇 시작을 실패했다냥 ❗"
@@ -30,8 +31,6 @@ export const CMD = {
   ON_COOLDOWN: (seconds: string) => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
   EMPTY_CONTENT: (target: string) => `${Josa.r(target, "을/를")} 달라냥!`,
   ONLY_IN_TEXT_CHANNEL: "명령어는 길드 채널에서만 사용할 수 있다냥!",
-  MENTION_NEEDED: `명령어 대상을 ${strong("~멘션")}하여 사용하는 명령어다냥!`,
-  MENTION_ONLY_ONE: "한 명의 유저만 멘션해달라냥!",
   NOT_FOUND: target => `${Josa.r(target, "을/를")} 찾을 수 없다냥!`,
   PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`
 };
@@ -41,17 +40,13 @@ export const API = {
   TEST_EMPTY_RESULT: "API test case returned empty result"
 };
 
-export const DICE = {
-  ARG_INCORRECT: (min, max) => `${min}에서 ${max}사이의 숫자를 달라냥!`
-};
-
-export const CHOOSE = {
-  ARG_NOT_SUFFICIENT: "고를 수 있는 항목을 충분히 달라냥!"
-};
-
 export const SEARCH = {
   EMPTY_CONTENT: "검색할 내용을 달라냥!",
   EMPTY_RESULT: (target: string) => `그 검색어로는 ${target}${Josa.c(target, "을/를")} 하나도 찾을수가 없었다냥!`,
   FAILED: "데이터 취득에 실패했다냥!",
   USER_NOT_FOUND: "유저를 찾을 수 없었다냥!"
+};
+
+export const CONVERSATION = {
+  NO_RESPONSE: (time: number) => `${time.toFixed(0)}초 안에 대답해달라냥!`
 };

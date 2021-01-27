@@ -9,5 +9,5 @@ export const STEAM = {
   OFFLINE: "#6a6a6a",
   ONLINE: "#53a4c4",
   PLAYING: "#8fb93b"
-};
+} as const;
 export const WHITE = "#ffffff";

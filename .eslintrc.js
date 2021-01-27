@@ -62,6 +62,40 @@ module.exports = {
         "accessibility": "explicit"
       }
     ],
+    "@typescript-eslint/member-ordering": ["error", {
+      "default": [
+        // Index signature
+        "signature",
+
+        // Static
+        "public-static-method",
+        "protected-static-method",
+        "private-static-method",
+
+        "public-static-field",
+        "protected-static-field",
+        "private-static-field",
+
+        "public-abstract-field",
+        "protected-abstract-field",
+        "private-abstract-field",
+
+        "public-instance-field",
+        "protected-instance-field",
+        "private-instance-field",
+
+        "constructor",
+
+        // Methods
+        "public-abstract-method",
+        "protected-abstract-method",
+        "private-abstract-method",
+
+        "public-instance-method",
+        "protected-instance-method",
+        "private-instance-method"
+      ]
+    }],
     "@typescript-eslint/indent": [
       "error",
       2,
@@ -88,7 +122,6 @@ module.exports = {
         }
       }
     ],
-    "@typescript-eslint/member-ordering": "error",
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/no-explicit-any": "off",
@@ -206,6 +239,7 @@ module.exports = {
     "valid-typeof": "off",
     "no-shadow": "off",
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "import/order": ["error", {"newlines-between": "always"}],
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/require-await": "off",

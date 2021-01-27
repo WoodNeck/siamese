@@ -1,4 +1,5 @@
 import pino from "pino";
+
 import env from "~/load/env";
 import Siamese from "~/Siamese";
 
@@ -36,7 +37,7 @@ process.on("uncaughtException", err => {
   process.exit(1);
 });
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", reason => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   logger.error(`Unhandled rejection at ${(reason as any).stack || reason}`);
   process.exit(1);

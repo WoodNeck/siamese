@@ -2,8 +2,8 @@ import Discord from "discord.js";
 import Josa from "josa-js";
 
 import Siamese from "~/Siamese";
-import dedent from "~/utils/dedent";
-import { strong, underline } from "~/utils/markdown";
+import { dedent } from "~/util/helper";
+import { strong, underline } from "~/util/markdown";
 
 export const BOT = {
   READY_INDICATOR: (bot: Siamese) => ` _____ _

@@ -1,9 +1,9 @@
-import Category from "~/core/Category";
 import Help from "./help";
 import Ping from "./ping";
 import Invite from "./invite";
 import Info from "./info";
 
+import Category from "~/core/Category";
 import { BOT } from "~/const/category";
 import * as EMOJI from "~/const/emoji";
 

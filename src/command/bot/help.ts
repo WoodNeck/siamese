@@ -3,14 +3,12 @@ import { MessageEmbed } from "discord.js";
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
 import Menu from "~/core/Menu";
-import { strong, block } from "~/utils/markdown";
-
-import { HELP } from "~/const/commands/bot";
+import { strong, block } from "~/util/markdown";
+import { HELP } from "~/const/command/bot";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-
-import CommandContext from "~/types/CommandContext";
+import CommandContext from "~/type/CommandContext";
 
 export default new Command({
   name: HELP.CMD,
@@ -52,7 +50,7 @@ export default new Command({
       });
 
     const menu = new Menu(ctx, { maxWaitTime: HELP.RECITAL_TIME });
-    menu.add(...categories);
+    menu.setPages(categories);
 
     await menu.start();
   }

@@ -1,7 +1,7 @@
 import Discord, { MessageEmbed } from "discord.js";
 
 import Siamese from "~/Siamese";
-import dedent from "~/utils/dedent";
+import { dedent } from "~/util/helper";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 

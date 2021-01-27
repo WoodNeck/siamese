@@ -1,4 +1,5 @@
 import chalk from "chalk";
+
 import * as ERROR from "~/const/error";
 
 interface Validator {

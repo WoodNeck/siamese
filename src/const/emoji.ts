@@ -20,6 +20,7 @@ export const CROSS = "❌";
 export const WARNING = "⚠️";
 export const WAVY_DASH = "〰️";
 export const ALARM = "⏰";
+export const STOPWATCH = "⏱️";
 export const CLOCK_3 = "🕒";
 export const HEADPHONES = "🎧";
 export const MICROPHONE = "🎤";
@@ -59,7 +60,7 @@ export const SCALES = "⚖️";
 export const CAT = {
   KISSING: "😽",
   GRINNING: "😸"
-};
+} as const;
 export const CROSSED_SWORDS = "⚔️";
 export const SHIELD = "🛡️";
 export const GOLD_MEDAL = "🥇";
@@ -72,6 +73,9 @@ export const MEMO = "📝";
 export const WHITE_FLOWER = "💮";
 export const PUSH_PIN = "📌";
 export const ENVELOPE_WITH_ARROW = "📩";
+export const LINK = "🔗";
+export const CROWN = "👑";
+export const BALLOT_BOX = "🗳️";
 export const LETTER = {
   A: "🇦",
   B: "🇧",
@@ -99,4 +103,5 @@ export const LETTER = {
   X: "🇽",
   Y: "🇾",
   Z: "🇿"
-};
+} as const;
+export const ZERO_WIDTH_SPACE = "​";

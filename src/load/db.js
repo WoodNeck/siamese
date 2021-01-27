@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import mongoose from "mongoose";
-import DB from "~/const/db";
 
+import DB from "~/const/db";
 
 const chalk = require("chalk");
 const mongoose = require("mongoose");

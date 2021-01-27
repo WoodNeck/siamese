@@ -2,7 +2,7 @@ import Discord from "discord.js";
 
 import { Permission } from "~/const/permission";
 import Cooldown from "~/core/Cooldown";
-import CommandContext from "~/types/CommandContext";
+import CommandContext from "~/type/CommandContext";
 
 interface CommandOption {
   name: string;

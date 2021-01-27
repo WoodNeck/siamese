@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
-import EnvVariables from "~/types/EnvVariables";
-import { typetest, validator } from "~/utils/typetest";
+
+import EnvVariables from "~/type/EnvVariables";
+import { typetest, validator } from "~/util/typetest";
 
 const env: {[key: string]: string} = {};
 

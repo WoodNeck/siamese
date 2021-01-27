@@ -1,4 +1,5 @@
 import Discord from "discord.js";
+
 import Siamese from "~/Siamese";
 
 interface CommandContext {

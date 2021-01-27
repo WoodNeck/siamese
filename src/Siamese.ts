@@ -3,23 +3,21 @@ import DBL from "dblapi.js";
 import pino from "pino";
 import chalk from "chalk";
 
-import Category from "./core/Category";
+import Category from "~/core/Category";
 import Command from "~/core/Command";
 import ChannelLogger from "~/core/ChannelLogger";
-import ConsoleLogger from "./core/ConsoleLogger";
-
-import BotCategory from "~/commands/bot";
-
+import ConsoleLogger from "~/core/ConsoleLogger";
+import BotCategory from "~/command/bot";
+import UtilityCategory from "~/command/utility";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
 import * as PERMISSION from "~/const/permission";
 import * as EMOJI from "~/const/emoji";
-import { HELP } from "~/const/commands/bot";
-import { ACTIVITY, DISCORD_ERROR_CODE } from "./const/discord";
-
-import EnvVariables from "~/types/EnvVariables";
-import CommandContext from "./types/CommandContext";
+import { HELP } from "~/const/command/bot";
+import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
+import EnvVariables from "~/type/EnvVariables";
+import CommandContext from "~/type/CommandContext";
 
 
 class Siamese extends Discord.Client {
@@ -88,10 +86,10 @@ class Siamese extends Discord.Client {
       });
   }
 
-  public async send(channel: Discord.TextChannel, ...sendArgs: Partial<Parameters<Discord.TextChannel["send"]>>): Promise<Discord.Message | null> {
+  public async send(channel: Discord.TextChannel, content: string | MessageEmbed | (Discord.MessageOptions & { split?: false | undefined })) {
     channel.stopTyping(true);
 
-    return await channel.send(sendArgs)
+    return await channel.send(content)
       .catch(err => {
         // Not a case of missing permission
         if (!(err instanceof Discord.DiscordAPIError
@@ -104,7 +102,11 @@ class Siamese extends Discord.Client {
   }
 
   public async replyError(msg: Discord.Message, errorMsg: string) {
-    await this.send(msg.channel as Discord.TextChannel, MSG.BOT.ERROR_MSG(msg.author, errorMsg));
+    const embed = new Discord.MessageEmbed()
+      .setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg))
+      .setColor(COLOR.ERROR);
+
+    await this.send(msg.channel as Discord.TextChannel, embed);
   }
 
   public getDisplayName(guild: Discord.Guild) {
@@ -168,7 +170,7 @@ class Siamese extends Discord.Client {
 
     this._categories.push(
       BotCategory,
-
+      UtilityCategory,
     );
 
   	this._categories.forEach(category => {

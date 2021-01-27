@@ -1,14 +1,14 @@
 import Discord from "discord.js";
 
 class Cooldown {
+  public static PER_GUILD(seconds: number) { return new Cooldown("guild", seconds); }
+  public static PER_CHANNEL(seconds: number) { return new Cooldown("channel", seconds); }
+  public static PER_USER(seconds: number) { return new Cooldown("author", seconds); }
+
   private constructor(
     private _type: "guild" | "channel" | "author",
     public duration: number
   ) {}
-
-  public static PER_GUILD(seconds: number) { return new Cooldown("guild", seconds); }
-  public static PER_CHANNEL(seconds: number) { return new Cooldown("channel", seconds); }
-  public static PER_USER(seconds: number) { return new Cooldown("author", seconds); }
 
   public getKey(msg: Discord.Message, cmdName: string) {
     switch (this._type) {
