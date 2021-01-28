@@ -3,6 +3,7 @@ import Dice from "./dice";
 import Choose from "./choose";
 import Say from "./say";
 import Vote from "./vote";
+import Translate from "./translate";
 
 import Category from "~/core/Category";
 import { UTILITY } from "~/const/category";
@@ -19,7 +20,8 @@ category.add(
   Dice,
   Choose,
   Say,
-  Vote
+  Vote,
+  Translate
 );
 
 export default category;

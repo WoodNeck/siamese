@@ -20,7 +20,6 @@ import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
 
-
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
 
@@ -104,7 +103,7 @@ class Siamese extends Discord.Client {
 
   public async replyError(msg: Discord.Message, errorMsg: string) {
     const embed = new Discord.MessageEmbed()
-      .setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg))
+      .setDescription(MSG.BOT.ERROR_MSG( msg.author, errorMsg))
       .setColor(COLOR.ERROR);
 
     await this.send(msg.channel as Discord.TextChannel, embed);
@@ -217,8 +216,9 @@ class Siamese extends Discord.Client {
     const subcommandName = content.split(/ +/)[0];
 
     // Found subcommand
-    if (cmd.subcommands?.has(subcommandName)) {
-      cmd = cmd.subcommands.get(subcommandName)!;
+    const subcommand = cmd.subcommands?.find(subcmd => subcmd.name === subcommandName);
+    if (subcommand) {
+      cmd = subcommand;
       content = content.slice(subcommandName.length + 1);
       cmdName = `${cmdName} ${cmd.name}`;
     }

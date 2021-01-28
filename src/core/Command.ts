@@ -15,7 +15,7 @@ interface CommandOption {
   adminOnly?: boolean;
   cooldown?: Cooldown;
   permissions?: Permission[];
-  subcommands?: Discord.Collection<string, Command>;
+  subcommands?: Command[];
 }
 
 class Command {

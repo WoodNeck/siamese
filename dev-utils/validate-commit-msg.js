@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable */
 
 /**
  * Original Code
@@ -39,7 +40,7 @@ var error = function() {
 
 var validateMessage = function(message, fullMessage) {
   var isValid = true;
-  
+
   if (IGNORED.test(message)) {
     console.log('Commit message validation ignored.');
     return true;
