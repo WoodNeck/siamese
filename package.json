@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/WoodNeck/siamese#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "bufferutil": "^4.0.3",
     "dblapi.js": "^2.4.1",
     "discord.js": "^12.5.1",
     "erlpack": "github:discord/erlpack",
+    "googleapis": "^67.0.0",
     "josa-js": "0.0.2",
     "libsodium-wrappers": "^0.7.8",
     "pino": "^6.11.0",

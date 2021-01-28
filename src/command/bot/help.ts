@@ -34,13 +34,13 @@ export default new Command({
           .forEach(cmd => {
             if (cmd.execute) {
               // Works whether space exist in prefix or not
-              const commandTitle = strong(`${category.commandEmoji} ${cmd.name}`);
+              const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name}`);
               const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, cmd.usage].filter(str => str).join(" ");
               embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description)}`);
             }
             if (cmd.subcommands) {
               cmd.subcommands.forEach(subcmd => {
-                const commandTitle = strong(`${category.commandEmoji} ${cmd.name} ${subcmd.name}`);
+                const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name} ${subcmd.name}`);
                 const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name} ${subcmd.name}`, subcmd.usage].filter(str => str).join(" ");
                 embed.addField(commandTitle, `${commandUsage}\n${block(subcmd.description)}`);
               });
@@ -49,7 +49,7 @@ export default new Command({
         return embed;
       });
 
-    const menu = new Menu(ctx, { maxWaitTime: HELP.RECITAL_TIME });
+    const menu = new Menu(ctx, { maxWaitTime: HELP.MENU_TIME });
     menu.setPages(categories);
 
     await menu.start();

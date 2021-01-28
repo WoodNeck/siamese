@@ -7,3 +7,4 @@ export const strike = (word: string) => `~~${word.trim().replace(/[~]{2}/gm, "")
 export const code = (word: string) => `\`${Util.escapeMarkdown(word.trim().replace(/^[`]{1,}|[`]{1,}$/gm, ""))}\``;
 export const block = (word: string, lang = "") => `\`\`\`${Util.escapeMarkdown(lang.trim())}\n${Util.escapeMarkdown(word.trim())}\`\`\``;
 export const blockMd = (word: string, lang = "") => `\`\`\`${lang}\n${word}\`\`\``;
+export const link = (word: string, url: string) => `[${word}](${url})`;

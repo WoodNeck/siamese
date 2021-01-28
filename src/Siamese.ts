@@ -9,6 +9,7 @@ import ChannelLogger from "~/core/ChannelLogger";
 import ConsoleLogger from "~/core/ConsoleLogger";
 import BotCategory from "~/command/bot";
 import UtilityCategory from "~/command/utility";
+import SearchCategory from "~/command/search";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -171,10 +172,14 @@ class Siamese extends Discord.Client {
     this._categories.push(
       BotCategory,
       UtilityCategory,
+      SearchCategory
     );
 
   	this._categories.forEach(category => {
       category.commands.forEach(cmd => {
+        if (cmd.beforeRegister && !cmd.beforeRegister(this)) {
+          console.warn(EMOJI.WARNING, chalk.yellow(MSG.BOT.CMD_REGISTER_FAILED(cmd)));
+        }
         this._commands.set(cmd.name, cmd);
       });
     });

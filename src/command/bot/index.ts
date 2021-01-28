@@ -10,8 +10,7 @@ import * as EMOJI from "~/const/emoji";
 const category = new Category({
   name: BOT.NAME,
   description: BOT.DESC,
-  categoryEmoji: EMOJI.BOT,
-  commandEmoji: EMOJI.WRENCH
+  categoryEmoji: EMOJI.BOT
 });
 
 category.add(

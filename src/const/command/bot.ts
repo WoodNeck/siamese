@@ -13,17 +13,20 @@ export const PING = {
     퐁이다냥! 현재 샴고양이 웹소켓 핑 평균은 ${strong(`${ping}ms`)}다냥!
     ${bot.user.toString()}${Josa.c(bot.getDisplayName(guild), "은/는")} ${uptime.getUTCHours()}시간 ${uptime.getUTCMinutes()}분 ${uptime.getUTCSeconds()}초동안 일하고 있다냥!`
 } as const;
+
 export const INVITE = {
   CMD: "초대",
   DESC: "봇을 초대할 수 있는 링크를 준다냥!",
   TITLE: (botName: string) => `${botName}의 초대링크다냥!`,
   MSG: (botName: string) => `${EMOJI.LINK} 클릭해서 ${botName} 초대하기`
 } as const;
+
 export const HELP = {
   CMD: "도움",
   DESC: "명령어 목록을 보여준다냥!",
-  RECITAL_TIME: 30
+  MENU_TIME: 30
 } as const;
+
 export const DEV_SERVER = {
   CMD: "개발서버",
   DESC: "개발 서버로 올 수 있는 초대 링크를 준다냥!",
@@ -32,6 +35,7 @@ export const DEV_SERVER = {
     와서 사용/개발에 관한 질문, 기능요청, 버그제보 등을 할 수 있다냥!
     ${inviteLink}`
 } as const;
+
 export const INFO = {
   CMD: "정보",
   DESC: "봇과 관련된 정보를 볼 수 있다냥!",

@@ -11,8 +11,7 @@ import * as EMOJI from "~/const/emoji";
 const category = new Category({
   name: UTILITY.NAME,
   description: UTILITY.DESC,
-  categoryEmoji: EMOJI.TOOLS,
-  commandEmoji: EMOJI.SMALL_BLUE_DIAMOND
+  categoryEmoji: EMOJI.TOOLS
 });
 
 category.add(

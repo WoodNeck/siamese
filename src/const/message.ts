@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import Josa from "josa-js";
 
 import Siamese from "~/Siamese";
+import Command from "~/core/Command";
 import { dedent } from "~/util/helper";
 import { strong, underline } from "~/util/markdown";
 
@@ -24,5 +25,6 @@ export const BOT = {
     ${underline(strong(helpCmd))}이라고 말하면 ${Josa.r(bot.user.username, "이/가")} 할 수 있는 일을 알 수 있다냥!`,
   GUILD_JOIN_FOOTER: (bot: Siamese) => dedent`
     여기는 ${Josa.r(bot.user.username, "이/가")} 일하는 ${bot.guilds.cache.size.toString()}번째 서버다냥!`,
-  ERROR_MSG: (user: Discord.User, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`
+  ERROR_MSG: (user: Discord.User, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`,
+  CMD_REGISTER_FAILED: (cmd: Command) => `명령어 "${cmd.name}"의 beforeReigster 판정에 실패해서 명령어를 등록하지 못했다냥!`
 };

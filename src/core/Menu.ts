@@ -20,6 +20,7 @@ class Menu {
   private _maxWaitTime: number;
   private _defaultColor: string;
   private _circular: boolean;
+  private _addPageNumber: boolean;
 
   // Internal States
   private _pageIndex: number;
@@ -27,23 +28,26 @@ class Menu {
   private _emojis: string[];
   private _callbacks: Discord.Collection<string, () => END_TYPE>;
 
-  public constructor(ctx: CommandContext, options: {
+  public constructor(ctx: CommandContext, options: Partial<{
     maxWaitTime: number;
-    defaultColor?: string;
-    circular?: boolean;
-  }) {
+    defaultColor: string;
+    circular: boolean;
+    addPageNumber: boolean;
+  }> = {}) {
     this._ctx = ctx;
     this._menuMsg = null;
 
     const {
-      maxWaitTime,
+      maxWaitTime = 30,
       defaultColor = COLOR.BOT,
-      circular = true
+      circular = true,
+      addPageNumber = true
     } = options;
 
     this._maxWaitTime = maxWaitTime;
     this._defaultColor = defaultColor;
     this._circular = circular;
+    this._addPageNumber = addPageNumber;
 
     this._pageIndex = 0;
     this._pages = [];
@@ -62,8 +66,13 @@ class Menu {
         if (!page.color) {
           page.setColor(this._defaultColor);
         }
-        if (!page.footer) {
-          page.setFooter(`${pageIdx + 1}/${pages.length}`);
+
+        if (this._addPageNumber) {
+          if (!page.footer) {
+            page.setFooter(`${pageIdx + 1}/${pages.length}`);
+          } else {
+            page.setFooter(`${page.footer.text} • (${pageIdx + 1}/${pages.length})`, page.footer.iconURL);
+          }
         }
       }
     });

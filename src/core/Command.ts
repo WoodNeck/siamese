@@ -2,12 +2,14 @@ import Discord from "discord.js";
 
 import { Permission } from "~/const/permission";
 import Cooldown from "~/core/Cooldown";
+import Siamese from "~/Siamese";
 import CommandContext from "~/type/CommandContext";
 
 interface CommandOption {
   name: string;
   description: string;
   execute?: (ctx: CommandContext) => Promise<void>;
+  beforeRegister?: (bot: Siamese) => boolean;
   usage?: string;
   devOnly?: boolean;
   adminOnly?: boolean;
@@ -21,6 +23,7 @@ class Command {
   public readonly description: CommandOption["description"];
   public readonly execute: CommandOption["execute"];
   public readonly usage: CommandOption["usage"];
+  public readonly beforeRegister: CommandOption["beforeRegister"];
   public readonly devOnly: CommandOption["devOnly"];
   public readonly adminOnly: CommandOption["adminOnly"];
   public readonly cooldown: CommandOption["cooldown"];
@@ -32,6 +35,7 @@ class Command {
     description,
     execute,
     usage,
+    beforeRegister,
     devOnly = false,
     adminOnly = false,
     cooldown,
@@ -42,6 +46,7 @@ class Command {
     this.description = description;
     this.execute = execute;
     this.usage = usage;
+    this.beforeRegister = beforeRegister;
     this.devOnly = devOnly;
     this.adminOnly = adminOnly;
     this.cooldown = cooldown;
