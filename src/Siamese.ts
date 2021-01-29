@@ -10,6 +10,7 @@ import ConsoleLogger from "~/core/ConsoleLogger";
 import BotCategory from "~/command/bot";
 import UtilityCategory from "~/command/utility";
 import SearchCategory from "~/command/search";
+import SteamCategory from "~/command/steam";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -171,7 +172,8 @@ class Siamese extends Discord.Client {
     this._categories.push(
       BotCategory,
       UtilityCategory,
-      SearchCategory
+      SearchCategory,
+      SteamCategory
     );
 
   	this._categories.forEach(category => {

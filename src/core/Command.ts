@@ -1,5 +1,3 @@
-import Discord from "discord.js";
-
 import { Permission } from "~/const/permission";
 import Cooldown from "~/core/Cooldown";
 import Siamese from "~/Siamese";
@@ -7,10 +5,10 @@ import CommandContext from "~/type/CommandContext";
 
 interface CommandOption {
   name: string;
-  description: string;
+  description?: string;
+  usage?: string;
   execute?: (ctx: CommandContext) => Promise<void>;
   beforeRegister?: (bot: Siamese) => boolean;
-  usage?: string;
   devOnly?: boolean;
   adminOnly?: boolean;
   cooldown?: Cooldown;

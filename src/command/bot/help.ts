@@ -36,13 +36,13 @@ export default new Command({
               // Works whether space exist in prefix or not
               const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name}`);
               const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, cmd.usage].filter(str => str).join(" ");
-              embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description)}`);
+              embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description || "")}`);
             }
             if (cmd.subcommands) {
               cmd.subcommands.forEach(subcmd => {
                 const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name} ${subcmd.name}`);
                 const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name} ${subcmd.name}`, subcmd.usage].filter(str => str).join(" ");
-                embed.addField(commandTitle, `${commandUsage}\n${block(subcmd.description)}`);
+                embed.addField(commandTitle, `${commandUsage}\n${block(subcmd.description || "")}`);
               });
             }
           });
