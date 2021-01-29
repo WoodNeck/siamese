@@ -9,16 +9,16 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "outDir": "bin",
     "baseUrl": ".",
     "paths": {
       "~/*": [
         "src/*"
       ]
-    },
+    }
   },
   "include": [
-    "./src/**/*.ts",
-    "./test/**/*.ts",
+    "./src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
