@@ -1,5 +1,5 @@
 # 샴고양이(Siamese)
-[![Discord Bots](https://discordbots.org/api/widget/status/357073005819723777.svg)](https://discordbots.org/bot/357073005819723777) [![Discord](https://img.shields.io/discord/756115138955706472.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zxSwN8Z) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740678f4912c4afab3dd179240ffddc4)](https://www.codacy.com/app/WoodNeck/siamese?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WoodNeck/siamese&amp;utm_campaign=Badge_Grade) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
+[![Discord Bots](https://discordbots.org/api/widget/status/357073005819723777.svg)](https://discordbots.org/bot/357073005819723777) [![Discord](https://img.shields.io/discord/800248062936612904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zxSwN8Z) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
 
 [Invite Bot](https://discordapp.com/oauth2/authorize?client_id=357073005819723777&scope=bot&permissions=-1)
 
