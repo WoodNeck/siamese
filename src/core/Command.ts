@@ -2,48 +2,53 @@ import { Permission } from "~/const/permission";
 import Cooldown from "~/core/Cooldown";
 import Siamese from "~/Siamese";
 import CommandContext from "~/type/CommandContext";
+import { RequiredField } from "~/type/helper";
 
 interface CommandOption {
   name: string;
-  description?: string;
-  usage?: string;
-  execute?: (ctx: CommandContext) => Promise<void>;
-  beforeRegister?: (bot: Siamese) => boolean;
-  devOnly?: boolean;
-  adminOnly?: boolean;
-  cooldown?: Cooldown;
-  permissions?: Permission[];
-  subcommands?: Command[];
+  description: string;
+  usage: string;
+  alias: string[];
+  execute: ((ctx: CommandContext) => Promise<void>) | null;
+  beforeRegister: ((bot: Siamese) => boolean) | null;
+  devOnly: boolean;
+  adminOnly: boolean;
+  cooldown: Cooldown | null;
+  permissions: Permission[];
+  subcommands: Command[];
 }
 
 class Command {
-  public readonly name: CommandOption["name"];
-  public readonly description: CommandOption["description"];
+  public readonly name: string;
+  public readonly description: string;
+  public readonly usage: string;
+  public readonly alias: string[];
   public readonly execute: CommandOption["execute"];
-  public readonly usage: CommandOption["usage"];
   public readonly beforeRegister: CommandOption["beforeRegister"];
-  public readonly devOnly: CommandOption["devOnly"];
-  public readonly adminOnly: CommandOption["adminOnly"];
-  public readonly cooldown: CommandOption["cooldown"];
-  public readonly permissions: CommandOption["permissions"];
-  public readonly subcommands: CommandOption["subcommands"];
+  public readonly devOnly: boolean;
+  public readonly adminOnly: boolean;
+  public readonly cooldown: Cooldown | null;
+  public readonly permissions: Permission[];
+  public readonly subcommands: Command[];
 
   public constructor({
     name,
-    description,
-    execute,
-    usage,
-    beforeRegister,
+    description = "",
+    usage = "",
+    alias = [],
+    execute = null,
+    beforeRegister = null,
     devOnly = false,
     adminOnly = false,
-    cooldown,
-    permissions,
-    subcommands
-  }: CommandOption) {
+    cooldown = null,
+    permissions = [],
+    subcommands = []
+  }: RequiredField<Partial<CommandOption>, "name">) {
     this.name = name;
     this.description = description;
-    this.execute = execute;
     this.usage = usage;
+    this.execute = execute;
+    this.alias = alias;
     this.beforeRegister = beforeRegister;
     this.devOnly = devOnly;
     this.adminOnly = adminOnly;

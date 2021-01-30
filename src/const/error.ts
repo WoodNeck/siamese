@@ -4,17 +4,13 @@ import Discord from "discord.js";
 import { strong, block } from "~/util/markdown";
 
 export const BOT = {
-  FAILED_TO_START: "❗ 봇 시작을 실패했다냥 ❗"
+  FAILED_TO_START: "❗ 봇 시작을 실패했다냥 ❗",
+  FAILED_TO_INIT_DB: "데이터베이스 생성에 실패했다냥!"
 };
 
 export const ENV = {
   VAR_MISSING: (key: string) => `${key}가 bot.env파일에 없다냥!`,
   VAR_NO_EMPTY_STRING: "이 변수는 비어있지 않은 문자열을 줘야된다냥!"
-};
-
-export const DB = {
-  FAILED_TO_CONNECT: "데이터베이스 연결에 실패했다냥!",
-  GOT_AN_ERROR: "데이터베이스 사용중에 오류가 발생했다냥!"
 };
 
 export const CMD = {

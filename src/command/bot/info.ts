@@ -13,7 +13,6 @@ export default new Command({
   permissions: [PERMISSION.EMBED_LINKS],
   execute: async ({ bot, channel, guild }: CommandContext) => {
     const guildCnt = bot.guilds.cache.size;
-    const userCnt = bot.users.cache.filter(user => !user.bot).size;
     const botName = bot.getDisplayName(guild);
 
     const embed = new MessageEmbed()
@@ -21,10 +20,7 @@ export default new Command({
       .setColor(COLOR.BOT)
       .setThumbnail(bot.user.avatarURL() || "");
 
-    const descs = [
-      INFO.GUILD_CNT(guildCnt),
-      INFO.USER_CNT(userCnt)
-    ];
+    const descs = [ INFO.GUILD_CNT(guildCnt) ];
 
     if (bot.env.BOT_DEV_SERVER_ID && bot.env.BOT_DEV_SERVER_INVITE) {
       const devServer = await bot.guilds.fetch(bot.env.BOT_DEV_SERVER_ID).catch(() => null);

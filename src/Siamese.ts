@@ -1,4 +1,5 @@
 import Discord, { MessageEmbed } from "discord.js";
+import AWS from "aws-sdk";
 import DBL from "dblapi.js";
 import pino from "pino";
 import chalk from "chalk";
@@ -11,6 +12,7 @@ import BotCategory from "~/command/bot";
 import UtilityCategory from "~/command/utility";
 import SearchCategory from "~/command/search";
 import SteamCategory from "~/command/steam";
+import HistoryCategory from "~/command/history";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -20,13 +22,18 @@ import { HELP } from "~/const/command/bot";
 import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
+import createTable from "~/database/createTable";
+import logMessage from "~/database/logMessage";
+import { params as channelParams } from "~/table/channel";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
 
+  private _database: AWS.DynamoDB | null;
   private _env: EnvVariables;
   private _categories: Category[];
   private _commands: Discord.Collection<string, Command>;
+  private _msgCounts: Discord.Collection<string, number>;
   // Cooldowns, per type
   private _cooldowns: Discord.Collection<string, { start: Date; duration: number }>;
   // All permissions needed to execute every single commands
@@ -40,8 +47,11 @@ class Siamese extends Discord.Client {
   public get prefix() { return this._env.BOT_DEFAULT_PREFIX; }
   public get categories() { return this._categories; }
   public get commands() { return this._commands; }
+  public get msgCounts() { return this._msgCounts; }
+  public get database() { return this._database; }
   public get permissions() { return this._permissions; }
   public get logger() { return this._logger; }
+  public get dbl() { return this._dbl; }
 
   public constructor({
     env,
@@ -59,18 +69,15 @@ class Siamese extends Discord.Client {
     this._categories = [];
     this._commands = new Discord.Collection();
     this._cooldowns = new Discord.Collection();
-    this._dbl = null;
+    this._msgCounts = new Discord.Collection();
     this._fileLogger = logger;
-
-    if (env.DBL_KEY) {
-      this._dbl = new DBL(env.DBL_KEY, this);
-    }
+    this._dbl = env.DBL_KEY ? new DBL(env.DBL_KEY, this) : null;
   }
 
   public async setup() {
     // Setup bot
     await this._loadCommands();
-    // await this._setupDatabase();
+    await this._setupDatabase();
     this._listenEvents();
   }
 
@@ -117,6 +124,7 @@ class Siamese extends Discord.Client {
   }
 
   private _onReady = async () => {
+    // eslint-disable-next-line no-console
     console.log(MSG.BOT.READY_INDICATOR(this));
 
     const readyMsg = new MessageEmbed()
@@ -131,18 +139,6 @@ class Siamese extends Discord.Client {
     await this.user.setActivity(activity, {
       type: ACTIVITY.LISTENING
     });
-
-    const dbl = this._dbl;
-    // Discord bot lists update interval setting
-    if (dbl) {
-      // Update immediately at startup
-      await dbl.postStats(this.guilds.cache.size);
-
-      // Update every 30 minute
-      setInterval(() => {
-        void dbl.postStats(this.guilds.cache.size);
-      }, 30 * 60 * 1000);
-    }
   };
 
   private async _setLogger() {
@@ -166,33 +162,53 @@ class Siamese extends Discord.Client {
   }
 
   private async _loadCommands() {
+    const commands = this._commands;
+    const categories = this._categories;
   	const permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);
     permissions.add(PERMISSION.SEND_MESSAGES.flag);
 
-    this._categories.push(
+    categories.push(
       BotCategory,
       UtilityCategory,
       SearchCategory,
-      SteamCategory
+      SteamCategory,
+      HistoryCategory
     );
 
-  	this._categories.forEach(category => {
+  	categories.forEach(category => {
       category.commands.forEach(cmd => {
         if (cmd.beforeRegister && !cmd.beforeRegister(this)) {
           console.warn(EMOJI.WARNING, chalk.yellow(MSG.BOT.CMD_REGISTER_FAILED(cmd)));
         }
-        this._commands.set(cmd.name, cmd);
+        commands.set(cmd.name, cmd);
+        cmd.alias.forEach(alias => {
+          commands.set(alias, cmd);
+        });
       });
     });
 
-    this._commands
-      .filter(cmd => !!cmd.permissions)
+    commands.filter(cmd => !!cmd.permissions)
       .forEach(command => {
-  		  command.permissions!.forEach(permission => {
+  		  command.permissions.forEach(permission => {
           permissions.add(permission.flag);
         });
   	  });
   	this._permissions = permissions.freeze();
+  }
+
+  private async _setupDatabase() {
+    if (!this._env.AWS_REGION) {
+      console.warn(chalk.red(ERROR.ENV.VAR_MISSING("AWS_REGION")));
+      console.warn(chalk.red(ERROR.BOT.FAILED_TO_INIT_DB));
+      return;
+    }
+
+    AWS.config.update({ region: this._env.AWS_REGION });
+
+    this._database = new AWS.DynamoDB();
+
+    const db = this._database;
+    await createTable(db, channelParams);
   }
 
   private _listenEvents() {
@@ -204,6 +220,8 @@ class Siamese extends Discord.Client {
 
   private _onMessage = async (msg: Discord.Message) => {
     const prefix = this.prefix;
+
+    logMessage(this, msg);
 
     if (msg.author.bot) return;
 
@@ -258,6 +276,7 @@ class Siamese extends Discord.Client {
 
     // Permissions check
     const permissionsGranted = ctx.channel.permissionsFor(this.user);
+
     if (permissionsGranted && cmd.permissions && !cmd.permissions.every(permission => permissionsGranted.has(permission.flag))) {
       if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
         const neededPermissionList = cmd.permissions.map(permission => `- ${permission.message}`).join("\n");
