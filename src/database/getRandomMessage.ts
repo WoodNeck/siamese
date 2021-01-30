@@ -13,10 +13,10 @@ export default async (bot: Siamese, channel: Discord.TextChannel) => {
   const randId = uuid.v4();
 
   return db.query({
-    KeyConditionExpression: "channel_id = :channel_id AND rand_id < :rand_id",
+    KeyConditionExpression: "channelID = :channelID AND randID < :randID",
     ExpressionAttributeValues: {
-      ":channel_id": { "S": channel.id },
-      ":rand_id": { "S": randId }
+      ":channelID": { "S": channel.id },
+      ":randID": { "S": randId }
     },
     Limit: 1,
     TableName: channelParams.TableName
@@ -25,10 +25,10 @@ export default async (bot: Siamese, channel: Discord.TextChannel) => {
 
     // Retry with uuid >= :uuid
     return db.query({
-      KeyConditionExpression: "channel_id = :channel_id AND rand_id >= :rand_id",
+      KeyConditionExpression: "channelID = :channelID AND randID >= :randID",
       ExpressionAttributeValues: {
-        ":channel_id": { "S": channel.id },
-        ":rand_id": { "S": randId }
+        ":channelID": { "S": channel.id },
+        ":randID": { "S": randId }
       },
       Limit: 1,
       TableName: channelParams.TableName

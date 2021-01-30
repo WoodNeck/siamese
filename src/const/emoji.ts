@@ -78,6 +78,8 @@ export const ENVELOPE_WITH_ARROW = "📩";
 export const LINK = "🔗";
 export const CROWN = "👑";
 export const BALLOT_BOX = "🗳️";
+export const MILITARY_HELMET = "🪖";
+export const SCROLL = "📜";
 export const LETTER = {
   A: "🇦",
   B: "🇧",

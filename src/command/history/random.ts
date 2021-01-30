@@ -22,7 +22,7 @@ export default new Command({
 
     const loggedMessage = await getRandomMessage(bot, channel);
 
-    const msgId = loggedMessage ? loggedMessage.message_id.S as string : msg.id;
+    const msgId = loggedMessage ? loggedMessage.messageID.S as string : msg.id;
 
     const randomMsgs = await channel.messages.fetch({
       limit: MSG_RETRIEVE_MAXIMUM,

@@ -27,6 +27,7 @@
     "axios": "^0.21.1",
     "bufferutil": "^4.0.3",
     "cheerio": "^1.0.0-rc.5",
+    "date-and-time": "^0.14.2",
     "dblapi.js": "^2.4.1",
     "discord.js": "^12.5.1",
     "erlpack": "github:discord/erlpack",
@@ -39,6 +40,7 @@
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
+    "@types/date-and-time": "^0.13.0",
     "@types/mongoose": "^5.7.36",
     "@types/pino": "^6.3.5",
     "@types/uuid": "^8.3.0",

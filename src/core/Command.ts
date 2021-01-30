@@ -8,7 +8,7 @@ interface CommandOption {
   name: string;
   description: string;
   usage: string;
-  alias: string[];
+  alias: readonly string[];
   execute: ((ctx: CommandContext) => Promise<void>) | null;
   beforeRegister: ((bot: Siamese) => boolean) | null;
   devOnly: boolean;
@@ -22,7 +22,7 @@ class Command {
   public readonly name: string;
   public readonly description: string;
   public readonly usage: string;
-  public readonly alias: string[];
+  public readonly alias: readonly string[];
   public readonly execute: CommandOption["execute"];
   public readonly beforeRegister: CommandOption["beforeRegister"];
   public readonly devOnly: boolean;

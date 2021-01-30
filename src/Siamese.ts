@@ -25,6 +25,7 @@ import CommandContext from "~/type/CommandContext";
 import createTable from "~/database/createTable";
 import logMessage from "~/database/logMessage";
 import { params as channelParams } from "~/table/channel";
+import { params as dischargeParams } from "~/table/discharge";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
@@ -208,7 +209,9 @@ class Siamese extends Discord.Client {
     this._database = new AWS.DynamoDB();
 
     const db = this._database;
+
     await createTable(db, channelParams);
+    await createTable(db, dischargeParams);
   }
 
   private _listenEvents() {
@@ -236,7 +239,7 @@ class Siamese extends Discord.Client {
     const subcommandName = content.split(/ +/)[0];
 
     // Found subcommand
-    const subcommand = cmd.subcommands?.find(subcmd => subcmd.name === subcommandName);
+    const subcommand = cmd.subcommands?.find(subcmd => subcmd.name === subcommandName || subcmd.alias.includes(subcommandName));
     if (subcommand) {
       cmd = subcommand;
       content = content.slice(subcommandName.length + 1);

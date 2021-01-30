@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import Siamese from "~/Siamese";
+import DateDiff from "~/core/DateDiff";
 import { strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
 

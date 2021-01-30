@@ -21,13 +21,13 @@ export default (bot: Siamese, msg: Discord.Message) => {
     if ((prevCount + 1) % MSG_RETRIEVE_MAXIMUM === 0) {
       bot.database.putItem({
         Item: {
-          channel_id: {
+          channelID: {
             S: msg.channel.id
           },
-          rand_id: {
+          randID: {
             S: uuid.v4()
           },
-          message_id: {
+          messageID: {
             S: msg.id
           }
         },

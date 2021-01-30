@@ -2,14 +2,14 @@
 import AWS from "aws-sdk";
 
 export const params: AWS.DynamoDB.CreateTableInput = {
-  TableName : "Channel",
+  TableName : "Discharge",
   KeySchema: [
-    { AttributeName: "channelID", KeyType: "HASH"},
-    { AttributeName: "randID", KeyType: "RANGE" }
+    { AttributeName: "guildID", KeyType: "HASH"},
+    { AttributeName: "userName", KeyType: "RANGE" }
   ],
   AttributeDefinitions: [
-    { AttributeName: "channelID", AttributeType: "S" },
-    { AttributeName: "randID", AttributeType: "S" }
+    { AttributeName: "guildID", AttributeType: "S" },
+    { AttributeName: "userName", AttributeType: "S" }
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 1,

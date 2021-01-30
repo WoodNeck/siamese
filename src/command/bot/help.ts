@@ -13,12 +13,12 @@ import CommandContext from "~/type/CommandContext";
 export default new Command({
   name: HELP.CMD,
   description: HELP.DESC,
-  cooldown: Cooldown.PER_CHANNEL(5),
   permissions: [
     PERMISSION.EMBED_LINKS,
     PERMISSION.ADD_REACTIONS,
     PERMISSION.MANAGE_MESSAGES
   ],
+  cooldown: Cooldown.PER_CHANNEL(5),
   execute: async (ctx: CommandContext) => {
     const { bot } = ctx;
     const prefix = bot.prefix;
