@@ -9,6 +9,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "outDir": "bin",
     "baseUrl": ".",
     "paths": {
