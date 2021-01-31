@@ -17,7 +17,7 @@ export default new Command({
     const { bot, channel, guild, author, msg, args } = ctx;
 
     if (msg.attachments.size <= 0) {
-		  return await bot.replyError(msg, ADD.ERROR.PROVIDE_IMAGES);
+		  return await bot.replyError(msg, ADD.ERROR.PROVIDE_IMAGES, ADD.TUTORIAL_URL);
     }
 
     if (args.length <= 0 || args.length > 2) {

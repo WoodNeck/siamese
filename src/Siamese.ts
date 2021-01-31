@@ -110,10 +110,14 @@ class Siamese extends Discord.Client {
       });
   }
 
-  public async replyError(msg: Discord.Message, errorMsg: string) {
+  public async replyError(msg: Discord.Message, errorMsg: string, imageURL?: string) {
     const embed = new Discord.MessageEmbed()
       .setDescription(MSG.BOT.ERROR_MSG( msg.author, errorMsg))
       .setColor(COLOR.ERROR);
+
+    if (imageURL) {
+      embed.setImage(imageURL);
+    }
 
     await this.send(msg.channel as Discord.TextChannel, embed);
   }
