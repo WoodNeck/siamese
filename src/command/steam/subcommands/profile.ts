@@ -59,9 +59,7 @@ export default new Command({
 			${ban.VACBanned ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_VAC}
 			${ban.NumberOfGameBans > 0 ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_GAME}
 			${ban.EconomyBan !== "none" ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_ECONOMY}`;
-    const profileDesc = dedent`
-			${summary.gameextrainfo ? PROFILE.PLAYING_STATE(summary.gameextrainfo) : PROFILE.PERSONA_STATE[summary.personastate]}
-      ${summary.personastate === 0 ? PROFILE.LAST_LOGOFF(summary.lastlogoff * 1000) : ""}`;
+    const profileDesc = `${summary.gameextrainfo ? PROFILE.PLAYING_STATE(summary.gameextrainfo) : PROFILE.PERSONA_STATE[summary.personastate]}`;
     const userDetail = dedent`
 			${regionFlag ? regionFlag : ""}
 			${level ? PROFILE.LEVEL(level) : ""}
