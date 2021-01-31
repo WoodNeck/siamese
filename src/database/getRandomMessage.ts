@@ -1,40 +1,23 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import * as uuid from "uuid";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import Discord from "discord.js";
 
-import Siamese from "~/Siamese";
-import { params as channelParams } from "~/table/channel";
+import MessageLog, { MessageLogDocument } from "~/model/MessageLog";
 
-export default async (bot: Siamese, channel: Discord.TextChannel) => {
-  const db = bot.database;
+export default async (channel: Discord.TextChannel): Promise<MessageLogDocument | null> => (
+  new Promise((resolve, reject) => {
+    MessageLog.countDocuments({
+      channelID: channel.id
+    }, async (err: Error, count: number) => {
+      if (err) return reject(err);
+      if (count <= 0) return resolve(null);
 
-  if (!db) return null;
+      const randCnt = Math.floor(Math.random() * count);
 
-  const randId = uuid.v4();
+      // Again query all users but only fetch one offset by our random #
+      const msgLog = await MessageLog.findOne({ channelID: channel.id }).lean().skip(randCnt).exec() as MessageLogDocument;
 
-  return db.query({
-    KeyConditionExpression: "channelID = :channelID AND randID < :randID",
-    ExpressionAttributeValues: {
-      ":channelID": { "S": channel.id },
-      ":randID": { "S": randId }
-    },
-    Limit: 1,
-    TableName: channelParams.TableName
-  }).promise().then(res => {
-    if (res.Count && res.Count > 0) return res.Items![0];
-
-    // Retry with uuid >= :uuid
-    return db.query({
-      KeyConditionExpression: "channelID = :channelID AND randID >= :randID",
-      ExpressionAttributeValues: {
-        ":channelID": { "S": channel.id },
-        ":randID": { "S": randId }
-      },
-      Limit: 1,
-      TableName: channelParams.TableName
-    }).promise().then(result => {
-      if (result.Count && result.Count > 0) return result.Items![0];
-      return null;
+      return resolve(msgLog);
     });
-  });
-};
+  })
+);

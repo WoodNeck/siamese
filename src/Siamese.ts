@@ -1,8 +1,8 @@
 import Discord, { MessageEmbed } from "discord.js";
-import AWS from "aws-sdk";
 import DBL from "dblapi.js";
 import pino from "pino";
 import chalk from "chalk";
+import mongoose from "mongoose";
 
 import Category from "~/core/Category";
 import Command from "~/core/Command";
@@ -13,24 +13,23 @@ import UtilityCategory from "~/command/utility";
 import SearchCategory from "~/command/search";
 import SteamCategory from "~/command/steam";
 import HistoryCategory from "~/command/history";
+import IconCategory from "~/command/icon";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
+import * as DB from "~/const/database";
 import * as PERMISSION from "~/const/permission";
 import * as EMOJI from "~/const/emoji";
 import { HELP } from "~/const/command/bot";
 import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
-import createTable from "~/database/createTable";
 import logMessage from "~/database/logMessage";
-import { params as channelParams } from "~/table/channel";
-import { params as dischargeParams } from "~/table/discharge";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
 
-  private _database: AWS.DynamoDB | null;
+  private _database: mongoose.Connection;
   private _env: EnvVariables;
   private _categories: Category[];
   private _commands: Discord.Collection<string, Command>;
@@ -77,8 +76,8 @@ class Siamese extends Discord.Client {
 
   public async setup() {
     // Setup bot
-    await this._loadCommands();
     await this._setupDatabase();
+    await this._loadCommands();
     this._listenEvents();
   }
 
@@ -173,7 +172,8 @@ class Siamese extends Discord.Client {
       UtilityCategory,
       SearchCategory,
       SteamCategory,
-      HistoryCategory
+      HistoryCategory,
+      IconCategory
     );
 
   	categories.forEach(category => {
@@ -198,20 +198,23 @@ class Siamese extends Discord.Client {
   }
 
   private async _setupDatabase() {
-    if (!this._env.AWS_REGION) {
-      console.warn(chalk.red(ERROR.ENV.VAR_MISSING("AWS_REGION")));
-      console.warn(chalk.red(ERROR.BOT.FAILED_TO_INIT_DB));
-      return;
-    }
+    await mongoose.connect(DB.URI, {
+      autoIndex: false,
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    }).catch((err: Error) => {
+      console.error(chalk.bold.red(ERROR.BOT.FAILED_TO_INIT_DB));
+      console.error(chalk.dim(err.toString()));
+      throw err;
+    });
 
-    AWS.config.update({ region: this._env.AWS_REGION });
+    const db = mongoose.connection;
+    db.on("error", async err => {
+      await this._logger.error(err);
+    });
 
-    this._database = new AWS.DynamoDB();
-
-    const db = this._database;
-
-    await createTable(db, channelParams);
-    await createTable(db, dischargeParams);
+    this._database = db;
   }
 
   private _listenEvents() {
@@ -224,7 +227,7 @@ class Siamese extends Discord.Client {
   private _onMessage = async (msg: Discord.Message) => {
     const prefix = this.prefix;
 
-    logMessage(this, msg);
+    void logMessage(this, msg);
 
     if (msg.author.bot) return;
 

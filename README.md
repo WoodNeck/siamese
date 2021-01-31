@@ -8,6 +8,8 @@ Korean Discord bot for multiple purpose.
 # Prerequisites
 - [Node.js](https://nodejs.org/ko/download/package-manager/) 12+
   - Tested with Node v14.15.4
+- [MongoDB](https://www.mongodb.com/)
+  - Tested with MongoDB v4.2.12
 
 # Installing
 ## Linux - ubuntu
@@ -47,19 +49,6 @@ NAVER_SECRET="SOME_KEY_STRING" # (Optional) Key that can be retrieved from https
 
 ## Steam
 STEAM_API_KEY="SOME_KEY_STRING" # (Optional) Key that can be retrived from https://steamcommunity.com/dev/apikey. Required for Steam-related commands
-
-## AWS
-AWS_REGION="SOME_KEY_STRING" # (Optional) AWS region name ex) "ap-northeast-2"
-```
-
-Siamese use AWS DynamoDB to storage command-related infos.
-- https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html
-- Mac/Linus: ~/.aws/credentials
-- Windows: C:\Users\USERNAME\.aws\credentials
-```
-[default]
-aws_access_key_id = <YOUR_ACCESS_KEY_ID>
-aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
 ```
 
 Also, you have to set env variable `GOOGLE_APPLICATION_CREDENTIALS` to use command tts, which uses Google Cloud Text-to-Speech API

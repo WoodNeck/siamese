@@ -1,8 +1,6 @@
 import Command from "~/core/Command";
 import { DISCHARGE } from "~/const/command/history";
-import { params as dischargeParams } from "~/table/discharge";
-import findOne from "~/database/findOne";
-import removeOne from "~/database/removeOne";
+import Discharge, { DischargeDocument } from "~/model/Discharge";
 
 export default new Command({
   name: DISCHARGE.REMOVE.CMD,
@@ -17,19 +15,17 @@ export default new Command({
       return await bot.replyError(msg, DISCHARGE.ERROR.PROVIDE_NAME_TO_REMOVE);
     }
 
-    const prevInfo = await findOne(bot, dischargeParams.TableName, {
-      guildID: { S: guild.id },
-      userName: { S: name }
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const prevInfo = await Discharge.findOne({
+      guildID: guild.id,
+      userName: name
+    }).exec() as DischargeDocument;
 
-    if (!prevInfo || !prevInfo.Item) {
+    if (!prevInfo) {
       return await bot.replyError(msg, DISCHARGE.ERROR.NOT_FOUND);
     }
 
-    await removeOne(bot, dischargeParams.TableName, {
-      guildID: { S: guild.id },
-      userName: { S: name }
-    });
+    await prevInfo.remove();
 
     await bot.send(channel, DISCHARGE.REMOVE.SUCCESS(name));
   }

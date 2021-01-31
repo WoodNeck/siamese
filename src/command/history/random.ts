@@ -1,6 +1,5 @@
 import { MessageEmbed } from "discord.js";
 
-import Siamese from "~/Siamese";
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
@@ -16,13 +15,10 @@ export default new Command({
     PERMISSION.EMBED_LINKS,
     PERMISSION.READ_MESSAGE_HISTORY
   ],
-  beforeRegister: (bot: Siamese) => bot.env.AWS_REGION != null,
   execute: async ({ bot, guild, channel, msg }) => {
     // Retrieve one msg from message history of channel
-
-    const loggedMessage = await getRandomMessage(bot, channel);
-
-    const msgId = loggedMessage ? loggedMessage.messageID.S as string : msg.id;
+    const loggedMessage = await getRandomMessage(channel);
+    const msgId = loggedMessage ? loggedMessage.messageID : msg.id;
 
     const randomMsgs = await channel.messages.fetch({
       limit: MSG_RETRIEVE_MAXIMUM,

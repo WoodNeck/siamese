@@ -5,9 +5,7 @@ import Conversation from "~/core/Conversation";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
 import { DISCHARGE, FORCES } from "~/const/command/history";
-import { params as dischargeParams } from "~/table/discharge";
-import putItem from "~/database/putItem";
-import findOne from "~/database/findOne";
+import Discharge, { DischargeDocument } from "~/model/Discharge";
 
 export default new Command({
   name: DISCHARGE.ADD.CMD,
@@ -26,12 +24,13 @@ export default new Command({
       return await bot.replyError(msg, DISCHARGE.ERROR.NAME_TOO_LONG(DISCHARGE.ADD.NAME_MAX_LENGTH));
     }
 
-    const prevInfo = await findOne(bot, dischargeParams.TableName, {
-      guildID: { S: guild.id },
-      userName: { S: name }
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const prevInfo = await Discharge.findOne({
+      guildID: guild.id,
+      userName: name
+    }).lean().exec() as DischargeDocument;
 
-    if (prevInfo && prevInfo.Item) {
+    if (prevInfo) {
       return await bot.replyError(msg, DISCHARGE.ADD.NAME_ALREADY_EXISTS(name));
     }
 
@@ -71,8 +70,7 @@ export default new Command({
     const forceName = result[1];
 
     // Add new discharge info
-
-    await putItem(bot, dischargeParams.TableName, {
+    await Discharge.create({
       guildID: guild.id,
       userName: name,
       joinDate: joinDate.toISOString(),

@@ -23,7 +23,6 @@
   "homepage": "https://github.com/WoodNeck/siamese#readme",
   "dependencies": {
     "@vitalets/google-translate-api": "^5.0.0",
-    "aws-sdk": "^2.834.0",
     "axios": "^0.21.1",
     "bufferutil": "^4.0.3",
     "cheerio": "^1.0.0-rc.5",
@@ -34,14 +33,14 @@
     "googleapis": "^67.0.0",
     "josa-js": "0.0.2",
     "libsodium-wrappers": "^0.7.8",
+    "mongoose": "^5.11.14",
     "pino": "^6.11.0",
     "utf-8-validate": "^5.0.4",
-    "uuid": "^8.3.2",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
     "@types/date-and-time": "^0.13.0",
-    "@types/mongoose": "^5.7.36",
+    "@types/mongoose": "^5.10.3",
     "@types/pino": "^6.3.5",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.13.0",

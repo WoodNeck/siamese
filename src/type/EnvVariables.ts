@@ -19,8 +19,6 @@ interface EnvVariables {
   NAVER_SECRET?: string;
   // STEAM
   STEAM_API_KEY?: string;
-  // AWS
-  AWS_REGION?: string;
 }
 
 export default EnvVariables;

@@ -30,3 +30,7 @@ export const USEFUL = {
   NAME: "실용성",
   DESC: "실용적인 명령어들을 모아놨다냥!"
 };
+export const ICON = {
+  NAME: "아이콘",
+  DESC: "아이콘 관련 명령어들을 모아놨다냥!"
+};

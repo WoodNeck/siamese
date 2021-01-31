@@ -5,16 +5,14 @@ import Add from "./discharge/add";
 import List from "./discharge/list";
 import Remove from "./discharge/remove";
 
-import Siamese from "~/Siamese";
 import Command from "~/core/Command";
+import DateDiff from "~/core/DateDiff";
+import Discharge, { DischargeDocument } from "~/model/Discharge";
 import * as COLOR from "~/const/color";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { DISCHARGE } from "~/const/command/history";
-import { params as dischargeParams } from "~/table/discharge";
 import { clamp } from "~/util/helper";
-import DateDiff from "~/core/DateDiff";
-import findOne from "~/database/findOne";
 
 export default new Command({
   name: DISCHARGE.CMD,
@@ -24,7 +22,6 @@ export default new Command({
   subcommands: [
     Add, List, Remove
   ],
-  beforeRegister: (bot: Siamese) => bot.env.AWS_REGION != null,
   execute: async ({ bot, channel, guild, msg, content }) => {
     // No multiline is allowed
     const name = content.split("\n")[0];
@@ -33,19 +30,19 @@ export default new Command({
       return await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(DISCHARGE.TARGET));
     }
 
-    const result = await findOne(bot, dischargeParams.TableName, {
-      guildID: { S: guild.id },
-      userName: { S: name }
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const info = await Discharge.findOne({
+      guildID: guild.id,
+      userName: name
+    }).lean().exec() as DischargeDocument;
 
-    if (!result || !result.Item) {
+    if (!info) {
       return await bot.replyError(msg, DISCHARGE.ERROR.NOT_FOUND);
     }
 
-    const info = result.Item;
-    const force = info.force.S!;
+    const force = info.force;
     const forceInfo = DISCHARGE.FORCE_INFO[force] as { duration: number; maxShortenMonth: number };
-    const joinDate = new Date(info.joinDate.S!);
+    const joinDate = new Date(info.joinDate);
 
     const details: string[] = [];
     details.push(DISCHARGE.FORCE_DETAIL(force));
