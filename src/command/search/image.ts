@@ -37,8 +37,11 @@ export default new Command({
       }
 
       // Check image avaialability
-      const testImage = (imageURL: string) => axios.head(imageURL)
-        .then(() => imageURL)
+      const testImage = (imageURL: string) => axios.head(imageURL, { maxRedirects: 0 })
+        .then(res => {
+          if (res.status !== 200) return null;
+          return imageURL;
+        })
         .catch(() => null);
       const result = await Promise.all(images.map(testImage));
 
