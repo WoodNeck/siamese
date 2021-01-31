@@ -25,6 +25,7 @@ import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
 import logMessage from "~/database/logMessage";
+import checkImageCommand from "~/database/checkImageCommand";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
@@ -230,6 +231,7 @@ class Siamese extends Discord.Client {
     void logMessage(this, msg);
 
     if (msg.author.bot) return;
+    if (!msg.content.startsWith(prefix)) return await checkImageCommand(this, msg);
 
     let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 

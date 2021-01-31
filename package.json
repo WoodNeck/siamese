@@ -60,7 +60,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "node ./dev-utils/validate-commit-msg.js",
       "pre-commit": "node ./dev-utils/bot.env.generate.js && git add bot.env.preset",
       "pre-push": "npm run test"
     }

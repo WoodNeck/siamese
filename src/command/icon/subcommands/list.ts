@@ -3,8 +3,11 @@ import { MessageEmbed } from "discord.js";
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
 import Menu from "~/core/Menu";
+import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { LIST } from "~/const/command/icon";
+import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
+import Icon, { IconDocument } from "~/model/Icon";
 
 export default new Command({
   name: LIST.CMD,
@@ -12,40 +15,60 @@ export default new Command({
   permissions: [PERMISSION.EMBED_LINKS],
   cooldown: Cooldown.PER_CHANNEL(5),
   execute: async ctx => {
-    // const { bot, guild, msg } = ctx;
-    // const db = bot.database!;
+    const { bot, msg, args, guild } = ctx;
 
-    // /* eslint-disable @typescript-eslint/naming-convention */
-    // const result = await db.query({
-    //   KeyConditionExpression: "guildID = :guildID",
-    //   ExpressionAttributeValues: {
-    //     ":guildID": { "S": guild.id }
-    //   },
-    //   TableName: dischargeParams.TableName
-    // }).promise();
-    // /* eslint-enable */
+    const groupName = args[0];
 
-    // if (!result.Count || result.Count <= 0) {
-    //   return await bot.replyError(msg, DISCHARGE.ERROR.EMPTY_RESULT);
-    // }
+    let groupID = "0";
+    if (groupName) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      const group = await IconGroup.findOne({
+        name: groupName,
+        guildID: guild.id
+      }).lean().exec() as IconGroupDocument;
 
-    // const infos = result.Items!.map(info => ({
-    //   name: info.userName.S!,
-    //   joinDate: new Date(info.joinDate.S!)
-    // }));
-    // const pages: MessageEmbed[] = [];
-    // const totalPages = Math.floor((result.Count - 1) / DISCHARGE.LIST.ENTRY_PER_PAGE) + 1;
+      if (!group) {
+        return await bot.replyError(msg, LIST.ERROR.NO_GROUP);
+      }
 
-    // for (const i of [...Array(totalPages).keys()]) {
-    //   const infosDesc = infos.slice(i * DISCHARGE.LIST.ENTRY_PER_PAGE, (i + 1) * DISCHARGE.LIST.ENTRY_PER_PAGE)
-    //     .map(info => DISCHARGE.LIST.ENTRY(info))
-    //     .join("\n");
-    //   pages.push(new MessageEmbed().setDescription(infosDesc));
-    // }
+      groupID = group._id as string;
+    }
 
-    // const menu = new Menu(ctx, { maxWaitTime: DISCHARGE.LIST.RECITAL_TIME });
-    // menu.setPages(pages);
+    const groups: Array<{ name: string; type: string }> = groupName
+      ? []
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      : (await IconGroup.find({ guildID: guild.id }).lean().exec() as IconGroupDocument[])
+        .map(dir => ({
+          name: dir.name,
+          type: LIST.TYPE.GROUP
+        }));
 
-    // await menu.start();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const icons: Array<{ name: string; type: string }> = (await Icon.find({
+      guildID: guild.id,
+      groupID
+    }).exec() as IconDocument[]).map(icon => ({
+      name: icon.name,
+      type: LIST.TYPE.ICON
+    }));
+
+    const items = [...groups, ...icons];
+    if (items.length <= 0) {
+      await bot.replyError(msg, ERROR.CMD.NOT_FOUND("등록된 폴더랑 이미지"));
+    }
+
+    const pageCnt = Math.ceil(items.length / LIST.ITEM_PER_PAGE);
+    const menu = new Menu(ctx, { maxWaitTime: LIST.RECITAL_TIME });
+    const pages = [...Array(pageCnt).keys()].map((_, idx) => idx).map(pageIdx => {
+      const imageStr = items
+        .slice(pageIdx * LIST.ITEM_PER_PAGE, (pageIdx + 1) * LIST.ITEM_PER_PAGE)
+        .map(item => `${LIST.EMOJI[item.type]} ${item.name}`)
+        .join("\n");
+
+      return new MessageEmbed().setDescription(imageStr);
+    });
+
+    menu.setPages(pages);
+    await menu.start();
   }
 });

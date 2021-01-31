@@ -73,7 +73,7 @@ export const DISCHARGE = {
     CMD: "삭제해줘",
     DESC: "전역일 항목을 삭제한다냥!",
     USAGE: "이름",
-    ALIAS: ["삭제", "제거"],
+    ALIAS: ["삭제", "제거", "제거해줘"],
     SUCCESS: (name: string) => `${EMOJI.MILITARY_HELMET} ${strong(name)}의 전역일 정보를 삭제했다냥!`
   },
   ERROR: {

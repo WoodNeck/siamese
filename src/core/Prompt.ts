@@ -13,6 +13,7 @@ class Prompt {
     maxWaitTime: number;
   }> = {}) {
     this._ctx = ctx;
+    this._content = content;
 
     const {
       maxWaitTime = 30
