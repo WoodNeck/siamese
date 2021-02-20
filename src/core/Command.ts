@@ -1,6 +1,11 @@
-import { Permission } from "~/const/permission";
-import Cooldown from "~/core/Cooldown";
+import Discord from "discord.js";
+
 import Siamese from "~/Siamese";
+import Cooldown from "~/core/Cooldown";
+import { Permission } from "~/const/permission";
+import * as ERROR from "~/const/error";
+import * as EMOJI from "~/const/emoji";
+import * as PERMISSION from "~/const/permission";
 import CommandContext from "~/type/CommandContext";
 import { RequiredField } from "~/type/helper";
 
@@ -55,6 +60,35 @@ class Command {
     this.cooldown = cooldown;
     this.permissions = permissions;
     this.subcommands = subcommands;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async onFail(ctx: CommandContext): Promise<void> {
+    return;
+  }
+
+  public async checkPermissions(ctx: CommandContext): Promise<boolean> {
+    const { channel } = ctx;
+
+    return this._checkPermissionsForChannel(channel, ctx);
+  }
+
+  protected async _checkPermissionsForChannel(channel: Discord.TextChannel | Discord.VoiceChannel, ctx: CommandContext) {
+    const { bot, msg } = ctx;
+
+    const permissionsGranted = channel.permissionsFor(bot.user);
+
+    if (permissionsGranted && this.permissions && !this.permissions.every(permission => permissionsGranted.has(permission.flag))) {
+      if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
+        const neededPermissionList = this.permissions.map(permission => `- ${permission.message}`).join("\n");
+        await bot.send(ctx.channel, ERROR.CMD.PERMISSION_IS_MISSING(bot, neededPermissionList));
+      } else if (permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)) {
+        await msg.react(EMOJI.CROSS);
+      }
+      return false;
+    }
+
+    return true;
   }
 }
 

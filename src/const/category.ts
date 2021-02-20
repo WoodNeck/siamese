@@ -6,7 +6,7 @@ export const SEARCH = {
   NAME: "검색",
   DESC: "인터넷으로 검색한 결과를 보여주는 명령어들이다냥!"
 };
-export const MUSIC = {
+export const SOUND = {
   NAME: "음악",
   DESC: "음성 채널에서 사용할 수 있는 명령어들이다냥!"
 };

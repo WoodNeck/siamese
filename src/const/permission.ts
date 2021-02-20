@@ -79,7 +79,7 @@ export const CONNECT: Permission = {
 };
 export const SPEAK: Permission = {
   flag: "SPEAK",
-  message: "발언권"
+  message: "말하기"
 };
 export const MUTE_MEMBERS: Permission = {
   flag: "MUTE_MEMBERS",

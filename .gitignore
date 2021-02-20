@@ -90,4 +90,4 @@ data/mutable
 bin/
 
 # Google credential
-Siamese-*.json
+tts-credentials.json

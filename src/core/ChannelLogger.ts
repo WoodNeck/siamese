@@ -43,11 +43,11 @@ class ChannelLogger {
   public async error(err: Error, msg?: Discord.Message) {
     const log = new MessageEmbed();
     if (msg) {
-      log.setTitle(ERROR.CMD.FAIL_TITLE(err))
+      log.setTitle(ERROR.CMD.FAIL_TITLE(err).substr(0, 256))
         .setDescription(dedent`
 					${ERROR.CMD.FAIL_PLACE(msg)}
 					${ERROR.CMD.FAIL_CMD(msg)}
-          ${ERROR.CMD.FAIL_DESC(err)}`);
+          ${ERROR.CMD.FAIL_DESC(err)}`.substr(0, 2048));
     } else {
       log.setTitle(ERROR.CMD.FAIL_TITLE(err))
         .setDescription(ERROR.CMD.FAIL_DESC(err));
