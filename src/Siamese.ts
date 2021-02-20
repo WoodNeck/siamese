@@ -29,6 +29,7 @@ import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
 import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
+import startTyping from "~/util/startTyping";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
@@ -356,7 +357,8 @@ class Siamese extends Discord.Client {
     }
 
     try {
-      void ctx.channel.startTyping();
+      await startTyping(this, ctx.channel);
+
       await cmd.execute(ctx);
     } catch (err) {
       ctx.channel.stopTyping(true);

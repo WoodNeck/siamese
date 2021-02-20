@@ -27,8 +27,6 @@ export default new SoundCommand({
       return await bot.replyError(msg, TTS.ERROR.MESSAGE_TOO_LONG);
     }
 
-    channel.stopTyping(true);
-
     const song = new TTSSong(content);
     const boomBox = await bot.getBoomBox(ctx);
 
@@ -37,6 +35,8 @@ export default new SoundCommand({
     boomBox.add(song);
 
     await msg.react(EMOJI.MUSIC_NOTE);
+    channel.stopTyping(true);
+
     await boomBox.play();
   }
 });

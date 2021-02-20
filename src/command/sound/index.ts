@@ -1,4 +1,5 @@
 import TTS from "./tts";
+import Out from "./out";
 
 import Category from "~/core/Category";
 import * as EMOJI from "~/const/emoji";
@@ -11,7 +12,8 @@ const category = new Category({
 });
 
 category.add(
-  TTS
+  TTS,
+  Out
 );
 
 export default category;
