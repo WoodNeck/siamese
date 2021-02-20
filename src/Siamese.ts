@@ -1,5 +1,6 @@
 import Discord, { MessageEmbed } from "discord.js";
-import DBL from "dblapi.js";
+import AutoPoster from "topgg-autoposter";
+import { BasePoster } from "topgg-autoposter/dist/structs/BasePoster";
 import pino from "pino";
 import chalk from "chalk";
 import mongoose from "mongoose";
@@ -40,7 +41,7 @@ class Siamese extends Discord.Client {
   // All permissions needed to execute every single commands
   // Least permission for a bot is defined already
   private _permissions: Readonly<Discord.BitField<Discord.PermissionString>>;
-  private _dbl: DBL | null;
+  private _dbl: BasePoster | null;
   private _logger: ChannelLogger | ConsoleLogger;
   private _fileLogger: pino.Logger;
 
@@ -72,7 +73,11 @@ class Siamese extends Discord.Client {
     this._cooldowns = new Discord.Collection();
     this._msgCounts = new Discord.Collection();
     this._fileLogger = logger;
-    this._dbl = env.DBL_KEY ? new DBL(env.DBL_KEY, this) : null;
+    this._dbl = null;
+
+    if (env.DBL_KEY) {
+      this._dbl = AutoPoster(env.DBL_KEY, this);
+    }
   }
 
   public async setup() {
