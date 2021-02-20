@@ -34,5 +34,19 @@ export const shuffle = <T>(arr: T[]) => {
   return arr;
 };
 
+export const toValidUrl = (url: string) => {
+  if (url.startsWith("//")) return `https:${url}`;
+  return url;
+};
+
+export const rgbaToHex = (val: string) => {
+  const regex = /^rgba?\((\d{1,3})\s?,\s?(\d{1,3})\s?,\s?(\d{1,3})(?:,\s?\d.?\d*)?\s?\)$/;
+  const matched = regex.exec(val);
+  if (!matched) return val;
+
+  const rgb = [matched[1], matched[2], matched[3]];
+
+  return rgb.map(color => clamp(parseFloat(color), 0, 255)) as [number, number, number];
+};
 
 export default dedent;

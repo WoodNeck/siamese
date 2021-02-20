@@ -3,6 +3,7 @@ import Youtube from "./youtube";
 import Shopping from "./shopping";
 import Kin from "./kin";
 import Cheapest from "./cheapest";
+import Search from "./search";
 
 import Category from "~/core/Category";
 import { SEARCH } from "~/const/category";
@@ -19,7 +20,8 @@ category.add(
   Youtube,
   Shopping,
   Kin,
-  Cheapest
+  Cheapest,
+  Search
 );
 
 export default category;

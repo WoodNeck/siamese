@@ -68,7 +68,7 @@ class Menu {
         }
 
         if (this._addPageNumber) {
-          if (!page.footer) {
+          if (!page.footer || page.footer.text === "") {
             page.setFooter(`${pageIdx + 1}/${pages.length}`);
           } else {
             page.setFooter(`${page.footer.text} • (${pageIdx + 1}/${pages.length})`, page.footer.iconURL);
