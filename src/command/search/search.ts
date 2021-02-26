@@ -39,7 +39,7 @@ export default new Command({
 
     const pages = searchResult
       .map(result => {
-        const metatags = result.pagemap.metatags[0];
+        const metatags = result.pagemap.metatags?.[0] || {};
 
         return new MessageEmbed()
           .setTitle(result.title)
@@ -60,7 +60,7 @@ export default new Command({
             || metatags["al:android:app_name"]
             || metatags["al:ios:app_name"]
             || "",
-            toValidUrl(result.pagemap.metatags[0]["msapplication-tileimage"] || "")
+            toValidUrl(metatags["msapplication-tileimage"] || "")
           );
       });
 
@@ -82,7 +82,7 @@ interface SearchResult {
   formattedUrl: string;
   htmlFormattedUrl: string;
   pagemap: {
-    metatags: MetaTag[];
+    metatags?: MetaTag[];
     cse_thumbnail?: Array<{
       src: string;
       width: string;
