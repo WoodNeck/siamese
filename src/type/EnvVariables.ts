@@ -2,6 +2,7 @@ interface EnvVariables {
   // Bot - Essential
   BOT_TOKEN: string;
   BOT_DEFAULT_PREFIX: string;
+  BOT_ICON_PREFIX: string;
   // Bot - optional
   BOT_DEV_SERVER_INVITE?: string;
   BOT_DEV_USER_ID?: string;

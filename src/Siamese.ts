@@ -133,10 +133,10 @@ class Siamese extends Discord.Client {
     await this.send(msg.channel as Discord.TextChannel, embed);
   }
 
-  public getDisplayName(guild: Discord.Guild) {
-    const botAsMember = guild.member(this.user);
+  public getDisplayName(guild: Discord.Guild, user: Discord.User = this.user) {
+    const userAsMember = guild.member(user);
 
-    return botAsMember ? botAsMember.displayName : this.user.username;
+    return userAsMember ? userAsMember.displayName : user.username;
   }
 
   public async getBoomBox(ctx: CommandContext): Promise<BoomBox | null> {
@@ -239,6 +239,7 @@ class Siamese extends Discord.Client {
           permissions.add(permission.flag);
         });
   	  });
+
   	this._permissions = permissions.freeze();
   }
 
@@ -270,12 +271,13 @@ class Siamese extends Discord.Client {
   }
 
   private _onMessage = async (msg: Discord.Message) => {
-    const prefix = this.prefix;
+    const prefix = this._env.BOT_DEFAULT_PREFIX;
+    const iconPrefix = this._env.BOT_ICON_PREFIX;
 
     void logMessage(this, msg);
 
     if (msg.author.bot) return;
-    if (!msg.content.startsWith(prefix)) return await checkImageCommand(this, msg);
+    if (msg.content.startsWith(iconPrefix)) return await checkImageCommand(this, msg);
 
     let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 
@@ -288,7 +290,7 @@ class Siamese extends Discord.Client {
     const subcommandName = content.split(/ +/)[0];
 
     // Found subcommand
-    const subcommand = cmd.subcommands?.find(subcmd => subcmd.name === subcommandName || subcmd.alias.includes(subcommandName));
+    const subcommand = cmd.subcommands.find(subcmd => subcmd.name === subcommandName || subcmd.alias.includes(subcommandName));
     if (subcommand) {
       cmd = subcommand;
       content = content.slice(subcommandName.length + 1);

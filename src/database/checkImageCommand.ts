@@ -3,6 +3,7 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 
 import * as COLOR from "~/const/color";
+import * as PERMISSION from "~/const/permission";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
 import Siamese from "~/Siamese";
@@ -10,8 +11,9 @@ import Siamese from "~/Siamese";
 export default async (bot: Siamese, msg: Message) => {
   if (!msg.guild || !msg.content) return;
 
+  const iconPrefix = bot.env.BOT_ICON_PREFIX;
   const guildID = msg.guild.id;
-  const msgSplitted = msg.content.split(/ +/);
+  const msgSplitted = msg.content.substr(iconPrefix.length).split(/ +/);
   const groupName = msgSplitted.length > 1 ? msgSplitted[0] : null;
   const iconName = msgSplitted.length > 1 ? msgSplitted[1] : msgSplitted[0];
 
@@ -40,9 +42,20 @@ export default async (bot: Siamese, msg: Message) => {
 
   if (!icon) return;
 
+  const permissions = (msg.channel as TextChannel).permissionsFor(bot.user);
+
+  if (!permissions || !permissions.has(PERMISSION.SEND_MESSAGES.flag) || !permissions.has(PERMISSION.EMBED_LINKS.flag)) {
+    return;
+  }
+
+  if (msg.deletable) {
+    await msg.delete();
+  }
+
   await bot.send(
     msg.channel as TextChannel,
     new MessageEmbed()
+      .setAuthor(bot.getDisplayName(msg.guild, msg.author), msg.author.displayAvatarURL())
       .setImage(icon.url)
       .setColor(COLOR.BOT)
   );
