@@ -1,0 +1,87 @@
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 300px;
+  box-sizing: border-box;
+  padding: 30px;
+  padding-top: 40px;
+  justify-content: space-between;
+  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.sidebar-logo {
+  font-size: 40px;
+  font-weight: bold;
+  padding-left: 20px;
+  padding-bottom: 30px;
+  font-family: 'CuteFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-logo-text {
+  display: inline-block;
+  position: relative;
+}
+
+.sidebar-logo-img {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+}
+
+.sidebar-menu-item {
+  width: 100%;
+  padding: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  color: #777;
+  fill: #777;
+}
+
+.sidebar-menu-item.selected {
+  background-color: #222;
+  color: #eee;
+  fill: #eee;
+  border-radius: 15px;
+}
+
+.sidebar-menu-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.sidebar-others {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-others-item {
+  display: flex;
+  align-items: center;
+  background-color: #7289da;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 15px;
+  color: white;
+  fill: white;
+}
+
+.sidebar-others-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+

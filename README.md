@@ -1,5 +1,5 @@
 # 샴고양이(Siamese)
-[![Discord Bots](https://discordbots.org/api/widget/status/357073005819723777.svg)](https://discordbots.org/bot/357073005819723777) [![Discord](https://img.shields.io/discord/800248062936612904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zxSwN8Z) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
+[![Discord](https://img.shields.io/discord/800248062936612904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zxSwN8Z) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
 
 [Invite Bot](https://discordapp.com/oauth2/authorize?client_id=357073005819723777&scope=bot&permissions=-1)
 
@@ -24,6 +24,7 @@ Before run, please fill out the `bot.env` file using `bot.env.preset`.
 # BOT
 BOT_TOKEN="YOUR_BOT_TOKEN" # Bot token, see https://discord.com/developers/applications
 BOT_DEFAULT_PREFIX="샴 " # Bot's prefix
+BOT_ICON_PREFIX="~" # Prefix for icon feature
 
 # BOT_OPTIONAL
 BOT_DEV_SERVER_INVITE="https://discord.gg/DMbYYFr" # (Optional) Bot dev server's invite link
