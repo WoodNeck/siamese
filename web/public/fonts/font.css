@@ -1,9 +1,9 @@
 @font-face {
   font-family: "CuteFont";
-  src: url(/fonts/CuteFont/CuteFont-Regular.ttf) format("opentype");
+  src: url(./CuteFont/CuteFont-Regular.ttf) format("opentype");
 }
 
 @font-face {
   font-family: "HangeulNuri";
-  src: url(/fonts/HangeulNuri/HangeulNuriB.ttf) format("opentype");
+  src: url(./HangeulNuri/HangeulNuriB.ttf) format("opentype");
 }

@@ -1,0 +1,57 @@
+.header-container {
+  padding: 30px;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-container a {
+  text-decoration: none;
+}
+
+.header-logo {
+  font-size: 40px;
+  font-weight: bold;
+  padding-left: 20px;
+  font-family: 'CuteFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.header-logo-text {
+  display: inline-block;
+  position: relative;
+  color: #222;
+}
+
+.header-logo-img {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+}
+
+.header-menu {
+  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-size: 22px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #222;
+  color: #eee;
+  fill: #eee;
+  border-radius: 15px 15px 0 15px;
+}
+
+.header-menu-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+}
