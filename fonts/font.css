@@ -7,3 +7,26 @@
   font-family: "HangeulNuri";
   src: url(./HangeulNuri/HangeulNuriB.ttf) format("opentype");
 }
+
+@font-face {
+  font-family: "IBMPlexSans";
+  src: url(./IBMPlexSans/IBMPlexSansKR-Regular.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "IBMPlexSans";
+  src: url(./IBMPlexSans/IBMPlexSansKR-Bold.ttf) format("opentype");
+  font-weight: bold;
+}
+
+:root {
+  --logo-font: 'CuteFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  --menu-font: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  --main-font: 'IBMPlexSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
