@@ -36,7 +36,16 @@ const startRestServer = (bot: Siamese) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(session({ secret: bot.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
+  app.use(session({
+    secret: bot.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none"
+    }
+  }));
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -49,7 +58,10 @@ const startRestServer = (bot: Siamese) => {
   }, async (accessToken, refreshToken, profile, cb) => {
     let error: Error | null = null;
     const user = await bot.users.fetch(profile.id)
-      .catch(() => error = new Error(REST.ERROR.NOT_EXISTS("사용자")));
+      .catch(() => {
+        error = new Error(REST.ERROR.NOT_EXISTS("사용자"));
+        return undefined;
+      });
 
     cb(error, user);
   }));
@@ -64,9 +76,10 @@ const startRestServer = (bot: Siamese) => {
 
   app.get("/auth/discord", passport.authenticate("discord"));
   app.get("/auth/discord/callback", passport.authenticate("discord", {
-    failureRedirect: `${bot.env.WEB_URL_BASE}/fail`
+    failureRedirect: `${bot.env.WEB_URL_BASE}/fail`,
+    session: true
   }), (req, res) => {
-    res.redirect(`${bot.env.WEB_URL_BASE}/siamese`); // Successful auth
+    res.redirect(`${bot.env.WEB_URL_BASE}/siamese`);
   });
 
   app.get(REST.URL.LOGOUT, (req, res) => {
