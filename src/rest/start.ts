@@ -40,6 +40,7 @@ const startRestServer = (bot: Siamese) => {
     secret: bot.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
+    // FIXME: Dev
     cookie: {
       httpOnly: true,
       secure: true,
@@ -107,18 +108,14 @@ const startRestServer = (bot: Siamese) => {
    * hasPermission - Boolean value whether user have permission to manage file
    */
   app.get(REST.URL.GUILDS, async (req, res) => {
-    if (!req.isAuthenticated()) {
+    const user: { id: string } = (req.session as any).passport?.user;
+
+    if (!user) {
       return res.status(404).send(REST.ERROR.NOT_EXISTS("사용자"));
     }
 
-    const user: { id: string } = (req.session as any).passport.user;
-    const fetchAllGuilds = bot.guilds.cache
-      .map(guild => guild.members.fetch(user.id)
-        .then(() => guild)
-        .catch(() => null));
-
-    const guilds = (await Promise.all(fetchAllGuilds))
-      .filter(guild => !!guild)
+    const guilds = bot.guilds.cache
+      .filter(guild => !!guild.members.cache.has(user.id))
       .map((guild: Discord.Guild) => {
         const member = guild.members.fetch(user.id);
 
