@@ -1,0 +1,39 @@
+.profile-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 40px;
+  overflow: hidden;
+}
+
+.profile-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  font-size: 10px;
+  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  opacity: 0;
+}
+
+.profile-overlay:hover {
+  opacity: 1;
+  cursor: pointer;
+  transition: opacity 300ms;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+}

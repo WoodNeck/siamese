@@ -34,6 +34,7 @@ const Sidebar = () => {
       <div className="sidebar-menu">
         {routes.map((route) => (
           <NavLink to={route.path} className="sidebar-menu-item" activeClassName="selected"
+            key={route.name}
             isActive={(match, location) => {
               if (!match) return false;
 
