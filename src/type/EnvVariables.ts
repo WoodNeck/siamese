@@ -8,6 +8,8 @@ interface EnvVariables {
   BOT_CLIENT_SECRET: string;
   WEB_URL_BASE: string;
   SESSION_SECRET: string;
+  HTTPS_CERT?: string;
+  HTTPS_KEY?: string;
   // Bot - optional
   BOT_DEV_SERVER_INVITE?: string;
   BOT_DEV_USER_ID?: string;

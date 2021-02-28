@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import fs from "fs";
+import https from "https";
+
+import Discord from "discord.js";
 import express from "express";
 import "express-async-errors";
 import session from "express-session";
@@ -16,7 +20,6 @@ import Siamese from "~/Siamese";
 import IconGroup from "~/model/IconGroup";
 import Icon from "~/model/Icon";
 import * as DISCORD from "~/const/discord";
-import { Guild } from "discord.js";
 
 const startRestServer = (bot: Siamese) => {
   const app = express();
@@ -103,7 +106,7 @@ const startRestServer = (bot: Siamese) => {
 
     const guilds = (await Promise.all(fetchAllGuilds))
       .filter(guild => !!guild)
-      .map((guild: Guild) => {
+      .map((guild: Discord.Guild) => {
         const member = guild.members.fetch(user.id);
 
         return {
@@ -542,9 +545,22 @@ const startRestServer = (bot: Siamese) => {
   //     .catch(() => res.status(402).send(REST.ERROR.FAILED_TO_REMOVE("이미지")));
   // });
 
-  app.listen(4260, () => {
+  if (bot.env.HTTPS_CERT && bot.env.HTTPS_KEY) {
+    const privateKey  = fs.readFileSync(bot.env.HTTPS_KEY, "utf8");
+    const certificate = fs.readFileSync(bot.env.HTTPS_CERT, "utf8");
+
+    const httpsServer = https.createServer({
+      key: privateKey,
+      cert: certificate
+    }, app);
+
+    httpsServer.listen(4260);
     console.log("API server listening on port 4260!");
-  });
+  } else {
+    app.listen(4260, () => {
+      console.log("API server listening on port 4260!");
+    });
+  }
 };
 
 export default startRestServer;
