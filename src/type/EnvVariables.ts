@@ -6,6 +6,7 @@ interface EnvVariables {
   // Rest API Sever - Essential
   BOT_CLIENT_ID: string;
   BOT_CLIENT_SECRET: string;
+  SERVER_DOMAIN: string;
   WEB_URL_BASE: string;
   SESSION_SECRET: string;
   HTTPS_CERT?: string;

@@ -21,6 +21,7 @@ const essentialConfigs = {
   BOT_ICON_PREFIX: validator.notEmptyStr,
   BOT_CLIENT_ID: validator.notEmptyStr,
   BOT_CLIENT_SECRET: validator.notEmptyStr,
+  SERVER_DOMAIN: validator.notEmptyStr,
   WEB_URL_BASE: validator.notEmptyStr,
   SESSION_SECRET: validator.notEmptyStr
 };

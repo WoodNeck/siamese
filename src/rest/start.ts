@@ -43,7 +43,7 @@ const startRestServer = (bot: Siamese) => {
   passport.use(new DiscordStrategy({
     clientID: bot.env.BOT_CLIENT_ID,
     clientSecret: bot.env.BOT_CLIENT_SECRET,
-    callbackURL: `http://${ip.address()}:4260/auth/discord/callback`,
+    callbackURL: `${bot.env.SERVER_DOMAIN}:4260/auth/discord/callback`,
     scope: ["identify"]
   }, async (accessToken, refreshToken, profile, cb) => {
     let error: Error | null = null;
