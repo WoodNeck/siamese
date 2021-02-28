@@ -8,8 +8,8 @@ import Discord from "discord.js";
 import express from "express";
 import "express-async-errors";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import ip from "ip";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 
@@ -35,6 +35,7 @@ const startRestServer = (bot: Siamese) => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cookieParser());
   app.use(session({ secret: bot.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -63,7 +64,7 @@ const startRestServer = (bot: Siamese) => {
 
   app.get("/auth/discord", passport.authenticate("discord"));
   app.get("/auth/discord/callback", passport.authenticate("discord", {
-    failureRedirect: "/"
+    failureRedirect: `${bot.env.WEB_URL_BASE}/fail`
   }), (req, res) => {
     res.redirect(`${bot.env.WEB_URL_BASE}/siamese`); // Successful auth
   });
@@ -93,12 +94,11 @@ const startRestServer = (bot: Siamese) => {
    * hasPermission - Boolean value whether user have permission to manage file
    */
   app.get(REST.URL.GUILDS, async (req, res) => {
-    const user: { id: string } = (req.session as any).passport?.user;
-
-    if (!user) {
+    if (!req.isAuthenticated()) {
       return res.status(404).send(REST.ERROR.NOT_EXISTS("사용자"));
     }
 
+    const user: { id: string } = (req.session as any).passport.user;
     const fetchAllGuilds = bot.guilds.cache
       .map(guild => guild.members.fetch(user.id)
         .then(() => guild)
