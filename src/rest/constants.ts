@@ -4,8 +4,8 @@ export const URL = {
   LOGOUT: "/logout",
   USER: "/user",
   GUILDS: "/guilds",
-  IMAGE: "/image",
-  IMAGES: "/images",
+  ICON: "/icon",
+  ICONS: "/icons",
   DIRECTORY: "/directory",
   DIRECTORIES: "/directories"
 } as const;

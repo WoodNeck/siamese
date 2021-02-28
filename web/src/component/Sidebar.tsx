@@ -37,8 +37,9 @@ const Sidebar = () => {
             key={route.name}
             isActive={(match, location) => {
               if (!match) return false;
+              if (route.path === "/") return location.pathname === route.path;
 
-              return location.pathname === route.path;
+              return location.pathname.includes(route.path);
             }}
           >
             <svg className="sidebar-menu-icon">

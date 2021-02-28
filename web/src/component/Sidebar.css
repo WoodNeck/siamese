@@ -4,11 +4,9 @@
   flex-shrink: 0;
   width: 300px;
   box-sizing: border-box;
-  padding-right: 30px;
+  padding-right: 80px;
   justify-content: space-between;
-  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--menu-font);
 }
 
 .sidebar-container a {
@@ -27,6 +25,8 @@
   color: #999;
   fill: #999;
   text-decoration: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .sidebar-menu-item.selected {

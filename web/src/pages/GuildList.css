@@ -1,0 +1,81 @@
+.guild-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.guild-container a {
+  text-decoration: none;
+}
+
+.guild-header {
+  font-family: var(--main-font);
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.guild-header-text {
+  display: inline-block;
+  position: relative;
+}
+
+.guild-subtitle {
+  font-family: var(--main-font);
+  font-size: 18px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.guild-item {
+  width: 100%;
+  display: flex;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+}
+
+.guild-separator {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.guild-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin-right: 20px;
+}
+
+.guild-name {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 18px;
+  font-family: var(--main-font);
+  color: #444;
+}
+
+.guild-approved-icon {
+  width: 32px;
+  height: 32px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.guild-approved-icon.yes {
+  fill: #54B862;
+}
+.guild-approved-icon.no {
+  fill: #E8284B;
+}
+
+.guild-enter-icon-container {
+  margin-left: auto;
+}
+
+.guild-enter-icon {
+  width: 32px;
+  height: 32px;
+}

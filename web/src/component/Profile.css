@@ -16,9 +16,7 @@
   top: 0;
   left: 0;
   font-size: 10px;
-  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--menu-font);
   display: flex;
   justify-content: center;
   align-items: center;

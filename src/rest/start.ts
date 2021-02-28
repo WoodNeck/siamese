@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from "express";
 import "express-async-errors";
 import session from "express-session";
@@ -13,6 +16,7 @@ import Siamese from "~/Siamese";
 import IconGroup from "~/model/IconGroup";
 import Icon from "~/model/Icon";
 import * as DISCORD from "~/const/discord";
+import { Guild } from "discord.js";
 
 const startRestServer = (bot: Siamese) => {
   const app = express();
@@ -69,64 +73,68 @@ const startRestServer = (bot: Siamese) => {
   });
 
   /**
-   * @query
-   * id - user.id
-   *
    * @return {Object} user info
-   * null if user not exists
+   * empty object if user not exists
    */
   app.get(REST.URL.USER, async (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const user = (req.session as any).passport?.user ?? {};
 
     res.json(user);
   });
 
-  // /**
-  //  * @query
-  //  * id - user.id
-  //  *
-  //  * @return {Array} guilds - JSON array of guilds user is in
-  //  * id - guild.id
-  //  * iconURL - guild's png icon url
-  //  * name - guild.name
-  //  * hasPermission - Boolean value whether user have permission to manage file
-  //  */
-  // app.get(REST.URL.GUILDS, async (req, res) => {
-  //   const userId = req.query.id;
-  //   const guilds = bot.guilds
-  //     .filter(guild => guild.members.has(userId))
-  //     .map(guild => {
-  //       const user = guild.members.get(userId);
+  /**
+   * @return {Array} guilds - JSON array of guilds user is in
+   * id - guild.id
+   * iconURL - guild's png icon url
+   * name - guild.name
+   * hasPermission - Boolean value whether user have permission to manage file
+   */
+  app.get(REST.URL.GUILDS, async (req, res) => {
+    const user: { id: string } = (req.session as any).passport?.user;
 
-  //       return {
-  //         id: guild.id,
-  //         iconURL: DISCORD.REST.URL.GUILD_ICON(guild.id, guild.icon),
-  //         name: guild.name,
-  //         hasPermission: checkPermission(user, guild)
-  //       };
-  //     });
+    if (!user) {
+      return res.status(404).send(REST.ERROR.NOT_EXISTS("사용자"));
+    }
 
-  //   res.json(guilds);
-  // });
+    const fetchAllGuilds = bot.guilds.cache
+      .map(guild => guild.members.fetch(user.id)
+        .then(() => guild)
+        .catch(() => null));
 
-  // /**
-  //  * @query
-  //  * id - guild.id
-  //  *
-  //  * @return {Array} JSON array of directories guild has.
-  //  * id - directory id
-  //  * name - directory name
-  //  * guildId - guild id where it belongs
-  //  */
-  // app.get(REST.URL.DIRECTORIES, async (req, res) => {
-  //   const guildId = req.query.id;
-  //   const directories = await IconGroup.find({
-  //     guildId
-  //   });
+    const guilds = (await Promise.all(fetchAllGuilds))
+      .filter(guild => !!guild)
+      .map((guild: Guild) => {
+        const member = guild.members.fetch(user.id);
 
-  //   res.json(directories);
-  // });
+        return {
+          id: guild.id,
+          iconURL: guild.icon ? DISCORD.URL.GUILD_ICON(guild.id, guild.icon) : null,
+          name: guild.name,
+          // FIXME:
+          hasPermission: true // checkPermission(member, guild)
+        };
+      });
+
+    res.json(guilds);
+  });
+
+  /**
+   * @query
+   * id - guild.id
+   *
+   * @return {Array} JSON array of directories guild has.
+   * id - directory id
+   * name - directory name
+   * guildID - guild id where it belongs
+   */
+  app.get(REST.URL.DIRECTORIES, async (req, res) => {
+    const guildID = req.query.id;
+    const directories = await IconGroup.find({
+      guildID
+    });
+
+    res.json(directories);
+  });
 
   // /**
   //  * @query
@@ -282,21 +290,21 @@ const startRestServer = (bot: Siamese) => {
   //   }).exec();
   // });
 
-  // /**
-  //  * @query
-  //  * id - guild.id
-  //  *
-  //  * @return {Array} "default"(dirId is 0) images
-  //  */
-  // app.get(REST.URL.IMAGES, async (req, res) => {
-  //   const guildId = req.query.id;
+  /**
+   * @query
+   * id - guild.id
+   *
+   * @return {Array} "default"(dirId is 0) images
+   */
+  app.get(REST.URL.ICONS, async (req, res) => {
+    const guildID = req.query.id as string;
 
-  //   const images = await Icon.find({
-  //     guildId, dirId: 0
-  //   }).exec();
+    const images = await Icon.find({
+      guildID, groupID: "0"
+    }).exec();
 
-  //   res.json(images);
-  // });
+    res.json(images);
+  });
 
   // /**
   //  * @query

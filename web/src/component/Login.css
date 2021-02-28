@@ -5,9 +5,7 @@
   background-color: #222;
   color: #eee;
   fill: #eee;
-  font-family: 'HangeulNuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--menu-font);
   font-size: 22px;
   border: 0;
   border-radius: 15px 15px 0 15px;
