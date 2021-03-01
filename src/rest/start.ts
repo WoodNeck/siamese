@@ -36,16 +36,19 @@ const startRestServer = (bot: Siamese) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
+
+  const sessionCookieConfig = (bot.env.HTTPS_CERT && bot.env.HTTPS_KEY)
+    ? {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none"
+    } as const : undefined;
+
   app.use(session({
     secret: bot.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
-    // FIXME: Dev
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none"
-    }
+    cookie: sessionCookieConfig
   }));
   app.use(passport.initialize());
   app.use(passport.session());

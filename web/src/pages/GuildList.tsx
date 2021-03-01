@@ -50,6 +50,9 @@ const GuildList: React.FC = () => {
           </div>
         ))
       }
+      <div className="guild-footer">
+        - 서버가 표시되지 않나요? 샴고양이를 사용하는 서버에서 아무 메시지나 보낸 다음 다시 확인해보세요!
+      </div>
     </div>
   );
 };

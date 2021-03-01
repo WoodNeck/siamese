@@ -41,15 +41,17 @@ const IconList: React.FC = () => {
         </div>
       </div>
       <div className="icon-item-container">
-        <Link to="/icon" className="icon-item icon-back-button">
-          <svg>
+        <Link to="/icon" className="icon-item icon-back-button-container">
+          <svg className="icon-back-button">
             <use xlinkHref={`${process.env.PUBLIC_URL}/icons/left-arrow.svg#icon`} />
           </svg>
         </Link>
         {
           iconGroups.map(iconGroup => (
             <div key={iconGroup._id} className="icon-item icon-card">
-              <div>📁</div>
+              <svg className="icon-item-icon">
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/folder.svg#icon`} />
+              </svg>
               <span>{ iconGroup.name }</span>
             </div>
           ))
@@ -57,7 +59,9 @@ const IconList: React.FC = () => {
         {
           icons.map(icon => (
             <div key={icon._id} className="icon-item icon-card">
-              <img className="icon-img" src={icon.url} />
+              <svg className="icon-item-icon">
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/image.svg#icon`} />
+              </svg>
               <span>{icon.name}</span>
             </div>
           ))

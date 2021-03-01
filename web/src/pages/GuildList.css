@@ -79,3 +79,9 @@
   width: 32px;
   height: 32px;
 }
+
+.guild-footer {
+  font-family: var(--main-font);
+  color: #999;
+  font-size: 14px;
+}
