@@ -8,8 +8,10 @@
     "@testing-library/user-event": "^12.7.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-dropzone": "^11.3.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-toastify": "^7.0.3",
     "sweetalert2": "^10.15.5",
     "sweetalert2-react-content": "^3.3.1",
     "web-vitals": "^1.1.0"

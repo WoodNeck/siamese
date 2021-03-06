@@ -3,7 +3,7 @@ import "./AuthNeeded.css";
 const AuthNeeded = () => {
   return (
     <div className="auth-container">
-      <div className="auth-header">먼저 로그인이 필요합니다</div>
+      <div className="auth-header">로그인이 필요합니다</div>
       <div className="auth-login-button" onClick={() => {
         window.location.href = `${process.env.REACT_APP_API_URL}/auth/discord`;
       }}>

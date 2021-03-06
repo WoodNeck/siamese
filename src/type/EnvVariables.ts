@@ -9,6 +9,7 @@ interface EnvVariables {
   SERVER_DOMAIN: string;
   WEB_URL_BASE: string;
   SESSION_SECRET: string;
+  ICON_CHANNEL_ID: string;
   HTTPS_CERT?: string;
   HTTPS_KEY?: string;
   // Bot - optional

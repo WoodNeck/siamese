@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Express } from "express";
-
 import * as URL from "../const/url";
+import { Register } from "../register";
 
 import IconGroupModel, { IconGroupDocument } from "~/model/IconGroup";
 
-export default (app: Express) => {
+const register: Register = ({ app }) => {
   /**
    * @query
    * id - directory id
@@ -31,3 +30,5 @@ export default (app: Express) => {
     });
   });
 };
+
+export default register;

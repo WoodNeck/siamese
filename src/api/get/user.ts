@@ -1,9 +1,8 @@
-import { Express } from "express";
-
 import * as URL from "../const/url";
+import { Register } from "../register";
 import PassportSession from "../type/PassportSession";
 
-export default (app: Express) => {
+const register: Register = ({ app }) => {
   /**
    * @return {Object} user info
    * empty object if user not exists
@@ -15,4 +14,5 @@ export default (app: Express) => {
   });
 };
 
+export default register;
 

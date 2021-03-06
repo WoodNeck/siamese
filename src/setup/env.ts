@@ -23,7 +23,8 @@ const essentialConfigs = {
   BOT_CLIENT_SECRET: validator.notEmptyStr,
   SERVER_DOMAIN: validator.notEmptyStr,
   WEB_URL_BASE: validator.notEmptyStr,
-  SESSION_SECRET: validator.notEmptyStr
+  SESSION_SECRET: validator.notEmptyStr,
+  ICON_CHANNEL_ID: validator.notEmptyStr
 };
 typetest(env, essentialConfigs);
 

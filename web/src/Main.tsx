@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter,
   Switch,
   Route
 } from "react-router-dom";
@@ -28,7 +28,7 @@ const Main = () => {
   }, []);
 
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <HashRouter>
       <div className="main-container">
         <Header user={user} />
         <div className="contents-container">
@@ -51,7 +51,7 @@ const Main = () => {
           </div>
         </div>
       </div>
-    </Router>
+    </HashRouter>
   );
 }
 

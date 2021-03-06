@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Express } from "express";
-
 import * as URL from "../const/url";
 import Icon from "../type/Icon";
+import { Register } from "../register";
 
-import Siamese from "~/Siamese";
 import IconModel, { IconDocument } from "~/model/Icon";
 
-export default (app: Express, bot: Siamese) => {
+const register: Register = ({ app, bot }) => {
   /**
    * @query
    * guildID - guild.id
@@ -56,3 +54,5 @@ export default (app: Express, bot: Siamese) => {
     res.json(icons);
   });
 };
+
+export default register;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { MessageAttachment, MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
@@ -38,7 +40,6 @@ export default new Command({
     let group: IconGroupDocument | null = null;
 
     if (groupName) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       group = await IconGroup.findOne({
         guildID: guild.id,
         name: groupName
@@ -53,11 +54,10 @@ export default new Command({
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const prevInfo = await Icon.findOne({
       name: iconName,
       guildID: guild.id,
-      groupID: group ? group.id as string : "0"
+      groupID: group ? group._id as string : "0"
     }).exec() as IconDocument;
     const image = msg.attachments.first() as MessageAttachment;
 
@@ -80,7 +80,7 @@ export default new Command({
         url: image.url,
         guildID: guild.id,
         authorID: author.id,
-        groupID: group ? group.id as string : "0"
+        groupID: group ? group._id as string : "0"
       });
     }
 

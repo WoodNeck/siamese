@@ -8,7 +8,7 @@
   font-family: var(--menu-font);
   font-size: 22px;
   border: 0;
-  border-radius: 15px 15px 0 15px;
+  border-radius: 15px;
 }
 
 .header-menu-icon {

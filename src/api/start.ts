@@ -9,39 +9,20 @@ import "express-async-errors";
 
 import setup from "./setup";
 import * as GET from "./get";
+import * as POST from "./post";
+import * as PATCH from "./patch";
 
 import Siamese from "~/Siamese";
 
 const startRestServer = (bot: Siamese) => {
   const app = express();
+  const ctx = { app, bot };
 
   setup(app, bot);
 
-  Object.values(GET).forEach(register => register(app, bot));
-
-  // /**
-  //  * @query
-  //  * id - directory id
-  //  *
-  //  * @return {Object} JSON object of directory info
-  //  * id - directory id
-  //  * name - directory name
-  //  * guildId - guild id where it belongs
-  //  * images - images directory has
-  //  */
-  // app.get(REST.URL.DIRECTORY, async (req, res) => {
-  //   const directoryId = req.query.id;
-  //   const directory = await IconGroup.findById(directoryId) || {};
-  //   const images = await Icon.find({
-  //     dirId: directoryId
-  //   }) || [];
-
-  //   const dir = Object.assign({
-  //     images
-  //   }, directory._doc);
-
-  //   res.json(dir);
-  // });
+  Object.values(GET).forEach(register => register(ctx));
+  Object.values(POST).forEach(register => register(ctx));
+  Object.values(PATCH).forEach(register => register(ctx));
 
   // /**
   //  * @query
@@ -268,63 +249,6 @@ const startRestServer = (bot: Siamese) => {
   //       })).filter((_, index) => Boolean(exists[index]))
   //     );
   //   }).catch(() => res.status(402).send("이미지를 옮기는데 실패했습니다."));
-  // });
-
-  // /**
-  //  * Add new image
-  //  *
-  //  * @query
-  //  * guild - guild.id
-  //  * user - user.id
-  //  * name - image.name
-  //  * url - image.url
-  //  * directory(optional) - directory.id
-  //  *
-  //  * @return
-  //  * 200 - OK
-  //  * 301 - File with same name exists
-  //  * 400 - Invalid arguments
-  //  * 401 - Unauthorized
-  //  * 402 - DB update failed
-  //  * 404 - Directory not exists
-  //  */
-  // app.post(REST.URL.IMAGE, async (req, res) => {
-  //   const { guild: guildId, user: userId, name: imageName, url: imageUrl, directory } = req.body;
-
-  //   if (!guildId || !userId || !imageName || !imageUrl) {
-  //     return res.status(400).send(REST.ERROR.INVALID_ARGUMENTS);
-  //   }
-
-  //   const newName = imageName.trim();
-  //   if (newName.length <= 0 || newName.length > 8) {
-  //     return res.status(400).send(REST.ERROR.INVALID_ARGUMENTS);
-  //   }
-
-  //   if (!hasPermission(bot, userId, guildId)) {
-  //     return res.status(401).send(REST.ERROR.UNAUTHORIZED);
-  //   }
-
-  //   const dirId = directory ? directory : 0;
-
-  //   const alreadyExists = await Icon.findOne({ name: newName, dirId, guildId }).exec();
-  //   if (alreadyExists) {
-  //     return res.status(301).send(REST.ERROR.ALREADY_EXISTS("파일"));
-  //   }
-
-  //   if (dirId) {
-  //     const dir = await IconGroup.findById(dirId).exec();
-  //     if (!dir || dir.guildId !== guildId) {
-  //       return res.status(404).send(REST.ERROR.NOT_EXISTS("디렉토리"));
-  //     }
-  //   }
-
-  //   Icon.updateOne(
-  //     { name: newName, url: imageUrl, guildId, author: userId, dirId },
-  //     {},
-  //     { upsert: true },
-  //   ).exec()
-  //     .then(() => res.sendStatus(200))
-  //     .catch(() => res.status(402).send(REST.ERROR.FAILED_TO_CREATE("파일")));
   // });
 
   // /**

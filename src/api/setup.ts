@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import session from "express-session";
+import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
@@ -20,6 +21,11 @@ export default (app: Express, bot: Siamese) => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(fileUpload({
+    limits: { fileSize: 8 * 1024 * 1024 },
+    useTempFiles : true,
+    tempFileDir : "/tmp/"
+  }));
   app.use(cookieParser());
 
   const sessionCookieConfig = (bot.env.HTTPS_CERT && bot.env.HTTPS_KEY)

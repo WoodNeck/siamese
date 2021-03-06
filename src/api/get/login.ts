@@ -1,9 +1,8 @@
-import { Express } from "express";
 import passport from "passport";
 
-import Siamese from "~/Siamese";
+import { Register } from "../register";
 
-export default (app: Express, bot: Siamese) => {
+const register: Register = ({ app, bot }) => {
   app.get("/auth/discord", passport.authenticate("discord"));
   app.get("/auth/discord/callback", passport.authenticate("discord", {
     failureRedirect: `${bot.env.WEB_URL_BASE}/fail`,
@@ -12,3 +11,5 @@ export default (app: Express, bot: Siamese) => {
     res.redirect(`${bot.env.WEB_URL_BASE}/siamese`);
   });
 };
+
+export default register;
