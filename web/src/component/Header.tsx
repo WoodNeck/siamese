@@ -5,8 +5,8 @@ import {
 
 import "./Header.css";
 import Login from "./Login";
-import User from "../type/User";
 import Profile from "./Profile";
+import User from "../../../src/api/type/User";
 
 const Header: React.FC<{
   user: User | null;

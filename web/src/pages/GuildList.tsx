@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Link
 } from "react-router-dom";
 
-import Loading from "../component/Loading";
-import Guild from "../type/Guild";
+import Guild from "../../../src/api/type/Guild";
 import "./GuildList.css";
 
-const GuildList: React.FC = () => {
-  const [guilds, setGuilds] = useState<Guild[] | null>(null);
-
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/guilds`, {
-      credentials: "include"
-    }).then(res => res.json())
-      .then(guilds => {
-        setGuilds(guilds as Guild[]);
-      })
-  }, []);
-
-  if (!guilds) return <Loading />
-
+const GuildList: React.FC<{
+  guilds: Guild[];
+}> = ({ guilds }) => {
   return (
     <div className="guild-container">
       <div className="guild-header">

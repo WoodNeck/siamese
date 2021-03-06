@@ -4,153 +4,20 @@
 import fs from "fs";
 import https from "https";
 
-import Discord from "discord.js";
 import express from "express";
 import "express-async-errors";
-import session from "express-session";
-import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
-import passport from "passport";
-import { Strategy as DiscordStrategy } from "passport-discord";
 
-import { checkPermission, hasPermission } from "./helper";
-import * as REST from "./constants";
+import setup from "./setup";
+import * as GET from "./get";
 
 import Siamese from "~/Siamese";
-import IconGroup from "~/model/IconGroup";
-import Icon from "~/model/Icon";
-import * as DISCORD from "~/const/discord";
 
 const startRestServer = (bot: Siamese) => {
   const app = express();
 
-  // CORS
-  app.use((req, res, next) => {
-    res.append("Access-Control-Allow-Origin", [bot.env.WEB_URL_BASE]);
-    res.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
-    res.append("Access-Control-Allow-Headers", "Content-Type");
-    res.append("Access-Control-Allow-Credentials", "true");
-    next();
-  });
+  setup(app, bot);
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(cookieParser());
-
-  const sessionCookieConfig = (bot.env.HTTPS_CERT && bot.env.HTTPS_KEY)
-    ? {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none"
-    } as const : undefined;
-
-  app.use(session({
-    secret: bot.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: false,
-    cookie: sessionCookieConfig
-  }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  // Authentication
-  passport.use(new DiscordStrategy({
-    clientID: bot.env.BOT_CLIENT_ID,
-    clientSecret: bot.env.BOT_CLIENT_SECRET,
-    callbackURL: `${bot.env.SERVER_DOMAIN}:4260/auth/discord/callback`,
-    scope: ["identify"]
-  }, async (accessToken, refreshToken, profile, cb) => {
-    let error: Error | null = null;
-    const user = await bot.users.fetch(profile.id)
-      .catch(() => {
-        error = new Error(REST.ERROR.NOT_EXISTS("사용자"));
-        return undefined;
-      });
-
-    cb(error, user);
-  }));
-
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
-
-  passport.deserializeUser((user, done) => {
-    done(null, user as Express.User);
-  });
-
-  app.get("/auth/discord", passport.authenticate("discord"));
-  app.get("/auth/discord/callback", passport.authenticate("discord", {
-    failureRedirect: `${bot.env.WEB_URL_BASE}/fail`,
-    session: true
-  }), (req, res) => {
-    res.redirect(`${bot.env.WEB_URL_BASE}/siamese`);
-  });
-
-  app.get(REST.URL.LOGOUT, (req, res) => {
-    req.logout();
-    req.session.save(() => {
-      res.redirect(`${bot.env.WEB_URL_BASE}/siamese`);
-    });
-  });
-
-  /**
-   * @return {Object} user info
-   * empty object if user not exists
-   */
-  app.get(REST.URL.USER, async (req, res) => {
-    const user = (req.session as any).passport?.user ?? {};
-
-    res.json(user);
-  });
-
-  /**
-   * @return {Array} guilds - JSON array of guilds user is in
-   * id - guild.id
-   * iconURL - guild's png icon url
-   * name - guild.name
-   * hasPermission - Boolean value whether user have permission to manage file
-   */
-  app.get(REST.URL.GUILDS, async (req, res) => {
-    const user: { id: string } = (req.session as any).passport?.user;
-
-    if (!user) {
-      return res.status(404).send(REST.ERROR.NOT_EXISTS("사용자"));
-    }
-
-    const guilds = bot.guilds.cache
-      .filter(guild => !!guild.members.cache.has(user.id))
-      .map((guild: Discord.Guild) => {
-        const member = guild.members.fetch(user.id);
-
-        return {
-          id: guild.id,
-          iconURL: guild.icon ? DISCORD.URL.GUILD_ICON(guild.id, guild.icon) : null,
-          name: guild.name,
-          // FIXME:
-          hasPermission: true // checkPermission(member, guild)
-        };
-      });
-
-    res.json(guilds);
-  });
-
-  /**
-   * @query
-   * id - guild.id
-   *
-   * @return {Array} JSON array of directories guild has.
-   * id - directory id
-   * name - directory name
-   * guildID - guild id where it belongs
-   */
-  app.get(REST.URL.DIRECTORIES, async (req, res) => {
-    const guildID = req.query.id;
-    const directories = await IconGroup.find({
-      guildID
-    });
-
-    res.json(directories);
-  });
+  Object.values(GET).forEach(register => register(app, bot));
 
   // /**
   //  * @query
@@ -305,22 +172,6 @@ const startRestServer = (bot: Siamese) => {
   //     dirId
   //   }).exec();
   // });
-
-  /**
-   * @query
-   * id - guild.id
-   *
-   * @return {Array} "default"(dirId is 0) images
-   */
-  app.get(REST.URL.ICONS, async (req, res) => {
-    const guildID = req.query.id as string;
-
-    const images = await Icon.find({
-      guildID, groupID: "0"
-    }).exec();
-
-    res.json(images);
-  });
 
   // /**
   //  * @query

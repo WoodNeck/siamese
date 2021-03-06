@@ -13,7 +13,7 @@ import Icon from "./pages/Icon";
 import Command from "./pages/Command";
 import NotFound from "./pages/NotFound";
 import AuthNeeded from "./pages/AuthNeeded";
-import User from "./type/User";
+import User from "../../src/api/type/User";
 
 const Main = () => {
   const [user, setUser] = useState<User | null>(null);

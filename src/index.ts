@@ -4,7 +4,7 @@ import Siamese from "~/Siamese";
 import env from "~/setup/env";
 import setupAxios from "~/setup/axios";
 import setupExceptions from "~/setup/exceptions";
-import startRestServer from "~/rest/start";
+import startRestServer from "~/api/start";
 
 const logger = pino({ prettyPrint: { translateTime: "SYS:standard" } }, pino.destination("./siamese.log"));
 

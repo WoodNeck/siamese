@@ -36,6 +36,9 @@
   flex-direction: row;
   align-items: center;
 }
+.guild-item:hover {
+  background-color: #ddd;
+}
 
 .guild-separator {
   width: 100%;

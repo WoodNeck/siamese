@@ -1,10 +1,14 @@
+import User from "./User";
+
 interface Icon {
-  _id: string;
+  id: string;
   name: string;
   url: string;
   guildID: string;
   authorID: string;
   groupID: string;
+  createdTimestamp: number;
+  author?: User;
 }
 
 export default Icon;

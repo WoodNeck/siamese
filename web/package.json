@@ -10,11 +10,13 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "sweetalert2": "^10.15.5",
+    "sweetalert2-react-content": "^3.3.1",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -36,6 +38,8 @@
   "devDependencies": {
     "@types/react": "^17.0.2",
     "@types/react-router-dom": "^5.1.7",
-    "gh-pages": "^3.1.0"
+    "gh-pages": "^3.1.0",
+    "react-app-rewire-alias": "^1.0.1",
+    "react-app-rewired": "^2.1.8"
   }
 }

@@ -5,8 +5,22 @@
 .icon-menu-container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   margin-bottom: 20px;
+}
+
+.icon-menu-left,
+.icon-menu-right {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.icon-menu-right {
+  margin-left: auto;
+}
+
+.icon-menu-right .icon-menu-item {
+  margin-left: 10px;
 }
 
 .icon-menu-item {
@@ -17,30 +31,13 @@
   border-radius: 15px;
   color: #fff;
   fill: #fff;
+  cursor: pointer;
   font-family: var(--menu-font);
 }
 
-.icon-menu-icon {
+.icon-upload-icon {
   width: 18px;
   height: 18px;
-  margin-right: 10px;
-}
-
-.icon-item-container {
-  display: grid;
-  grid-auto-rows: var(--icon-size);
-  grid-auto-flow: row;
-  grid-template-columns: repeat(auto-fill, minmax(var(--icon-size), 1fr));
-  gap: 20px;
-  /* grid-auto-columns: 150px; */
-}
-
-.icon-item {
-  display: inline-flex;
-  border-radius: 15px;
-  width: var(--icon-size);
-  height: var(--icon-size);
-  box-sizing: border-box;
 }
 
 .icon-back-button-container {
@@ -48,30 +45,141 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  padding: 5px;
 }
 
-.icon-back-button {
-  height: 100%;
-  fill: #fff;
+.icon-menu-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.icon-remove-btn {
+  fill: #cc0000;
+  background-color: transparent;
+  padding: 10px;
+}
+.icon-remove-btn:hover {
+  background-color: #ddd;
+}
+.icon-remove-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.icon-upload-text {
+  margin-left: 10px;
+}
+
+.icon-guild-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 48px;
+  margin-left: 15px;
+}
+
+.icon-guild-title {
+  font-family: var(--menu-font);
+  font-size: 24px;
+  margin-left: 10px;
+  color: #222;
+}
+
+.icon-group-title {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-group-separator {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.icon-group-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.icon-item-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family: var(--main-font);
+  font-size: 18px;
+  padding: 8px;
+  color: #777;
+  fill: #777;
+  font-weight: bold;
+  text-decoration: none;
+}
+.icon-item:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.icon-item-header {
+  color: #999
+}
+.icon-item-header:hover {
+  background-color: inherit;
+  cursor: inherit;
+}
+.icon-item-separator {
+  height: 1px;
+  width: 100%;
+  background-color: #ddd;
+}
+
+.header-name {
+  margin-left: 10px;
+}
+
+.icon-item-name {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
 }
 
 .icon-item-icon {
-  width: 100%;
-  height: 40%;
-  fill: #777;
+  width: 24px;
+  height: 24px;
+  padding: 10px;
 }
 
-.icon-card {
-  flex-direction: column;
+.icon-item>* {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-family: var(--main-font);
-  font-weight: bold;
-  font-size: 14px;
-  background-color: #F7F9FC;
-  color: #777;
 }
 
-.icon-img {
-  max-height: 100px;
+.icon-item-author {
+  flex: 0 0 20%;
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+
+.icon-item-author-icon {
+  width: 24px;
+  height: 24px;
+  padding: 10px;
+}
+
+.icon-item-count {
+  flex: 0 0 120px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.icon-item-date {
+  flex: 0 0 140px;
+  justify-content: center;
 }
