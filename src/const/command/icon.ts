@@ -3,10 +3,12 @@ import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
 import * as EMOJI from "~/const/emoji";
-import { code } from "~/util/markdown";
+import { code, strong } from "~/util/markdown";
 
 export const ICON = {
   CMD: "아이콘",
+  DESC: "아이콘 관리 페이지를 반환한다냥!",
+  TITLE: (guild: Discord.Guild) => `${EMOJI.LINK} ${strong(guild.name)}의 아이콘 관리 페이지다냥!`,
   NAME_MAX_LENGTH: 10
 };
 
@@ -54,7 +56,7 @@ export const LIST = {
   EMOJI: {
     GROUP: EMOJI.FILE,
     ICON: EMOJI.PICTURE
-  },
+  } as const,
   ERROR: {
     NO_GROUP: "그런 이름을 가진 그룹이 존재하지 않는다냥!"
   }

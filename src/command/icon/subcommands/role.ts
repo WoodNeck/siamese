@@ -1,5 +1,4 @@
 import Command from "~/core/Command";
-import * as PERMISSION from "~/const/permission";
 import { ROLE } from "~/const/command/icon";
 import GuildConfig from "~/model/GuildConfig";
 
@@ -7,7 +6,6 @@ export default new Command({
   name: ROLE.CMD,
   description: ROLE.DESC,
   usage: ROLE.USAGE,
-  permissions: [PERMISSION.EMBED_LINKS],
   alias: ROLE.ALIAS,
   adminOnly: true,
   execute: async ({ bot, msg, channel, guild }) => {

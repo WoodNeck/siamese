@@ -21,7 +21,6 @@ export default new Command({
 
     let groupID = "0";
     if (groupName) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       const group = await IconGroup.findOne({
         name: groupName,
         guildID: guild.id
@@ -36,14 +35,12 @@ export default new Command({
 
     const groups: Array<{ name: string; type: string }> = groupName
       ? []
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       : (await IconGroup.find({ guildID: guild.id }).lean().exec() as IconGroupDocument[])
         .map(dir => ({
           name: dir.name,
           type: LIST.TYPE.GROUP
         }));
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const icons: Array<{ name: string; type: string }> = (await Icon.find({
       guildID: guild.id,
       groupID

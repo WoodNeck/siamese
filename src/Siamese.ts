@@ -89,7 +89,7 @@ class Siamese extends Discord.Client {
   public async setup() {
     // Setup bot
     await this._setupDatabase();
-    await this._loadCommands();
+    this._loadCommands();
     this._listenEvents();
   }
 
@@ -205,7 +205,7 @@ class Siamese extends Discord.Client {
     }
   }
 
-  private async _loadCommands() {
+  private _loadCommands() {
     const commands = this._commands;
     const categories = this._categories;
   	const permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);

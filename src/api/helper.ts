@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Discord from "discord.js";
 
 import Siamese from "~/Siamese";
 import GuildConfigModel, { GuildConfigDocument } from "~/model/GuildConfig";
+import * as PERMISSION from "~/const/permission";
 
 export const checkPermission = async (member: Discord.GuildMember, guild: Discord.Guild) => {
+  if (member.hasPermission(PERMISSION.ADMINISTRATOR.flag)) return true;
+
   const guildConfig = await GuildConfigModel.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
 
   if (!guildConfig || !guildConfig.iconManageRoleID) return true;
