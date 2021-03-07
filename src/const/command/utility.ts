@@ -82,6 +82,7 @@ export const TRANSLATE = {
   CMD: "번역",
   DESC: "문장을 번역한다냥!",
   USAGE: "[언어] 문장",
+  ALIAS: ["번역해줘"],
   DEFAULT_LANG: "한국어",
   LANGS: {
     "아프리칸스어": "af",

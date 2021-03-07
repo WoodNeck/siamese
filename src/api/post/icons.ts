@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
 
@@ -53,10 +51,11 @@ const register: Register = ({ app, bot }) => {
       icons = [icons];
     }
 
-    // FIXME:
-    // if (!hasPermission(bot, user.id, guildID)) {
-    //   return res.status(401).send(ERROR.UNAUTHORIZED);
-    // }
+    const userHasPermission = await hasPermission(bot, user.id, guildID);
+
+    if (!userHasPermission) {
+      return res.status(401).send(ERROR.UNAUTHORIZED);
+    }
 
     // Find icon group first if id exists
     const iconGroup: { _id: string } = groupID

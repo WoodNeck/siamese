@@ -19,6 +19,7 @@ export default new Command({
   subcommands: [
     List
   ],
+  alias: TRANSLATE.ALIAS,
   cooldown: Cooldown.PER_USER(3),
   execute: async ({ bot, channel, msg, args, content }) => {
     const langCandidate = args[0];

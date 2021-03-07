@@ -15,6 +15,7 @@
   height: 100%;
   border-radius: 15px;
   display: none;
+  z-index: 999;
 }
 
 .icon-drag-add {
@@ -195,15 +196,15 @@
   position: sticky;
   top: 0;
   background-color: white;
+  z-index: 3;
+  border-bottom: 1px solid #ddd;
 }
 .icon-item-header:hover {
   background-color: white;
   cursor: inherit;
 }
-.icon-item-separator {
-  height: 1px;
-  width: 100%;
-  background-color: #ddd;
+.icon-checkbox-icon {
+  fill: white;
 }
 
 .header-name {
@@ -214,6 +215,16 @@
   display: inline-flex;
   flex: 1;
   align-items: center;
+}
+
+.icon-item-checkbox-container {
+  height: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.icon-item-checkbox {
+  width: 24px;
+  margin-right: 0 !important;
 }
 
 .icon-item-name {
@@ -237,6 +248,10 @@
 .icon-item-name:hover {
   cursor: text;
   background-color: #fff;
+}
+.icon-item-name:disabled {
+  cursor: pointer;
+  background-color: transparent;
 }
 
 .icon-item-icon {

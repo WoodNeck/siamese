@@ -7,6 +7,7 @@ import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
+import { Checkbox } from "pretty-checkbox-react";
 
 import Loading from "../component/Loading";
 import * as URL from "../../../src/api/const/url";
@@ -15,13 +16,14 @@ import Icon from "../../../src/api/type/Icon";
 import IconGroup from "../../../src/api/type/IconGroup";
 import "./IconList.css";
 import "react-toastify/dist/ReactToastify.min.css";
+import "@djthoms/pretty-checkbox";
 
 const IconList: React.FC<{
   guilds: Guild[]
 }> = ({ guilds }) => {
   const { guildID, groupID } = useParams<{ guildID: string, groupID?: string }>();
-  const [iconGroups, setIconGroups] = useState<IconGroup[] | null>(null);
-  const [icons, setIcons] = useState<Icon[] | null>(null);
+  const [iconGroups, setIconGroups] = useState<Array<IconGroup & { selected: boolean }> | null>(null);
+  const [icons, setIcons] = useState<Array<Icon & { selected: boolean }> | null>(null);
   const [iconGroup, setIconGroup] = useState<IconGroup | null>(null);
 
   const guild = guilds.find(guild => guild.id === guildID)!;
@@ -40,7 +42,7 @@ const IconList: React.FC<{
         }).then(res => res.json())
       ]).then(([group, images]) => {
           setIconGroups([]);
-          setIcons(images as Icon[]);
+          setIcons(images.map((icon: Icon) => ({...icon, selected: false})));
           setIconGroup(group as IconGroup);
         });
     } else {
@@ -52,8 +54,8 @@ const IconList: React.FC<{
           credentials: "include"
         }).then(res => res.json())
       ]).then(([groups, images]) => {
-        setIconGroups(groups as IconGroup[]);
-        setIcons(images as Icon[]);
+        setIconGroups(groups.map((group: IconGroup) => ({...group, selected: false})));
+        setIcons(images.map((icon: Icon) => ({...icon, selected: false})));
         setIconGroup(null);
       });
     }
@@ -75,6 +77,7 @@ const IconList: React.FC<{
     isDragReject,
   } = useDropzone({
     accept: "image/jpg, image/jpeg, image/png, image/gif, image/webp",
+    disabled: !guild.hasPermission,
     noClick: true,
     noKeyboard: true,
     maxSize: 8388608, // 8MB
@@ -140,17 +143,21 @@ const IconList: React.FC<{
     isDragAccept
   ]);
 
-  const updateIconName = (icon: Icon, newName: string, el: HTMLInputElement) => {
-    el.value = newName;
+  const updateName = useCallback((item: Icon | IconGroup, newName: string, el: HTMLInputElement, isIcon: boolean) => {
+    newName = newName.replace(/\s+/, "");
 
-    fetch(`${process.env.REACT_APP_API_URL}${URL.ICON}`, {
+    el.value = newName;
+    const endPoint = isIcon ? URL.ICON : URL.DIRECTORY;
+    const itemName = isIcon ? "아이콘 이름" : "그룹명";
+
+    fetch(`${process.env.REACT_APP_API_URL}${endPoint}`, {
       method: "PATCH",
       credentials: "include",
       headers: {
         "Content-type": "application/json; charset=utf-8"
       },
       body: JSON.stringify({
-        id: icon.id,
+        id: item.id,
         name: newName
       })
     }).then(async res => {
@@ -158,13 +165,86 @@ const IconList: React.FC<{
         throw new Error(await res.text());
       }
       // Re-render component
-      toast.success("아이콘 이름을 업데이트했습니다!");
+      toast.success(`${itemName}을 업데이트했습니다!`);
       forceUpdate();
     }).catch(err => {
-      el.value = icon.name;
-      toast.error(() => <div>❌ 아이콘 이름을 변경하지 못했습니다<br/>{err.message ? err.message : err.toString()}</div>);
+      el.value = item.name;
+      toast.error(() => <div>❌ {itemName}을 변경하지 못했습니다<br/>{err.message ? err.message : err.toString()}</div>);
     });
-  };
+  }, []);
+
+  const createFolder = useCallback(() => {
+    const formData = new FormData();
+    formData.append("guildID", guildID);
+
+    fetch(`${process.env.REACT_APP_API_URL}${URL.DIRECTORY}`, {
+      method: "POST",
+      credentials: "include",
+      body: formData
+    }).then(async res => {
+      if (res.status !== 200) {
+        throw new Error(await res.text());
+      }
+      // Re-render component
+      toast("📁 폴더를 추가했습니다!");
+      forceUpdate();
+    }).catch(err => {
+      toast.error(() => <div>❌ 새 폴더 생성에 실패했습니다 :(<br/>{err.message ? err.message : err.toString()}</div>);
+    });
+  }, [guildID]);
+
+  const removeSelected = useCallback(() => {
+    if (!iconGroups || !icons) return;
+
+    const selectedGroups: IconGroup[] = iconGroups.filter(group => group.selected);
+    const selectedIcons: Icon[] = icons.filter(icon => icon.selected);
+
+    if (selectedGroups.length <= 0 && selectedIcons.length <= 0) return;
+
+    const removeGroups = fetch(`${process.env.REACT_APP_API_URL}${URL.DIRECTORIES}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify({
+        directories: selectedGroups.map(iconGroup => iconGroup.id),
+        guildID,
+      })
+    });
+
+    const removeIcons = fetch(`${process.env.REACT_APP_API_URL}${URL.ICONS}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify({
+        icons: selectedIcons.map(iconGroup => iconGroup.id),
+        guildID,
+      })
+    });
+
+    Promise.all([removeGroups, removeIcons]).then(([res1, res2]) => {
+      if (!res1.ok || !res2.ok) throw new Error();
+
+      const removed: string[] = [];
+      if (selectedGroups.length > 0) removed.push(`${selectedGroups.length}개의 그룹`);
+      if (selectedIcons.length > 0) removed.push(`${selectedIcons.length}개의 아이콘`);
+
+      toast.success(`${removed.join(" 및 ")}을 삭제했습니다!`)
+      forceUpdate();
+    }).catch(() => {
+      toast("❌ 아이콘/폴더 삭제에 실패했습니다.")
+    });
+  }, [guildID, iconGroups, icons]);
+
+  const allChecked = useMemo(() => {
+    if (!iconGroups || !icons) return false;
+    if (iconGroups.length <= 0 && icons.length <= 0) return false;
+
+    return icons.every(icon => icon.selected) && iconGroups.every(group => group.selected);
+  }, [icons, iconGroups])
 
   if (!iconGroups || !icons) return <Loading />
 
@@ -192,46 +272,88 @@ const IconList: React.FC<{
             }
           </div>
         </div>
-        <div className="icon-menu-right">
-          {
-            !iconGroup &&
-            <div className="icon-menu-item icon-add-folder-btn">
+        {
+          guild.hasPermission &&
+          <div className="icon-menu-right">
+            {
+              !iconGroup &&
+              <div className="icon-menu-item icon-add-folder-btn" onClick={createFolder}>
+                <svg className="icon-menu-icon">
+                  <use xlinkHref={`${process.env.PUBLIC_URL}/icons/add-folder.svg#icon`} />
+                </svg>
+              </div>
+            }
+            <div className="icon-menu-item icon-remove-btn" onClick={removeSelected}>
               <svg className="icon-menu-icon">
-                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/add-folder.svg#icon`} />
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/trash.svg#icon`} />
               </svg>
             </div>
-          }
-          <div className="icon-menu-item icon-remove-btn">
-            <svg className="icon-menu-icon">
-              <use xlinkHref={`${process.env.PUBLIC_URL}/icons/trash.svg#icon`} />
-            </svg>
+            <div className="icon-menu-item" onClick={open}>
+              <svg className="icon-upload-icon">
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/upload.svg#icon`} />
+              </svg>
+              <span className="icon-upload-text">업로드</span>
+            </div>
           </div>
-          <div className="icon-menu-item">
-            <svg className="icon-upload-icon">
-              <use xlinkHref={`${process.env.PUBLIC_URL}/icons/upload.svg#icon`} />
-            </svg>
-            <span className="icon-upload-text" onClick={open}>업로드</span>
-          </div>
-        </div>
+        }
       </div>
       <div className="icon-item-container">
         <div className="icon-item icon-item-header">
-          <input type="checkbox" className="icon-item-checkbox" onClick={e => e.stopPropagation()}></input>
+          { guild.hasPermission &&
+            <div className="icon-item-checkbox-container">
+              <Checkbox color="danger" bigger shape="curve" variant="thick" className="icon-item-checkbox"
+                icon={<svg className="icon-checkbox-icon"><use xlinkHref={`${process.env.PUBLIC_URL}/icons/cancel.svg#icon`} /></svg>}
+                checked={allChecked}
+                onChange={e => {
+                  const checked = e.currentTarget.checked;
+
+                  setIcons([...icons.map(icon => ({ ...icon, selected: checked }))]);
+                  setIconGroups([...iconGroups.map(group => ({ ...group, selected: checked }))]);
+                }}></Checkbox>
+            </div>
+          }
           <div className="icon-item-name-container header-name">이름</div>
           <div className="icon-item-author">생성자</div>
           <div className="icon-item-count">아이콘 개수</div>
           <div className="icon-item-date">생성일자</div>
         </div>
-        <div className="icon-item-separator"></div>
         {
           iconGroups.map(iconGroup => (
             <Link to={`/icon/${guildID}/${iconGroup.id}`} key={iconGroup.id} className="icon-item">
-              <input type="checkbox" className="icon-item-checkbox" onClick={e => e.stopPropagation()}></input>
+              { guild.hasPermission &&
+                <div className="icon-item-checkbox-container" onClick={e => {
+                  e.stopPropagation();
+
+                  if ((e.target as HTMLElement).tagName !== "INPUT") {
+                    e.preventDefault();
+                  }
+                }}>
+                  <Checkbox color="danger" animation="jelly" bigger shape="curve" variant="thick" className="icon-item-checkbox"
+                    icon={<svg className="icon-checkbox-icon"><use xlinkHref={`${process.env.PUBLIC_URL}/icons/cancel.svg#icon`} /></svg>}
+                    checked={iconGroup.selected}
+                    onChange={() => {
+                      iconGroup.selected = !iconGroup.selected;
+                      setIconGroups([...iconGroups]);
+                    }}
+                  ></Checkbox>
+                </div>
+              }
               <div className="icon-item-name-container">
                 <svg className="icon-item-icon">
                   <use xlinkHref={`${process.env.PUBLIC_URL}/icons/folder.svg#icon`} />
                 </svg>
-                <span>{ iconGroup.name }</span>
+                <input type="text" maxLength={10}
+                  onBlur={e => {
+                    const newName = e.target.value;
+                    if (newName !== iconGroup.name) {
+                      updateName(iconGroup, newName, e.target, false);
+                    }
+                  }}
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="icon-item-name" defaultValue={iconGroup.name} disabled={ !guild.hasPermission } />
               </div>
               <div className="icon-item-author">
                 <img className="icon-item-author-icon" src={ iconGroup.author?.avatarURL ?? "" }></img>
@@ -243,9 +365,19 @@ const IconList: React.FC<{
           ))
         }
         {
-          icons.map((icon: Icon) => (
+          icons.map(icon => (
             <div key={icon.id} className="icon-item" onClick={() => showIcon(icon)}>
-              <input type="checkbox" className="icon-item-checkbox" onClick={e => e.stopPropagation()}></input>
+              { guild.hasPermission &&
+                <div className="icon-item-checkbox-container" onClick={e => e.stopPropagation()}>
+                  <Checkbox color="danger" animation="jelly" bigger shape="curve" variant="thick" className="icon-item-checkbox"
+                    icon={<svg className="icon-checkbox-icon"><use xlinkHref={`${process.env.PUBLIC_URL}/icons/cancel.svg#icon`} /></svg>}
+                    checked={icon.selected}
+                    onChange={() => {
+                      icon.selected = !icon.selected;
+                      setIcons([...icons]);
+                    }}></Checkbox>
+                </div>
+              }
               <div className="icon-item-name-container">
                 <svg className="icon-item-icon">
                   <use xlinkHref={`${process.env.PUBLIC_URL}/icons/image.svg#icon`} />
@@ -254,11 +386,11 @@ const IconList: React.FC<{
                   onBlur={e => {
                     const newName = e.target.value;
                     if (newName !== icon.name) {
-                      updateIconName(icon, newName.replace(/\s+/, ""), e.target);
+                      updateName(icon, newName, e.target, true);
                     }
                   }}
                   onClick={e => e.stopPropagation()}
-                  className="icon-item-name" defaultValue={icon.name} />
+                  className="icon-item-name" defaultValue={icon.name} disabled={ !guild.hasPermission } />
               </div>
               <div className="icon-item-author">
                 <img className="icon-item-author-icon" src={ icon.author?.avatarURL ?? "" }></img>

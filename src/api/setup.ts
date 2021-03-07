@@ -9,7 +9,7 @@ import * as ERROR from "./const/error";
 
 import Siamese from "~/Siamese";
 
-export default (app: Express, bot: Siamese) => {
+export default ({ app, bot }: { app: Express; bot: Siamese }) => {
   // CORS
   app.use((req, res, next) => {
     res.append("Access-Control-Allow-Origin", [bot.env.WEB_URL_BASE]);

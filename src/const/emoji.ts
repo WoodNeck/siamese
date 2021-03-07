@@ -48,6 +48,7 @@ export const SPARKLING_HEART = "💖";
 export const BLACK_HEART = "🖤";
 export const BOT = "🤖";
 export const WRENCH = "🔧";
+export const GEAR = "⚙️";
 export const BAR_CHART = "📊";
 export const THINKING = "🤔";
 export const KEYCAP = "⃣";

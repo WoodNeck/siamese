@@ -1,16 +1,9 @@
+import Discord from "discord.js";
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
 import * as EMOJI from "~/const/emoji";
 import { code } from "~/util/markdown";
-
-// export const MANAGE = {
-//   CMD: "스탬프",
-//   DESC: (bot: Siamese) => dedent`
-//     스탬프를 관리할 수 있는 사이트 링크를 출력한다냥!
-//     스탬프는 자주 사용하는 이미지를 등록해서 채팅창에 간편하게 출력할 수 있는 기능이다냥!
-//     ${bot.env.FILE_MANAGEMENT_URL}/stamp 에서 더 알아볼 수 있다냥!`
-// };
 
 export const ICON = {
   CMD: "아이콘",
@@ -64,5 +57,20 @@ export const LIST = {
   },
   ERROR: {
     NO_GROUP: "그런 이름을 가진 그룹이 존재하지 않는다냥!"
+  }
+};
+
+export const ROLE = {
+  CMD: "역할설정",
+  DESC: "아이콘을 관리할 수 있는 역할을 설정한다냥!",
+  USAGE: "[@역할명]",
+  ALIAS: ["역할"],
+  MSG: {
+    SUCCESS_WITH_ROLE: (role: Discord.Role) => `이제 서버 관리자랑 ${role.toString()}만 아이콘을 관리할 수 있다냥!`,
+    SUCCESS_WITHOUT_ROLE: "아이콘 관리 역할을 제거했다냥! 아무나 아이콘을 관리할 수 있다냥!"
+  },
+  ERROR: {
+    PROVIDE_EXACTLY_ONE_ROLE: `설정할 역할은 하나만 ${code("@멘션")}해서 달라냥!`,
+    NO_ROLE: "그런 이름을 가진 그룹이 존재하지 않는다냥!"
   }
 };
