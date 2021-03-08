@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Switch,
   Route,
@@ -11,9 +11,11 @@ import "./Icon.css";
 import Loading from "../component/Loading";
 import Guild from "../../../src/api/type/Guild";
 
-const Icon = () => {
+const Icon: React.FC<{
+  guilds: Guild[] | null;
+  setGuilds: React.Dispatch<React.SetStateAction<Guild[] | null>>;
+}> = ({ guilds, setGuilds }) => {
   const match = useRouteMatch();
-  const [guilds, setGuilds] = useState<Guild[] | null>(null);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/guilds`, {
@@ -22,7 +24,7 @@ const Icon = () => {
       .then(guilds => {
         setGuilds(guilds as Guild[]);
       })
-  }, []);
+  }, [setGuilds]);
 
   if (!guilds) return <Loading />
 

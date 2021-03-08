@@ -88,4 +88,30 @@
   font-family: var(--main-font);
   color: #999;
   font-size: 14px;
+  word-break: keep-all;
+}
+
+@media screen and (max-width: 1024px) {
+  .guild-header {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .guild-subtitle {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .guild-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .guild-name {
+    font-size: 14px;
+  }
+
+  .guild-footer {
+    font-size: 14px;
+  }
 }

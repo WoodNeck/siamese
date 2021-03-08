@@ -172,6 +172,8 @@
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .icon-item {
@@ -290,4 +292,93 @@
 .icon-item-date {
   flex: 0 0 140px;
   justify-content: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .icon-container {
+    padding: 0;
+  }
+
+  .icon-menu-item {
+    border-radius: 6px;
+    padding: 5px;
+  }
+
+  .icon-arrow-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .icon-guild-icon {
+    width: 32px;
+    height: 32px;
+    margin-left: 5px;
+  }
+
+  .icon-guild-title {
+    font-size: 14px;
+    margin-left: 5px;
+    word-break: break-all;
+  }
+
+  .icon-group-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .icon-group-separator {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+
+  .icon-menu-right .icon-menu-item {
+    margin-left: 5px;
+  }
+
+  .icon-menu-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .icon-upload-text {
+    display: none;
+  }
+
+  .header-name {
+    margin-left: 5px;
+  }
+
+  .icon-item {
+    font-size: 10px;
+  }
+
+  .icon-item-checkbox-container {
+    height: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .icon-item-checkbox {
+    width: 14px;
+    margin-right: 0 !important;
+  }
+
+  .icon-item-name {
+    width: 120px;
+    font-size: 12px;
+  }
+
+  .icon-item-icon {
+    width: 12px;
+    height: 12px;
+    padding: 5px;
+  }
+
+  .icon-item-author,
+  .icon-item-date {
+    display: none;
+  }
+
+  .icon-item-count {
+    flex: 0 0 80px;
+  }
 }

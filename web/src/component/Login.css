@@ -16,3 +16,14 @@
   height: 22px;
   margin-right: 10px;
 }
+
+@media screen and (max-width: 1024px) {
+  .header-container {
+    padding: 10px;
+  }
+
+  .header-menu-item {
+    padding: 10px;
+    font-size: 16px;
+  }
+}

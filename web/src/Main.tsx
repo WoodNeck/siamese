@@ -14,9 +14,12 @@ import Command from "./pages/Command";
 import NotFound from "./pages/NotFound";
 import AuthNeeded from "./pages/AuthNeeded";
 import User from "../../src/api/type/User";
+import Guild from "../../src/api/type/Guild";
 
 const Main = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [guilds, setGuilds] = useState<Guild[] | null>(null);
+  const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/user`, {
@@ -30,16 +33,16 @@ const Main = () => {
   return (
     <HashRouter>
       <div className="main-container">
-        <Header user={user} />
+        <Header user={user} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} />
         <div className="contents-container">
-          <Sidebar />
+          <Sidebar guilds={guilds} visible={sidebarVisible} />
           <div className="page-container">
             <Switch>
               <Route path="/icon">
                 {
                   user
                     ? user.id
-                      ? <Icon />
+                      ? <Icon guilds={guilds} setGuilds={setGuilds} />
                       : <AuthNeeded />
                     : <></>
                 }

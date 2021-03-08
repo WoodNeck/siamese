@@ -1,6 +1,8 @@
-import {
-  NavLink
-} from "react-router-dom";
+import React, { useMemo } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+
+import GuildLink from "./GuildLink";
+import Guild from "../../../src/api/type/Guild";
 
 import "./Sidebar.css";
 
@@ -8,45 +10,60 @@ interface Route {
   path: string;
   name: string;
   icon: string;
+  active: boolean;
+  subcategories?: JSX.Element[];
 }
 
-const routes: Route[] = [
-  {
-    path: "/",
-    name: "홈",
-    icon: "home"
-  },
-  {
-    path: "/icon",
-    name: "아이콘",
-    icon: "archive"
-  },
-  {
-    path: "/command",
-    name: "명령어 목록",
-    icon: "bolt"
-  }
-];
+const Sidebar: React.FC<{
+  guilds: Guild[] | null;
+  visible: boolean;
+}> = ({ guilds, visible }) => {
+  const location = useLocation();
 
-const Sidebar = () => {
+  const routes: Route[] = useMemo(() => [
+    {
+      path: "/",
+      name: "홈",
+      icon: "home",
+      active: location.pathname === "/"
+    },
+    {
+      path: "/icon",
+      name: "아이콘",
+      icon: "archive",
+      active: location.pathname.startsWith("/icon"),
+      subcategories: guilds?.map(guild => <GuildLink key={guild.id} guild={guild} />)
+    },
+    {
+      path: "/command",
+      name: "명령어 목록",
+      icon: "bolt",
+      active: location.pathname.startsWith("/command")  ,
+    }
+  ], [guilds, location]);
+
+  const containerClass = useMemo(() => {
+    const classes = ["sidebar-container"];
+    if (visible) classes.push("visible");
+
+    return classes.join(" ");
+  }, [visible]);
+
   return (
-    <div className="sidebar-container">
+    <div className={containerClass}>
       <div className="sidebar-menu">
         {routes.map((route) => (
-          <NavLink to={route.path} className="sidebar-menu-item" activeClassName="selected"
-            key={route.name}
-            isActive={(match, location) => {
-              if (!match) return false;
-              if (route.path === "/") return location.pathname === route.path;
-
-              return location.pathname.includes(route.path);
-            }}
-          >
-            <svg className="sidebar-menu-icon">
-              <use xlinkHref={`${process.env.PUBLIC_URL}/icons/${route.icon}.svg#icon`} />
-            </svg>
-            <span>{route.name}</span>
-          </NavLink>
+          <div className="sidebar-menu-item-container" key={route.name}>
+            <NavLink to={route.path} className="sidebar-menu-item" activeClassName="selected"
+              isActive={() => route.active}
+            >
+              <svg className="sidebar-menu-icon">
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/${route.icon}.svg#icon`} />
+              </svg>
+              <span>{route.name}</span>
+            </NavLink>
+            { route.active && route.subcategories }
+          </div>
         ))}
       </div>
       <div className="sidebar-others">

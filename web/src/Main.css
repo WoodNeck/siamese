@@ -18,3 +18,18 @@
 .page-container {
   flex-grow: 1;
 }
+
+@media screen and (max-width: 1024px) {
+  .contents-container {
+    padding: 0;
+    height: calc(100% - 60px);
+    box-sizing: border-box;
+  }
+
+  .page-container {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
