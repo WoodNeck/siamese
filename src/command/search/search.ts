@@ -39,15 +39,15 @@ export default new Command({
 
     const pages = searchResult
       .map(result => {
-        const metatags = result.pagemap.metatags?.[0] || {};
+        const metatags = result.pagemap?.metatags?.[0] || {};
 
         return new MessageEmbed()
           .setTitle(result.title)
           .setDescription(result.snippet)
           .setThumbnail(
-            result.pagemap.cse_image?.[0].src
-            || result.pagemap.cse_thumbnail?.[0].src
-            || result.pagemap.imageobject?.[0].src
+            result.pagemap?.cse_image?.[0].src
+            || result.pagemap?.cse_thumbnail?.[0].src
+            || result.pagemap?.imageobject?.[0].src
             || "")
           .setURL(result.link)
           .setColor(
@@ -81,7 +81,7 @@ interface SearchResult {
   htmlSnippet: string;
   formattedUrl: string;
   htmlFormattedUrl: string;
-  pagemap: {
+  pagemap?: {
     metatags?: MetaTag[];
     cse_thumbnail?: Array<{
       src: string;
