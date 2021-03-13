@@ -7,6 +7,7 @@
   padding-right: 80px;
   justify-content: space-between;
   font-family: var(--menu-font);
+  font-weight: bold;
 }
 
 .sidebar-container a {
@@ -89,7 +90,7 @@
     bottom: 0;
     padding: 60px 10px 10px 10px;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     box-sizing: border-box;
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.7);

@@ -1,32 +1,33 @@
 import React, { useMemo } from "react";
-import {
-  Link
-} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-import "./Header.css";
 import Login from "./Login";
 import Profile from "./Profile";
-import User from "../../../src/api/type/User";
+import { RootState } from "../redux/reducers";
 
-const Header: React.FC<{
-  user: User | null;
-  sidebarVisible: boolean;
-  setSidebarVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ user, sidebarVisible, setSidebarVisible }) => {
+import "./Header.css";
+import { toggleHamburger } from "../redux/actions";
+
+const Header: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const hamburger = useSelector((state: RootState) => state.hamburger);
+  const dispatch = useDispatch();
+
   const containerClass = useMemo(() => {
     const classes = ["header-container"];
-    if (sidebarVisible) classes.push("sidebar");
+    if (hamburger.open) classes.push("sidebar");
 
     return classes.join(" ");
-  }, [sidebarVisible]);
+  }, [hamburger]);
 
   return (
     <div className={containerClass}>
       <div className="header-menu-left">
-      <div className="header-burger" onClick={() => setSidebarVisible(!sidebarVisible)}>
+      <div className="header-burger" onClick={() => dispatch(toggleHamburger())}>
         <svg className="header-burger-icon">
           <use xlinkHref={
-            sidebarVisible
+            hamburger.open
               ? `${process.env.PUBLIC_URL}/icons/cancel.svg#icon`
               : `${process.env.PUBLIC_URL}/icons/hamburger.svg#icon`
             } />

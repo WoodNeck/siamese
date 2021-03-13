@@ -7,7 +7,7 @@ const register: Register = ({ app }) => {
    * @return {Object} user info
    * empty object if user not exists
    */
-  app.get(URL.USER, async (req, res) => {
+  app.get(URL.USER, (req, res) => {
     const user = (req.session as PassportSession).passport?.user ?? {};
 
     res.json(user);

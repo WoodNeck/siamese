@@ -4,29 +4,33 @@ import {
   Route,
   useRouteMatch
 } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import GuildList from "./GuildList";
 import IconList from "./IconList";
-import "./Icon.css";
+import AuthNeeded from "./AuthNeeded";
 import Loading from "../component/Loading";
+import { RootState } from "../redux/reducers";
+import { setGuilds } from "../redux/actions";
 import Guild from "../../../src/api/type/Guild";
 
-const Icon: React.FC<{
-  guilds: Guild[] | null;
-  setGuilds: React.Dispatch<React.SetStateAction<Guild[] | null>>;
-}> = ({ guilds, setGuilds }) => {
+import "./Icon.css";
+
+const Icon: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const guilds = useSelector((state: RootState) => state.guilds);
   const match = useRouteMatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/guilds`, {
       credentials: "include"
     }).then(res => res.json())
-      .then(guilds => {
-        setGuilds(guilds as Guild[]);
-      })
-  }, [setGuilds]);
+      .then(guilds => dispatch(setGuilds(guilds as Guild[])))
+  }, [dispatch]);
 
-  if (!guilds) return <Loading />
+  if (!user || !user.id) return <AuthNeeded />;
+  if (!guilds) return <Loading />;
 
   return (<Switch>
     <Route path={[

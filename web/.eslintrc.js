@@ -7,6 +7,7 @@ module.exports = {
     "@typescript-eslint/quotes": [
       "error",
       "double"
-    ]
+    ],
+    "import/no-anonymous-default-export": "off"
   }
 };

@@ -1,20 +1,31 @@
 @font-face {
   font-family: "CuteFont";
+  src: url(./CuteFont/CuteFont-Regular.woff2) format("woff2");
   src: url(./CuteFont/CuteFont-Regular.ttf) format("opentype");
 }
 
 @font-face {
   font-family: "HangeulNuri";
+  src: url(./HangeulNuri/HangeulNuriR.woff2) format("woff2");
+  src: url(./HangeulNuri/HangeulNuriR.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "HangeulNuri";
+  src: url(./HangeulNuri/HangeulNuriB.woff2) format("woff2");
   src: url(./HangeulNuri/HangeulNuriB.ttf) format("opentype");
+  font-weight: bold;
 }
 
 @font-face {
   font-family: "IBMPlexSans";
+  src: url(./IBMPlexSans/IBMPlexSansKR-Regular.woff2) format("woff2");
   src: url(./IBMPlexSans/IBMPlexSansKR-Regular.ttf) format("opentype");
 }
 
 @font-face {
   font-family: "IBMPlexSans";
+  src: url(./IBMPlexSans/IBMPlexSansKR-Bold.woff2) format("woff2");
   src: url(./IBMPlexSans/IBMPlexSansKR-Bold.ttf) format("opentype");
   font-weight: bold;
 }

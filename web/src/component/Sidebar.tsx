@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import GuildLink from "./GuildLink";
-import Guild from "../../../src/api/type/Guild";
 
 import "./Sidebar.css";
+import { RootState } from "../redux/reducers";
 
 interface Route {
   path: string;
@@ -14,10 +15,9 @@ interface Route {
   subcategories?: JSX.Element[];
 }
 
-const Sidebar: React.FC<{
-  guilds: Guild[] | null;
-  visible: boolean;
-}> = ({ guilds, visible }) => {
+const Sidebar: React.FC = () => {
+  const hamburger = useSelector((state: RootState) => state.hamburger);
+  const guilds = useSelector((state: RootState) => state.guilds);
   const location = useLocation();
 
   const routes: Route[] = useMemo(() => [
@@ -39,15 +39,21 @@ const Sidebar: React.FC<{
       name: "명령어 목록",
       icon: "bolt",
       active: location.pathname.startsWith("/command")  ,
+    },
+    {
+      path: "/setting",
+      name: "길드 설정",
+      icon: "setting",
+      active: location.pathname.startsWith("/setting")  ,
     }
   ], [guilds, location]);
 
   const containerClass = useMemo(() => {
     const classes = ["sidebar-container"];
-    if (visible) classes.push("visible");
+    if (hamburger.open) classes.push("visible");
 
     return classes.join(" ");
-  }, [visible]);
+  }, [hamburger]);
 
   return (
     <div className={containerClass}>

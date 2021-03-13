@@ -9,3 +9,9 @@
 .emoji-big {
   font-size: 160px;
 }
+
+.home-img {
+  width: 400px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
