@@ -12,6 +12,7 @@ export const QUESTION_MARK = "❓";
 export const MIDDLE_DOT = "•";
 export const DICE = "🎲";
 export const WWW = "🌐";
+export const MAGNIFYING_GLASS_LEFT = "🔍";
 export const ARROW_SHADED_RIGHT = "➩";
 export const ARROW_LEFT = "⬅";
 export const ARROW_RIGHT = "➡";
@@ -63,7 +64,7 @@ export const SCALES = "⚖️";
 export const CAT = {
   KISSING: "😽",
   GRINNING: "😸"
-} as const;
+};
 export const CROSSED_SWORDS = "⚔️";
 export const SHIELD = "🛡️";
 export const GOLD_MEDAL = "🥇";
@@ -108,5 +109,5 @@ export const LETTER = {
   X: "🇽",
   Y: "🇾",
   Z: "🇿"
-} as const;
+};
 export const ZERO_WIDTH_SPACE = "​";

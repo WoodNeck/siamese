@@ -16,6 +16,7 @@ export default new Command({
   permissions: [
     PERMISSION.EMBED_LINKS,
     PERMISSION.ADD_REACTIONS,
+    PERMISSION.READ_MESSAGE_HISTORY,
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_CHANNEL(5),

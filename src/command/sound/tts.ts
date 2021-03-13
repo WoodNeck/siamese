@@ -14,7 +14,8 @@ export default new SoundCommand({
   permissions: [
     PERMISSION.CONNECT,
     PERMISSION.SPEAK,
-    PERMISSION.ADD_REACTIONS
+    PERMISSION.ADD_REACTIONS,
+    PERMISSION.READ_MESSAGE_HISTORY
   ],
   cooldown: Cooldown.PER_USER(3),
   execute: async ctx => {

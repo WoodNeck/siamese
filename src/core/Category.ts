@@ -10,18 +10,14 @@ class Category {
 
   public readonly commands: Command[];
 
-  public constructor({
-    name,
-    description,
-    categoryEmoji
-  }: {
-    name: string;
-    description: string;
-    categoryEmoji: string;
+  public constructor(category: {
+    NAME: string;
+    DESC: string;
+    EMOJI: string;
   }) {
-    this.name = name;
-    this.description = description;
-    this.categoryEmoji = categoryEmoji;
+    this.name = category.NAME;
+    this.description = category.DESC;
+    this.categoryEmoji = category.EMOJI;
     this.commands = [];
   }
 

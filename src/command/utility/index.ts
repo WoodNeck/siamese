@@ -7,13 +7,8 @@ import Translate from "./translate";
 
 import Category from "~/core/Category";
 import { UTILITY } from "~/const/category";
-import * as EMOJI from "~/const/emoji";
 
-const category = new Category({
-  name: UTILITY.NAME,
-  description: UTILITY.DESC,
-  categoryEmoji: EMOJI.TOOLS
-});
+const category = new Category(UTILITY);
 
 category.add(
   Avatar,

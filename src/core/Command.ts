@@ -62,7 +62,7 @@ class Command {
     this.subcommands = subcommands;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
   public async onFail(ctx: CommandContext): Promise<void> {
     return;
   }
@@ -82,7 +82,10 @@ class Command {
       if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
         const neededPermissionList = this.permissions.map(permission => `- ${permission.message}`).join("\n");
         await bot.send(ctx.channel, ERROR.CMD.PERMISSION_IS_MISSING(bot, neededPermissionList));
-      } else if (permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)) {
+      } else if (
+        permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)
+        && permissionsGranted.has(PERMISSION.READ_MESSAGE_HISTORY.flag
+        )) {
         await msg.react(EMOJI.CROSS);
       }
       return false;

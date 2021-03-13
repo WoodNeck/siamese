@@ -7,13 +7,8 @@ import Search from "./search";
 
 import Category from "~/core/Category";
 import { SEARCH } from "~/const/category";
-import * as EMOJI from "~/const/emoji";
 
-const category = new Category({
-  name: SEARCH.NAME,
-  description: SEARCH.DESC,
-  categoryEmoji: EMOJI.WWW
-});
+const category = new Category(SEARCH);
 
 category.add(
   Image,
