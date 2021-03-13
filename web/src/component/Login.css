@@ -9,6 +9,8 @@
   font-size: 22px;
   border: 0;
   border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .header-menu-icon {

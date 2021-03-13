@@ -12,7 +12,7 @@ import AuthNeeded from "./AuthNeeded";
 import Loading from "../component/Loading";
 import { RootState } from "../redux/reducers";
 import { setGuilds } from "../redux/actions";
-import Guild from "../../../src/api/type/Guild";
+import Guild from "~/api/type/Guild";
 
 import "./Icon.css";
 
@@ -29,7 +29,8 @@ const Icon: React.FC = () => {
       .then(guilds => dispatch(setGuilds(guilds as Guild[])))
   }, [dispatch]);
 
-  if (!user || !user.id) return <AuthNeeded />;
+  if (!user) return <></>;
+  if (!user.id) return <AuthNeeded />;
   if (!guilds) return <Loading />;
 
   return (<Switch>
@@ -37,10 +38,10 @@ const Icon: React.FC = () => {
       `${match.path}/:guildID/:groupID`,
       `${match.path}/:guildID`
     ]}>
-      <IconList guilds={guilds} />
+      <IconList />
     </Route>
     <Route path={match.path}>
-      <GuildList guilds={guilds} />
+      <GuildList />
     </Route>
   </Switch>)
 }

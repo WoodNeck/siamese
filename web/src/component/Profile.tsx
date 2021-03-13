@@ -1,5 +1,5 @@
 import React from "react";
-import User from "../../../src/api/type/User";
+import User from "~/api/type/User";
 import "./Profile.css";
 
 const Profile: React.FC<{ user: User }> = ({ user }) => {

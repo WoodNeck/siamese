@@ -1,3 +1,5 @@
+import "./Setting.css";
+
 const Setting = () => (
   <div className="not-found-container">
     <svg className="not-found-icon">

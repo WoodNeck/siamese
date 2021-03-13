@@ -63,110 +63,6 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.icon-menu-container {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 20px;
-}
-
-.icon-menu-left,
-.icon-menu-right {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.icon-menu-right {
-  margin-left: auto;
-}
-
-.icon-menu-right .icon-menu-item {
-  margin-left: 10px;
-}
-
-.icon-menu-item {
-  display: inline-flex;
-  align-items: center;
-  padding: 15px;
-  background-color: #222;
-  border-radius: 15px;
-  color: #fff;
-  fill: #fff;
-  cursor: pointer;
-  font-family: var(--menu-font);
-}
-
-.icon-upload-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.icon-back-button-container {
-  background-color: #222;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 5px;
-}
-
-.icon-arrow-icon {
-  width: 38px;
-  height: 38px;
-}
-.icon-add-folder-btn {
-  fill: #222;
-  background-color: transparent;
-  padding: 10px;
-}
-.icon-remove-btn {
-  fill: #cc0000;
-  background-color: transparent;
-  padding: 10px;
-}
-.icon-add-folder-btn:hover,
-.icon-remove-btn:hover {
-  background-color: #ddd;
-}
-.icon-menu-icon {
-  width: 28px;
-  height: 28px;
-}
-
-.icon-upload-text {
-  margin-left: 10px;
-}
-
-.icon-guild-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 48px;
-  margin-left: 15px;
-}
-
-.icon-guild-title {
-  font-family: var(--menu-font);
-  font-size: 32px;
-  margin-left: 10px;
-  color: #222;
-}
-
-.icon-group-title {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.icon-group-separator {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.icon-group-icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 5px;
-}
-
 .icon-item-container {
   display: flex;
   flex-direction: column;
@@ -178,11 +74,11 @@
 
 .icon-item {
   display: flex;
+  height: 60px;
   flex-direction: row;
   align-items: center;
   font-family: var(--main-font);
   font-size: 18px;
-  padding: 8px;
   color: #777;
   fill: #777;
   font-weight: bold;
@@ -205,9 +101,6 @@
   background-color: white;
   cursor: inherit;
 }
-.icon-checkbox-icon {
-  fill: white;
-}
 
 .header-name {
   margin-left: 10px;
@@ -217,43 +110,6 @@
   display: inline-flex;
   flex: 1;
   align-items: center;
-}
-
-.icon-item-checkbox-container {
-  height: 100%;
-  padding-left: 1em;
-  padding-right: 1em;
-}
-.icon-item-checkbox {
-  width: 24px;
-  margin-right: 0 !important;
-}
-
-.icon-item-name {
-  width: 160px;
-  height: auto;
-  line-height: normal;
-  display: inline-flex;
-  color: #777;
-  font-family: var(--main-font);
-  font-size: 18px;
-  font-weight: bold;
-  padding: 3px;
-  border-radius: 5px;
-  cursor: pointer;
-  border: 0;
-  background-color: transparent;
-}
-.icon-item-name:focus {
-  background-color: #fff;
-}
-.icon-item-name:hover {
-  cursor: text;
-  background-color: #fff;
-}
-.icon-item-name:disabled {
-  cursor: pointer;
-  background-color: transparent;
 }
 
 .icon-item-icon {
@@ -294,54 +150,14 @@
   justify-content: center;
 }
 
+.menu-tooltip {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 @media screen and (max-width: 1024px) {
   .icon-container {
     padding: 0;
-  }
-
-  .icon-menu-item {
-    border-radius: 6px;
-    padding: 5px;
-  }
-
-  .icon-arrow-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .icon-guild-icon {
-    width: 32px;
-    height: 32px;
-    margin-left: 5px;
-  }
-
-  .icon-guild-title {
-    font-size: 14px;
-    margin-left: 5px;
-    word-break: break-all;
-  }
-
-  .icon-group-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .icon-group-separator {
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-
-  .icon-menu-right .icon-menu-item {
-    margin-left: 5px;
-  }
-
-  .icon-menu-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .icon-upload-text {
-    display: none;
   }
 
   .header-name {
@@ -349,22 +165,8 @@
   }
 
   .icon-item {
+    height: 40px;
     font-size: 10px;
-  }
-
-  .icon-item-checkbox-container {
-    height: 100%;
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-  .icon-item-checkbox {
-    width: 14px;
-    margin-right: 0 !important;
-  }
-
-  .icon-item-name {
-    width: 120px;
-    font-size: 12px;
   }
 
   .icon-item-icon {

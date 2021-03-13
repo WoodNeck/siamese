@@ -1,15 +1,17 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   Link
 } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 
-import Guild from "../../../src/api/type/Guild";
+import { RootState } from "../redux/reducers";
+
 import "./GuildList.css";
 
-const GuildList: React.FC<{
-  guilds: Guild[];
-}> = ({ guilds }) => {
+const GuildList: React.FC = () => {
+  const guilds = useSelector((state: RootState) => state.guilds);
+
   return (
     <div className="guild-container">
       <div className="guild-header">

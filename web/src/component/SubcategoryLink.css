@@ -1,0 +1,16 @@
+.subcategory-item {
+  margin-left: 20px;
+  font-family: var(--main-font);
+  font-size: 18px;
+  color: #777;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.subcategory-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+  border-radius: 24px;
+}

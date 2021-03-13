@@ -1,0 +1,46 @@
+.icon-item-name {
+  height: auto;
+  line-height: normal;
+  display: inline-flex;
+  color: #777;
+  font-family: var(--main-font);
+  font-size: 18px;
+  font-weight: bold;
+  padding: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+}
+
+.icon-item-name.editing {
+  width: 160px;
+  background-color: #fff;
+  cursor: text;
+}
+
+.icon-edit-icon {
+  opacity: 0;
+}
+
+.icon-edit-icon:hover {
+  opacity: 1;
+}
+
+.icon-edit-finish-icon {
+  fill: #99cc33;
+}
+
+@media screen and (max-width: 1024px) {
+  .icon-item-name {
+    font-size: 12px;
+  }
+
+  .icon-item-name.editing {
+    width: 120px;
+  }
+
+  .icon-edit-icon {
+    opacity: 1;
+  }
+}

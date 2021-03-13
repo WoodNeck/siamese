@@ -1,6 +1,6 @@
 import { SET_GUILDS } from "../actionTypes";
 import { setGuilds } from "../actions";
-import Guild from "../../../../src/api/type/Guild";
+import Guild from "~/api/type/Guild";
 
 const defaultState: Guild[] = [];
 

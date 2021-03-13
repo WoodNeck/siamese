@@ -2,10 +2,11 @@ import React, { useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import GuildLink from "./GuildLink";
+import SubcategoryLink from "./SubcategoryLink";
 
 import "./Sidebar.css";
 import { RootState } from "../redux/reducers";
+import * as CATEGORY from "~/const/category";
 
 interface Route {
   path: string;
@@ -32,19 +33,26 @@ const Sidebar: React.FC = () => {
       name: "아이콘",
       icon: "archive",
       active: location.pathname.startsWith("/icon"),
-      subcategories: guilds?.map(guild => <GuildLink key={guild.id} guild={guild} />)
+      subcategories: guilds?.map(guild =>
+        <SubcategoryLink to={`/icon/${guild.id}`} key={guild.id} className="guild-link">
+          <img className="subcategory-icon" src={ guild.iconURL ? guild.iconURL : `${process.env.PUBLIC_URL}/icons/discord.svg#icon`}></img>
+          { guild.name }
+        </SubcategoryLink>
+      )
     },
     {
       path: "/command",
       name: "명령어 목록",
       icon: "bolt",
-      active: location.pathname.startsWith("/command")  ,
+      active: location.pathname.startsWith("/command"),
+      subcategories: Object.values(CATEGORY)
+        .map(category => <SubcategoryLink to={`/command/category/${category.ID}`} key={category.ID}>{category.EMOJI} {category.NAME}</SubcategoryLink>)
     },
     {
       path: "/setting",
-      name: "길드 설정",
+      name: "서버 설정",
       icon: "setting",
-      active: location.pathname.startsWith("/setting")  ,
+      active: location.pathname.startsWith("/setting"),
     }
   ], [guilds, location]);
 

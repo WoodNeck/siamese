@@ -1,12 +1,10 @@
-import { RESET_USER, SET_USER } from "../actionTypes";
-import { setUser, resetUser } from "../actions";
-import User from "../../../../src/api/type/User";
+import { SET_USER } from "../actionTypes";
+import { setUser } from "../actions";
+import User from "~/api/type/User";
 
 const defaultState: User | null = null;
 
-type UserAction =
-  | ReturnType<typeof setUser>
-  | ReturnType<typeof resetUser>;
+type UserAction = ReturnType<typeof setUser>;
 
 export default (state: User | null = defaultState, action: UserAction) => {
   switch (action.type) {
@@ -14,9 +12,6 @@ export default (state: User | null = defaultState, action: UserAction) => {
       return {
         ...action.payload
       };
-    }
-    case RESET_USER: {
-      return null;
     }
     default:
       return state;

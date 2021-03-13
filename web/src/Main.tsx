@@ -17,7 +17,7 @@ import NotFound from "./pages/NotFound";
 
 import { setUser } from "./redux/actions";
 
-import User from "../../src/api/type/User";
+import User from "~/api/type/User";
 
 import "./Main.css";
 

@@ -22,6 +22,7 @@
 .sidebar-menu-item-container {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .sidebar-menu-item {
@@ -77,12 +78,6 @@
   margin-right: 10px;
 }
 
-.sidebar-subitem {
-  margin-left: 20px;
-  font-family: var(--main-font);
-  font-size: 14px;
-}
-
 @media screen and (max-width: 1024px) {
   .sidebar-container {
     position: fixed;
@@ -108,14 +103,14 @@
   }
 
   .sidebar-menu-item,
-  .sidebar-subitem {
+  .subcategory-item {
     transform: translate(-100%);
   }
 
   .sidebar-container.visible .sidebar-menu-item,
-  .sidebar-container.visible .sidebar-subitem {
+  .sidebar-container.visible .subcategory-item {
     transform: translate(0);
-    transition: transform 1s;
+    transition: transform 700ms;
     color: white;
   }
 }

@@ -1,0 +1,24 @@
+.icon-item-checkbox-container {
+  height: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.icon-item-checkbox {
+  width: 24px;
+  margin-right: 0 !important;
+}
+.icon-checkbox-icon {
+  fill: white;
+}
+
+@media screen and (max-width: 1024px) {
+  .icon-item-checkbox-container {
+    height: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .icon-item-checkbox {
+    width: 14px;
+    margin-right: 0 !important;
+  }
+}

@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import Login from "./Login";
 import Profile from "./Profile";
 import { RootState } from "../redux/reducers";
+import { toggleHamburger } from "../redux/actions";
 
 import "./Header.css";
-import { toggleHamburger } from "../redux/actions";
 
 const Header: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
