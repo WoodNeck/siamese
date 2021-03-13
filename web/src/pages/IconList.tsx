@@ -12,6 +12,7 @@ import Loading from "../component/Loading";
 import MasterCheckbox from "../component/MasterCheckbox";
 import ItemCheckbox from "../component/ItemCheckbox";
 import NameInput from "../component/NameInput";
+import IconChat from "../component/IconChat";
 import { RootState } from "../redux/reducers";
 import { setCheckedIcons } from "../redux/actions";
 import * as URL from "~/api/const/url";
@@ -29,6 +30,7 @@ enum ItemType {
 
 const IconList: React.FC = () => {
   const guilds = useSelector((state: RootState) => state.guilds);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   const { guildID, groupID } = useParams<{ guildID: string, groupID?: string }>();
@@ -76,10 +78,10 @@ const IconList: React.FC = () => {
 
   const showIcon = useCallback((icon: Icon) => {
     modal.fire({
-      imageUrl: icon.url,
+      html: <IconChat user={user!} icon={icon} iconGroup={iconGroup} modal={modal} />,
       heightAuto: false
     });
-  }, [modal]);
+  }, [user, modal, iconGroup]);
 
   const updateName = useCallback((item: Icon | IconGroup, type: ItemType, newName: string) => {
     const prevName = item.name;
@@ -252,6 +254,10 @@ const IconList: React.FC = () => {
             </div>
           ))
         }
+      </div>
+      <div className="icon-footer">
+        <img className="icon-footer-image" src={`${process.env.PUBLIC_URL}/logo20.png`} />
+        <div className="icon-footer-chat-bubble">드래그 & 드롭으로도 업로드할 수 있다냥!</div>
       </div>
       <div className="icon-drag-visualizer">
         <svg className="icon-drag-add">

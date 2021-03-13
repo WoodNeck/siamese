@@ -155,6 +155,40 @@
   -webkit-user-drag: none;
 }
 
+.icon-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 16px;
+}
+
+.icon-footer-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  image-rendering: pixelated;
+  margin-left: 16px;
+}
+
+.icon-footer-chat-bubble {
+  background-color: #222;
+  color: #ffffff;
+  padding: 8px 14px 8px 14px;
+  margin-left: 12px;
+  border-radius: 4px;
+  position: relative;
+}
+.icon-footer-chat-bubble::before {
+  content: " ";
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border: 5px solid;
+  border-color: transparent #222 transparent transparent;
+  left: -10px;
+  top: calc(50% - 5px);
+}
+
 @media screen and (max-width: 1024px) {
   .icon-container {
     padding: 0;
@@ -182,5 +216,9 @@
 
   .icon-item-count {
     flex: 0 0 80px;
+  }
+
+  .icon-footer {
+    display: none;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ReactTooltip from "react-tooltip";
 
 import "./NameInput.css";
@@ -9,19 +9,25 @@ const NameInput: React.FC<{
 }> = ({ name, onUpdate }) => {
   const [editing, setEditing] = useState(false);
 
+  const updateName = useCallback((newName: string) => {
+    if (newName !== name) {
+      onUpdate(newName);
+    }
+    setEditing(false);
+  }, [name, onUpdate]);
+
   return editing
     ? <>
         <input type="text" maxLength={10}
-          onBlur={e => {
-            const newName = e.target.value;
-            if (newName !== name) {
-              onUpdate(newName);
-            }
-            setEditing(false);
-          }}
+          onBlur={e => updateName(e.target.value)}
           onClick={e => {
             e.stopPropagation();
             e.preventDefault();
+          }}
+          onKeyDown={e => {
+            if (e.key === "Enter" || e.key === "Escape") {
+              updateName(e.currentTarget.value);
+            }
           }}
           defaultValue={name} autoFocus={true}
           className="icon-item-name editing" />
