@@ -39,7 +39,7 @@ const History = () => {
         <ChatBubble position="right">샴 전역일 WN</ChatBubble>
         <ChatBubble author={siamese} position="left">
           <div>WN의 전역일 정보다냥!</div>
-          <div>{[...Array(100).keys()].map(() => EMOJI.SPARKLING_HEART)}</div>
+          <div style={{ wordBreak: "break-all" }}>{[...Array(100).keys()].map(() => EMOJI.SPARKLING_HEART)}</div>
           <div>자세한 정보</div>
           <div>공군</div>
           <div>입대일자: 2013년 1월 2일</div>
