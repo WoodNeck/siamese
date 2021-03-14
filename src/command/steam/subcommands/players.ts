@@ -12,6 +12,7 @@ export default new Command({
   name: PLAYERS.CMD,
   description: PLAYERS.DESC,
   usage: PLAYERS.USAGE,
+  alias: PLAYERS.ALIAS,
   permissions: [
     PERMISSION.EMBED_LINKS
   ],

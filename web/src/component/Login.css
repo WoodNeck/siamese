@@ -2,11 +2,10 @@
   display: flex;
   align-items: center;
   padding: 15px;
-  background-color: #222;
+  background-color: #3F876D;
   color: #eee;
   fill: #eee;
   font-family: var(--menu-font);
-  font-size: 22px;
   border: 0;
   border-radius: 15px;
   font-weight: bold;

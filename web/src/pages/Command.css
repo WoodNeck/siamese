@@ -1,10 +1,36 @@
 .command-container {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding-bottom: 80px;
 }
 
-.emoji-big {
-  font-size: 160px;
+.category-header {
+  font-family: var(--menu-font);
+  font-size: 24px;
+}
+
+.user-avatar {
+  width: 128px;
+  max-width: 100%;
+}
+
+.bot-avatar {
+  width: 300px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+.little-tag {
+  display: inline-block;
+  margin: 2px;
+  background-color: #999999;
+  font-size: 14px;
+  color: white;
+  padding: 2px 6px 2px 6px;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 1024px) {
+  .command-container {
+    padding-bottom: 0px;
+  }
 }

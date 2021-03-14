@@ -1,0 +1,9 @@
+.bubblechat-container {
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: #36393F;
+  border-radius: 5px;
+}

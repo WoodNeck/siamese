@@ -13,6 +13,7 @@ import CommandContext from "~/type/CommandContext";
 export default new Command({
   name: HELP.CMD,
   description: HELP.DESC,
+  alias: HELP.ALIAS,
   permissions: [
     PERMISSION.EMBED_LINKS,
     PERMISSION.ADD_REACTIONS,

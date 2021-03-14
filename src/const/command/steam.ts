@@ -145,6 +145,7 @@ export const LIBRARY = {
 export const PLAYERS = {
   CMD: "동접",
   DESC: "게임의 현재 접속자 수를 알려준다냥!",
+  ALIAS: ["동접자수"],
   USAGE: "게임명",
   TARGET: "게임",
   CURRENT: players => `현재 플레이어 수: ${players}`,

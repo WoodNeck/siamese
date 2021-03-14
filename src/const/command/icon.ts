@@ -8,6 +8,7 @@ import { code, strong } from "~/util/markdown";
 export const ICON = {
   CMD: "아이콘",
   DESC: "아이콘 관리 페이지를 반환한다냥!",
+  ALIAS: ["콘"],
   TITLE: (guild: Discord.Guild) => `${EMOJI.LINK} ${strong(guild.name)}의 아이콘 관리 페이지다냥!`,
   NAME_MAX_LENGTH: 10
 };

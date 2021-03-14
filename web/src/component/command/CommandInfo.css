@@ -1,0 +1,19 @@
+.command-info {
+  background-color: #3e8ed0;
+  color: #fff;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.command-info-title {
+  font-size: 48px;
+  font-weight: bold;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  font-family: var(--menu-font);
+}
+.command-info a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #ffe08a;
+}

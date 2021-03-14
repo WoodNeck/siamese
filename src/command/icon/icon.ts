@@ -13,6 +13,7 @@ import * as PERMISSION from "~/const/permission";
 export default new Command({
   name: ICON.CMD,
   description: ICON.DESC,
+  alias: ICON.ALIAS,
   permissions: [PERMISSION.EMBED_LINKS],
   subcommands: [
     Add, List, Remove, Role

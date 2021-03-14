@@ -1,0 +1,57 @@
+.chat-bubble-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.chat-bubble-container:last-child {
+  margin-bottom: 0;
+}
+
+.chat-bubble-container.left {
+  align-items: flex-start;
+}
+.chat-bubble-container.right {
+  align-items: flex-end;
+}
+
+.chat-bubble-author {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+.chat-bubble-author-image {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+}
+.chat-bubble-author-name {
+  font-weight: bold;
+  color: #FFF;
+}
+
+.chat-bubble {
+  padding: 15px;
+  font-weight: bold;
+  display: inline-block;;
+}
+.chat-bubble-container.left .chat-bubble {
+  background-color: #585F67;
+  color: #FFF;
+  border-radius: 5px 15px 15px 15px;
+}
+.chat-bubble-container.right .chat-bubble {
+  background-color: #3e8ed0;
+  color: #fff;
+  border-radius: 15px 5px 15px 15px;
+  text-align: end;
+}
+
+.chat-bubble a {
+  color: #00b0f4;
+  text-decoration: none;
+}
+
+.chat-bubble a:hover {
+  text-decoration: underline;
+}

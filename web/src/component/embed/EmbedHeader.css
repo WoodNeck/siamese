@@ -1,0 +1,14 @@
+.embed-header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.embed-header-image {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  object-fit: contain;
+  border-radius: 50%;
+}

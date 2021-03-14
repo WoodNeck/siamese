@@ -1,0 +1,7 @@
+.mention {
+  color: #7289da;
+}
+
+.chat-bubble-container.right .mention {
+  color: #98a8e3;
+}

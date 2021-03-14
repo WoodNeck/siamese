@@ -1,0 +1,19 @@
+.embed-footer-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.embed-footer-image {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.embed-footer-text {
+  word-break: break-all;
+}

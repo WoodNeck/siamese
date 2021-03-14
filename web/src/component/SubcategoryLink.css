@@ -6,6 +6,18 @@
   margin-top: 10px;
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.subcategory-item.selected::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  left: -10px;
+  top: calc(50% - 2.5px);
+  border-radius: 50%;
+  background-color: #222;
+  position: absolute;
 }
 
 .subcategory-icon {
@@ -13,4 +25,10 @@
   height: 24px;
   margin-right: 5px;
   border-radius: 24px;
+}
+
+@media screen and (max-width: 1024px) {
+  .subcategory-item.selected::before {
+    background-color: #fff;
+  }
 }

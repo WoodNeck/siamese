@@ -1,0 +1,14 @@
+.embed-field-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.embed-field-title {
+  font-size: 18px;
+}
+
+.embed-field-text {
+  font-size: 16px;
+  font-weight: normal;
+}

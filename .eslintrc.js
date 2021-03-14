@@ -266,7 +266,7 @@ module.exports = {
     "no-bitwise": "off",
     "no-caller": "error",
     "no-cond-assign": "error",
-    "no-console": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
     "no-debugger": "error",
     "no-empty": "error",
     "no-eval": "error",

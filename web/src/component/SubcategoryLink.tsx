@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { toggleHamburger } from "../redux/actions";
 
 import "./SubcategoryLink.css";
@@ -10,12 +10,14 @@ const Subcategory: React.FC<{
   className?: string;
 }> = ({ to, className, children }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  return <Link to={to} className={`subcategory-item ${className ? className : ""}`}
+  return <NavLink to={to} className={`subcategory-item ${className ? className : ""}`} activeClassName="selected"
+    isActive={() => location.pathname.startsWith(to)}
     onClick={() => dispatch(toggleHamburger())}
   >
     { children }
-  </Link>
+  </NavLink>
 }
 
 export default Subcategory;
