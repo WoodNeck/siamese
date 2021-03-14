@@ -26,7 +26,7 @@ export default new Command({
       const devServer = await bot.guilds.fetch(bot.env.BOT_DEV_SERVER_ID).catch(() => null);
 
       if (devServer) {
-        descs.push(INFO.DEV_SERVER(devServer, bot.env.BOT_DEV_SERVER_INVITE));
+        descs.push(INFO.DEV_SERVER(devServer.name, bot.env.BOT_DEV_SERVER_INVITE));
       }
     }
 

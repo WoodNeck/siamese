@@ -1,15 +1,14 @@
-import type Discord from "discord.js";
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
 import * as EMOJI from "~/const/emoji";
-import { code, strong } from "~/util/markdown";
+import { code } from "~/util/markdown";
 
 export const ICON = {
   CMD: "아이콘",
   DESC: "아이콘 관리 페이지를 반환한다냥!",
   ALIAS: ["콘"],
-  TITLE: (guild: Discord.Guild) => `${EMOJI.LINK} ${strong(guild.name)}의 아이콘 관리 페이지다냥!`,
+  TITLE: (guildName: string) => `${EMOJI.LINK} ${guildName}의 아이콘 관리 페이지다냥!`,
   NAME_MAX_LENGTH: 10
 };
 
@@ -69,7 +68,7 @@ export const ROLE = {
   USAGE: "[@역할명]",
   ALIAS: ["역할"],
   MSG: {
-    SUCCESS_WITH_ROLE: (role: Discord.Role) => `이제 서버 관리자랑 ${role.toString()}만 아이콘을 관리할 수 있다냥!`,
+    SUCCESS_WITH_ROLE: (roleMention: string) => `이제 서버 관리자랑 ${roleMention}만 아이콘을 관리할 수 있다냥!`,
     SUCCESS_WITHOUT_ROLE: "아이콘 관리 역할을 제거했다냥! 아무나 아이콘을 관리할 수 있다냥!"
   },
   ERROR: {

@@ -24,6 +24,6 @@ export default new Command({
       { upsert: true }
     ).lean();
 
-    await bot.send(channel, role ? ROLE.MSG.SUCCESS_WITH_ROLE(role) : ROLE.MSG.SUCCESS_WITHOUT_ROLE);
+    await bot.send(channel, role ? ROLE.MSG.SUCCESS_WITH_ROLE(role.toString()) : ROLE.MSG.SUCCESS_WITHOUT_ROLE);
   }
 });

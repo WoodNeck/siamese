@@ -27,8 +27,3 @@ export const BOT = {
   ERROR_MSG: (user: Discord.User, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`,
   CMD_REGISTER_FAILED: (cmd: Command) => `명령어 "${cmd.name}"의 beforeReigster 판정에 실패해서 명령어를 등록하지 못했다냥!`
 } as const;
-
-export const FORMAT = {
-  DATE: (date: Date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`,
-  FLAG: (iso: string[]) => `${EMOJI.LETTER[iso[0].toUpperCase()]}${EMOJI.LETTER[iso[1].toUpperCase()]}`
-} as const;

@@ -23,6 +23,6 @@ export default new Command({
     }
 
     const diceResult = Math.floor(Math.random() * (diceNum)) + 1;
-    await bot.send(channel, DICE.MSG(author, diceResult, diceNum));
+    await bot.send(channel, DICE.MSG(author.toString(), diceResult, diceNum));
   }
 });

@@ -102,7 +102,8 @@ const Sidebar: React.FC = () => {
             { route.active && route.subcategories }
           </div>
         ))}
-        <div className="sidebar-bottom">
+      </div>
+      <div className="sidebar-bottom">
           <div className="sidebar-menu-item-container">
             {user != null
               ? user.id
@@ -122,7 +123,6 @@ const Sidebar: React.FC = () => {
             </a>
           </div>
         </div>
-      </div>
     </div>
   );
 }

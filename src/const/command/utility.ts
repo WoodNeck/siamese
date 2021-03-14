@@ -1,7 +1,5 @@
-import type Discord from "discord.js";
 import Josa from "josa-js";
 
-import type Siamese from "~/Siamese";
 import { dedent } from "~/util/helper";
 import { block, code, strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
@@ -13,11 +11,11 @@ export const DICE = {
   MIN: 2,
   MAX: 10000,
   DEFAULT: 100,
-  MSG: (user: Discord.GuildMember, num: number, maxNum: number) => {
+  MSG: (userName: string, num: number, maxNum: number) => {
     // Korean josa for number 0-9
     const josa = ["이", "이", "가", "이", "가", "가", "이", "이", "이", "가"];
     const numStr = num.toString();
-    return `${user.toString()}냥이 주사위를 굴려 🎲${strong(numStr)}${josa[num % 10]} 나왔다냥! (1-${maxNum})`;
+    return `${userName}냥이 주사위를 굴려 🎲${strong(numStr)}${josa[num % 10]} 나왔다냥! (1-${maxNum})`;
   },
   ARG_INCORRECT: (min: number, max: number) => `${min}에서 ${max}사이의 숫자를 달라냥!`
 };
@@ -26,9 +24,9 @@ export const CHOOSE = {
   CMD: "골라줘",
   DESC: "받은 항목들 중 하나를 임의로 골라준다냥!",
   USAGE: "항목1 항목2 [항목3...]",
-  ARG_NOT_SUFFICIENT: (bot: Siamese) => dedent`
+  ARG_NOT_SUFFICIENT: (prefix: string) => dedent`
     고를 수 있는 항목을 충분히 달라냥!
-    ${block(`> ${bot.prefix}${CHOOSE.CMD} 샴 먼치킨 아비시니안 페르시안 메인쿤`)}`
+    ${block(`> ${prefix}${CHOOSE.CMD} 샴 먼치킨 아비시니안 페르시안 메인쿤`)}`
 };
 
 export const SAY = {
@@ -72,9 +70,9 @@ export const AVATAR = {
   CMD: "아바타",
   DESC: "사용자의 아바타 이미지를 크게 보여준다냥!",
   USAGE: "@사용자",
-  MENTION_NEEDED: (bot: Siamese) => dedent`
+  MENTION_NEEDED: (prefix: string, botName: string) => dedent`
     명령어 대상을 ${code("@멘션")}해서 사용하는 명령어다냥!
-    ${block(`> ${bot.prefix}${AVATAR.CMD} @${bot.user.username}`)}`,
+    ${block(`> ${prefix}${AVATAR.CMD} @${botName}`)}`,
   MENTION_ONLY_ONE: "한 명의 유저만 멘션해달라냥!"
 };
 
@@ -192,8 +190,7 @@ export const TRANSLATE = {
     "줄루어": "zu"
   },
   ERROR: {
-    NO_CONTENT: "번역할 내용을 달라냥!",
-    LANG_NOT_SPECIFIED: (bot: Siamese) => `그런 언어는 없다냥! 언어 목록은 ${bot.prefix}${TRANSLATE.CMD} ${Josa.r(TRANSLATE.LIST.CMD, "을/를")} 확인해보라냥!`
+    NO_CONTENT: "번역할 내용을 달라냥!"
   },
   LIST: {
     CMD: "목록",

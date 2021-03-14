@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type Siamese from "~/Siamese";
 import { strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
+import EnvVariables from "~/type/EnvVariables";
 
 export const STEAM = {
   CMD: "스팀",
@@ -18,41 +18,41 @@ export const STEAM = {
   PROFILE_GAME_URL: baseUrl => `${baseUrl}games/?tab=all`,
   GAME_IMG_URL: (appid, url) => `http://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${url}.jpg`,
   STORE_URL: appid => `https://store.steampowered.com/app/${appid}`,
-  SEARCH_BY_COMMUNITY_ID_PARAMS: (bot: Siamese, query: string) => ({
+  SEARCH_BY_COMMUNITY_ID_PARAMS: (env: EnvVariables, query: string) => ({
     vanityurl: query,
-    key: bot.env.STEAM_API_KEY
+    key: env.STEAM_API_KEY
   }),
   SEARCH_BY_GAME_NAME_PARAMS: (query: string) => ({
     term: query,
     l: "english",
     cc: "US"
   }),
-  STEAM_IDS_PARAMS: (bot: Siamese, id: string) => ({
+  STEAM_IDS_PARAMS: (env: EnvVariables, id: string) => ({
     steamids: id,
-    key: bot.env.STEAM_API_KEY
+    key: env.STEAM_API_KEY
   }),
-  RECENT_GAME_PARAMS: (bot: Siamese, id: string) => ({
+  RECENT_GAME_PARAMS: (env: EnvVariables, id: string) => ({
     steamid: id,
-    key: bot.env.STEAM_API_KEY,
+    key: env.STEAM_API_KEY,
     count: 3
   }),
-  STEAM_ID_PARAMS: (bot: Siamese, id: string) => ({
+  STEAM_ID_PARAMS: (env: EnvVariables, id: string) => ({
     steamid: id,
-    key: bot.env.STEAM_API_KEY
+    key: env.STEAM_API_KEY
   }),
-  GAME_ID_PARAMS: (bot: Siamese, id: string) => ({
+  GAME_ID_PARAMS: (env: EnvVariables, id: string) => ({
     appid: id,
-    key: bot.env.STEAM_API_KEY
+    key: env.STEAM_API_KEY
   }),
-  OWNING_GAME_PARAMS: (bot: Siamese, id: string) => ({
+  OWNING_GAME_PARAMS: (env: EnvVariables, id: string) => ({
     steamid: id,
-    key: bot.env.STEAM_API_KEY,
+    key: env.STEAM_API_KEY,
     include_appinfo: "1",
     include_played_free_games: "1"
   }),
-  FRIEND_PARAMS: (bot: Siamese, id: string) => ({
+  FRIEND_PARAMS: (env: EnvVariables, id: string) => ({
     steamid: id,
-    key: bot.env.STEAM_API_KEY,
+    key: env.STEAM_API_KEY,
     relationship: "friend"
   }),
   PLAYTIME: (minute: number) => `총 플레이 시간: ${minute ? (minute / 60).toFixed(1) : 0}시간`,

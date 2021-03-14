@@ -29,7 +29,7 @@ export default new Command({
 
     const searchText = content;
     await axios.get(IMAGE.SEARCH_URL, {
-      params: IMAGE.SEARCH_PARAMS(bot, searchText, !channel.nsfw)
+      params: IMAGE.SEARCH_PARAMS(bot.env, searchText, !channel.nsfw)
     }).then(async (body: AxiosResponse<{ items: Array<{ link: string }>}>) => {
       const images = (body.data.items || []).map(result => result.link);
       if (!images.length) {

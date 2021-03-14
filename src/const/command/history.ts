@@ -1,6 +1,8 @@
 import { strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
-import { FORMAT } from "~/const/message";
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const DATE = (date: Date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 
 export const RANDOM = {
   CMD: "랜덤",
@@ -41,8 +43,8 @@ export const DISCHARGE = {
   PROGRESS_EMOJI: (percent: number) => `${EMOJI.SPARKLING_HEART.repeat(percent)}${EMOJI.BLACK_HEART.repeat(100 - percent)}`,
   FORCE_DETAIL: (force: string) => `${force}`,
   SHORTEN_DATE: (days: number) => `단축일수: ${days}일`,
-  JOIN_DATE: (date: Date) => `입대일자: ${FORMAT.DATE(date)}`,
-  DISCHARGE_DATE: (date: Date) => `전역일자: ${FORMAT.DATE(date)}`,
+  JOIN_DATE: (date: Date) => `입대일자: ${DATE(date)}`,
+  DISCHARGE_DATE: (date: Date) => `전역일자: ${DATE(date)}`,
   DAYS_PROGRESSED: (days: number) => `복무한 날: ${days}일`,
   DAYS_LEFT: (days: number) => `남은 날: ${days}일`,
   PERCENTAGE: (percent: number) => `복무율: ${percent.toFixed(1)}%`,
@@ -67,7 +69,7 @@ export const DISCHARGE = {
     DESC: "전역일 목록을 확인한다냥!",
     RECITAL_TIME: 30,
     ENTRY_PER_PAGE: 10,
-    ENTRY: (info: { name: string; joinDate: Date }) => `${EMOJI.SMALL_WHITE_SQUARE}${info.name} - ${FORMAT.DATE(info.joinDate)}`
+    ENTRY: (info: { name: string; joinDate: Date }) => `${EMOJI.SMALL_WHITE_SQUARE}${info.name} - ${DATE(info.joinDate)}`
   },
   REMOVE: {
     CMD: "삭제해줘",

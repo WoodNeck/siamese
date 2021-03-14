@@ -9,7 +9,7 @@ export default new Command({
   execute: async ({ bot, guild, channel }: CommandContext) => {
     const uptime = new Date(bot.uptime || 0);
 
-    await bot.send(channel, PING.MSG(bot.ws.ping.toFixed(1), bot, guild, uptime));
+    await bot.send(channel, PING.MSG(bot.ws.ping.toFixed(1), bot.user.toString(), bot.getDisplayName(guild), uptime));
   }
 });
 

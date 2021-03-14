@@ -8,7 +8,7 @@ export default new Command({
   execute: async ({ bot, msg, channel, args }) => {
     // It needs least 2 arguments to choose
     if (args.length < 2) {
-      await bot.replyError(msg, CHOOSE.ARG_NOT_SUFFICIENT(bot));
+      await bot.replyError(msg, CHOOSE.ARG_NOT_SUFFICIENT(bot.prefix));
       return;
     }
 

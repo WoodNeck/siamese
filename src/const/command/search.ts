@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type Siamese from "~/Siamese";
 import { dedent } from "~/util/helper";
 import { strong, strike, link } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
+import EnvVariables from "~/type/EnvVariables";
 
 export const IMAGE = {
   CMD: "이미지",
@@ -11,11 +11,11 @@ export const IMAGE = {
   TARGET: "이미지",
   MENU_TIME: 30,
   SEARCH_URL: "https://www.googleapis.com/customsearch/v1",
-  SEARCH_PARAMS: (bot: Siamese, query: string, isSafeSearch: boolean) => {
+  SEARCH_PARAMS: (env: EnvVariables, query: string, isSafeSearch: boolean) => {
     const params = {
       q: query,
-      key: bot.env.GOOGLE_API_KEY,
-      cx: bot.env.GOOGLE_SEARCH_ENGINE_ID,
+      key: env.GOOGLE_API_KEY,
+      cx: env.GOOGLE_SEARCH_ENGINE_ID,
       searchType: "image"
     };
 

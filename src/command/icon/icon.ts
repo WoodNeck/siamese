@@ -22,7 +22,7 @@ export default new Command({
     const link = `${bot.env.WEB_URL_BASE}/siamese/#/icon/${guild.id}`;
 
     const embed = new MessageEmbed()
-      .setDescription(`[${ICON.TITLE(guild)}](${link})`)
+      .setDescription(`[${ICON.TITLE(guild.name)}](${link})`)
       .setColor(COLOR.BOT);
 
     await bot.send(channel, embed);
