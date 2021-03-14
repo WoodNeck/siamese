@@ -1,26 +1,13 @@
 @font-face {
   font-family: "CuteFont";
-  src: url(./CuteFont/CuteFont-Regular.woff2) format("woff2");
-  src: url(./CuteFont/CuteFont-Regular.ttf) format("opentype");
-}
-
-@font-face {
-  font-family: "IBMPlexSans";
-  src: url(./IBMPlexSans/IBMPlexSansKR-Regular.woff2) format("woff2");
-  src: url(./IBMPlexSans/IBMPlexSansKR-Regular.ttf) format("opentype");
-}
-
-@font-face {
-  font-family: "IBMPlexSans";
-  src: url(./IBMPlexSans/IBMPlexSansKR-Bold.woff2) format("woff2");
-  src: url(./IBMPlexSans/IBMPlexSansKR-Bold.ttf) format("opentype");
-  font-weight: bold;
+  src: url(./CuteFont/CuteFont-Regular.woff2) format("woff2"),
+    url(./CuteFont/CuteFont-Regular.ttf) format("truetype");
 }
 
 @font-face {
   font-family: "GmarketSans";
-  src: url(./GmarketSans/GmarketSansMedium.woff2) format("woff2");
-  src: url(./GmarketSans/GmarketSansMedium.ttf) format("opentype");
+  src: url(./GmarketSans/GmarketSansMedium.woff2) format("woff2"),
+    url(./GmarketSans/GmarketSansMedium.ttf) format("truetype");
 }
 
 :root {
@@ -30,7 +17,7 @@
   --menu-font: 'GmarketSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  --main-font: 'IBMPlexSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  --main-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
 }
