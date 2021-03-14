@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/siamese/static/css/main.8d436415.chunk.css",
+    "main.css": "/siamese/static/css/main.8a91a556.chunk.css",
     "main.js": "/siamese/static/js/main.66b32ddf.chunk.js",
     "main.js.map": "/siamese/static/js/main.66b32ddf.chunk.js.map",
     "runtime-main.js": "/siamese/static/js/runtime-main.8f69e985.js",
@@ -12,14 +12,14 @@
     "static/js/3.999a274d.chunk.js.map": "/siamese/static/js/3.999a274d.chunk.js.map",
     "index.html": "/siamese/index.html",
     "static/css/2.6e27f9bb.chunk.css.map": "/siamese/static/css/2.6e27f9bb.chunk.css.map",
-    "static/css/main.8d436415.chunk.css.map": "/siamese/static/css/main.8d436415.chunk.css.map",
+    "static/css/main.8a91a556.chunk.css.map": "/siamese/static/css/main.8a91a556.chunk.css.map",
     "static/js/2.81d4fd43.chunk.js.LICENSE.txt": "/siamese/static/js/2.81d4fd43.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.8f69e985.js",
     "static/css/2.6e27f9bb.chunk.css",
     "static/js/2.81d4fd43.chunk.js",
-    "static/css/main.8d436415.chunk.css",
+    "static/css/main.8a91a556.chunk.css",
     "static/js/main.66b32ddf.chunk.js"
   ]
 }
