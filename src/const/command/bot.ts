@@ -1,7 +1,7 @@
-import Discord from "discord.js";
+import type { Guild } from "discord.js";
 import Josa from "josa-js";
 
-import Siamese from "~/Siamese";
+import type Siamese from "~/Siamese";
 import { dedent } from "~/util/helper";
 import { strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
@@ -9,7 +9,7 @@ import * as EMOJI from "~/const/emoji";
 export const PING = {
   CMD: "핑",
   DESC: "퐁을 대답한다냥!",
-  MSG: (ping: string, bot: Siamese, guild: Discord.Guild, uptime: Date) => dedent`
+  MSG: (ping: string, bot: Siamese, guild: Guild, uptime: Date) => dedent`
     퐁이다냥! 현재 샴고양이 웹소켓 핑 평균은 ${strong(`${ping}ms`)}다냥!
     ${bot.user.toString()}${Josa.c(bot.getDisplayName(guild), "은/는")} ${uptime.getUTCHours()}시간 ${uptime.getUTCMinutes()}분 ${uptime.getUTCSeconds()}초동안 일하고 있다냥!`
 } as const;
@@ -41,6 +41,6 @@ export const INFO = {
   DESC: "봇과 관련된 정보를 볼 수 있다냥!",
   GUILD_CNT: (guildCnt: number) => `${EMOJI.UP_TRIANGLE} 서버 수 - ${guildCnt}개`,
   USER_CNT: (userCnt: number) => `${EMOJI.PEOPLE} 사용자 수 - ${userCnt}명`,
-  DEV_SERVER: (server: Discord.Guild, inviteLink: string) => `${EMOJI.ENVELOPE_WITH_ARROW} [${server.name}](${inviteLink})`,
+  DEV_SERVER: (server: Guild, inviteLink: string) => `${EMOJI.ENVELOPE_WITH_ARROW} [${server.name}](${inviteLink})`,
   GITHUB_ICON_URL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
 } as const;

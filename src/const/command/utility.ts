@@ -1,10 +1,10 @@
-import Discord from "discord.js";
+import type Discord from "discord.js";
 import Josa from "josa-js";
 
+import type Siamese from "~/Siamese";
 import { dedent } from "~/util/helper";
 import { block, code, strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
-import Siamese from "~/Siamese";
 
 export const DICE = {
   CMD: "주사위",

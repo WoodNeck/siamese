@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import type Discord from "discord.js";
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";

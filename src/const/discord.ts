@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import type Discord from "discord.js";
 
 export const MESSAGE_MAX_LENGTH = 1950;
 

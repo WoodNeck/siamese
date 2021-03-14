@@ -1,5 +1,5 @@
+import type Discord from "discord.js";
 import Josa from "josa-js";
-import Discord from "discord.js";
 
 import { strong, block } from "~/util/markdown";
 

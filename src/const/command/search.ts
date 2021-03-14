@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import Siamese from "~/Siamese";
+import type Siamese from "~/Siamese";
 import { dedent } from "~/util/helper";
 import { strong, strike, link } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";

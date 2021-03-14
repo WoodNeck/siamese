@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import Siamese from "~/Siamese";
+import type Siamese from "~/Siamese";
 
 export const NAVER_HEADER = (bot: Siamese) => ({
   "X-Naver-Client-Id": bot.env.NAVER_ID,

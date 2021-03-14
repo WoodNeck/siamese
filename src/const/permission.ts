@@ -1,4 +1,4 @@
-import { PermissionString } from "discord.js";
+import type { PermissionString } from "discord.js";
 
 export interface Permission {
   flag: PermissionString;

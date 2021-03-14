@@ -278,6 +278,7 @@ class Siamese extends Discord.Client {
 
     if (msg.author.bot) return;
     if (msg.content.startsWith(iconPrefix)) return await checkImageCommand(this, msg);
+    if (!msg.content.startsWith(prefix)) return;
 
     let cmdName = msg.content.slice(prefix.length).split(/ +/)[0];
 

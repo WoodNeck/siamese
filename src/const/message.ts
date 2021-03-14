@@ -1,8 +1,8 @@
-import Discord from "discord.js";
+import type Discord from "discord.js";
 import Josa from "josa-js";
 
-import Siamese from "~/Siamese";
-import Command from "~/core/Command";
+import type Siamese from "~/Siamese";
+import type Command from "~/core/Command";
 import * as EMOJI from "~/const/emoji";
 import { dedent } from "~/util/helper";
 import { strong, underline } from "~/util/markdown";
