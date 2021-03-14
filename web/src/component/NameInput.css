@@ -33,11 +33,11 @@
 
 @media screen and (max-width: 1024px) {
   .icon-item-name {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .icon-item-name.editing {
-    width: 120px;
+    width: 130px;
   }
 
   .icon-edit-icon {

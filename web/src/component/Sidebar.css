@@ -4,11 +4,11 @@
   top: 0;
   display: flex;
   flex-direction: column;
-  padding-top: 80px;
-  padding-left: 80px;
-  padding-bottom: 80px;
+  padding-top: 40px;
+  padding-left: 40px;
+  padding-bottom: 40px;
   margin-right: 80px;
-  width: 380px;
+  width: 300px;
   height: 100%;
   box-sizing: border-box;
   font-family: var(--menu-font);
@@ -187,17 +187,9 @@
     background-color: #777;
   }
 
-  .sidebar-menu-item,
-  .subcategory-item,
-  .sidebar-bottom {
-    transform: translate(-100%);
-  }
-
   .sidebar-container.visible .sidebar-menu-item,
   .sidebar-container.visible .subcategory-item,
   .sidebar-container.visible .sidebar-bottom {
-    transform: translate(0);
-    transition: transform 700ms;
     color: white;
   }
 }
