@@ -19,7 +19,7 @@ export default new Command({
     Add, List, Remove, Role
   ],
   execute: async ({ bot, channel, guild }) => {
-    const link = `${bot.env.WEB_URL_BASE}/siamese/#/icon/${guild.id}`;
+    const link = `${bot.env.WEB_URL_BASE}/#/icon/${guild.id}`;
 
     const embed = new MessageEmbed()
       .setDescription(`[${ICON.TITLE(guild.name)}](${link})`)

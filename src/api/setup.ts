@@ -6,6 +6,8 @@ import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 
 import * as ERROR from "./const/error";
+import { getGuildIcon, getUserAvatar } from "./helper";
+import User from "./type/User";
 
 import Siamese from "~/Siamese";
 
@@ -49,16 +51,26 @@ export default ({ app, bot }: { app: Express; bot: Siamese }) => {
     clientID: bot.env.BOT_CLIENT_ID,
     clientSecret: bot.env.BOT_CLIENT_SECRET,
     callbackURL: `${bot.env.SERVER_DOMAIN}:4260/auth/discord/callback`,
-    scope: ["identify"]
-  }, async (accessToken, refreshToken, profile, cb) => {
-    let error: Error | null = null;
-    const user = await bot.users.fetch(profile.id)
-      .catch(() => {
-        error = new Error(ERROR.NOT_EXISTS("사용자"));
-        return undefined;
-      });
+    scope: ["identify", "guilds"]
+  }, (accessToken, refreshToken, profile, cb) => {
+    if (!profile || !profile.id) {
+      cb(null, false, { message: ERROR.NOT_EXISTS("사용자") });
+      return;
+    }
 
-    cb(error, user);
+    const user: User = {
+      id: profile.id,
+      username: profile.username,
+      tag: `${profile.username}#${profile.discriminator}`,
+      avatarURL: getUserAvatar(profile.id, profile.discriminator, profile.avatar),
+      guilds: profile.guilds!.map(guild => ({
+        id: guild.id,
+        name: guild.name,
+        iconURL: getGuildIcon(guild.id, guild.icon)
+      }))
+    };
+
+    cb(null, user);
   }));
 
   passport.serializeUser((user, done) => {
@@ -69,4 +81,3 @@ export default ({ app, bot }: { app: Express; bot: Siamese }) => {
     done(null, user as Express.User);
   });
 };
-

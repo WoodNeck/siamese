@@ -8,7 +8,7 @@ interface Icon {
   authorID: string;
   groupID: string;
   createdTimestamp: number;
-  author?: User;
+  author?: Omit<User, "guilds">;
 }
 
 export default Icon;

@@ -41,7 +41,8 @@ const Icon: React.FC = () => {
       <IconList />
     </Route>
     <Route path={match.path}>
-      <GuildList />
+      <GuildList to="icon" subtitle="아이콘을 편집할 서버를 선택해주세요" taskName="아이콘 편집"
+        hasPermission={guild => guild.hasPermission} />
     </Route>
   </Switch>)
 }

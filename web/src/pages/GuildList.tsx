@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 import React from "react";
 import { useSelector } from "react-redux";
 import {
@@ -7,9 +8,16 @@ import ReactTooltip from "react-tooltip";
 
 import { RootState } from "../redux/reducers";
 
+import Guild from "~/api/type/Guild";
+
 import "./GuildList.css";
 
-const GuildList: React.FC = () => {
+const GuildList: React.FC<{
+  to: string;
+  subtitle: string;
+  taskName: string;
+  hasPermission: (guild: Guild) => boolean;
+}> = ({ to, subtitle, taskName, hasPermission }) => {
   const guilds = useSelector((state: RootState) => state.guilds);
 
   return (
@@ -19,21 +27,20 @@ const GuildList: React.FC = () => {
           <span>서버 목록</span>
         </div>
       </div>
-      <div className="guild-subtitle">
-        아이콘을 편집할 서버를 선택해주세요
-      </div>
+      <div className="guild-subtitle">{subtitle}</div>
       {
         guilds.map(guild => (
           <div key={guild.id}>
             <div className="guild-separator"></div>
-            <Link to={`/icon/${guild.id}`} className="guild-item">
+            <Link to={`/${to}/${guild.id}`} className="guild-item">
               <img className="guild-icon" src={ guild.iconURL ? guild.iconURL : `${process.env.PUBLIC_URL}/icons/discord.svg#icon`}></img>
               <div className="guild-name">{ guild.name }</div>
-              <svg className={`guild-approved-icon ${guild.hasPermission ? "yes" : "no"}`} data-tip data-for="guild-permission-tooltip">
-                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/${guild.hasPermission ? "approve" : "cancel"}.svg#icon`} />
+              {guild.hasSiamese && <img className="guild-has-siamese" src={`${process.env.PUBLIC_URL}/logo20.png`} /> }
+              <svg className={`guild-approved-icon ${hasPermission(guild) ? "yes" : "no"}`} data-tip data-for={`guild-permission-tooltip-${guild.id}`}>
+                <use xlinkHref={`${process.env.PUBLIC_URL}/icons/${hasPermission(guild) ? "approve" : "cancel"}.svg#icon`} />
               </svg>
-              <ReactTooltip id="guild-permission-tooltip" place="right" type="dark" effect="solid">
-                <span>{ guild.hasPermission ? "아이콘을 편집할 수 있는 서버입니다" : "아이콘 편집 권한이 없습니다"}</span>
+              <ReactTooltip id={`guild-permission-tooltip-${guild.id}`} place="right" type="dark" effect="solid">
+                <span>{ hasPermission(guild) ? `${taskName}이 가능합니다` : `${taskName} 권한이 없습니다`}</span>
               </ReactTooltip>
               <div className="guild-enter-icon-container">
                 <svg className="guild-enter-icon">
@@ -44,9 +51,6 @@ const GuildList: React.FC = () => {
           </div>
         ))
       }
-      <div className="guild-footer">
-        - 서버가 표시되지 않나요? 샴고양이를 사용하는 서버에서 아무 메시지나 보낸 다음 다시 확인해보세요!
-      </div>
     </div>
   );
 };

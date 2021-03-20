@@ -12,7 +12,10 @@ const MasterCheckbox: React.FC = () => {
   const [allChecked, setAllChecked] = useState(false);
 
   useEffect(() => {
-    setAllChecked(Object.values(icons).every(icon => icon.checked))
+    const iconList = Object.values(icons);
+
+    if (iconList.length <= 0) setAllChecked(false);
+    else setAllChecked(iconList.every(icon => icon.checked))
   }, [icons])
 
   return <div className="icon-item-checkbox-container" onClickCapture={e => {

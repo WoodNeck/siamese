@@ -8,6 +8,8 @@ import SubcategoryLink from "./SubcategoryLink";
 
 import { toggleHamburger } from "../redux/actions";
 import { RootState } from "../redux/reducers";
+import { BOT_INVITE_LINK } from "../const";
+
 import * as CATEGORY from "~/const/category";
 
 import "./Sidebar.css";
@@ -23,9 +25,10 @@ interface Route {
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const hamburger = useSelector((state: RootState) => state.hamburger);
-  const guilds = useSelector((state: RootState) => state.guilds);
   const dispatch = useDispatch();
   const location = useLocation();
+
+  console.log(user?.guilds);
 
   const routes: Route[] = useMemo(() => [
     {
@@ -39,7 +42,7 @@ const Sidebar: React.FC = () => {
       name: "아이콘",
       icon: "archive",
       active: location.pathname.startsWith("/icon"),
-      subcategories: guilds?.map(guild =>
+      subcategories: user?.guilds?.map(guild =>
         <SubcategoryLink to={`/icon/${guild.id}`} key={guild.id} className="guild-link">
           <img className="subcategory-icon" src={ guild.iconURL ? guild.iconURL : `${process.env.PUBLIC_URL}/icons/discord.svg#icon`}></img>
           { guild.name }
@@ -59,8 +62,14 @@ const Sidebar: React.FC = () => {
       name: "서버 설정",
       icon: "setting",
       active: location.pathname.startsWith("/setting"),
+      subcategories: user?.guilds?.map(guild =>
+        <SubcategoryLink to={`/setting/${guild.id}`} key={guild.id} className="guild-link">
+          <img className="subcategory-icon" src={ guild.iconURL ? guild.iconURL : `${process.env.PUBLIC_URL}/icons/discord.svg#icon`}></img>
+          { guild.name }
+        </SubcategoryLink>
+      )
     }
-  ], [guilds, location]);
+  ], [user, location]);
 
   const containerClass = useMemo(() => {
     const classes = ["sidebar-container"];
@@ -113,7 +122,7 @@ const Sidebar: React.FC = () => {
             }
           </div>
           <div className="sidebar-menu-item-container">
-            <a target="_blank" rel="noreferrer" href="https://discord.com/oauth2/authorize?client_id=357073005819723777&permissions=3238976&scope=bot">
+            <a target="_blank" rel="noreferrer" href={BOT_INVITE_LINK}>
               <div className="sidebar-others-item">
                 <svg className="sidebar-others-icon">
                   <use xlinkHref={`${process.env.PUBLIC_URL}/icons/discord.svg#icon`} />

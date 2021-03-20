@@ -7,7 +7,7 @@ interface IconGroup {
   authorID: string;
   iconCount: number;
   createdTimestamp: number;
-  author?: User;
+  author?: Omit<User, "guilds">;
 }
 
 export default IconGroup;

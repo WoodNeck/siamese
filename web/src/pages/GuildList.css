@@ -91,6 +91,10 @@
   word-break: keep-all;
 }
 
+.guild-has-siamese {
+  margin-left: 5px;
+}
+
 @media screen and (max-width: 1024px) {
   .guild-header {
     font-size: 20px;

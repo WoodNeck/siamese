@@ -13,6 +13,7 @@ import MasterCheckbox from "../component/MasterCheckbox";
 import ItemCheckbox from "../component/ItemCheckbox";
 import NameInput from "../component/NameInput";
 import IconChat from "../component/IconChat";
+import { BOT_INVITE_LINK } from "../const";
 import { RootState } from "../redux/reducers";
 import { setCheckedIcons } from "../redux/actions";
 import * as URL from "~/api/const/url";
@@ -201,6 +202,17 @@ const IconList: React.FC = () => {
 
   if (!guild) return <NotFound />
   if (!iconGroups || !icons) return <Loading />
+
+  if (!guild.hasSiamese) {
+    return <div {...getRootProps({className: containerClass})}>
+      <IconHeaderMenu
+        icons={icons} iconGroups={iconGroups} iconGroup={iconGroup}
+        guild={guild} hasPermission={hasPermission} openDropzone={openDropzone} forceUpdate={forceUpdate}
+      />
+      <div>샴고양이가 없는 서버입니다!</div>
+      <div>먼저 샴고양이를 서버에 <a href={BOT_INVITE_LINK} rel="noreferrer" target="_blank">초대</a>해주세요!</div>
+    </div>
+  }
 
   return (
     <div {...getRootProps({className: containerClass})}>

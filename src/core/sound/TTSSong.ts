@@ -20,9 +20,14 @@ class TTSSong implements Song {
   }
 
   public async fetch() {
+    const isSSML = /(?:^<speak>).*(?:<\/speak>$)/s.test(this._content);
+    const input = isSSML
+      ? { ssml: this._content }
+      : { text: this._content };
+
     const ttsClient = new TextToSpeechClient();
     const [response] = await ttsClient.synthesizeSpeech({
-      input: { text: this._content },
+      input,
       voice: { languageCode: TTS.LANGUAGE },
       audioConfig: { audioEncoding: "OGG_OPUS" }
     });
