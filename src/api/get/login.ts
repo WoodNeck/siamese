@@ -10,7 +10,7 @@ const register: Register = ({ app, bot }) => {
     failureRedirect: `${bot.env.WEB_URL_BASE}/fail`,
     session: true
   }), (_req, res) => {
-    res.redirect(`${bot.env.WEB_URL_BASE}/siamese`);
+    res.redirect(`${bot.env.WEB_URL_BASE}`);
   });
 };
 

@@ -28,7 +28,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://woodneck.github.io/siamese",
+  "homepage": "https://para.n-e.kr",
   "browserslist": {
     "production": [
       ">0.2%",

@@ -1,5 +1,6 @@
 # <img height="40" src="https://user-images.githubusercontent.com/26213435/66034036-6e714f80-e543-11e9-8d08-105e7085b305.png" /> 샴고양이(Siamese)
-[![Discord](https://img.shields.io/discord/800248062936612904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zxSwN8Z) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
+[![Discord Bots](https://top.gg/api/widget/servers/357073005819723777.svg)](https://top.gg/bot/357073005819723777)
+ [![Discord](https://img.shields.io/discord/800248062936612904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.com/invite/uuSPaYtF8W) ![typescript](https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript)
 
 [Invite Bot](https://discordapp.com/oauth2/authorize?client_id=357073005819723777&scope=bot&permissions=-1)
 
