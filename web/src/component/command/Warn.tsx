@@ -1,11 +1,11 @@
 import React from "react";
 
-import "./NSFW.css"
+import "./Warn.css"
 
-const NSFW: React.FC = ({ children }) => {
+const Warn: React.FC = ({ children }) => {
   return <div className="nsfw-container">
     ⚠️ {children}
   </div>
 };
 
-export default NSFW;
+export default Warn;

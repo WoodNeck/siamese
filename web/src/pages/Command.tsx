@@ -10,6 +10,7 @@ import Sound from "./command/Sound";
 import History from "./command/History";
 import Steam from "./command/Steam";
 import Icon from "./command/Icon";
+import Setting from "./command/Setting";
 
 import NotFound from "./NotFound";
 
@@ -28,6 +29,7 @@ const Command = () => {
         <Route path={`/command/${CATEGORY.HISTORY.ID}`} component={History} />
         <Route path={`/command/${CATEGORY.STEAM.ID}`} component={Steam} />
         <Route path={`/command/${CATEGORY.ICON.ID}`} component={Icon} />
+        <Route path={`/command/${CATEGORY.SETTING.ID}`} component={Setting} />
         <Route path="/command/*" component={NotFound} />
       </Switch>
     </div>

@@ -5,7 +5,7 @@ import CommandDesc from "../../component/command/CommandDesc";
 import EmbedFooter from "../../component/embed/EmbedFooter";
 import EmbedField from "../../component/embed/EmbedField";
 import EmbedMenu from "../../component/embed/EmbedMenu";
-import NSFW from "../../component/command/NSFW";
+import Warn from "../../component/command/Warn";
 
 import * as SEARCH from "~/const/command/search";
 import * as EMOJI from "~/const/emoji";
@@ -44,9 +44,9 @@ const Search = () => {
       </ChatContainer>
       <CommandDesc>
         <div>구글 이미지 검색 결과를 최대 10개까지 보여드립니다.</div>
-        <NSFW>
+        <Warn>
           후방주의 채널에서 사용시 세이프서치를 사용하지 않습니다.
-        </NSFW>
+        </Warn>
       </CommandDesc>
     </CommandItem>
     <CommandItem command={SEARCH.YOUTUBE}>
