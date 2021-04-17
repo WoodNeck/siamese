@@ -5,6 +5,7 @@ export default new Command({
   name: DICE.CMD,
   description: DICE.DESC,
   usage: DICE.USAGE,
+  sendTyping: false,
   execute: async ({ bot, msg, author, channel, args }) => {
     const isNum = /^\d+$/;
     // Non-number case

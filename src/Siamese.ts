@@ -17,6 +17,7 @@ import SteamCategory from "~/command/steam";
 import HistoryCategory from "~/command/history";
 import IconCategory from "~/command/icon";
 import SoundCategory from "~/command/sound";
+import SettingCategory from "~/command/setting";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -29,6 +30,7 @@ import EnvVariables from "~/type/EnvVariables";
 import CommandContext from "~/type/CommandContext";
 import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
+import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
 import startTyping from "~/util/startTyping";
 
 class Siamese extends Discord.Client {
@@ -150,7 +152,9 @@ class Siamese extends Discord.Client {
       const connection = await this._joinVoiceChannel(ctx);
       if (!connection) return null;
 
-      const boomBox = new BoomBox(connection);
+      const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
+
+      const boomBox = new BoomBox(connection, guildConfig.voiceAutoOut);
       boomBox.on("end", () => {
         boomBoxes.delete(guild.id);
       });
@@ -218,7 +222,8 @@ class Siamese extends Discord.Client {
       SteamCategory,
       HistoryCategory,
       IconCategory,
-      SoundCategory
+      SoundCategory,
+      SettingCategory
     );
 
   	categories.forEach(category => {
@@ -360,7 +365,9 @@ class Siamese extends Discord.Client {
     }
 
     try {
-      await startTyping(this, ctx.channel);
+      if (cmd.sendTyping) {
+        await startTyping(this, ctx.channel);
+      }
 
       await cmd.execute(ctx);
     } catch (err) {

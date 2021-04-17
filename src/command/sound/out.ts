@@ -7,6 +7,7 @@ export default new SoundCommand({
   name: OUT.CMD,
   description: OUT.DESC,
   permissions: [],
+  sendTyping: false,
   execute: async ({ msg, bot, guild }) => {
     const boomBoxes = bot.boomBoxes;
 

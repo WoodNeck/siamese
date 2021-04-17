@@ -48,3 +48,9 @@ export const ICON = {
   DESC: "아이콘 관련 명령어들을 모아놨다냥!",
   EMOJI: EMOJI.PICTURE
 };
+export const SETTING = {
+  ID: "setting",
+  NAME: "설정",
+  DESC: "서버 설정 관련 명령어들이다냥!",
+  EMOJI: EMOJI.GEAR
+};

@@ -19,6 +19,7 @@ interface CommandOption {
   devOnly: boolean;
   adminOnly: boolean;
   cooldown: Cooldown | null;
+  sendTyping: boolean;
   permissions: Permission[];
   subcommands: Command[];
 }
@@ -33,6 +34,7 @@ class Command {
   public readonly devOnly: boolean;
   public readonly adminOnly: boolean;
   public readonly cooldown: Cooldown | null;
+  public readonly sendTyping: boolean;
   public readonly permissions: Permission[];
   public readonly subcommands: Command[];
 
@@ -46,6 +48,7 @@ class Command {
     devOnly = false,
     adminOnly = false,
     cooldown = null,
+    sendTyping = true,
     permissions = [],
     subcommands = []
   }: RequiredField<Partial<CommandOption>, "name">) {
@@ -58,6 +61,7 @@ class Command {
     this.devOnly = devOnly;
     this.adminOnly = adminOnly;
     this.cooldown = cooldown;
+    this.sendTyping = sendTyping;
     this.permissions = permissions;
     this.subcommands = subcommands;
   }

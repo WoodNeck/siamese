@@ -5,6 +5,7 @@ export default new Command({
   name: CHOOSE.CMD,
   description: CHOOSE.DESC,
   usage: CHOOSE.USAGE,
+  sendTyping: false,
   execute: async ({ bot, msg, channel, args }) => {
     // It needs least 2 arguments to choose
     if (args.length < 2) {

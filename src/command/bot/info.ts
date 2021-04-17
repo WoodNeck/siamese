@@ -11,6 +11,7 @@ export default new Command({
   name: INFO.CMD,
   description: INFO.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
+  sendTyping: false,
   execute: async ({ bot, channel, guild }: CommandContext) => {
     const guildCnt = bot.guilds.cache.size;
     const botName = bot.getDisplayName(guild);

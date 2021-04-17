@@ -18,6 +18,7 @@ export default new SoundCommand({
     PERMISSION.READ_MESSAGE_HISTORY
   ],
   cooldown: Cooldown.PER_USER(3),
+  sendTyping: false,
   execute: async ctx => {
     const { bot, channel, content, msg } = ctx;
 

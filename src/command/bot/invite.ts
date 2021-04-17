@@ -10,6 +10,7 @@ export default new Command({
   name: INVITE.CMD,
   description: INVITE.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
+  sendTyping: false,
   execute: async ({ bot, channel, guild }: CommandContext) => {
     const botName = bot.getDisplayName(guild);
 

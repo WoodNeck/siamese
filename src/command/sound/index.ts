@@ -1,4 +1,5 @@
 import TTS from "./tts";
+import In from "./in";
 import Out from "./out";
 
 import Category from "~/core/Category";
@@ -8,6 +9,7 @@ const category = new Category(SOUND);
 
 category.add(
   TTS,
+  In,
   Out
 );
 

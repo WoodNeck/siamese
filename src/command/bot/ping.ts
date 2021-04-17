@@ -6,6 +6,7 @@ import CommandContext from "~/type/CommandContext";
 export default new Command({
   name: PING.CMD,
   description: PING.DESC,
+  sendTyping: false,
   execute: async ({ bot, guild, channel }: CommandContext) => {
     const uptime = new Date(bot.uptime || 0);
 

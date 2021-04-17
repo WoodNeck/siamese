@@ -10,6 +10,7 @@ export default new Command({
   permissions: [
     PERMISSION.MANAGE_MESSAGES
   ],
+  sendTyping: false,
   execute: async ({ bot, msg, channel, content }) => {
     // Can't react for empty content
     if (!content) {

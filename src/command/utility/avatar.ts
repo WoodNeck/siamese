@@ -10,6 +10,7 @@ export default new Command({
   description: AVATAR.DESC,
   usage: AVATAR.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
+  sendTyping: false,
   execute: async ({ bot, msg, channel }) => {
     if (!msg.mentions.users.size) {
       await bot.replyError(msg, AVATAR.MENTION_NEEDED(bot.prefix, bot.user.username));

@@ -10,12 +10,16 @@ class BoomBox extends EventEmitter<{
   private _connection: VoiceConnection;
   private _songs: Song[];
   private _playing: boolean;
+  private _destroyOnEnd: boolean;
+  private _destroyTimer: NodeJS.Timeout | null;
 
-  public constructor(voiceConnection: VoiceConnection) {
+  public constructor(voiceConnection: VoiceConnection, destroyOnEnd: boolean) {
     super();
     this._connection = voiceConnection;
     this._songs = [];
     this._playing = false;
+    this._destroyOnEnd = destroyOnEnd;
+    this._destroyTimer = null;
   }
 
   public destroy(): void {
@@ -25,6 +29,10 @@ class BoomBox extends EventEmitter<{
     connection.disconnect();
     this._songs = [];
     this._playing = false;
+    if (this._destroyTimer) {
+      clearTimeout(this._destroyTimer);
+    }
+    this._destroyTimer = null;
     this.emit("end");
   }
 
@@ -35,15 +43,25 @@ class BoomBox extends EventEmitter<{
   public async play() {
     if (this._playing) return;
 
-    await this._playNextSong();
-
     this._playing = true;
+    await this._playNextSong();
   }
 
   private async _playNextSong() {
     const song = this._songs.shift();
 
-    if (!song) return this.destroy();
+    if (!song) {
+      if (this._destroyOnEnd) {
+        return this.destroy();
+      } else {
+        return this._setDestroyTimeout();
+      }
+    }
+
+    if (this._destroyTimer) {
+      clearTimeout(this._destroyTimer);
+      this._destroyTimer = null;
+    }
 
     const stream = await song.fetch();
     const dispatcher = this._connection.play(stream, song.streamOptions);
@@ -63,6 +81,13 @@ class BoomBox extends EventEmitter<{
     dispatcher.on("finish", async () => {
       await this._playNextSong();
     });
+  }
+
+  private _setDestroyTimeout() {
+    this._playing = false;
+    this._destroyTimer = setTimeout(() => {
+      this.destroy();
+    }, 1000 * 60 * 30); // 30 minutes
   }
 }
 
