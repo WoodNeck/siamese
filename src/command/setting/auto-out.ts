@@ -8,6 +8,7 @@ export default new Command({
   description: AUTO_OUT.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
   alias: AUTO_OUT.ALIAS,
+  adminOnly: true,
   sendTyping: false,
   execute: async ({ bot, channel, guild }) => {
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;
