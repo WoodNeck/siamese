@@ -12,7 +12,7 @@ export default new SoundCommand({
 
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
 
-    if (guildConfig && guildConfig.voiceAutoOut) {
+    if (!guildConfig || guildConfig.voiceAutoOut) {
       return await bot.replyError(msg, IN.CANT_PERFORM_ON_VOICE_AUTO_OUT);
     }
 
