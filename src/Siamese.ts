@@ -154,7 +154,7 @@ class Siamese extends Discord.Client {
 
       const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
 
-      const boomBox = new BoomBox(connection, guildConfig.voiceAutoOut);
+      const boomBox = new BoomBox(connection, Boolean(!guildConfig || guildConfig.voiceAutoOut));
       boomBox.on("end", () => {
         boomBoxes.delete(guild.id);
       });
