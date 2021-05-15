@@ -20,6 +20,10 @@ class BoomBox extends EventEmitter<{
     this._playing = false;
     this._destroyOnEnd = destroyOnEnd;
     this._destroyTimer = null;
+
+    voiceConnection.on("disconnect", () => {
+      this.emit("end");
+    });
   }
 
   public destroy(): void {
@@ -33,7 +37,6 @@ class BoomBox extends EventEmitter<{
       clearTimeout(this._destroyTimer);
     }
     this._destroyTimer = null;
-    this.emit("end");
   }
 
   public add(song: Song) {
