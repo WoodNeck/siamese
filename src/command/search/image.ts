@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
+import cheerio from "cheerio";
 
 import Siamese from "~/Siamese";
 import Command from "~/core/Command";
@@ -28,31 +29,41 @@ export default new Command({
     }
 
     const searchText = content;
-    await axios.get(IMAGE.SEARCH_URL, {
-      params: IMAGE.SEARCH_PARAMS(bot.env, searchText, !channel.nsfw)
-    }).then(async (body: AxiosResponse<{ items: Array<{ link: string }>}>) => {
-      const images = (body.data.items || []).map(result => result.link);
-      if (!images.length) {
-        await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(IMAGE.TARGET));
-        return;
-      }
-
-      // Check image avaialability
-      const testImage = (imageURL: string) => axios.head(imageURL, { maxRedirects: 0 })
-        .then(res => {
-          if (res.status !== 200) return null;
-          return imageURL;
-        })
-        .catch(() => null);
-      const result = await Promise.all(images.map(testImage));
-
-      const pages = result.filter(imgURL => imgURL !== null)
-        .map(imageUrl => new MessageEmbed().setImage(imageUrl as string));
-      const menu = new Menu(ctx, { maxWaitTime: IMAGE.MENU_TIME });
-
-      menu.setPages(pages);
-
-      await menu.start();
+    const body = await axios.get(IMAGE.SEARCH_URL, {
+      params: IMAGE.SEARCH_PARAMS(searchText, !channel.nsfw),
+      headers: IMAGE.FAKE_HEADER
     });
+
+    const images = findAllImages(body.data);
+    if (!images.length) {
+      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(IMAGE.TARGET));
+    }
+
+    const pages = images.map(imageUrl => new MessageEmbed().setImage(imageUrl));
+    const menu = new Menu(ctx, { maxWaitTime: IMAGE.MENU_TIME });
+
+    menu.setPages(pages);
+
+    await menu.start();
+
+    // Check image avaialability
+    const testImage = (imageURL: string, idx: number): Promise<number> => axios.head(imageURL, { maxRedirects: 0 })
+      .then(res => {
+        if (res.status !== 200) return -1;
+        return idx;
+      })
+      .catch(() => -1);
+    const results = await Promise.all(images.map(testImage));
+
+    menu.updatePages(
+      results.filter(idx => idx >= 0).map(idx => new MessageEmbed().setImage(images[idx])),
+      results.map((_, arrIdx) => arrIdx).filter(idx => results[idx] < 0)
+    );
   }
 });
+
+const findAllImages = page => {
+  const $ = cheerio.load(page);
+
+  return $(".islrtb").toArray().slice(0, 10).map(el => el.attribs["data-ou"]) as string[];
+};

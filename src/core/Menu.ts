@@ -3,6 +3,7 @@ import Discord from "discord.js";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import CommandContext from "~/type/CommandContext";
+import { clamp } from "~/util/helper";
 
 export enum END_TYPE {
   IGNORE = "IGNORE",
@@ -78,6 +79,22 @@ class Menu {
     });
 
     this._pages = pages;
+  }
+
+  public updatePages(newPages: Array<Discord.MessageEmbed | string>, removedPages: number[]) {
+    const pages = this._pages;
+    const currentIdx = this._pageIndex;
+    const currentPage = pages[currentIdx];
+    const pagesBelowCurrent = removedPages.filter(idx => idx < currentIdx);
+
+    this.setPages(newPages);
+    this._pageIndex = clamp(currentIdx - pagesBelowCurrent.length, 0, pages.length - 1);
+
+    if (newPages.length <= 0 || !this._menuMsg || this._menuMsg.deleted) {
+      return this.delete();
+    }
+
+    this._changePage(newPages[this._pageIndex], currentPage);
   }
 
   // All reaction callbacks must return recital end reason

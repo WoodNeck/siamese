@@ -2,7 +2,6 @@
 import { dedent } from "~/util/helper";
 import { strong, strike, link } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
-import EnvVariables from "~/type/EnvVariables";
 
 export const IMAGE = {
   CMD: "이미지",
@@ -10,16 +9,27 @@ export const IMAGE = {
   USAGE: "검색어",
   TARGET: "이미지",
   MENU_TIME: 30,
-  SEARCH_URL: "https://www.googleapis.com/customsearch/v1",
-  SEARCH_PARAMS: (env: EnvVariables, query: string, isSafeSearch: boolean) => {
-    const params = {
-      q: query,
-      key: env.GOOGLE_API_KEY,
-      cx: env.GOOGLE_SEARCH_ENGINE_ID,
-      searchType: "image"
-    };
-
-    return Object.assign(params, isSafeSearch ? { safe: "active" } : { safe: "off" });
+  SEARCH_URL: "https://www.google.com/search",
+  SEARCH_PARAMS: (query, isSafeSearch) =>
+    // nfpr: disable auto query correction(ex: museuk -> museum)
+    // safe: enable safe searching
+    isSafeSearch
+      ? {
+        q: query,
+        tbm: "isch",
+        nfpr: "1",
+        safe: "active"
+      }
+      : {
+        q: query,
+        tbm: "isch",
+        nfpr: "1",
+        pws: "0",
+        gl: "us",
+        gws_rd: "cr"
+      },
+  FAKE_HEADER: {
+    "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36 Edg/91.0.864.64"
   }
 } as const;
 
