@@ -12,6 +12,7 @@ export const BANGBANG = "‼️";
 export const QUESTION_MARK = "❓";
 export const MIDDLE_DOT = "•";
 export const DICE = "🎲";
+export const COIN = "🪙";
 export const WWW = "🌐";
 export const MAGNIFYING_GLASS_LEFT = "🔍";
 export const ARROW_SHADED_RIGHT = "➩";

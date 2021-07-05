@@ -29,6 +29,8 @@ interface EnvVariables {
   NAVER_SECRET?: string;
   // STEAM
   STEAM_API_KEY?: string;
+  // COIN
+  COIN_API_KEY?: string;
 }
 
 export default EnvVariables;

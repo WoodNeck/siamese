@@ -175,3 +175,24 @@ export const STOCK = {
   DOME_THUMB: (id: string) => `https://ssl.pstatic.net/imgfinance/chart/mobile/mini/${id}_end_up_tablet.png`,
   WORLD_THUMB: (id: string, isStock: boolean) => `https://ssl.pstatic.net/imgfinance/chart/mobile/world${isStock ? "/item" : ""}/day/${id}_end_up_tablet.png`
 } as const;
+
+export const COIN = {
+  CMD: "코인",
+  DESC: "가상화폐 정보를 검색한다냥!",
+  USAGE: "코인명",
+  TARGET: "코인",
+  MARKET_KEY: "market",
+  MARKET_URL: "https://api.upbit.com/v1/market/all?isDetails=true",
+  TICKER_URL: "https://api.upbit.com/v1/ticker",
+  CHART_ID_URL: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map",
+  CHART_IMAGE_URL: (id: number) => `https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/${id}.png`,
+  COIN_IMAGE_URL: (id: number) => `https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`,
+  NAME: {
+    HIGH_PRICE: "고가",
+    LOW_PRICE: "저가",
+    TRADE_VOLUME_24H: "거래량(24H)",
+    TRADE_PRICE_24H: "거래대금(24H)",
+    HIGHEST_52_WEEK_PRICE: "52주 신고가",
+    LOWEST_52_WEEK_PRICE: "52주 신저가"
+  }
+};

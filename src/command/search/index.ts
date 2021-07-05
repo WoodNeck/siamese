@@ -5,6 +5,7 @@ import Kin from "./kin";
 import Cheapest from "./cheapest";
 import Search from "./search";
 import Stock from "./stock";
+import Coin from "./coin";
 
 import Category from "~/core/Category";
 import { SEARCH } from "~/const/category";
@@ -18,7 +19,8 @@ category.add(
   Kin,
   Cheapest,
   Search,
-  Stock
+  Stock,
+  Coin
 );
 
 export default category;

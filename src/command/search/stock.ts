@@ -11,6 +11,7 @@ import * as PERMISSION from "~/const/permission";
 import { STOCK } from "~/const/command/search";
 import Menu, { END_TYPE } from "~/core/Menu";
 import CommandContext from "~/type/CommandContext";
+import { strong } from "~/util/markdown";
 
 interface ItemSearchResult {
   query: string[];
@@ -235,9 +236,9 @@ const fetchDomesticSiseData = async (item: Item) => await axios.get(STOCK.DOME_S
     const $ = cheerio.load(res.data);
     const priceWrapper = $(".price_wrp");
     const name = $(".item_wrp .elips").text().trim();
-    const price = parseFloat(priceWrapper.find(".stock_price").text().trim());
-    const change = parseFloat(priceWrapper.find(".gap_price .price").text().trim());
-    const changePct = parseFloat(priceWrapper.find(".gap_rate .rate").text().trim());
+    const price = parseFloat(priceWrapper.find(".stock_price").text().trim().replace(",", ""));
+    const change = parseFloat(priceWrapper.find(".gap_price .price").text().trim().replace(",", ""));
+    const changePct = parseFloat(priceWrapper.find(".gap_rate .rate").text().trim().replace(",", ""));
 
     const detailItems = $(".total_list").find("li");
     const details: string[][] = [];
@@ -260,12 +261,12 @@ const fetchWorldSiseData = async (item: Item) => await axios.get(STOCK.WORLD_SIS
 
 const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockData) => {
   const stockDetailsMessage = new MessageEmbed();
-  const change = parseFloat(data.compareToPreviousClosePrice);
-  const changePct = parseFloat(data.fluctuationsRatio);
+  const change = parseFloat(data.compareToPreviousClosePrice.replace(",", ""));
+  const changePct = parseFloat(data.fluctuationsRatio.replace(",", ""));
 
   stockDetailsMessage.setTitle(`${change >= 0 ? EMOJI.CHART_UP : EMOJI.CHART_DOWN} ${data.stockNameEng ?? data.indexNameEng}`);
   stockDetailsMessage.setColor(COLOR.BOT);
-  stockDetailsMessage.setDescription(`${data.closePrice}${data.currencyType ? ` ${data.currencyType.name}` : ""} (${change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${change}, ${changePct > 0 ? `+${changePct}` : changePct}%)`);
+  stockDetailsMessage.setDescription(`${strong(data.closePrice)}${data.currencyType ? ` ${data.currencyType.name}` : ""} (${change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${change}, ${changePct > 0 ? `+${changePct}` : changePct}%)`);
   stockDetailsMessage.setThumbnail(STOCK.WORLD_THUMB(item.id, item.enumType === ItemType.WORLD_STOCK));
   stockDetailsMessage.setFooter(`${item.type}(${item.id})`);
   stockDetailsMessage.setTimestamp();
@@ -301,7 +302,7 @@ const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData
 
   stockDetailsMessage.setTitle(`${data.change >= 0 ? EMOJI.CHART_UP : EMOJI.CHART_DOWN} ${data.name}`);
   stockDetailsMessage.setColor(COLOR.BOT);
-  stockDetailsMessage.setDescription(`${data.price} (${data.change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${data.change}, ${data.changePct > 0 ? `+${data.changePct}` : data.changePct}%)`);
+  stockDetailsMessage.setDescription(`${strong(data.price.toString())} (${data.change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${data.change}, ${data.changePct > 0 ? `+${data.changePct}` : data.changePct}%)`);
   stockDetailsMessage.setThumbnail(STOCK.DOME_THUMB(item.id));
   stockDetailsMessage.setFooter(`${item.type}(${item.id})`);
   stockDetailsMessage.setTimestamp();
