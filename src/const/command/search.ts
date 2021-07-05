@@ -135,3 +135,33 @@ export const SEARCH = {
     q: query
   })
 } as const;
+
+export const STOCK = {
+  CMD: "주식",
+  DESC: "주식/증권 정보를 검색한다냥!",
+  USAGE: "종목명",
+  TARGET: "검색 결과",
+  ALIAS: ["증권"],
+  DETAIL_MENU_TIME: 90,
+  URL: (query: string) => `https://ac.finance.naver.com/ac?q=${encodeURIComponent(query)}&q_enc=euc-kr&t_koreng=1&st=111&r_lt=111`,
+  DOME_STOCK_HEADER_URL: (id: string) => `https://m.stock.naver.com/api/item/getOverallHeaderItem.nhn?code=${id}`,
+  DOME_STOCK_INFO_URL: (id: string) => `https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${id}`,
+  DOME_SISE_URL: (id: string) => `https://m.stock.naver.com/sise/siseIndex.nhn?code=${id}`,
+  WORLD_BASIC_URL: (id: string) => `https://api.stock.naver.com/stock/${id}/basic`,
+  WORLD_SISE_URL: (id: string) => `https://api.stock.naver.com/index/${id}/basic`,
+  TIMES: {
+    "일봉": "candle/day",
+    "주봉": "candle/week",
+    "월봉": "candle/month",
+    "1일": "day",
+    "3개월": "area/month3",
+    "1년": "area/year",
+    "3년": "area/year3",
+    "10년": "area/year10"
+  },
+  CURRENCY: (num: number) => `${num}원`,
+  DOME_IMAGE: (id: string, time: string) => `https://ssl.pstatic.net/imgfinance/chart/mobile/${time}/${id}_end.png`,
+  WORLD_IMAGE: (id: string, time: string, isStock: boolean) => `https://ssl.pstatic.net/imgfinance/chart/mobile/world${isStock ? "/item" : ""}/${time}/${id}_end.png`,
+  DOME_THUMB: (id: string) => `https://ssl.pstatic.net/imgfinance/chart/mobile/mini/${id}_end_up_tablet.png`,
+  WORLD_THUMB: (id: string, isStock: boolean) => `https://ssl.pstatic.net/imgfinance/chart/mobile/world${isStock ? "/item" : ""}/day/${id}_end_up_tablet.png`
+} as const;

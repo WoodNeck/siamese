@@ -4,7 +4,7 @@ import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import CommandContext from "~/type/CommandContext";
 
-enum END_TYPE {
+export enum END_TYPE {
   IGNORE = "IGNORE",
   CONTINUE = "CONTINUE",
   DELETE_ALL_MESSAGES = "DELETE_ALL_MESSAGES",
@@ -12,8 +12,6 @@ enum END_TYPE {
 }
 
 class Menu {
-  public static END_TYPE = END_TYPE;
-
   // Options
   private _ctx: CommandContext;
   private _menuMsg: Discord.Message | null;
@@ -27,6 +25,8 @@ class Menu {
   private _pages: Array<Discord.MessageEmbed | string>;
   private _emojis: string[];
   private _callbacks: Discord.Collection<string, () => END_TYPE>;
+
+  public get index() { return this._pageIndex; }
 
   public constructor(ctx: CommandContext, options: Partial<{
     maxWaitTime: number;

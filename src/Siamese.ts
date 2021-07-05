@@ -171,6 +171,17 @@ class Siamese extends Discord.Client {
     }
   }
 
+  public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
+    const { msg, channel } = ctx;
+
+    channel.stopTyping(true);
+
+    await cmd.onFail(ctx);
+
+    await this.replyError(msg, ERROR.CMD.FAILED);
+    await this._logger.error(err, msg);
+  }
+
   private _onReady = async () => {
     // eslint-disable-next-line no-console
     console.log(MSG.BOT.READY_INDICATOR(this));
@@ -371,12 +382,7 @@ class Siamese extends Discord.Client {
 
       await cmd.execute(ctx);
     } catch (err) {
-      ctx.channel.stopTyping(true);
-
-      await cmd.onFail(ctx);
-
-      await this.replyError(msg, ERROR.CMD.FAILED);
-      await this._logger.error(err, msg);
+      await this.handleError(ctx, cmd, err);
     }
   };
 
