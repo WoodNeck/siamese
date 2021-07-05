@@ -194,6 +194,12 @@ class Siamese extends Discord.Client {
 
     await this._logger.info(readyMsg);
 
+    // Update activity every 30 minutes
+    this.setInterval(this._updateActivity, 1000 * 60 * 30);
+    await this._updateActivity();
+  };
+
+  private _updateActivity = async () => {
     const activity = `${this._env.BOT_DEFAULT_PREFIX}${HELP.CMD}${EMOJI.CAT.GRINNING}`;
     await this.user.setActivity(activity, {
       type: ACTIVITY.LISTENING
