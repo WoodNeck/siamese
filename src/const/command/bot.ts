@@ -1,5 +1,6 @@
 import Josa from "josa-js";
 
+import Category from "~/core/Category";
 import { dedent } from "~/util/helper";
 import { strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
@@ -23,7 +24,8 @@ export const HELP = {
   CMD: "도움",
   DESC: "명령어 목록을 보여준다냥!",
   ALIAS: ["help", "도움말"],
-  MENU_TIME: 30
+  MENU_TIME: 30,
+  WEB_CATEGORY_INVITE_LINK: (category: Category) => `${EMOJI.SMALL_ORANGE_DIAMOND} 명령어 목록은 [샴고양이 웹사이트](https://para.n-e.kr/#/command/${category.id})에서도 확인할 수 있다냥!`
 } as const;
 
 export const DEV_SERVER = {

@@ -48,6 +48,9 @@ export default new Command({
               });
             }
           });
+
+        embed.addField("ㅤ", HELP.WEB_CATEGORY_INVITE_LINK(category));
+
         return embed;
       });
 
