@@ -108,6 +108,26 @@ const Search = () => {
       </ChatContainer>
       <CommandDesc>네이버 쇼핑의 검색 결과를 보여드립니다.</CommandDesc>
     </CommandItem>
+    <CommandItem command={SEARCH.STOCK}>
+      <ChatContainer>
+        <ChatBubble position="right">샴 주식 네이버</ChatBubble>
+        <ChatBubble author={siamese} position="left">
+        <img src={`${process.env.PUBLIC_URL}/command/stock.png`} />
+          <EmbedMenu items={[{ emoji: EMOJI.ARROW_LEFT, count: 1 },{ emoji: EMOJI.ARROW_RIGHT, count: 1 }, { emoji: EMOJI.CROSS, count: 1 }]} />
+        </ChatBubble>
+      </ChatContainer>
+      <CommandDesc>주식/증권 검색 결과를 보여드립니다.</CommandDesc>
+    </CommandItem>
+    <CommandItem command={SEARCH.COIN}>
+      <ChatContainer>
+        <ChatBubble position="right">샴 코인 도지</ChatBubble>
+        <ChatBubble author={siamese} position="left">
+        <img src={`${process.env.PUBLIC_URL}/command/coin.png`} />
+          <EmbedMenu items={[{ emoji: EMOJI.ARROW_LEFT, count: 1 },{ emoji: EMOJI.ARROW_RIGHT, count: 1 }, { emoji: EMOJI.CROSS, count: 1 }]} />
+        </ChatBubble>
+      </ChatContainer>
+      <CommandDesc>가상화폐 검색 결과를 보여드립니다.</CommandDesc>
+    </CommandItem>
   </>
 }
 

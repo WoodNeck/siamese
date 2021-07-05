@@ -56,18 +56,6 @@ const Sidebar: React.FC = () => {
       active: location.pathname.startsWith("/command"),
       subcategories: Object.values(CATEGORY)
         .map(category => <SubcategoryLink to={`/command/${category.ID}`} key={category.ID}>{category.EMOJI} {category.NAME}</SubcategoryLink>)
-    },
-    {
-      path: "/setting",
-      name: "서버 설정",
-      icon: "setting",
-      active: location.pathname.startsWith("/setting"),
-      subcategories: user?.guilds?.map(guild =>
-        <SubcategoryLink to={`/setting/${guild.id}`} key={guild.id} className="guild-link">
-          <img className="subcategory-icon" src={ guild.iconURL ? guild.iconURL : `${process.env.PUBLIC_URL}/icons/discord.svg#icon`}></img>
-          { guild.name }
-        </SubcategoryLink>
-      )
     }
   ], [user, location]);
 
