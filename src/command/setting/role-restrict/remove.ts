@@ -19,7 +19,7 @@ export default new Command({
     const removingRoles = [...rolesMentioned.values()].map(role => role.id);
 
     if (guildConfig) {
-      const activeRoles = guildConfig.activeRoles;
+      const activeRoles = guildConfig.activeRoles ?? [];
 
       removingRoles.forEach(removingRole => {
         const removingIndex = activeRoles.findIndex(activeRole => activeRole === removingRole);

@@ -16,7 +16,7 @@ export default new Command({
       guildID: guild.id
     }).lean().exec() as GuildConfigDocument;
 
-    if (!config || config.activeRoles.length <= 0) {
+    if (!config || !config.activeRoles || config.activeRoles.length <= 0) {
       await bot.send(channel, ROLE_RESTRICT.LIST.CAN_BE_USED_FOR_EVERYONE(bot));
       return;
     }

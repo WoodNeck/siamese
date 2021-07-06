@@ -19,7 +19,7 @@ export default new Command({
     const rolesAdded = [...rolesMentioned.values()].map(role => role.id);
 
     if (guildConfig) {
-      const newActiveRoles = new Set([...guildConfig.activeRoles, ...rolesAdded]);
+      const newActiveRoles = new Set([...(guildConfig.activeRoles ?? []), ...rolesAdded]);
 
       guildConfig.activeRoles = [...newActiveRoles];
 
