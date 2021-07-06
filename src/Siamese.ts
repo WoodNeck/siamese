@@ -32,6 +32,7 @@ import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
 import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
 import startTyping from "~/util/startTyping";
+import checkActiveRole from "~/util/checkActiveRole";
 
 class Siamese extends Discord.Client {
   public user: Discord.ClientUser;
@@ -345,8 +346,16 @@ class Siamese extends Discord.Client {
       return;
     }
 
+    // Config check
+    const hasAdminPermission = !!ctx.channel.permissionsFor(ctx.author)?.has(PERMISSION.ADMINISTRATOR.flag);
+    const hasActiveRole = await checkActiveRole({ guild: ctx.guild, author: ctx.author, hasAdminPermission });
+    if (!hasActiveRole) {
+      await msg.react(EMOJI.CROSS).catch(() => void 0);
+      return;
+    }
+
     // Admin permission check
-    if (cmd.adminOnly && !ctx.channel.permissionsFor(ctx.author)?.has(PERMISSION.ADMINISTRATOR.flag)) {
+    if (cmd.adminOnly && !hasAdminPermission) {
       await this.replyError(msg, ERROR.CMD.USER_SHOULD_BE_ADMIN);
       return;
     }

@@ -72,7 +72,6 @@ export const ROLE = {
     SUCCESS_WITHOUT_ROLE: "아이콘 관리 역할을 제거했다냥! 아무나 아이콘을 관리할 수 있다냥!"
   },
   ERROR: {
-    PROVIDE_EXACTLY_ONE_ROLE: `설정할 역할은 하나만 ${code("@멘션")}해서 달라냥!`,
-    NO_ROLE: "그런 이름을 가진 그룹이 존재하지 않는다냥!"
+    PROVIDE_EXACTLY_ONE_ROLE: `설정할 역할은 하나만 ${code("@멘션")}해서 달라냥!`
   }
 };

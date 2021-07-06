@@ -6,7 +6,7 @@ import * as PERMISSION from "~/const/permission";
 import { RANDOM } from "~/const/command/history";
 import { MSG_RETRIEVE_MAXIMUM, MESSAGE_MAX_LENGTH } from "~/const/discord";
 import getRandomMessage from "~/database/getRandomMessage";
-import dedent from "~/util/helper";
+import { dedent } from "~/util/helper";
 
 export default new Command({
   name: RANDOM.CMD,

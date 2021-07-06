@@ -49,4 +49,5 @@ export const rgbaToHex = (val: string) => {
   return rgb.map(color => clamp(parseFloat(color), 0, 255)) as [number, number, number];
 };
 
-export default dedent;
+export const userMention = (id: string) => `<@${id}>`;
+export const roleMention = (id: string) => `<@&${id}>`;

@@ -1,4 +1,5 @@
 import AutoOut from "./auto-out";
+import RoleRestrict from "./role-restrict";
 
 import Category from "~/core/Category";
 import { SETTING } from "~/const/category";
@@ -6,7 +7,8 @@ import { SETTING } from "~/const/category";
 const category = new Category(SETTING);
 
 category.add(
-  AutoOut
+  AutoOut,
+  RoleRestrict
 );
 
 export default category;

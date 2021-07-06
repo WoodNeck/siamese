@@ -2,14 +2,24 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 
+import Siamese from "~/Siamese";
+import * as EMOJI from "~/const/emoji";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
-import Siamese from "~/Siamese";
+import checkActiveRole from "~/util/checkActiveRole";
 
 export default async (bot: Siamese, msg: Message) => {
   if (!msg.guild || !msg.content) return;
+
+  // Config check
+  const hasAdminPermission = !!(msg.channel as TextChannel).permissionsFor(msg.author)?.has(PERMISSION.ADMINISTRATOR.flag);
+  const hasActiveRole = await checkActiveRole({ guild: msg.guild, author: msg.member!, hasAdminPermission });
+  if (!hasActiveRole) {
+    await msg.react(EMOJI.CROSS).catch(() => void 0);
+    return;
+  }
 
   const iconPrefix = bot.env.BOT_ICON_PREFIX;
   const guildID = msg.guild.id;

@@ -3,7 +3,6 @@ import Josa from "josa-js";
 
 import type Siamese from "~/Siamese";
 import type Command from "~/core/Command";
-import * as EMOJI from "~/const/emoji";
 import { dedent } from "~/util/helper";
 import { strong, underline } from "~/util/markdown";
 
