@@ -20,7 +20,7 @@ export default new SoundCommand({
   cooldown: Cooldown.PER_USER(3),
   sendTyping: false,
   execute: async ctx => {
-    const { bot, channel, content, msg } = ctx;
+    const { bot, content, msg } = ctx;
 
     if (!content.length) {
       return await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(TTS.TARGET));
@@ -37,7 +37,6 @@ export default new SoundCommand({
     boomBox.add(song);
 
     await msg.react(EMOJI.MUSIC_NOTE);
-    channel.stopTyping(true);
 
     await boomBox.play();
   }

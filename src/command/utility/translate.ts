@@ -21,7 +21,7 @@ export default new Command({
   ],
   alias: TRANSLATE.ALIAS,
   cooldown: Cooldown.PER_USER(3),
-  execute: async ({ bot, channel, msg, args, content }) => {
+  execute: async ({ bot, msg, args, content }) => {
     const langCandidate = args[0];
     const targetLang = langCandidate in TRANSLATE.LANGS
       ? langCandidate
@@ -38,13 +38,10 @@ export default new Command({
     const result = await translate(translateContent, {
       to: targetLangCode
     });
-    const langISO = result.from.language.iso.toLowerCase();
-    const originalLang = Object.keys(TRANSLATE.LANGS).find(lang => TRANSLATE.LANGS[lang] === langISO);
 
     const embed = new MessageEmbed()
-      .setDescription(`${EMOJI.MEMO} ${result.text}`)
-      .setFooter(`${EMOJI.WWW}${originalLang}: ${translateContent}`);
+      .setDescription(`${EMOJI.MEMO} ${result.text}`);
 
-    await bot.send(channel, embed);
+    await msg.reply({ embeds: [embed] });
   }
 });

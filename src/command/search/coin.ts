@@ -93,10 +93,10 @@ export default new Command({
       embed.setDescription(`${strong(coinInfo.trade_price.toString())} ${currency} (${coinInfo.signed_change_price >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${coinInfo.signed_change_price > 0 ? "+" : ""}${coinInfo.signed_change_price}, ${coinInfo.signed_change_rate > 0 ? "+" : ""}${coinInfo.signed_change_rate.toFixed(3)}%)`);
       embed.setImage(COIN.CHART_IMAGE_URL(coin.id));
 
-      embed.addField(COIN.NAME.HIGH_PRICE, coinInfo.high_price, true);
-      embed.addField(COIN.NAME.LOW_PRICE, coinInfo.low_price, true);
-      embed.addField(COIN.NAME.TRADE_VOLUME_24H, coinInfo.acc_trade_volume_24h, true);
-      embed.addField(COIN.NAME.TRADE_PRICE_24H, coinInfo.acc_trade_price_24h, true);
+      embed.addField(COIN.NAME.HIGH_PRICE, coinInfo.high_price.toString(), true);
+      embed.addField(COIN.NAME.LOW_PRICE, coinInfo.low_price.toString(), true);
+      embed.addField(COIN.NAME.TRADE_VOLUME_24H, coinInfo.acc_trade_volume_24h.toString(), true);
+      embed.addField(COIN.NAME.TRADE_PRICE_24H, coinInfo.acc_trade_price_24h.toString(), true);
       embed.addField(COIN.NAME.HIGHEST_52_WEEK_PRICE, `${coinInfo.highest_52_week_price} (${coinInfo.highest_52_week_date})`, true);
       embed.addField(COIN.NAME.LOWEST_52_WEEK_PRICE, `${coinInfo.lowest_52_week_price} (${coinInfo.lowest_52_week_date})`, true);
 

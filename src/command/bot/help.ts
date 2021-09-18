@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
-import Menu from "~/core/Menu";
+import Menu, { END_TYPE } from "~/core/Menu";
 import { strong, block } from "~/util/markdown";
 import { HELP } from "~/const/command/bot";
 import * as COLOR from "~/const/color";
@@ -49,12 +49,11 @@ export default new Command({
             }
           });
 
-        embed.addField("ㅤ", HELP.WEB_CATEGORY_INVITE_LINK(category));
-
         return embed;
       });
 
     const menu = new Menu(ctx, { maxWaitTime: HELP.MENU_TIME });
+    menu.addReactionCallback({ id: "LINK", style: "LINK", text: "웹에서 보기", url: HELP.WEB_CATEGORY_INVITE_LINK }, () => END_TYPE.CONTINUE);
     menu.setPages(categories);
 
     await menu.start();

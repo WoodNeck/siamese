@@ -27,7 +27,7 @@ class ChannelLogger {
     if (!msg.color) msg.setColor(COLOR.INFO);
     msg.setTimestamp(new Date());
 
-    await this._channels.INFO.send(msg)
+    await this._channels.INFO.send({ embeds: [msg] })
       .catch(err => console.error(err));
   }
 
@@ -35,7 +35,7 @@ class ChannelLogger {
     if (!msg.color) msg.setColor(COLOR.WARNING);
     msg.setTimestamp(new Date());
 
-    await this._channels.ERROR.send(msg)
+    await this._channels.ERROR.send({ embeds: [msg] })
       .catch(err => console.error(err));
   }
 
@@ -54,7 +54,7 @@ class ChannelLogger {
     }
     log.setColor(COLOR.ERROR);
 
-    await this._channels.ERROR.send(log)
+    await this._channels.ERROR.send({ embeds: [log] })
       .catch(error => console.error(error));
   }
 }

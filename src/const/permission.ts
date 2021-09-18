@@ -118,6 +118,6 @@ export const MANAGE_WEBHOOKS: Permission = {
   message: "웹훅 관리"
 };
 export const MANAGE_EMOJIS: Permission = {
-  flag: "MANAGE_EMOJIS",
+  flag: "MANAGE_EMOJIS_AND_STICKERS",
   message: "이모지 관리"
 };

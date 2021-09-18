@@ -1,3 +1,4 @@
+import { createAudioResource, StreamType } from "@discordjs/voice";
 import toReadableStream from "to-readable-stream";
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 
@@ -6,13 +7,6 @@ import Song from "./Song";
 import { TTS } from "~/const/command/sound";
 
 class TTSSong implements Song {
-  public readonly streamOptions = {
-    type: "ogg/opus",
-    bitrate: "auto",
-    fec: true,
-    plp: 0
-  } as const;
-
   private _content: string;
 
   public constructor(content: string) {
@@ -31,8 +25,11 @@ class TTSSong implements Song {
       voice: { languageCode: TTS.LANGUAGE },
       audioConfig: { audioEncoding: "OGG_OPUS" }
     });
+    const stream = toReadableStream(response.audioContent as Uint8Array);
 
-    return toReadableStream(response.audioContent as Uint8Array);
+    return createAudioResource(stream, {
+      inputType: StreamType.OggOpus
+    });
   }
 }
 

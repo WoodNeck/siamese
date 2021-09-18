@@ -6,7 +6,7 @@ export default new Command({
   description: DICE.DESC,
   usage: DICE.USAGE,
   sendTyping: false,
-  execute: async ({ bot, msg, author, channel, args }) => {
+  execute: async ({ bot, msg, author, args }) => {
     const isNum = /^\d+$/;
     // Non-number case
     if (args.length && !isNum.test(args[0])) {
@@ -24,6 +24,7 @@ export default new Command({
     }
 
     const diceResult = Math.floor(Math.random() * (diceNum)) + 1;
-    await bot.send(channel, DICE.MSG(author.toString(), diceResult, diceNum));
+
+    await msg.reply({ content: DICE.MSG(author.toString(), diceResult, diceNum) });
   }
 });

@@ -1,10 +1,7 @@
-import { Readable } from "stream";
-
-import { StreamOptions } from "discord.js";
+import { AudioResource } from "@discordjs/voice";
 
 interface Song {
-  readonly streamOptions: StreamOptions;
-  fetch(): Promise<Readable>;
+  fetch(): Promise<AudioResource>;
 }
 
 export default Song;

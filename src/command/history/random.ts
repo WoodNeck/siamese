@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { Collection, Message, MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
@@ -20,14 +20,21 @@ export default new Command({
     const loggedMessage = await getRandomMessage(channel);
     const msgId = loggedMessage ? loggedMessage.messageID : msg.id;
 
-    const randomMsgs = await channel.messages.fetch({
-      limit: MSG_RETRIEVE_MAXIMUM,
-      around: msgId
-    }, false);
+    const data = await ((bot as any).api).channels[channel.id].messages.get({ query: {
+      around: msgId,
+      limit: MSG_RETRIEVE_MAXIMUM
+    }});
+    const randomMsgs = new Collection<string, Message>();
+    for (const message of data) {
+      randomMsgs.set(message.id, message);
+    }
 
-    const randomMsg = randomMsgs
+    const randomMsgID = randomMsgs
       .filter(message => !message.author.bot)
-      .random();
+      .random().id;
+    const randomMsg = randomMsgID
+      ? await channel.messages.fetch(randomMsgID)
+      : null;
 
     if (!randomMsg) {
       return await bot.replyError(msg, RANDOM.ERROR.CANT_FIND_MSG);

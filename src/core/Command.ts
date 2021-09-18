@@ -67,7 +67,7 @@ class Command {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
-  public async onFail(ctx: CommandContext): Promise<void> {
+  public onFail(ctx: CommandContext): void {
     return;
   }
 
@@ -77,7 +77,7 @@ class Command {
     return this._checkPermissionsForChannel(channel, ctx);
   }
 
-  protected async _checkPermissionsForChannel(channel: Discord.TextChannel | Discord.VoiceChannel, ctx: CommandContext) {
+  protected async _checkPermissionsForChannel(channel: Discord.TextChannel | Discord.BaseGuildVoiceChannel, ctx: CommandContext) {
     const { bot, msg } = ctx;
 
     const permissionsGranted = channel.permissionsFor(bot.user);

@@ -110,7 +110,7 @@ export default new Command({
 
     const stockSelectorMenu = new Menu(ctx);
     stockSelectorMenu.setPages(selectorEmbed);
-    stockSelectorMenu.addReactionCallback(EMOJI.GREEN_CHECK, () => {
+    stockSelectorMenu.addReactionCallback({ id: "CONFIRM", emoji: EMOJI.GREEN_CHECK, style: "SECONDARY" }, () => {
       const item = stockItems[stockSelectorMenu.index];
 
       fetchItem(ctx, item).catch(err => {

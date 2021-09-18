@@ -7,8 +7,8 @@
 Korean Discord bot for multiple purpose.
 
 # Prerequisites
-- [Node.js](https://nodejs.org/ko/download/package-manager/) 12+
-  - Tested with Node v14.15.4
+- [Node.js](https://nodejs.org/ko/download/package-manager/) 16.6+
+  - Tested with Node v16.6.1
 - [MongoDB](https://www.mongodb.com/)
   - Tested with MongoDB v4.2.12
 

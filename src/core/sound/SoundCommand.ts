@@ -4,7 +4,7 @@ import * as ERROR from "~/const/error";
 import CommandContext from "~/type/CommandContext";
 
 class SoundCommand extends Command {
-  public async onFail(ctx: CommandContext): Promise<void> {
+  public onFail(ctx: CommandContext): void {
     const { bot, guild } = ctx;
     const boomBoxes = bot.boomBoxes;
 

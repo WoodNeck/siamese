@@ -23,6 +23,7 @@ export const dedent = (callSite: TemplateStringsArray, ...args: any[]) => {
 
 export const isBetween = (val: number, min: number, max: number) => val >= min && val <= max;
 export const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
+export const getMinusCompensatedIndex = (idx: number, max: number) => idx < 0 ? clamp(idx + max, 0, max) : clamp(idx, 0, max);
 
 export const getRandom = <T>(arr: T[]): T => arr[Math.floor((Math.random() * arr.length))];
 
@@ -39,10 +40,14 @@ export const toValidUrl = (url: string) => {
   return url;
 };
 
-export const rgbaToHex = (val: string) => {
+export const rgbaToHex = (val: string): `#${string}` | [number, number, number] => {
   const regex = /^rgba?\((\d{1,3})\s?,\s?(\d{1,3})\s?,\s?(\d{1,3})(?:,\s?\d.?\d*)?\s?\)$/;
   const matched = regex.exec(val);
-  if (!matched) return val;
+  if (!matched) {
+    return val.startsWith("#")
+      ? val as `#${string}`
+      : `#${val}`;
+  }
 
   const rgb = [matched[1], matched[2], matched[3]];
 

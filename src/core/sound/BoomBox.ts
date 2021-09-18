@@ -1,4 +1,13 @@
-import { VoiceConnection } from "discord.js";
+import {
+  entersState,
+  VoiceConnectionStatus,
+  createAudioPlayer,
+  AudioPlayerStatus
+} from "@discordjs/voice";
+import type {
+  VoiceConnection,
+  AudioPlayer
+} from "@discordjs/voice";
 
 import EventEmitter from "~/core/EventEmitter";
 import Song from "~/core/sound/Song";
@@ -8,6 +17,7 @@ class BoomBox extends EventEmitter<{
   error: Error;
 }> {
   private _connection: VoiceConnection;
+  private _audioPlayer: AudioPlayer;
   private _songs: Song[];
   private _playing: boolean;
   private _destroyOnEnd: boolean;
@@ -16,27 +26,49 @@ class BoomBox extends EventEmitter<{
   public constructor(voiceConnection: VoiceConnection, destroyOnEnd: boolean) {
     super();
     this._connection = voiceConnection;
+    this._audioPlayer = createAudioPlayer({});
     this._songs = [];
     this._playing = false;
     this._destroyOnEnd = destroyOnEnd;
     this._destroyTimer = null;
 
-    voiceConnection.on("disconnect", () => {
-      this.emit("end");
+    const audioPlayer = this._audioPlayer;
+
+    voiceConnection.subscribe(this._audioPlayer);
+    voiceConnection.on(VoiceConnectionStatus.Disconnected, async () => {
+      try {
+        await Promise.race([
+          entersState(voiceConnection, VoiceConnectionStatus.Signalling, 5000),
+          entersState(voiceConnection, VoiceConnectionStatus.Connecting, 5000)
+        ]);
+      } catch (error) {
+        this.destroy();
+      }
+    });
+
+    audioPlayer.on("error", err => {
+      this.emit("error", err);
+    });
+    audioPlayer.on(AudioPlayerStatus.Idle, async () => {
+      await this._playNextSong();
     });
   }
 
   public destroy(): void {
     const connection = this._connection;
+    const audioPlayer = this._audioPlayer;
 
-    if (connection.dispatcher) connection.dispatcher.end();
-    connection.disconnect();
+    connection.destroy();
+    audioPlayer.stop();
+
     this._songs = [];
     this._playing = false;
     if (this._destroyTimer) {
       clearTimeout(this._destroyTimer);
     }
+
     this._destroyTimer = null;
+    this.emit("end");
   }
 
   public add(song: Song) {
@@ -46,12 +78,24 @@ class BoomBox extends EventEmitter<{
   public async play() {
     if (this._playing) return;
 
-    this._playing = true;
-    await this._playNextSong();
+    const connection = this._connection;
+
+    try {
+      if (connection.state.status !== VoiceConnectionStatus.Ready) {
+        await entersState(connection, VoiceConnectionStatus.Ready, 5000);
+      }
+
+      this._playing = true;
+      await this._playNextSong();
+    } catch (err) {
+      this.emit("error", err);
+      this.destroy();
+    }
   }
 
   private async _playNextSong() {
     const song = this._songs.shift();
+    const player = this._audioPlayer;
 
     if (!song) {
       if (this._destroyOnEnd) {
@@ -66,24 +110,8 @@ class BoomBox extends EventEmitter<{
       this._destroyTimer = null;
     }
 
-    const stream = await song.fetch();
-    const dispatcher = this._connection.play(stream, song.streamOptions);
-
-    dispatcher.on("start", () => {
-      // 'pausedTime' is carried on new dispatcher
-      // Should manually set it for 0 to get 0-delay stream after pausing
-      // https://github.com/discordjs/discord.js/issues/1693#issuecomment-317301023
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (this._connection.player as any).streamingData.pausedTime = 0;
-    });
-
-    dispatcher.on("error", err => {
-      this.emit("error", err);
-    });
-
-    dispatcher.on("finish", async () => {
-      await this._playNextSong();
-    });
+    const audioResource = await song.fetch();
+    player.play(audioResource);
   }
 
   private _setDestroyTimeout() {

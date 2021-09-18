@@ -11,7 +11,7 @@ export default new Command({
   usage: AVATAR.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
   sendTyping: false,
-  execute: async ({ bot, msg, channel }) => {
+  execute: async ({ bot, msg }) => {
     if (!msg.mentions.users.size) {
       await bot.replyError(msg, AVATAR.MENTION_NEEDED(bot.prefix, bot.user.username));
       return;
@@ -28,6 +28,6 @@ export default new Command({
       .setFooter(mentioned.username, mentioned.avatarURL() || "")
       .setColor(COLOR.BOT);
 
-    await bot.send(channel, embed);
+    await msg.reply({ embeds: [embed] });
   }
 });

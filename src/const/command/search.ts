@@ -81,10 +81,10 @@ export const CHEAPEST = {
     ${EMOJI.DOLLAR} ${strong(`${originalPrice}$`)}`,
   METASCORE_IMG: "https://www.metacritic.com/images/icons/metacritic-icon.svg",
   METASCORE_COLOR: (score: number) => score >= 75
-    ? "66cc33"
+    ? "#66cc33"
     : score >= 50
-      ? "ffcc33"
-      : "ff0000",
+      ? "#ffcc33"
+      : "#ff0000",
   REVIEW_TEXT: {
     "Overwhelmingly Positive": "압도적으로 긍정적",
     "Very Positive": "매우 긍정적",

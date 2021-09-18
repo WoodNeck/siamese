@@ -5,7 +5,7 @@ import GuildConfigModel, { GuildConfigDocument } from "~/model/GuildConfig";
 import * as PERMISSION from "~/const/permission";
 
 export const checkPermission = async (member: Discord.GuildMember, guild: Discord.Guild) => {
-  if (member.hasPermission(PERMISSION.ADMINISTRATOR.flag)) return true;
+  if (member.permissions.has(PERMISSION.ADMINISTRATOR.flag)) return true;
 
   const guildConfig = await GuildConfigModel.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
 
@@ -39,7 +39,7 @@ export const isAdmin = async (bot: Siamese, userID: string, guildID: string) => 
 
   if (!member) return false;
 
-  return member.hasPermission(PERMISSION.ADMINISTRATOR.flag);
+  return member.permissions.has(PERMISSION.ADMINISTRATOR.flag);
 };
 
 export const getUserAvatar = (userID: string, discriminator: string, avatarHash?: string) => {

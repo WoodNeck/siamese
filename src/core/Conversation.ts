@@ -55,10 +55,10 @@ class Conversation {
       }
       messagesSent.push(message);
 
-      const collector = userMsg.channel.createMessageCollector(
-        (msg: Discord.Message) => msg.author.id === userMsg.author.id,
-        { time: maxTime * 1000 }
-      );
+      const collector = userMsg.channel.createMessageCollector({
+        filter: (msg: Discord.Message) => msg.author.id === userMsg.author.id,
+        time: maxTime * 1000
+      });
 
       const result = await new Promise<{ collected: Discord.Collection<string, Discord.Message>; reason: string }>(resolve => {
         collector.on("collect", msg => {

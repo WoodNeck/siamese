@@ -6,13 +6,13 @@ export default new Command({
   description: CHOOSE.DESC,
   usage: CHOOSE.USAGE,
   sendTyping: false,
-  execute: async ({ bot, msg, channel, args }) => {
+  execute: async ({ bot, msg, args }) => {
     // It needs least 2 arguments to choose
     if (args.length < 2) {
       await bot.replyError(msg, CHOOSE.ARG_NOT_SUFFICIENT(bot.prefix));
       return;
     }
 
-    await bot.send(channel, args[Math.random() * args.length | 0]);
+    await msg.reply({ content: args[Math.random() * args.length | 0] });
   }
 });

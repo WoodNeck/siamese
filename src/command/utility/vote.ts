@@ -83,7 +83,7 @@ export default new Command({
     });
 
     const numberEmojis = options.map((option, idx) => `${idx + 1}${EMOJI.KEYCAP}`);
-    const voteMsg = await channel.send(VOTE.HELP_DESC, { embed: voteEmbed });
+    const voteMsg = await channel.send({ content: VOTE.HELP_DESC, embeds: [voteEmbed] });
     for (let idx = 0; idx < options.length; idx += 1) {
       await voteMsg.react(numberEmojis[idx]);
     }
@@ -95,14 +95,15 @@ export default new Command({
     const reactionFilter = async (reaction: Discord.MessageReaction, user: Discord.User) => {
       const isCorrectReaction = numberEmojis.some(emoji => emoji === reaction.emoji.name);
       if (!user.bot && isCorrectReaction) {
-        const idx = numberEmojis.indexOf(reaction.emoji.name);
+        const idx = numberEmojis.indexOf(reaction.emoji.name!);
         voteCollection.set(user.id, idx);
         // Remove user reaction immediately, to hide who voted on what
         await reaction.users.remove(user).catch(() => void 0);
       }
       return true;
     };
-    const reactionCollector = voteMsg.createReactionCollector(reactionFilter, {
+    const reactionCollector = voteMsg.createReactionCollector({
+      filter: reactionFilter,
       time: durationMinute * 60 * 1000
     });
 
@@ -146,7 +147,7 @@ export default new Command({
         content: bestIndexes.length > 1
           ? VOTE.RESULT_DESC_TIE(bestIndexes.map(idx => options[idx]), voteCounts[bestIndexes[0]])
           : VOTE.RESULT_DESC(options[bestIndexes[0]], voteCounts[bestIndexes[0]]),
-        embed: voteResultEmbed
+        embeds: [voteResultEmbed]
       });
     });
   }

@@ -14,8 +14,8 @@ setupAxios();
 
 // Create a new bot instance, setup and start it
 const bot = new Siamese({ env, logger, options: {
-  ws: { intents: botIntents }
-} });
+  intents: botIntents
+}});
 
 const start = async () => {
   await bot.setup();

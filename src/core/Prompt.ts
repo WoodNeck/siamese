@@ -37,10 +37,10 @@ class Prompt {
         await msg.react(emoji);
       }
 
-      const reactionCollector = msg.createReactionCollector(
-        (reaction: Discord.MessageReaction, user: Discord.User) => emojis.some(emoji => reaction.emoji.name === emoji) && user.id === author.id,
-        { time: this._maxWaitTime * 1000 }
-      );
+      const reactionCollector = msg.createReactionCollector({
+        filter: (reaction: Discord.MessageReaction, user: Discord.User) => emojis.some(emoji => reaction.emoji.name === emoji) && user.id === author.id,
+        time: this._maxWaitTime * 1000
+      });
 
       return new Promise(resolve => {
         reactionCollector.on("collect", () => {

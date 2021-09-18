@@ -1,4 +1,5 @@
 import Discord, { MessageEmbed } from "discord.js";
+import { joinVoiceChannel } from "@discordjs/voice";
 import AutoPoster from "topgg-autoposter";
 import { BasePoster } from "topgg-autoposter/dist/structs/BasePoster";
 import pino from "pino";
@@ -45,7 +46,7 @@ class Siamese extends Discord.Client {
   private _cooldowns: Discord.Collection<string, { start: Date; duration: number }>;
   // All permissions needed to execute every single commands
   // Least permission for a bot is defined already
-  private _permissions: Readonly<Discord.BitField<Discord.PermissionString>>;
+  private _permissions: Readonly<Discord.BitField<Discord.PermissionString, bigint>>;
   private _msgCounts: Discord.Collection<string, number>;
   private _boomBoxes: Discord.Collection<string, BoomBox>;
   private _dbl: BasePoster | null;
@@ -109,8 +110,12 @@ class Siamese extends Discord.Client {
       });
   }
 
-  public async send(channel: Discord.TextChannel, content: string | MessageEmbed | (Discord.MessageOptions & { split?: false | undefined })) {
-    channel.stopTyping(true);
+  public async send(channel: Discord.TextChannel, content: string | Discord.MessagePayload | Discord.MessageOptions | Discord.MessageEmbed) {
+    await channel.sendTyping();
+
+    if (content instanceof Discord.MessageEmbed) {
+      content = { embeds: [content] };
+    }
 
     return await channel.send(content)
       .catch(err => {
@@ -137,7 +142,7 @@ class Siamese extends Discord.Client {
   }
 
   public getDisplayName(guild: Discord.Guild, user: Discord.User = this.user) {
-    const userAsMember = guild.member(user);
+    const userAsMember = guild.members.cache.get(user.id);
 
     return userAsMember ? userAsMember.displayName : user.username;
   }
@@ -173,11 +178,9 @@ class Siamese extends Discord.Client {
   }
 
   public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
-    const { msg, channel } = ctx;
+    const { msg } = ctx;
 
-    channel.stopTyping(true);
-
-    await cmd.onFail(ctx);
+    cmd.onFail(ctx);
 
     await this.replyError(msg, ERROR.CMD.FAILED);
     await this._logger.error(err, msg);
@@ -196,13 +199,14 @@ class Siamese extends Discord.Client {
     await this._logger.info(readyMsg);
 
     // Update activity every 30 minutes
-    this.setInterval(this._updateActivity, 1000 * 60 * 30);
-    await this._updateActivity();
+    setInterval(this._updateActivity, 1000 * 60 * 30);
+    this._updateActivity();
   };
 
-  private _updateActivity = async () => {
+  private _updateActivity = () => {
     const activity = `${this._env.BOT_DEFAULT_PREFIX}${HELP.CMD}${EMOJI.CAT.GRINNING}`;
-    await this.user.setActivity(activity, {
+
+    this.user.setActivity(activity, {
       type: ACTIVITY.LISTENING
     });
   };
@@ -392,7 +396,7 @@ class Siamese extends Discord.Client {
 
     try {
       if (cmd.sendTyping) {
-        await startTyping(this, ctx.channel);
+        await ctx.channel.sendTyping();
       }
 
       await cmd.execute(ctx);
@@ -490,7 +494,12 @@ class Siamese extends Discord.Client {
       return await this.replyError(msg, ERROR.SOUND.VOICE_CHANNEL_IS_FULL);
     }
 
-    const connection = await voiceChannel.join();
+    const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: guild.id,
+      adapterCreator: guild.voiceAdapterCreator
+    });
+
     const stopBoomBox = () => {
       if (boomBoxes.has(guild.id)) {
         boomBoxes.get(guild.id)!.destroy();
@@ -499,13 +508,6 @@ class Siamese extends Discord.Client {
 
     connection.on("error", async err => {
       await this.replyError(msg, ERROR.SOUND.VOICE_CONNECTION_HAD_ERROR);
-      await bot.logger.error(err, msg);
-
-      stopBoomBox();
-    });
-
-    connection.on("failed", async err => {
-      await this.replyError(msg, ERROR.SOUND.VOICE_CONNECTION_JOIN_FAILED);
       await bot.logger.error(err, msg);
 
       stopBoomBox();

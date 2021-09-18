@@ -14,7 +14,8 @@ export default new Command({
   execute: async ({ bot, channel, guild }: CommandContext) => {
     const botName = bot.getDisplayName(guild);
 
-    const link = await bot.generateInvite({
+    const link = bot.generateInvite({
+      scopes: ["bot", "applications.commands"],
       permissions: bot.permissions
     });
 
