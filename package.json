@@ -87,8 +87,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "node ./dev-utils/bot.env.generate.js && git add bot.env.preset",
-      "pre-push": "npm run test"
+      "pre-commit": "node ./dev-utils/bot.env.generate.js && git add bot.env.preset"
     }
   }
 }

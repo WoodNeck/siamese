@@ -1,4 +1,4 @@
-import Discord, { MessageEmbed } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -82,43 +82,52 @@ export default new Command({
       voteEmbed.addField(`${idx + 1}${EMOJI.KEYCAP} ${option}`, EMOJI.ZERO_WIDTH_SPACE);
     });
 
-    const numberEmojis = options.map((option, idx) => `${idx + 1}${EMOJI.KEYCAP}`);
-    const voteMsg = await channel.send({ content: VOTE.HELP_DESC, embeds: [voteEmbed] });
-    for (let idx = 0; idx < options.length; idx += 1) {
-      await voteMsg.react(numberEmojis[idx]);
-    }
+    const buttons = options.map((option, idx) => new MessageButton()
+      .setLabel(option)
+      .setCustomId(idx.toString())
+      .setEmoji(`${idx + 1}${EMOJI.KEYCAP}`)
+      .setStyle("SECONDARY")
+    );
 
-    const voteCollection = new Map<string, number>();
+    const row = new MessageActionRow()
+      .addComponents(...buttons);
 
-    // As collect event can't get user who gave reaction
-    // Hack filter to retrieve user info
-    const reactionFilter = async (reaction: Discord.MessageReaction, user: Discord.User) => {
-      const isCorrectReaction = numberEmojis.some(emoji => emoji === reaction.emoji.name);
-      if (!user.bot && isCorrectReaction) {
-        const idx = numberEmojis.indexOf(reaction.emoji.name!);
-        voteCollection.set(user.id, idx);
-        // Remove user reaction immediately, to hide who voted on what
-        await reaction.users.remove(user).catch(() => void 0);
-      }
-      return true;
-    };
-    const reactionCollector = voteMsg.createReactionCollector({
-      filter: reactionFilter,
+    const voteMsg = await channel.send({ content: VOTE.HELP_DESC, embeds: [voteEmbed], components: [row] });
+
+    const reactionCollector = voteMsg.createMessageComponentCollector({
+      filter: (interaction: ButtonInteraction) => !interaction.user.bot,
       time: durationMinute * 60 * 1000
     });
 
-    reactionCollector.on("end", async () => {
-      // Remove vote msg, could been deleted already
-      await voteMsg.delete().catch(() => void 0);
+    reactionCollector.on("collect", (interaction: ButtonInteraction) => {
+      interaction.deferUpdate();
+    });
 
-      const voteCounts: {[key: number]: number} = options.reduce((counts, option, idx) => {
+    reactionCollector.on("end", async (collection) => {
+      // Remove vote msg, could been deleted already
+      if (!voteMsg.deleted) {
+        await voteMsg.delete().catch(() => void 0);
+      }
+
+      const voteCollection = collection.reduce((collected: { [id: string]: ButtonInteraction }, interaction) => {
+        const prevInteraction = collected[interaction.user.id];
+        if (!prevInteraction || prevInteraction.createdTimestamp < interaction.createdTimestamp) {
+          collected[interaction.user.id] = interaction;
+        } else {
+          collected[interaction.user.id] = interaction;
+        }
+
+        return collected;
+      }, {});
+
+      const voteCounts: {[key: number]: number} = options.reduce((counts, _, idx) => {
         counts[idx] = 0;
         return counts;
       }, {});
-      voteCollection.forEach(val => voteCounts[val] += 1);
+      Object.values(voteCollection).forEach(interaction => voteCounts[interaction.customId] += 1);
 
       const bestIndexes: number[] = [0];
-      options.forEach((option, idx) => {
+      options.forEach((_, idx) => {
         if (idx === 0) return;
 
         const bestIndex = bestIndexes[0];
