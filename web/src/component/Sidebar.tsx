@@ -28,8 +28,6 @@ const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  console.log(user?.guilds);
-
   const routes: Route[] = useMemo(() => [
     {
       path: "/",
