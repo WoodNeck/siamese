@@ -36,7 +36,8 @@ export default new SoundCommand({
 
     boomBox.add(song);
 
-    await msg.react(EMOJI.MUSIC_NOTE);
+    // Ignore error created when Siamese is blocked by the user
+    await msg.react(EMOJI.MUSIC_NOTE).catch(() => void 0);
 
     await boomBox.play();
   }
