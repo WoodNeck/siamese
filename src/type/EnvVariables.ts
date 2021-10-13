@@ -3,6 +3,7 @@ interface EnvVariables {
   BOT_TOKEN: string;
   BOT_DEFAULT_PREFIX: string;
   BOT_ICON_PREFIX: string;
+  BOT_ENV: "development" | "production";
   // Rest API Sever - Essential
   BOT_CLIENT_ID: string;
   BOT_CLIENT_SECRET: string;

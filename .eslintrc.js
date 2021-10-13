@@ -103,6 +103,7 @@ module.exports = {
             "private-instance-method"
           ]
         }],
+        "@typescript-eslint/require-await": "off",
         "@typescript-eslint/no-empty-function": "error",
         "@typescript-eslint/no-empty-interface": "warn",
         "@typescript-eslint/no-explicit-any": "off",
@@ -228,7 +229,7 @@ module.exports = {
     }
   ],
   "rules": {
-    "arrow-body-style": "error",
+    "arrow-body-style": "off",
     "arrow-parens": [
       "off",
       "always"

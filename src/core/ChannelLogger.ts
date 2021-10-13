@@ -40,13 +40,17 @@ class ChannelLogger {
   }
 
   // Helper function for formatted error logging
-  public async error(err: Error, msg?: Discord.Message) {
+  public async error(err: Error, msg?: {
+    channel: Discord.TextBasedChannels;
+    guild: Discord.Guild | null;
+    content: string;
+  }) {
     const log = new MessageEmbed();
     if (msg) {
       log.setTitle(ERROR.CMD.FAIL_TITLE(err).substr(0, 256))
         .setDescription(dedent`
-					${ERROR.CMD.FAIL_PLACE(msg)}
-					${ERROR.CMD.FAIL_CMD(msg)}
+					${ERROR.CMD.FAIL_PLACE(msg.channel, msg.guild)}
+					${ERROR.CMD.FAIL_CMD(msg.content)}
           ${ERROR.CMD.FAIL_DESC(err)}`.substr(0, 2048));
     } else {
       log.setTitle(ERROR.CMD.FAIL_TITLE(err))

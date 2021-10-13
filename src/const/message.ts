@@ -24,5 +24,6 @@ export const BOT = {
   GUILD_JOIN_FOOTER: (bot: Siamese) => dedent`
     여기는 ${Josa.r(bot.user.username, "이/가")} 일하는 ${bot.guilds.cache.size.toString()}번째 서버다냥!`,
   ERROR_MSG: (user: Discord.User, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`,
-  CMD_REGISTER_FAILED: (cmd: Command) => `명령어 "${cmd.name}"의 beforeReigster 판정에 실패해서 명령어를 등록하지 못했다냥!`
+  CMD_REGISTER_FAILED: (cmd: Command) => `명령어 "${cmd.name}"의 beforeReigster 판정에 실패해서 명령어를 등록하지 못했다냥!`,
+  SKIP_SLASH_CMD_REGISTER: "BOT_DEV_SERVER_ID가 bot.env파일에 없다냥! 슬래시 명령어 등록을 스킵한다냥!"
 } as const;

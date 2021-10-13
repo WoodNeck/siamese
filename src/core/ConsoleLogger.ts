@@ -16,6 +16,7 @@ class ConsoleLogger {
       ${new Date().toLocaleString()}
 		`;
 
+    // eslint-disable-next-line no-console
     console.log(strMsg);
     return Promise.resolve();
   }
@@ -30,15 +31,20 @@ class ConsoleLogger {
       ${new Date().toLocaleString()}
 		`;
 
+    // eslint-disable-next-line no-console
     console.log(strMsg);
     return Promise.resolve();
   }
 
   // Helper function for formatted error logging
-  public async error(err: Error, msg?: Discord.Message) {
+  public async error(err: Error, msg?: {
+    channel: Discord.TextBasedChannels;
+    guild: Discord.Guild | null;
+    content: string;
+  }) {
     const strMsg = dedent`
       ${ERROR.CMD.FAIL_TITLE(err)}
-      ${msg ? `${ERROR.CMD.FAIL_PLACE(msg)}\n${ERROR.CMD.FAIL_CMD(msg)}\n${ERROR.CMD.FAIL_DESC(err)}` : ERROR.CMD.FAIL_DESC(err)}
+      ${msg ? `${ERROR.CMD.FAIL_PLACE(msg.channel, msg.guild)}\n${ERROR.CMD.FAIL_CMD(msg.content)}\n${ERROR.CMD.FAIL_DESC(err)}` : ERROR.CMD.FAIL_DESC(err)}
       ${new Date().toLocaleString()}
     `;
 

@@ -1,5 +1,7 @@
 import Discord, { MessageEmbed } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
 import AutoPoster from "topgg-autoposter";
 import { BasePoster } from "topgg-autoposter/dist/structs/BasePoster";
 import pino from "pino";
@@ -8,6 +10,7 @@ import mongoose from "mongoose";
 
 import Category from "~/core/Category";
 import Command from "~/core/Command";
+import SlashCommand from "~/core/SlashCommand";
 import ChannelLogger from "~/core/ChannelLogger";
 import ConsoleLogger from "~/core/ConsoleLogger";
 import BoomBox from "~/core/sound/BoomBox";
@@ -19,6 +22,7 @@ import HistoryCategory from "~/command/history";
 import IconCategory from "~/command/icon";
 import SoundCategory from "~/command/sound";
 import SettingCategory from "~/command/setting";
+import * as SlashCommands from "~/slashcommand";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -32,7 +36,6 @@ import CommandContext from "~/type/CommandContext";
 import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
 import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
-import startTyping from "~/util/startTyping";
 import checkActiveRole from "~/util/checkActiveRole";
 
 class Siamese extends Discord.Client {
@@ -42,6 +45,7 @@ class Siamese extends Discord.Client {
   private _env: EnvVariables;
   private _categories: Category[];
   private _commands: Discord.Collection<string, Command>;
+  private _slashCommands: Discord.Collection<string, SlashCommand>;
   // Cooldowns, per type
   private _cooldowns: Discord.Collection<string, { start: Date; duration: number }>;
   // All permissions needed to execute every single commands
@@ -57,6 +61,7 @@ class Siamese extends Discord.Client {
   public get prefix() { return this._env.BOT_DEFAULT_PREFIX; }
   public get categories() { return this._categories; }
   public get commands() { return this._commands; }
+  public get slashCommands() { return this._slashCommands; }
   public get msgCounts() { return this._msgCounts; }
   public get boomBoxes() { return this._boomBoxes; }
   public get database() { return this._database; }
@@ -79,6 +84,7 @@ class Siamese extends Discord.Client {
 
     this._categories = [];
     this._commands = new Discord.Collection();
+    this._slashCommands = new Discord.Collection();
     this._cooldowns = new Discord.Collection();
     this._msgCounts = new Discord.Collection();
     this._boomBoxes = new Discord.Collection();
@@ -94,6 +100,7 @@ class Siamese extends Discord.Client {
     // Setup bot
     await this._setupDatabase();
     this._loadCommands();
+    await this._loadSlashCommands();
     this._listenEvents();
   }
 
@@ -125,7 +132,7 @@ class Siamese extends Discord.Client {
           this._fileLogger.error(err);
         }
 
-        return null;
+        throw err;
       });
   }
 
@@ -184,6 +191,15 @@ class Siamese extends Discord.Client {
 
     await this.replyError(msg, ERROR.CMD.FAILED);
     await this._logger.error(err, msg);
+  }
+
+  public async handleSlashError(interaction: Discord.CommandInteraction, err: Error) {
+    await interaction.reply(ERROR.CMD.FAILED);
+    await this._logger.error(err, {
+      channel: interaction.channel as Discord.TextChannel,
+      guild: interaction.guild as Discord.Guild,
+      content: interaction.commandName
+    });
   }
 
   private _onReady = async () => {
@@ -270,6 +286,34 @@ class Siamese extends Discord.Client {
   	this._permissions = permissions.freeze();
   }
 
+  private async _loadSlashCommands() {
+    const env = this._env;
+
+    if (env.BOT_ENV !== "production" && !env.BOT_DEV_SERVER_ID) {
+      // eslint-disable-next-line no-console
+      console.warn(EMOJI.WARNING, MSG.BOT.SKIP_SLASH_CMD_REGISTER);
+      return;
+    }
+
+    const rest = new REST({ version: "9" }).setToken(env.BOT_TOKEN);
+    const slashCommands = Object.values(SlashCommands);
+
+    try {
+      await rest.put(
+        env.BOT_ENV === "production"
+          ? Routes.applicationCommands(env.BOT_CLIENT_ID)
+          : Routes.applicationGuildCommands(env.BOT_CLIENT_ID, env.BOT_DEV_SERVER_ID!),
+        { body: slashCommands.map(cmd => cmd.data.toJSON()) },
+      );
+
+      slashCommands.forEach(cmd => {
+        this._slashCommands.set(cmd.data.name, cmd);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   private async _setupDatabase() {
     await mongoose.connect(DB.URI, {
       autoIndex: false,
@@ -292,6 +336,7 @@ class Siamese extends Discord.Client {
 
   private _listenEvents() {
     this.on("message", this._onMessage);
+    this.on("interactionCreate", this._onInteractionCreate);
     this.on("guildCreate", this._onGuildJoin);
     this.on("error", this._onError);
     this.on("warn", this._onWarn);
@@ -402,6 +447,29 @@ class Siamese extends Discord.Client {
       await cmd.execute(ctx);
     } catch (err) {
       await this.handleError(ctx, cmd, err);
+    }
+  };
+
+  private _onInteractionCreate = async (interaction: Discord.CommandInteraction) => {
+    if (
+      !interaction.isCommand()
+      || !this._slashCommands.has(interaction.commandName)
+      || !interaction.inGuild()
+    ) return;
+
+    const cmd = this._slashCommands.get(interaction.commandName)!;
+
+    try {
+      await cmd.execute({
+        bot: this,
+        interaction: interaction as Discord.CommandInteraction & {
+          guildId: string;
+          guild: Discord.Guild;
+          member: Discord.GuildMember;
+        }
+      });
+    } catch (err) {
+      await this.handleSlashError(interaction, err);
     }
   };
 

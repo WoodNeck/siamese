@@ -44,6 +44,7 @@ export const NO_ENTRY = "⛔";
 export const LARGE_CIRCLE = "⭕";
 export const BLUE_CIRCLE = "🔵";
 export const VIDEO_GAME = "🎮";
+export const JOYSTICK = "🕹️";
 export const PEOPLE = "👥";
 export const NSFW = "🔞";
 export const EGGPLANT = "🍆";

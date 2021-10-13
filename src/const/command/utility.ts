@@ -1,7 +1,7 @@
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
-import { block, code, strong } from "~/util/markdown";
+import { block, strong } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
 
 export const DICE = {
@@ -69,11 +69,7 @@ export const VOTE = {
 export const AVATAR = {
   CMD: "아바타",
   DESC: "사용자의 아바타 이미지를 크게 보여준다냥!",
-  USAGE: "@사용자",
-  MENTION_NEEDED: (prefix: string, botName: string) => dedent`
-    명령어 대상을 ${code("@멘션")}해서 사용하는 명령어다냥!
-    ${block(`> ${prefix}${AVATAR.CMD} @${botName}`)}`,
-  MENTION_ONLY_ONE: "한 명의 유저만 멘션해달라냥!"
+  USAGE: "@사용자"
 };
 
 export const TRANSLATE = {

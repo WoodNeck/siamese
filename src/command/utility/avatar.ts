@@ -3,6 +3,7 @@ import { MessageEmbed } from "discord.js";
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
+import * as ERROR from "~/const/error";
 import { AVATAR } from "~/const/command/utility";
 
 export default new Command({
@@ -13,11 +14,11 @@ export default new Command({
   sendTyping: false,
   execute: async ({ bot, msg }) => {
     if (!msg.mentions.users.size) {
-      await bot.replyError(msg, AVATAR.MENTION_NEEDED(bot.prefix, bot.user.username));
+      await bot.replyError(msg, ERROR.CMD.MENTION_NEEDED);
       return;
     }
     if (msg.mentions.users.size > 1) {
-      await bot.replyError(msg, AVATAR.MENTION_ONLY_ONE);
+      await bot.replyError(msg, ERROR.CMD.MENTION_ONLY_ONE);
       return;
     }
 

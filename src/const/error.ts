@@ -1,7 +1,7 @@
 import type Discord from "discord.js";
 import Josa from "josa-js";
 
-import { strong, block } from "~/util/markdown";
+import { strong, block, code } from "~/util/markdown";
 
 export const BOT = {
   FAILED_TO_START: "❗ 봇 시작을 실패했다냥 ❗",
@@ -10,7 +10,8 @@ export const BOT = {
 
 export const ENV = {
   VAR_MISSING: (key: string) => `${key}가 bot.env파일에 없다냥!`,
-  VAR_NO_EMPTY_STRING: "이 변수는 비어있지 않은 문자열을 줘야된다냥!"
+  VAR_NO_EMPTY_STRING: "이 변수는 비어있지 않은 문자열을 줘야한다냥!",
+  VAR_MUST_ENV: "이 변수는 development 혹은 production 값을 줘야한다냥!"
 };
 
 export const CMD = {
@@ -21,14 +22,17 @@ export const CMD = {
   PERMISSION_IS_MISSING: (bot: Discord.Client, permissions: string) => `명령어를 실행할 수 있는 권한이 없다냥! ${bot.user}에 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
   USER_SHOULD_BE_ADMIN: "이 명령어는 관리자 권한이 있는 사용자만 쓸 수 있다냥!",
   FAIL_TITLE: (error: Error) => `${error.name}: ${error.message}`,
-  FAIL_PLACE: (msg: Discord.Message) => `${msg.guild?.name}(${msg.guild?.id}):${(msg.channel as Discord.TextChannel).name}(${msg.channel.id})`,
-  FAIL_CMD: (msg: Discord.Message) => `이 명령어를 실행중이었다냥: ${strong(msg.content)}`,
+  FAIL_PLACE: (channel: Discord.TextBasedChannels, guild: Discord.Guild | null) => `${guild?.name}(${guild?.id}):${(channel as Discord.TextChannel).name}(${channel.id})`,
+  FAIL_CMD: (content: string) => `이 명령어를 실행중이었다냥: ${strong(content)}`,
   FAIL_DESC: (error: Error) => `${error.stack ? error.stack : ""}`,
   ON_COOLDOWN: (seconds: string) => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,
   EMPTY_CONTENT: (target: string) => `${Josa.r(target, "을/를")} 달라냥!`,
   ONLY_IN_TEXT_CHANNEL: "명령어는 길드 채널에서만 사용할 수 있다냥!",
   NOT_FOUND: target => `${Josa.r(target, "을/를")} 찾을 수 없다냥!`,
-  PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`
+  PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`,
+  MENTION_NEEDED: `명령어 대상을 ${code("@멘션")}해서 사용하는 명령어다냥!`,
+  MENTION_ONLY_ONE: "한 명의 유저만 멘션해달라냥!",
+  MENTION_NO_BOT: "봇은 멘션할 수 없다냥!"
 };
 
 export const API = {

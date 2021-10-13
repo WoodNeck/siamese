@@ -92,7 +92,11 @@ export default new Command({
     const row = new MessageActionRow()
       .addComponents(...buttons);
 
-    const voteMsg = await channel.send({ content: VOTE.HELP_DESC, embeds: [voteEmbed], components: [row] });
+    const voteMsg = await channel.send({
+      content: VOTE.HELP_DESC,
+      embeds: [voteEmbed],
+      components: [row]
+    });
 
     const reactionCollector = voteMsg.createMessageComponentCollector({
       filter: (interaction: ButtonInteraction) => !interaction.user.bot,
@@ -100,7 +104,7 @@ export default new Command({
     });
 
     reactionCollector.on("collect", (interaction: ButtonInteraction) => {
-      interaction.deferUpdate();
+      void interaction.deferUpdate();
     });
 
     reactionCollector.on("end", async (collection) => {

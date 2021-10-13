@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageButtonStyle } from "discord.js";
 
 import * as COLOR from "~/const/color";
@@ -137,7 +138,7 @@ class Menu {
       const buttons = this._buttons.map(button => {
         const messageBtn = new MessageButton();
 
-        !button.url && messageBtn.setCustomId(button.id)
+        !button.url && messageBtn.setCustomId(button.id);
         messageBtn.setStyle(button.style);
 
         button.emoji && messageBtn.setEmoji(button.emoji);
@@ -147,7 +148,7 @@ class Menu {
         return messageBtn;
       });
       const row = new MessageActionRow()
-        .addComponents(...buttons)
+        .addComponents(...buttons);
 
       msgComponents.push(row);
     }
@@ -286,7 +287,7 @@ class Menu {
         components: []
       });
     } else {
-      msg.edit({ components: [] });
+      await msg.edit({ components: [] });
     }
   }
 }
