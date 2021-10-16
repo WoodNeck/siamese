@@ -58,7 +58,9 @@ class BoomBox extends EventEmitter<{
     const connection = this._connection;
     const audioPlayer = this._audioPlayer;
 
-    connection.destroy();
+    if (connection.state.status !== VoiceConnectionStatus.Destroyed) {
+      connection.destroy();
+    }
     audioPlayer.stop();
 
     this._songs = [];
