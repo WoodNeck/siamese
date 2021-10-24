@@ -10,6 +10,7 @@ export const TTS = {
   TARGET: "읽을 문장",
   MAX_LENGTH: 500,
   LANGUAGE: "ko-KR",
+  DEFAULT_VOICE_NAME: "ko-KR-Standard-A",
   ERROR: {
     MESSAGE_TOO_LONG: "문장이 너무 길다냥! 500자 이하의 문장을 달라냥!"
   }

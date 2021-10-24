@@ -22,7 +22,10 @@ class TTSSong implements Song {
     const ttsClient = new TextToSpeechClient();
     const [response] = await ttsClient.synthesizeSpeech({
       input,
-      voice: { languageCode: TTS.LANGUAGE },
+      voice: {
+        languageCode: TTS.LANGUAGE,
+        name: TTS.DEFAULT_VOICE_NAME
+      },
       audioConfig: { audioEncoding: "OGG_OPUS" }
     });
     const stream = toReadableStream(response.audioContent as Uint8Array);
