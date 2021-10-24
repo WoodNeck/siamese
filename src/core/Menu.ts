@@ -3,7 +3,7 @@ import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageBut
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
-import CommandContext from "~/type/CommandContext";
+import CommandContext from "~/core/CommandContext";
 import { clamp, getMinusCompensatedIndex } from "~/util/helper";
 
 export enum END_TYPE {

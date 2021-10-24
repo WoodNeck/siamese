@@ -2,13 +2,13 @@ import { MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
+import CommandContext from "~/core/CommandContext";
 import Menu, { END_TYPE } from "~/core/Menu";
 import { strong, block } from "~/util/markdown";
 import { HELP } from "~/const/command/bot";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-import CommandContext from "~/type/CommandContext";
 
 export default new Command({
   name: HELP.CMD,

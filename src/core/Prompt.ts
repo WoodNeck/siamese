@@ -1,7 +1,7 @@
 import Discord from "discord.js";
 
 import Siamese from "~/Siamese";
-import CommandContext from "~/type/CommandContext";
+import CommandContext from "~/core/CommandContext";
 import * as EMOJI from "~/const/emoji";
 
 class Prompt {

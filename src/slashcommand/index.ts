@@ -1,5 +1,5 @@
-import Yacht from "./yacht";
+import TTS from "./tts";
 
 export {
-  Yacht
+  TTS
 };

@@ -1,10 +1,10 @@
 import { MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
+import CommandContext from "~/core/CommandContext";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
 import { INFO } from "~/const/command/bot";
-import CommandContext from "~/type/CommandContext";
 
 
 export default new Command({

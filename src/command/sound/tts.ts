@@ -1,10 +1,10 @@
 import SoundCommand from "~/core/sound/SoundCommand";
 import Cooldown from "~/core/Cooldown";
+import TTSSong from "~/core/sound/TTSSong";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
 import { TTS } from "~/const/command/sound";
-import TTSSong from "~/core/sound/TTSSong";
 
 export default new SoundCommand({
   name: TTS.CMD,
@@ -26,7 +26,7 @@ export default new SoundCommand({
       return await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(TTS.TARGET));
     }
     if (content.length > TTS.MAX_LENGTH) {
-      return await bot.replyError(msg, TTS.ERROR.MESSAGE_TOO_LONG);
+      return await bot.replyError(msg, ERROR.SOUND.MESSAGE_TOO_LONG);
     }
 
     const song = new TTSSong(content);

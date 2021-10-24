@@ -2,11 +2,11 @@ import Discord from "discord.js";
 
 import Siamese from "~/Siamese";
 import Cooldown from "~/core/Cooldown";
+import CommandContext from "~/core/CommandContext";
 import { Permission } from "~/const/permission";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-import CommandContext from "~/type/CommandContext";
 import { RequiredField } from "~/type/helper";
 
 interface CommandOption {

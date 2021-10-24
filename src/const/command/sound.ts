@@ -1,19 +1,21 @@
+import * as Discord from "discord.js";
+import Josa from "josa-js";
+
 import { AUTO_OUT } from "./setting";
 
+import * as EMOJI from "~/const/emoji";
 import { code } from "~/util/markdown";
 
 export const TTS = {
-  CMD: "tts",
-  ALIAS: ["읽어줘", "말해줘"],
+  CMD: "말해줘",
+  ALIAS: ["tts", "읽어줘"],
   DESC: "메시지를 음성 채널에서 재생한다냥!",
   USAGE: "문장",
   TARGET: "읽을 문장",
   MAX_LENGTH: 500,
   LANGUAGE: "ko-KR",
   DEFAULT_VOICE_NAME: "ko-KR-Standard-A",
-  ERROR: {
-    MESSAGE_TOO_LONG: "문장이 너무 길다냥! 500자 이하의 문장을 달라냥!"
-  }
+  TTS_EPHEMERAL_MESSAGE: (msg: string, channel: Discord.VoiceChannel | Discord.StageChannel) => `${channel.toString()}에서 ${code(`${EMOJI.SPEAKING_HEAD}${msg}`)}${Josa.c(msg, "을/를")} 말한다냥!`
 } as const;
 
 export const IN = {

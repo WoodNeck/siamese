@@ -11,6 +11,8 @@ import mongoose from "mongoose";
 import Category from "~/core/Category";
 import Command from "~/core/Command";
 import SlashCommand from "~/core/SlashCommand";
+import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
 import ChannelLogger from "~/core/ChannelLogger";
 import ConsoleLogger from "~/core/ConsoleLogger";
 import BoomBox from "~/core/sound/BoomBox";
@@ -32,7 +34,6 @@ import * as EMOJI from "~/const/emoji";
 import { HELP } from "~/const/command/bot";
 import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
-import CommandContext from "~/type/CommandContext";
 import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
 import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
@@ -136,16 +137,26 @@ class Siamese extends Discord.Client {
       });
   }
 
-  public async replyError(msg: Discord.Message, errorMsg: string, imageURL?: string) {
+  public async replyError(msg: Discord.Message | Discord.CommandInteraction, errorMsg: string, imageURL?: string) {
     const embed = new Discord.MessageEmbed()
-      .setDescription(MSG.BOT.ERROR_MSG( msg.author, errorMsg))
       .setColor(COLOR.ERROR);
 
     if (imageURL) {
       embed.setImage(imageURL);
     }
 
-    await this.send(msg.channel as Discord.TextChannel, embed);
+    if (msg instanceof Discord.Message) {
+      embed.setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg));
+
+      await this.send(msg.channel as Discord.TextChannel, embed);
+    } else {
+      embed.setDescription(MSG.BOT.ERROR_MSG(msg.user, errorMsg));
+
+      await msg.reply({
+        embeds: [embed],
+        ephemeral: true
+      });
+    }
   }
 
   public getDisplayName(guild: Discord.Guild, user: Discord.User = this.user) {
@@ -154,8 +165,11 @@ class Siamese extends Discord.Client {
     return userAsMember ? userAsMember.displayName : user.username;
   }
 
-  public async getBoomBox(ctx: CommandContext): Promise<BoomBox | null> {
-    const { guild, msg } = ctx;
+  public async getBoomBox(ctx: CommandContext | SlashCommandContext): Promise<BoomBox | null> {
+    const { guild } = ctx;
+    const msg = ctx.isSlashCommand()
+      ? ctx.interaction
+      : ctx.msg;
     const boomBoxes = this._boomBoxes;
 
     if (boomBoxes.has(guild.id)) {
@@ -194,6 +208,8 @@ class Siamese extends Discord.Client {
   }
 
   public async handleSlashError(interaction: Discord.CommandInteraction, err: Error) {
+    console.log(err);
+
     await interaction.reply(ERROR.CMD.FAILED);
     await this._logger.error(err, {
       channel: interaction.channel as Discord.TextChannel,
@@ -376,7 +392,7 @@ class Siamese extends Discord.Client {
       return;
     }
 
-    const ctx: CommandContext = {
+    const ctx = new CommandContext({
       bot: this,
       msg,
       content,
@@ -384,7 +400,7 @@ class Siamese extends Discord.Client {
       author: msg.member as Discord.GuildMember,
       guild: msg.guild as Discord.Guild,
       args: this._parseArgs(content)
-    };
+    });
 
     // Dev-only check
     if (cmd.devOnly && msg.author.id !== this._env.BOT_DEV_USER_ID) return;
@@ -458,16 +474,16 @@ class Siamese extends Discord.Client {
     ) return;
 
     const cmd = this._slashCommands.get(interaction.commandName)!;
+    const ctx = new SlashCommandContext({
+      bot: this,
+      interaction,
+      guild: interaction.guild!,
+      author: interaction.member as Discord.GuildMember,
+      channel: interaction.channel as Discord.TextChannel
+    });
 
     try {
-      await cmd.execute({
-        bot: this,
-        interaction: interaction as Discord.CommandInteraction & {
-          guildId: string;
-          guild: Discord.Guild;
-          member: Discord.GuildMember;
-        }
-      });
+      await cmd.execute(ctx);
     } catch (err) {
       await this.handleSlashError(interaction, err);
     }
@@ -545,8 +561,11 @@ class Siamese extends Discord.Client {
     await this._logger.warn(msg);
   };
 
-  private async _joinVoiceChannel(ctx: CommandContext) {
-    const { msg, bot, author, guild } = ctx;
+  private async _joinVoiceChannel(ctx: CommandContext | SlashCommandContext) {
+    const { bot, author, guild } = ctx;
+    const msg = (ctx as CommandContext).msg
+      ? (ctx as CommandContext).msg
+      : (ctx as SlashCommandContext).interaction;
 
     const voiceChannel = author.voice.channel;
     const boomBoxes = this._boomBoxes;
@@ -576,7 +595,9 @@ class Siamese extends Discord.Client {
 
     connection.on("error", async err => {
       await this.replyError(msg, ERROR.SOUND.VOICE_CONNECTION_HAD_ERROR);
-      await bot.logger.error(err, msg);
+      await bot.logger.error(err, ctx.isSlashCommand() ? {
+        ...ctx, content: ctx.interaction.commandName
+      } : ctx.msg);
 
       stopBoomBox();
     });

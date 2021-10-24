@@ -1,18 +1,10 @@
-import { CommandInteraction, Guild, GuildMember } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-import Siamese from "~/Siamese";
+import SlashCommandContext from "~/core/SlashCommandContext";
 
 interface SlashCommandOption {
   data: SlashCommandBuilder;
-  execute: (ctx: {
-    bot: Siamese;
-    interaction: CommandInteraction & {
-      guildId: string;
-      guild: Guild;
-      member: GuildMember;
-    };
-  }) => Promise<void>;
+  execute: (ctx: SlashCommandContext) => Promise<void>;
 }
 
 class SlashCommand {

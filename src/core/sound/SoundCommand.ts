@@ -1,7 +1,7 @@
 import Command from "../Command";
 
 import * as ERROR from "~/const/error";
-import CommandContext from "~/type/CommandContext";
+import CommandContext from "~/core/CommandContext";
 
 class SoundCommand extends Command {
   public onFail(ctx: CommandContext): void {

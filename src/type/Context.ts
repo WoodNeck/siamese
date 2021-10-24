@@ -1,15 +1,14 @@
 import Discord from "discord.js";
 
 import Siamese from "~/Siamese";
+import SlashCommandContext from "~/core/SlashCommandContext";
 
-interface CommandContext {
+interface Context {
   bot: Siamese;
-  msg: Discord.Message;
-  content: string;
   author: Discord.GuildMember;
   guild: Discord.Guild;
   channel: Discord.TextChannel;
-  args: string[];
+  isSlashCommand(): this is SlashCommandContext;
 }
 
-export default CommandContext;
+export default Context;

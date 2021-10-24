@@ -52,6 +52,7 @@ export const CONVERSATION = {
 };
 
 export const SOUND = {
+  MESSAGE_TOO_LONG: "문장이 너무 길다냥! 500자 이하의 문장을 달라냥!",
   RECONNECTING: "음성채널에 다시 참가하고 있다냥...",
   JOIN_VOICE_CHANNEL_FAILED: "음성채널 참가에 실패했다냥! 연결 권한이 있는지 확인해달라냥!",
   JOIN_VOICE_CHANNEL_FIRST: "음성채널에 들어가 있어야만 사용할 수 있는 명령어다냥!",

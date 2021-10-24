@@ -1,6 +1,6 @@
 import Command from "~/core/Command";
+import CommandContext from "~/core/CommandContext";
 import { PING } from "~/const/command/bot";
-import CommandContext from "~/type/CommandContext";
 
 
 export default new Command({

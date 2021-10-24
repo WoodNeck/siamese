@@ -4,13 +4,13 @@ import cheerio from "cheerio";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
+import CommandContext from "~/core/CommandContext";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
 import { STOCK } from "~/const/command/search";
 import Menu, { END_TYPE } from "~/core/Menu";
-import CommandContext from "~/type/CommandContext";
 import { strong } from "~/util/markdown";
 
 interface ItemSearchResult {
