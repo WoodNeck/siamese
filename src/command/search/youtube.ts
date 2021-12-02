@@ -3,7 +3,7 @@ import { google } from "googleapis";
 import Siamese from "~/Siamese";
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
-import Menu from "~/core/Menu";
+import ReactionMenu from "~/core/ReactionMenu";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { YOUTUBE } from "~/const/command/search";
@@ -39,7 +39,7 @@ export default new Command({
       return bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: YOUTUBE.MENU_TIME });
+    const menu = new ReactionMenu(ctx, { maxWaitTime: YOUTUBE.MENU_TIME });
     menu.setPages(videos.map(video => YOUTUBE.VIDEO_URL(video.id?.videoId || "")).filter(video => !!video));
 
     await menu.start();
