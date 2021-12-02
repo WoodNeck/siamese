@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
 
-import { TextChannel } from "discord.js";
+import { TextChannel, Message } from "discord.js";
 
 import * as URL from "../const/url";
 import * as ERROR from "../const/error";
@@ -68,16 +68,19 @@ const register: Register = ({ app, bot }) => {
 
     // Upload icon to icons channel
     const iconChannel = await bot.channels.fetch(bot.env.ICON_CHANNEL_ID) as TextChannel;
+    const iconsBy10 = new Array(Math.floor((icons.length - 1) / 10) + 1).fill(0)
+      .map((_, idx) => icons!.slice(idx * 10, (idx + 1) * 10));
 
-    const filesMsg = await iconChannel.send({
-      files: icons.map(icon => ({ attachment: icon.tempFilePath, name: icon.name }))
-    }).catch(e => { void bot.logger.error(e).catch(() => void 0); });
+    const sendFiles = iconsBy10.map(paths => iconChannel.send({
+      files: paths.map(icon => ({ attachment: icon.tempFilePath, name: icon.name }))
+    }).catch(e => { void bot.logger.error(e).catch(() => void 0); }));
 
-    if (!filesMsg) {
+    const msgs = await Promise.all(sendFiles) as Message[];
+    if (msgs.some(msg => !msg)) {
       return res.status(500).send(ERROR.FAILED_TO_CREATE("아이콘"));
     }
 
-    const images = [...filesMsg.attachments.values()];
+    const images = msgs.reduce((imgs, msg) => [...imgs, ...msg.attachments.values()], []);
 
     const createIcons = icons.map(async (icon, iconIndex) => {
       const iconName = path.parse(icon.name).name.substr(0, ICON.NAME_MAX_LENGTH);
