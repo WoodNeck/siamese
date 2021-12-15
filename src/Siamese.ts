@@ -208,8 +208,6 @@ class Siamese extends Discord.Client {
   }
 
   public async handleSlashError(interaction: Discord.CommandInteraction, err: Error) {
-    console.log(err);
-
     await interaction.reply(ERROR.CMD.FAILED);
     await this._logger.error(err, {
       channel: interaction.channel as Discord.TextChannel,

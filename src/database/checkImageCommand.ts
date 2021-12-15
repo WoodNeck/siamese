@@ -65,8 +65,8 @@ export default async (bot: Siamese, msg: Message) => {
   await bot.send(
     msg.channel as TextChannel,
     new MessageEmbed()
-      .setAuthor(bot.getDisplayName(msg.guild, msg.author), msg.author.displayAvatarURL())
       .setImage(icon.url)
       .setColor(COLOR.BOT)
+      .setFooter(`${iconPrefix}${groupName ? `${groupName} ` : ""}${icon.name} - ${bot.getDisplayName(msg.guild, msg.author)}`, msg.author.displayAvatarURL())
   );
 };
