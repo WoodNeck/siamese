@@ -2,7 +2,7 @@ import Discord from "discord.js";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
-import CommandContext from "~/type/CommandContext";
+import CommandContext from "~/core/CommandContext";
 
 enum END_TYPE {
   IGNORE = "IGNORE",

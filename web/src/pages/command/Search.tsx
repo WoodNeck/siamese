@@ -128,6 +128,17 @@ const Search = () => {
       </ChatContainer>
       <CommandDesc>가상화폐 검색 결과를 보여드립니다.</CommandDesc>
     </CommandItem>
+    <CommandItem command={SEARCH.EXCHANGE}>
+      <ChatContainer>
+        <ChatBubble position="right">샴 환율 100달러</ChatBubble>
+        <ChatBubble author={siamese} position="left">💵 118750원</ChatBubble>
+        <ChatBubble position="right">샴 환율 1000엔</ChatBubble>
+        <ChatBubble author={siamese} position="left">💵 10431.8원</ChatBubble>
+        <ChatBubble position="right">샴 환율 500CAD</ChatBubble>
+        <ChatBubble author={siamese} position="left">💵 92240원</ChatBubble>
+      </ChatContainer>
+      <CommandDesc>해당 금액을 원으로 환산한 금액을 보여드립니다.</CommandDesc>
+    </CommandItem>
   </>
 }
 

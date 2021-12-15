@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import Josa from "josa-js";
+
 import { dedent } from "~/util/helper";
 import { strong, strike, link } from "~/util/markdown";
 import * as EMOJI from "~/const/emoji";
@@ -194,5 +196,23 @@ export const COIN = {
     TRADE_PRICE_24H: "거래대금(24H)",
     HIGHEST_52_WEEK_PRICE: "52주 신고가",
     LOWEST_52_WEEK_PRICE: "52주 신저가"
+  }
+};
+
+export const EXCHANGE = {
+  CMD: "환율",
+  DESC: "환율 정보를 검색한다냥!",
+  USAGE: "금액 + 화폐 단위 (예: 100달러)",
+  CACHE_KEY: "exchange_cache_key",
+  API_URL: "https://finance.daum.net/api/exchanges/summaries",
+  API_REFERER: "https://m.finance.daum.net/",
+  DEFAULT_UNIT: "원",
+  CHANGE: {
+    RISE: "RISE",
+    FALL: "FALL"
+  },
+  ERROR: {
+    WRONG_FORM: "잘못된 형식이다냥! 금액 + 화폐 단위를 달라냥! (예: 100달러)",
+    WRONG_UNIT: (unit: string) => `${Josa.r(unit, "은/는")} 모르는 단위다냥!`
   }
 };
