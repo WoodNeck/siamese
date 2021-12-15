@@ -538,12 +538,17 @@ class Siamese extends Discord.Client {
   private _onGuildJoin = async (guild: Discord.Guild) => {
     if (!(guild.systemChannel)) return;
 
+    const permissions = guild.systemChannel.permissionsFor(this.user);
+
+    if (!permissions || !permissions.has(PERMISSION.VIEW_CHANNEL.flag) || !permissions.has(PERMISSION.SEND_MESSAGES.flag)) return;
+
     const helpCmd = `${this.prefix}${HELP.CMD}`;
     const embedMsg = new MessageEmbed().setTitle(MSG.BOT.GUILD_JOIN_TITLE)
       .setDescription(MSG.BOT.GUILD_JOIN_DESC(this, helpCmd))
       .setThumbnail(this.user.avatarURL() || "")
       .setFooter(MSG.BOT.GUILD_JOIN_FOOTER(this))
       .setColor(COLOR.BOT);
+
     await this.send(guild.systemChannel, embedMsg);
   };
 

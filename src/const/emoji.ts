@@ -70,6 +70,7 @@ export const CAT = {
   KISSING: "😽",
   GRINNING: "😸"
 };
+export const PAW = "🐾";
 export const CROSSED_SWORDS = "⚔️";
 export const SHIELD = "🛡️";
 export const GOLD_MEDAL = "🥇";
