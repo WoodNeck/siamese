@@ -12,13 +12,17 @@ export default new Command({
   usage: AVATAR.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
   sendTyping: false,
-  execute: async ({ bot, msg }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, msg } = ctx;
+
     if (!msg.mentions.users.size) {
-      await bot.replyError(msg, ERROR.CMD.MENTION_NEEDED);
+      await bot.replyError(ctx, ERROR.CMD.MENTION_NEEDED);
       return;
     }
     if (msg.mentions.users.size > 1) {
-      await bot.replyError(msg, ERROR.CMD.MENTION_ONLY_ONE);
+      await bot.replyError(ctx, ERROR.CMD.MENTION_ONLY_ONE);
       return;
     }
 

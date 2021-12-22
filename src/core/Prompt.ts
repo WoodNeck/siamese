@@ -23,9 +23,10 @@ class Prompt {
   }
 
   public async start(): Promise<boolean> {
-    const { bot, channel, author } = this._ctx;
+    const ctx = this._ctx;
+    const { bot, author } = ctx;
 
-    return await bot.send(channel, this._content).then(async msg => {
+    return await bot.send(ctx, this._content).then(async msg => {
       if (!msg) return false;
 
       const yesEmoji = EMOJI.GREEN_CHECK;

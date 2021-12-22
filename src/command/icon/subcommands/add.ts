@@ -16,25 +16,27 @@ export default new Command({
   permissions: [PERMISSION.EMBED_LINKS],
   alias: ADD.ALIAS,
   execute: async ctx => {
-    const { bot, channel, guild, author, msg, args } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, author, msg, args } = ctx;
 
     if (msg.attachments.size <= 0) {
-		  return await bot.replyError(msg, ADD.ERROR.PROVIDE_IMAGES, ADD.TUTORIAL_URL);
+		  return await bot.replyError(ctx, ADD.ERROR.PROVIDE_IMAGES, ADD.TUTORIAL_URL);
     }
 
     if (args.length <= 0 || args.length > 2) {
-      return await bot.replyError(msg, ADD.ERROR.PROVIDE_NAME_TO_ADD);
+      return await bot.replyError(ctx, ADD.ERROR.PROVIDE_NAME_TO_ADD);
     }
 
     const groupName = args.length === 2 ? args[0] : null;
     const iconName = args.length === 2 ? args[1] : args[0];
 
     if (groupName && groupName.length > ICON.NAME_MAX_LENGTH) {
-      return await bot.replyError(msg, ADD.ERROR.GROUP_NAME_TOO_LONG);
+      return await bot.replyError(ctx, ADD.ERROR.GROUP_NAME_TOO_LONG);
     }
 
     if (iconName.length > ICON.NAME_MAX_LENGTH) {
-      return await bot.replyError(msg, ADD.ERROR.ICON_NAME_TOO_LONG);
+      return await bot.replyError(ctx, ADD.ERROR.ICON_NAME_TOO_LONG);
     }
 
     let group: IconGroupDocument | null = null;
@@ -66,7 +68,7 @@ export default new Command({
         .setTitle(ADD.REPLACE_TITLE)
         .setImage(prevInfo.url);
 
-      const replacePrompt = new Prompt(ctx, replaceMessage);
+      const replacePrompt = new Prompt(ctx, { embeds: [replaceMessage] });
       const shouldReplace = await replacePrompt.start();
 
       if (shouldReplace) {
@@ -84,6 +86,6 @@ export default new Command({
       });
     }
 
-    await bot.send(channel, ADD.SUCCESS(iconName));
+    await bot.send(ctx, { content: ADD.SUCCESS(iconName) });
   }
 });

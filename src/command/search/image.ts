@@ -23,9 +23,11 @@ export default new Command({
   cooldown: Cooldown.PER_USER(3),
   beforeRegister: (bot: Siamese) => bot.env.GOOGLE_SEARCH_ENGINE_ID != null && bot.env.GOOGLE_API_KEY != null,
   execute: async ctx => {
-    const { bot, msg, channel, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, channel, content } = ctx;
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const searchText = content;
@@ -36,7 +38,7 @@ export default new Command({
 
     const images = findAllImages(body.data);
     if (!images.length) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(IMAGE.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(IMAGE.TARGET));
     }
 
     const pages = images.map(imageUrl => new MessageEmbed().setImage(imageUrl));

@@ -18,15 +18,17 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const games = await getGames(content);
     if (!games.length) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(PLAYERS.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(PLAYERS.TARGET));
     }
 
     const getAllCurrentPlayers = games.map(async game => getCurrentPlayers(bot, game.id));

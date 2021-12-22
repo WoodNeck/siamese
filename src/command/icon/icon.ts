@@ -18,13 +18,17 @@ export default new Command({
   subcommands: [
     Add, List, Remove, Role
   ],
-  execute: async ({ bot, channel, guild }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
+
     const link = `${bot.env.WEB_URL_BASE}/#/icon/${guild.id}`;
 
     const embed = new MessageEmbed()
       .setDescription(`[${ICON.TITLE(guild.name)}](${link})`)
       .setColor(COLOR.BOT);
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

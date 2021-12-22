@@ -62,11 +62,10 @@ export default async (bot: Siamese, msg: Message) => {
     await msg.delete();
   }
 
-  await bot.send(
-    msg.channel as TextChannel,
-    new MessageEmbed()
-      .setImage(icon.url)
-      .setColor(COLOR.BOT)
-      .setFooter(`${iconPrefix}${groupName ? `${groupName} ` : ""}${icon.name} - ${bot.getDisplayName(msg.guild, msg.author)}`, msg.author.displayAvatarURL())
-  );
+  const embed = new MessageEmbed()
+    .setImage(icon.url)
+    .setColor(COLOR.BOT)
+    .setFooter(`${iconPrefix}${groupName ? `${groupName} ` : ""}${icon.name} - ${bot.getDisplayName(msg.guild, msg.author)}`, msg.author.displayAvatarURL());
+
+  await msg.channel.send({ embeds: [embed] });
 };

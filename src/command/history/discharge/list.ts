@@ -13,13 +13,15 @@ export default new Command({
   permissions: [PERMISSION.EMBED_LINKS],
   cooldown: Cooldown.PER_CHANNEL(5),
   execute: async ctx => {
-    const { bot, guild, msg } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const results = await Discharge.find({ guildID: guild.id }).lean().exec() as DischargeDocument[];
 
     if (!results) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.EMPTY_RESULT);
+      return await bot.replyError(ctx, DISCHARGE.ERROR.EMPTY_RESULT);
     }
 
     const infos = results.map(info => ({

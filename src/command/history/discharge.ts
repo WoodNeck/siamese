@@ -22,12 +22,16 @@ export default new Command({
   subcommands: [
     Add, List, Remove
   ],
-  execute: async ({ bot, channel, guild, msg, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, content } = ctx;
+
     // No multiline is allowed
     const name = content.split("\n")[0];
 
     if (!name) {
-      return await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(DISCHARGE.TARGET));
+      return await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(DISCHARGE.TARGET));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -37,7 +41,7 @@ export default new Command({
     }).lean().exec() as DischargeDocument;
 
     if (!info) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.NOT_FOUND);
+      return await bot.replyError(ctx, DISCHARGE.ERROR.NOT_FOUND);
     }
 
     const force = info.force;
@@ -80,6 +84,6 @@ export default new Command({
       .setColor(COLOR.BOT)
       .addField(DISCHARGE.DETAILED, details.join("\n"));
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

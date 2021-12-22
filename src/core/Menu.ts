@@ -4,6 +4,7 @@ import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageBut
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
 import { clamp, getMinusCompensatedIndex } from "~/util/helper";
 
 export enum END_TYPE {
@@ -13,32 +14,32 @@ export enum END_TYPE {
   REMOVE_ONLY_REACTIONS = "REMOVE_ONLY_REACTIONS"
 }
 
-interface MenuButton {
+export interface MenuButton {
   id: string;
   emoji?: string;
   text?: string;
   url?: string;
-  style: MessageButtonStyle;
+  style?: MessageButtonStyle;
 }
 
 class Menu {
   // Options
-  private _ctx: CommandContext;
-  private _menuMsg: Discord.Message | null;
-  private _maxWaitTime: number;
-  private _defaultColor: `#${string}`;
-  private _circular: boolean;
-  private _addPageNumber: boolean;
+  protected _ctx: CommandContext | SlashCommandContext;
+  protected _menuMsg: Discord.Message | null;
+  protected _maxWaitTime: number;
+  protected _defaultColor: `#${string}`;
+  protected _circular: boolean;
+  protected _addPageNumber: boolean;
 
   // Internal States
-  private _pageIndex: number;
-  private _pages: Array<Discord.MessageEmbed | string>;
-  private _buttons: MenuButton[];
-  private _callbacks: Discord.Collection<string, (interaction: ButtonInteraction) => END_TYPE>;
+  protected _pageIndex: number;
+  protected _pages: Array<Discord.MessageEmbed | string>;
+  protected _buttons: MenuButton[];
+  protected _callbacks: Discord.Collection<string, (interaction: ButtonInteraction) => END_TYPE>;
 
   public get index() { return this._pageIndex; }
 
-  public constructor(ctx: CommandContext, options: Partial<{
+  public constructor(ctx: CommandContext | SlashCommandContext, options: Partial<{
     maxWaitTime: number;
     defaultColor: `#${string}`;
     circular: boolean;
@@ -65,9 +66,7 @@ class Menu {
     this._callbacks = new Discord.Collection();
 
     // Default menu
-    this.addReactionCallback({ id: "PREV", emoji: EMOJI.ARROW_LEFT, style: "SECONDARY" }, this.prev);
-    this.addReactionCallback({ id: "NEXT", emoji: EMOJI.ARROW_RIGHT, style: "SECONDARY" }, this.next);
-    this.addReactionCallback({ id: "DELETE", emoji: EMOJI.CROSS, style: "SECONDARY" }, () => END_TYPE.DELETE_ALL_MESSAGES);
+    this._addDefaultReactionCallback();
   }
 
   public setPages(pages: Array<Discord.MessageEmbed | string>) {
@@ -126,42 +125,33 @@ class Menu {
   }
 
   public async start() {
-    const { bot, channel } = this._ctx;
+    const ctx = this._ctx;
     const pages = this._pages;
     const firstPage = this._pages[0];
     const firstPageObj = typeof firstPage === "string"
       ? { content: firstPage }
       : { embeds: [firstPage] };
-    const msgComponents: MessageActionRow[] = [];
 
     if (pages.length > 1) {
-      const buttons = this._buttons.map(button => {
-        const messageBtn = new MessageButton();
-
-        !button.url && messageBtn.setCustomId(button.id);
-        messageBtn.setStyle(button.style);
-
-        button.emoji && messageBtn.setEmoji(button.emoji);
-        button.text && messageBtn.setLabel(button.text);
-        button.url && messageBtn.setURL(button.url);
-
-        return messageBtn;
-      });
-      const row = new MessageActionRow()
-        .addComponents(...buttons);
-
-      msgComponents.push(row);
+      this._attachButtons(firstPageObj);
     }
 
-    const menuMsg = await bot.send(channel, { ...firstPageObj, components: msgComponents });
 
-    if (!menuMsg) return;
+    if (!ctx.isSlashCommand()) {
+      const { bot } = ctx;
+      const menuMsg = await bot.send(ctx, firstPageObj);
 
-    this._menuMsg = menuMsg;
+      if (!menuMsg) return;
 
-    if (pages.length <= 1) return;
+      this._menuMsg = menuMsg;
 
-    this._listenButtonClick();
+      if (pages.length <= 1) return;
+
+      await this._attachBotReactions(menuMsg);
+      this._listenReaction();
+    } else {
+      // TODO:
+    }
   }
 
   public prev = (interaction: ButtonInteraction) => {
@@ -199,25 +189,31 @@ class Menu {
   };
 
   public delete = () => {
-    const bot = this._ctx.bot;
-    const cmdMsg = this._ctx.msg;
+    const ctx = this._ctx;
+    const bot = ctx.bot;
     const menuMsg = this._menuMsg;
 
-    if (cmdMsg && !cmdMsg.deleted) {
-      cmdMsg.delete().catch(async err => {
-        await bot.logger.error(err, cmdMsg);
-      });
-    }
-    if (menuMsg && !menuMsg.deleted) {
-      menuMsg.delete().catch(async err => {
-        await bot.logger.error(err, menuMsg);
-      });
+    if (ctx.isSlashCommand()) {
+      // TODO:
+    } else {
+      const cmdMsg = ctx.msg;
+
+      if (cmdMsg && !cmdMsg.deleted) {
+        cmdMsg.delete().catch(async err => {
+          await bot.logger.error(err, ctx);
+        });
+      }
+      if (menuMsg && !menuMsg.deleted) {
+        menuMsg.delete().catch(async err => {
+          await bot.logger.error(err, new CommandContext({ ...ctx, msg: menuMsg }));
+        });
+      }
     }
 
     return END_TYPE.DELETE_ALL_MESSAGES;
   };
 
-  private _listenButtonClick() {
+  protected _listenReaction() {
     if (!this._menuMsg) return;
 
     const interactionCollector = this._menuMsg.createMessageComponentCollector({
@@ -236,11 +232,52 @@ class Menu {
     interactionCollector.on("end", this._onEnd);
   }
 
-  private _onEnd = async (collection: Discord.Collection<string, ButtonInteraction>, reason: END_TYPE) => {
+  protected _attachButtons(obj: Discord.MessageOptions) {
+    const msgComponents: MessageActionRow[] = [];
+    const buttons = this._buttons.map(button => {
+      const messageBtn = new MessageButton();
+
+      !button.url && messageBtn.setCustomId(button.id);
+      messageBtn.setStyle(button.style ?? "SECONDARY");
+
+      button.emoji && messageBtn.setEmoji(button.emoji);
+      button.text && messageBtn.setLabel(button.text);
+      button.url && messageBtn.setURL(button.url);
+
+      return messageBtn;
+    });
+    const row = new MessageActionRow()
+      .addComponents(...buttons);
+
+    msgComponents.push(row);
+
+    obj.components = msgComponents;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async _attachBotReactions(msg: Discord.Message) {
+    // DO NOTHING
+  }
+
+  protected async _removeBotReactions(interaction?: ButtonInteraction) {
+    const msg = this._menuMsg;
+
+    if (!msg || !msg.editable || msg.deleted) return;
+
+    if (interaction) {
+      await interaction.update({
+        components: []
+      });
+    } else {
+      await msg.edit({ components: [] });
+    }
+  }
+
+  protected _onEnd = async (_, reason: END_TYPE) => {
     switch (reason) {
       case END_TYPE.CONTINUE:
         // Start listening another reaction
-        this._listenButtonClick();
+        this._listenReaction();
         break;
       case END_TYPE.DELETE_ALL_MESSAGES:
         this.delete();
@@ -253,9 +290,15 @@ class Menu {
       default:
         // Removing bot reactions indicates that
         // bot won't listen to reactions anymore
-        await this._removeButtons();
+        await this._removeBotReactions();
     }
   };
+
+  protected _addDefaultReactionCallback() {
+    this.addReactionCallback({ id: "PREV", emoji: EMOJI.ARROW_LEFT, style: "SECONDARY" }, this.prev);
+    this.addReactionCallback({ id: "NEXT", emoji: EMOJI.ARROW_RIGHT, style: "SECONDARY" }, this.next);
+    this.addReactionCallback({ id: "DELETE", emoji: EMOJI.CROSS, style: "SECONDARY" }, () => END_TYPE.DELETE_ALL_MESSAGES);
+  }
 
   private _changePage(page: Discord.MessageEmbed | string, prevPage: Discord.MessageEmbed | string, interaction?: ButtonInteraction) {
     const msg = this._menuMsg;
@@ -274,20 +317,6 @@ class Menu {
       update({ content: page, embeds: [], components: msg.components });
     } else {
       update({ content: page, components: msg.components });
-    }
-  }
-
-  private async _removeButtons(interaction?: ButtonInteraction) {
-    const msg = this._menuMsg;
-
-    if (!msg || !msg.editable || msg.deleted) return;
-
-    if (interaction) {
-      await interaction.update({
-        components: []
-      });
-    } else {
-      await msg.edit({ components: [] });
     }
   }
 }

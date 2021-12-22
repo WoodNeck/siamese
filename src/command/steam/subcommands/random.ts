@@ -18,20 +18,24 @@ export default new Command({
     PERMISSION.EMBED_LINKS
   ],
   cooldown: Cooldown.PER_USER(5),
-  execute: async ({ bot, msg, channel, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
+
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const searchText = content;
     const userId = await getUserId(bot, searchText);
     if (!userId) {
-      return await bot.replyError(msg, STEAM.ERROR.USER_NOT_FOUND);
+      return await bot.replyError(ctx, STEAM.ERROR.USER_NOT_FOUND);
     }
 
     const owningGames = await getOwningGames(bot, userId);
     if (!owningGames || owningGames.length <= 0) {
-      return await bot.replyError(msg, STEAM.ERROR.EMPTY_GAMES);
+      return await bot.replyError(ctx, STEAM.ERROR.EMPTY_GAMES);
     }
 
     const randomGame = getRandom(owningGames);
@@ -41,6 +45,6 @@ export default new Command({
       .setDescription(STEAM.PLAYTIME(randomGame.playtime_forever))
       .setColor(COLOR.BOT);
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

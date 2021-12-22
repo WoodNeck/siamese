@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import SoundCommand from "~/core/sound/SoundCommand";
 import Cooldown from "~/core/Cooldown";
 import TTSSong from "~/core/sound/TTSSong";
@@ -19,14 +21,25 @@ export default new SoundCommand({
   ],
   cooldown: Cooldown.PER_USER(3),
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(TTS.CMD)
+    .setDescription(TTS.DESC)
+    .addStringOption(option => option
+      .setName(TTS.USAGE)
+      .setDescription(TTS.TARGET)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    const { bot, content, msg } = ctx;
+    const { bot, author } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(TTS.USAGE, true)
+      : ctx.content;
 
     if (!content.length) {
-      return await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(TTS.TARGET));
+      return await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(TTS.TARGET));
     }
     if (content.length > TTS.MAX_LENGTH) {
-      return await bot.replyError(msg, ERROR.SOUND.MESSAGE_TOO_LONG);
+      return await bot.replyError(ctx, ERROR.SOUND.MESSAGE_TOO_LONG);
     }
 
     const song = new TTSSong(content);
@@ -35,10 +48,18 @@ export default new SoundCommand({
     if (!boomBox) return;
 
     boomBox.add(song);
-
-    // Ignore error created when Siamese is blocked by the user
-    await msg.react(EMOJI.MUSIC_NOTE).catch(() => void 0);
-
     await boomBox.play();
+
+    if (ctx.isSlashCommand()) {
+      const voiceChannel = author.voice.channel!;
+
+      await ctx.interaction.reply({
+        content: TTS.TTS_EPHEMERAL_MESSAGE(content, voiceChannel),
+        ephemeral: true
+      });
+    } else {
+      // Ignore error created when Siamese is blocked by the user
+      await ctx.msg.react(EMOJI.MUSIC_NOTE).catch(() => void 0);
+    }
   }
 });

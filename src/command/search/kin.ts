@@ -25,10 +25,12 @@ export default new Command({
   cooldown: Cooldown.PER_USER(5),
   beforeRegister: (bot: Siamese) => bot.env.NAVER_ID != null && bot.env.NAVER_SECRET != null,
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     await axios.get(KIN.SEARCH_URL, {
@@ -43,7 +45,7 @@ export default new Command({
       }>;
     }>) => {
       if (!body.data.total) {
-        return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(KIN.TARGET));
+        return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(KIN.TARGET));
       }
 
       const items = body.data.items;

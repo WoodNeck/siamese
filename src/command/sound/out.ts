@@ -8,7 +8,11 @@ export default new SoundCommand({
   description: OUT.DESC,
   permissions: [],
   sendTyping: false,
-  execute: async ({ msg, bot, guild }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
+
     const boomBoxes = bot.boomBoxes;
 
     if (boomBoxes.has(guild.id)) {
@@ -16,7 +20,7 @@ export default new SoundCommand({
 
       boomBox.destroy();
     } else {
-      return await bot.replyError(msg, ERROR.SOUND.NO_VOICE_CHANNEL_IN);
+      return await bot.replyError(ctx, ERROR.SOUND.NO_VOICE_CHANNEL_IN);
     }
   }
 });

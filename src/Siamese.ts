@@ -10,21 +10,12 @@ import mongoose from "mongoose";
 
 import Category from "~/core/Category";
 import Command from "~/core/Command";
-import SlashCommand from "~/core/SlashCommand";
 import CommandContext from "~/core/CommandContext";
 import SlashCommandContext from "~/core/SlashCommandContext";
 import ChannelLogger from "~/core/ChannelLogger";
 import ConsoleLogger from "~/core/ConsoleLogger";
 import BoomBox from "~/core/sound/BoomBox";
-import BotCategory from "~/command/bot";
-import UtilityCategory from "~/command/utility";
-import SearchCategory from "~/command/search";
-import SteamCategory from "~/command/steam";
-import HistoryCategory from "~/command/history";
-import IconCategory from "~/command/icon";
-import SoundCategory from "~/command/sound";
-import SettingCategory from "~/command/setting";
-import * as SlashCommands from "~/slashcommand";
+import CommandCategories from "~/command";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as MSG from "~/const/message";
@@ -46,7 +37,6 @@ class Siamese extends Discord.Client {
   private _env: EnvVariables;
   private _categories: Category[];
   private _commands: Discord.Collection<string, Command>;
-  private _slashCommands: Discord.Collection<string, SlashCommand>;
   // Cooldowns, per type
   private _cooldowns: Discord.Collection<string, { start: Date; duration: number }>;
   // All permissions needed to execute every single commands
@@ -62,7 +52,6 @@ class Siamese extends Discord.Client {
   public get prefix() { return this._env.BOT_DEFAULT_PREFIX; }
   public get categories() { return this._categories; }
   public get commands() { return this._commands; }
-  public get slashCommands() { return this._slashCommands; }
   public get msgCounts() { return this._msgCounts; }
   public get boomBoxes() { return this._boomBoxes; }
   public get database() { return this._database; }
@@ -83,9 +72,8 @@ class Siamese extends Discord.Client {
 
     this._env = env;
 
-    this._categories = [];
+    this._categories = [...CommandCategories];
     this._commands = new Discord.Collection();
-    this._slashCommands = new Discord.Collection();
     this._cooldowns = new Discord.Collection();
     this._msgCounts = new Discord.Collection();
     this._boomBoxes = new Discord.Collection();
@@ -118,26 +106,32 @@ class Siamese extends Discord.Client {
       });
   }
 
-  public async send(channel: Discord.TextChannel, content: string | Discord.MessagePayload | Discord.MessageOptions | Discord.MessageEmbed) {
-    await channel.sendTyping();
+  public async send(ctx: CommandContext | SlashCommandContext, content: Discord.InteractionReplyOptions | Discord.MessageOptions) {
+    if (ctx.isSlashCommand()) {
+      const { interaction } = ctx;
 
-    if (content instanceof Discord.MessageEmbed) {
-      content = { embeds: [content] };
+      return await interaction.reply(content as Discord.InteractionReplyOptions);
+    } else {
+      const { channel, command } = ctx;
+
+      if (command.sendTyping) {
+        await channel.sendTyping();
+      }
+
+      return await channel.send(content as Discord.MessageOptions)
+        .catch(err => {
+          // Not a case of missing permission
+          if (!(err instanceof Discord.DiscordAPIError
+            && err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION)) {
+            this._fileLogger.error(err);
+          }
+
+          throw err;
+        });
     }
-
-    return await channel.send(content)
-      .catch(err => {
-        // Not a case of missing permission
-        if (!(err instanceof Discord.DiscordAPIError
-          && err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION)) {
-          this._fileLogger.error(err);
-        }
-
-        throw err;
-      });
   }
 
-  public async replyError(msg: Discord.Message | Discord.CommandInteraction, errorMsg: string, imageURL?: string) {
+  public async replyError(ctx: CommandContext | SlashCommandContext, errorMsg: string, imageURL?: string) {
     const embed = new Discord.MessageEmbed()
       .setColor(COLOR.ERROR);
 
@@ -145,17 +139,21 @@ class Siamese extends Discord.Client {
       embed.setImage(imageURL);
     }
 
-    if (msg instanceof Discord.Message) {
-      embed.setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg));
+    if (ctx.isSlashCommand()) {
+      const { interaction } = ctx;
 
-      await this.send(msg.channel as Discord.TextChannel, embed);
-    } else {
-      embed.setDescription(MSG.BOT.ERROR_MSG(msg.user, errorMsg));
+      embed.setDescription(MSG.BOT.ERROR_MSG(interaction.user, errorMsg));
 
-      await msg.reply({
+      await interaction.reply({
         embeds: [embed],
         ephemeral: true
       });
+    } else {
+      const { msg } = ctx;
+
+      embed.setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg));
+
+      await this.send(ctx, { embeds: [embed] });
     }
   }
 
@@ -167,9 +165,6 @@ class Siamese extends Discord.Client {
 
   public async getBoomBox(ctx: CommandContext | SlashCommandContext): Promise<BoomBox | null> {
     const { guild } = ctx;
-    const msg = ctx.isSlashCommand()
-      ? ctx.interaction
-      : ctx.msg;
     const boomBoxes = this._boomBoxes;
 
     if (boomBoxes.has(guild.id)) {
@@ -187,7 +182,7 @@ class Siamese extends Discord.Client {
       });
       boomBox.on("error", async err => {
         await this.logger.error(err);
-        await this.replyError(msg, ERROR.SOUND.FAILED_TO_PLAY);
+        await this.replyError(ctx, ERROR.SOUND.FAILED_TO_PLAY);
 
         boomBox.destroy();
       });
@@ -199,21 +194,15 @@ class Siamese extends Discord.Client {
   }
 
   public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
-    const { msg } = ctx;
-
     cmd.onFail(ctx);
 
-    await this.replyError(msg, ERROR.CMD.FAILED);
-    await this._logger.error(err, msg);
+    await this.replyError(ctx, ERROR.CMD.FAILED);
+    await this._logger.error(err, ctx);
   }
 
-  public async handleSlashError(interaction: Discord.CommandInteraction, err: Error) {
-    await interaction.reply(ERROR.CMD.FAILED);
-    await this._logger.error(err, {
-      channel: interaction.channel as Discord.TextChannel,
-      guild: interaction.guild as Discord.Guild,
-      content: interaction.commandName
-    });
+  public async handleSlashError(ctx: SlashCommandContext, err: Error) {
+    await ctx.interaction.reply(ERROR.CMD.FAILED);
+    await this._logger.error(err, ctx);
   }
 
   private _onReady = async () => {
@@ -267,23 +256,13 @@ class Siamese extends Discord.Client {
   	const permissions = new Discord.Permissions(PERMISSION.VIEW_CHANNEL.flag);
     permissions.add(PERMISSION.SEND_MESSAGES.flag);
 
-    categories.push(
-      BotCategory,
-      UtilityCategory,
-      SearchCategory,
-      SteamCategory,
-      HistoryCategory,
-      IconCategory,
-      SoundCategory,
-      SettingCategory
-    );
-
   	categories.forEach(category => {
       category.commands.forEach(cmd => {
         if (cmd.beforeRegister && !cmd.beforeRegister(this)) {
           console.warn(EMOJI.WARNING, chalk.yellow(MSG.BOT.CMD_REGISTER_FAILED(cmd)));
         }
         commands.set(cmd.name, cmd);
+
         cmd.alias.forEach(alias => {
           commands.set(alias, cmd);
         });
@@ -310,19 +289,20 @@ class Siamese extends Discord.Client {
     }
 
     const rest = new REST({ version: "9" }).setToken(env.BOT_TOKEN);
-    const slashCommands = Object.values(SlashCommands);
+    const slashCommands = this._categories
+      .reduce((allCommands, category) => {
+        return [...allCommands, ...category.commands];
+      }, [])
+      .filter(command => !!command.slashData)
+      .map(command => command.slashData!.toJSON());
 
     try {
       await rest.put(
         env.BOT_ENV === "production"
           ? Routes.applicationCommands(env.BOT_CLIENT_ID)
           : Routes.applicationGuildCommands(env.BOT_CLIENT_ID, env.BOT_DEV_SERVER_ID!),
-        { body: slashCommands.map(cmd => cmd.data.toJSON()) },
+        { body: slashCommands },
       );
-
-      slashCommands.forEach(cmd => {
-        this._slashCommands.set(cmd.data.name, cmd);
-      });
     } catch (error) {
       console.error(error);
     }
@@ -392,6 +372,7 @@ class Siamese extends Discord.Client {
 
     const ctx = new CommandContext({
       bot: this,
+      command: cmd,
       msg,
       content,
       channel: msg.channel as Discord.TextChannel,
@@ -405,7 +386,7 @@ class Siamese extends Discord.Client {
 
     // Channel type check
     if (!ctx.channel.permissionsFor) {
-      await this.replyError(msg, ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
+      await this.replyError(ctx, ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
       return;
     }
 
@@ -419,7 +400,7 @@ class Siamese extends Discord.Client {
 
     // Admin permission check
     if (cmd.adminOnly && !hasAdminPermission) {
-      await this.replyError(msg, ERROR.CMD.USER_SHOULD_BE_ADMIN);
+      await this.replyError(ctx, ERROR.CMD.USER_SHOULD_BE_ADMIN);
       return;
     }
 
@@ -439,7 +420,7 @@ class Siamese extends Discord.Client {
         const timeDiff = new Date().getTime() - prevExecuteTime.start.getTime();
         const diffInSeconds = (prevExecuteTime.duration - (timeDiff / 1000)).toFixed(1);
 
-        await this.replyError(msg, ERROR.CMD.ON_COOLDOWN(diffInSeconds));
+        await this.replyError(ctx, ERROR.CMD.ON_COOLDOWN(diffInSeconds));
         return;
       } else {
         // it's not on cooldown
@@ -465,15 +446,26 @@ class Siamese extends Discord.Client {
   };
 
   private _onInteractionCreate = async (interaction: Discord.CommandInteraction) => {
+    const commands = this._commands;
+
     if (
       !interaction.isCommand()
-      || !this._slashCommands.has(interaction.commandName)
-      || !interaction.inGuild()
+      || !commands.has(interaction.commandName)
     ) return;
 
-    const cmd = this._slashCommands.get(interaction.commandName)!;
+    if (!interaction.inGuild()) {
+      await interaction.reply({ content: ERROR.CMD.ONLY_IN_TEXT_CHANNEL });
+
+      return;
+    }
+
+    const cmd = commands.get(interaction.commandName)!;
+
+    if (!cmd.execute) return;
+
     const ctx = new SlashCommandContext({
       bot: this,
+      command: cmd,
       interaction,
       guild: interaction.guild!,
       author: interaction.member as Discord.GuildMember,
@@ -483,7 +475,7 @@ class Siamese extends Discord.Client {
     try {
       await cmd.execute(ctx);
     } catch (err) {
-      await this.handleSlashError(interaction, err);
+      await this.handleSlashError(ctx, err);
     }
   };
 
@@ -549,7 +541,7 @@ class Siamese extends Discord.Client {
       .setFooter(MSG.BOT.GUILD_JOIN_FOOTER(this))
       .setColor(COLOR.BOT);
 
-    await this.send(guild.systemChannel, embedMsg);
+    await guild.systemChannel.send({ embeds: [embedMsg] });
   };
 
   private _onError = async (err: Error) => {
@@ -566,22 +558,19 @@ class Siamese extends Discord.Client {
 
   private async _joinVoiceChannel(ctx: CommandContext | SlashCommandContext) {
     const { bot, author, guild } = ctx;
-    const msg = (ctx as CommandContext).msg
-      ? (ctx as CommandContext).msg
-      : (ctx as SlashCommandContext).interaction;
-
     const voiceChannel = author.voice.channel;
     const boomBoxes = this._boomBoxes;
+
     if (!voiceChannel) {
-      return await this.replyError(msg, ERROR.SOUND.JOIN_VOICE_CHANNEL_FIRST);
+      return await this.replyError(ctx, ERROR.SOUND.JOIN_VOICE_CHANNEL_FIRST);
     }
 
     // Connection already exists
     if (!voiceChannel.joinable) {
-      return await this.replyError(msg, ERROR.SOUND.NO_PERMISSION_GRANTED);
+      return await this.replyError(ctx, ERROR.SOUND.NO_PERMISSION_GRANTED);
     }
     if (voiceChannel.full) {
-      return await this.replyError(msg, ERROR.SOUND.VOICE_CHANNEL_IS_FULL);
+      return await this.replyError(ctx, ERROR.SOUND.VOICE_CHANNEL_IS_FULL);
     }
 
     const connection = joinVoiceChannel({
@@ -597,10 +586,8 @@ class Siamese extends Discord.Client {
     };
 
     connection.on("error", async err => {
-      await this.replyError(msg, ERROR.SOUND.VOICE_CONNECTION_HAD_ERROR);
-      await bot.logger.error(err, ctx.isSlashCommand() ? {
-        ...ctx, content: ctx.interaction.commandName
-      } : ctx.msg);
+      await this.replyError(ctx, ERROR.SOUND.VOICE_CONNECTION_HAD_ERROR);
+      await bot.logger.error(err, ctx);
 
       stopBoomBox();
     });

@@ -47,6 +47,7 @@ export const LIST = {
     그룹 안의 아이콘 목록을 표시한다냥!
     그룹 이름을 주지 않을 경우 그룹에 속하지 않은 아이콘들을 표시한다냥!`,
   USAGE: "그룹명",
+  ITEMS_NAME: "등록된 폴더랑 이미지",
   ITEM_PER_PAGE: 10,
   RECITAL_TIME: 30,
   TYPE: {

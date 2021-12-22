@@ -20,10 +20,12 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const searchText = content;
@@ -45,7 +47,7 @@ export default new Command({
     }>>) => body.data);
 
     if (!games.length) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(CHEAPEST.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(CHEAPEST.TARGET));
     }
 
     const menu = new Menu(ctx, { maxWaitTime: CHEAPEST.MENU_TIME });

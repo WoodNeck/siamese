@@ -8,11 +8,15 @@ export default new Command({
   usage: ROLE_RESTRICT.ADD.USAGE,
   alias: ROLE_RESTRICT.ADD.ALIAS,
   adminOnly: true,
-  execute: async ({ bot, guild, channel, msg }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, msg, guild } = ctx;
+
     const rolesMentioned = msg.mentions.roles;
 
     if (rolesMentioned.size <= 0) {
-      return await bot.replyError(msg, ROLE_RESTRICT.ERROR.MENTION_ROLE);
+      return await bot.replyError(ctx, ROLE_RESTRICT.ERROR.MENTION_ROLE);
     }
 
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;
@@ -31,6 +35,6 @@ export default new Command({
       });
     }
 
-    await bot.send(channel, ROLE_RESTRICT.ADD.ADDED(bot, guild, [...rolesMentioned.values()]));
+    await bot.send(ctx, { content: ROLE_RESTRICT.ADD.ADDED(bot, guild, [...rolesMentioned.values()]) });
   }
 });

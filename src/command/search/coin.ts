@@ -31,10 +31,12 @@ export default new Command({
   cooldown: Cooldown.PER_USER(5),
   beforeRegister: (bot: Siamese) => bot.env.COIN_API_KEY != null,
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     if (!coinCache.has(COIN.MARKET_KEY)) {
@@ -68,7 +70,7 @@ export default new Command({
     const result = fuse.search(Hangul.disassembleToString(content));
 
     if (result.length <= 0) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(COIN.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(COIN.TARGET));
     }
 
     result.sort((a, b) => {

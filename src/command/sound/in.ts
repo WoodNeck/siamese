@@ -7,13 +7,15 @@ export default new SoundCommand({
   description: IN.DESC,
   permissions: [],
   sendTyping: false,
-  execute: async (ctx) => {
-    const { bot, guild, msg } = ctx;
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
 
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
 
     if (!guildConfig || guildConfig.voiceAutoOut) {
-      return await bot.replyError(msg, IN.CANT_PERFORM_ON_VOICE_AUTO_OUT);
+      return await bot.replyError(ctx, IN.CANT_PERFORM_ON_VOICE_AUTO_OUT);
     }
 
     const boomBox = await bot.getBoomBox(ctx);

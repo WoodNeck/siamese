@@ -19,10 +19,12 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   execute: async ctx => {
-    const { bot, msg, channel, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     // Find out 64-bit encoded steamid
@@ -30,7 +32,7 @@ export default new Command({
     const userId = await getUserId(bot, searchText);
 
     if (!userId) {
-      return await bot.replyError(msg, STEAM.ERROR.USER_NOT_FOUND);
+      return await bot.replyError(ctx, STEAM.ERROR.USER_NOT_FOUND);
     }
 
     // Get user profile datas
@@ -45,7 +47,7 @@ export default new Command({
     ]);
 
     if (!summary || !ban) {
-      return await bot.replyError(msg, STEAM.ERROR.USER_NOT_FOUND);
+      return await bot.replyError(ctx, STEAM.ERROR.USER_NOT_FOUND);
     }
 
     const profileColor = summary.gameextrainfo
@@ -84,6 +86,6 @@ export default new Command({
       embed.addField(PROFILE.FIELD_RECENT_GAME, recentGamesStr);
     }
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

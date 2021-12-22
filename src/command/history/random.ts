@@ -15,7 +15,11 @@ export default new Command({
     PERMISSION.EMBED_LINKS,
     PERMISSION.READ_MESSAGE_HISTORY
   ],
-  execute: async ({ bot, guild, channel, msg }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, channel, msg } = ctx;
+
     // Retrieve one msg from message history of channel
     const loggedMessage = await getRandomMessage(channel);
     const msgId = loggedMessage ? loggedMessage.messageID : msg.id;
@@ -37,7 +41,7 @@ export default new Command({
       : null;
 
     if (!randomMsg) {
-      return await bot.replyError(msg, RANDOM.ERROR.CANT_FIND_MSG);
+      return await bot.replyError(ctx, RANDOM.ERROR.CANT_FIND_MSG);
     }
 
     const embed = new MessageEmbed()
@@ -54,6 +58,6 @@ export default new Command({
       embed.setImage(randomMsg.attachments.random().url);
     }
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

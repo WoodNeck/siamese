@@ -17,12 +17,12 @@ class SoundCommand extends Command {
   }
 
   public async checkPermissions(ctx: CommandContext): Promise<boolean> {
-    const { bot, author, msg } = ctx;
+    const { bot, author } = ctx;
 
     const voiceChannel = author.voice.channel;
 
     if (!voiceChannel) {
-      await bot.replyError(msg, ERROR.SOUND.JOIN_VOICE_CHANNEL_FIRST);
+      await bot.replyError(ctx, ERROR.SOUND.JOIN_VOICE_CHANNEL_FIRST);
 
       return false;
     }

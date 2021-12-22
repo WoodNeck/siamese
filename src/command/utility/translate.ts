@@ -21,7 +21,11 @@ export default new Command({
   ],
   alias: TRANSLATE.ALIAS,
   cooldown: Cooldown.PER_USER(3),
-  execute: async ({ bot, msg, args, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, args, content } = ctx;
+
     const langCandidate = args[0];
     const targetLang = langCandidate in TRANSLATE.LANGS
       ? langCandidate
@@ -32,7 +36,7 @@ export default new Command({
       : content;
 
     if (!translateContent.length) {
-      return bot.replyError(msg, TRANSLATE.ERROR.NO_CONTENT);
+      return bot.replyError(ctx, TRANSLATE.ERROR.NO_CONTENT);
     }
 
     const result = await translate(translateContent, {
@@ -42,6 +46,6 @@ export default new Command({
     const embed = new MessageEmbed()
       .setDescription(`${EMOJI.MEMO} ${result.text}`);
 
-    await msg.reply({ embeds: [embed] });
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

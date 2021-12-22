@@ -11,14 +11,18 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   sendTyping: false,
-  execute: async ({ bot, msg, channel, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, msg, content } = ctx;
+
     // Can't react for empty content
     if (!content) {
-      await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(SAY.TARGET));
+      await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(SAY.TARGET));
       return;
     }
 
     await msg.delete();
-    await bot.send(channel, content);
+    await bot.send(ctx, { content });
   }
 });

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import Command from "~/core/Command";
-import { ICON, REMOVE } from "~/const/command/icon";
+import { REMOVE } from "~/const/command/icon";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
 
@@ -10,16 +10,20 @@ export default new Command({
   description: REMOVE.DESC,
   usage: REMOVE.USAGE,
   alias: REMOVE.ALIAS,
-  execute: async ({ bot, channel, guild, msg, content, args }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, content, args } = ctx;
+
     // No multiline is allowed
     const name = content.split("\n")[0];
 
     if (!name) {
-      return await bot.replyError(msg, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
+      return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
     }
 
     if (args.length <= 0 || args.length > 2) {
-      return await bot.replyError(msg, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
+      return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
     }
 
     const groupName = args.length === 2 ? args[0] : null;
@@ -34,7 +38,7 @@ export default new Command({
       }).exec() as IconGroupDocument;
 
       if (!group) {
-        return await bot.replyError(msg, REMOVE.ERROR.NOT_FOUND);
+        return await bot.replyError(ctx, REMOVE.ERROR.NOT_FOUND);
       }
     }
 
@@ -45,7 +49,7 @@ export default new Command({
     }).exec() as IconDocument;
 
     if (!prevInfo) {
-      return await bot.replyError(msg, REMOVE.ERROR.NOT_FOUND);
+      return await bot.replyError(ctx, REMOVE.ERROR.NOT_FOUND);
     }
 
     await prevInfo.remove();
@@ -61,6 +65,6 @@ export default new Command({
       }
     }
 
-    await bot.send(channel, REMOVE.SUCCESS(name));
+    await bot.send(ctx, { content: REMOVE.SUCCESS(name) });
   }
 });

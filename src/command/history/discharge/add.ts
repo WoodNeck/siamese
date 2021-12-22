@@ -13,15 +13,19 @@ export default new Command({
   usage: DISCHARGE.ADD.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
   alias: DISCHARGE.ADD.ALIAS,
-  execute: async ({ bot, channel, guild, msg, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, content } = ctx;
+
     // No multiline is allowed
     const name = content.split("\n")[0];
 
     if (!name) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.PROVIDE_NAME_TO_ADD);
+      return await bot.replyError(ctx, DISCHARGE.ERROR.PROVIDE_NAME_TO_ADD);
     }
     if (name.length > DISCHARGE.ADD.NAME_MAX_LENGTH) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.NAME_TOO_LONG(DISCHARGE.ADD.NAME_MAX_LENGTH));
+      return await bot.replyError(ctx, DISCHARGE.ERROR.NAME_TOO_LONG(DISCHARGE.ADD.NAME_MAX_LENGTH));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -31,11 +35,11 @@ export default new Command({
     }).lean().exec() as DischargeDocument;
 
     if (prevInfo) {
-      return await bot.replyError(msg, DISCHARGE.ADD.NAME_ALREADY_EXISTS(name));
+      return await bot.replyError(ctx, DISCHARGE.ADD.NAME_ALREADY_EXISTS(name));
     }
 
     // Make new one, or update if user agreed
-    const conversation = new Conversation(bot, msg);
+    const conversation = new Conversation(ctx);
 
     const joinDateDialogue = new MessageEmbed()
       .setTitle(DISCHARGE.ADD.DIALOGUE_JOIN_DATE_TITLE(name))
@@ -77,6 +81,6 @@ export default new Command({
       force: forceName
     });
 
-    await bot.send(channel, DISCHARGE.ADD.SUCCESS(name));
+    await bot.send(ctx, { content: DISCHARGE.ADD.SUCCESS(name) });
   }
 });

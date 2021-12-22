@@ -15,7 +15,9 @@ export default new Command({
   permissions: [PERMISSION.EMBED_LINKS],
   cooldown: Cooldown.PER_CHANNEL(5),
   execute: async ctx => {
-    const { bot, msg, args, guild } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, args, guild } = ctx;
 
     const groupName = args[0];
 
@@ -27,7 +29,7 @@ export default new Command({
       }).lean().exec() as IconGroupDocument;
 
       if (!group) {
-        return await bot.replyError(msg, LIST.ERROR.NO_GROUP);
+        return await bot.replyError(ctx, LIST.ERROR.NO_GROUP);
       }
 
       groupID = group._id as string;
@@ -51,7 +53,7 @@ export default new Command({
 
     const items = [...groups, ...icons];
     if (items.length <= 0) {
-      await bot.replyError(msg, ERROR.CMD.NOT_FOUND("등록된 폴더랑 이미지"));
+      await bot.replyError(ctx, ERROR.CMD.NOT_FOUND(LIST.ITEMS_NAME));
     }
 
     const pageCnt = Math.ceil(items.length / LIST.ITEM_PER_PAGE);

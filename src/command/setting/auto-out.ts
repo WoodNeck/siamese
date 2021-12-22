@@ -10,20 +10,24 @@ export default new Command({
   alias: AUTO_OUT.ALIAS,
   adminOnly: true,
   sendTyping: false,
-  execute: async ({ bot, channel, guild }) => {
-    const guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
+
+    let guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;
 
     if (guildConfig) {
       guildConfig.voiceAutoOut = !guildConfig.voiceAutoOut;
 
       await guildConfig.save();
     } else {
-      await GuildConfig.create({
+      guildConfig = await GuildConfig.create({
         guildID: guild.id,
         voiceAutoOut: false
       });
     }
 
-    await bot.send(channel, guildConfig && guildConfig.voiceAutoOut ? AUTO_OUT.SET : AUTO_OUT.UNSET);
+    await bot.send(ctx, { content: guildConfig.voiceAutoOut ? AUTO_OUT.SET : AUTO_OUT.UNSET });
   }
 });

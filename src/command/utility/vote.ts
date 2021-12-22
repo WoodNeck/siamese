@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
+import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -21,14 +21,18 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_CHANNEL(5),
-  execute: async ({ bot, author, channel, msg, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content, author } = ctx;
+
     if (!content) {
-      await bot.replyError(msg, ERROR.CMD.EMPTY_CONTENT(VOTE.TARGET));
+      await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(VOTE.TARGET));
       return;
     }
 
     // Start gathering detailed info
-    const conversation = new Conversation(bot, msg);
+    const conversation = new Conversation(ctx);
     const optionsDialogue = new MessageEmbed()
       .setTitle(VOTE.OPTIONS_TITLE)
       .setDescription(VOTE.OPTIONS_DESC)
@@ -92,11 +96,12 @@ export default new Command({
     const row = new MessageActionRow()
       .addComponents(...buttons);
 
-    const voteMsg = await channel.send({
+    const voteMsg = await bot.send(ctx, {
       content: VOTE.HELP_DESC,
       embeds: [voteEmbed],
-      components: [row]
-    });
+      components: [row],
+      fetchReply: true
+    }) as Discord.Message;
 
     const reactionCollector = voteMsg.createMessageComponentCollector({
       filter: (interaction: ButtonInteraction) => !interaction.user.bot,
@@ -156,7 +161,7 @@ export default new Command({
         voteResultEmbed.addField(`${emoji} ${option} - ${VOTE.COUNT(voteCounts[idx])}`, EMOJI.ZERO_WIDTH_SPACE);
       });
 
-      await bot.send(channel, {
+      await bot.send(ctx, {
         content: bestIndexes.length > 1
           ? VOTE.RESULT_DESC_TIE(bestIndexes.map(idx => options[idx]), voteCounts[bestIndexes[0]])
           : VOTE.RESULT_DESC(options[bestIndexes[0]], voteCounts[bestIndexes[0]]),

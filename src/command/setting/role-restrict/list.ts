@@ -10,14 +10,16 @@ export default new Command({
   description: ROLE_RESTRICT.LIST.DESC,
   cooldown: Cooldown.PER_CHANNEL(5),
   execute: async ctx => {
-    const { bot, guild, channel } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild } = ctx;
 
     const config = await GuildConfig.findOne({
       guildID: guild.id
     }).lean().exec() as GuildConfigDocument;
 
     if (!config || !config.activeRoles || config.activeRoles.length <= 0) {
-      await bot.send(channel, ROLE_RESTRICT.LIST.CAN_BE_USED_FOR_EVERYONE(bot));
+      await bot.send(ctx, { content: ROLE_RESTRICT.LIST.CAN_BE_USED_FOR_EVERYONE(bot) });
       return;
     }
 
@@ -49,10 +51,10 @@ export default new Command({
     const nonRemovedRoles = fetchedRoles.filter(role => !!role) as Role[];
 
     if (nonRemovedRoles.length <= 0) {
-      await bot.send(channel, ROLE_RESTRICT.LIST.CAN_BE_USED_FOR_EVERYONE(bot));
+      await bot.send(ctx, { content: ROLE_RESTRICT.LIST.CAN_BE_USED_FOR_EVERYONE(bot) });
       return;
     }
 
-    await bot.send(channel, ROLE_RESTRICT.LIST.ACTIVE_ROLES(nonRemovedRoles));
+    await bot.send(ctx, { content: ROLE_RESTRICT.LIST.ACTIVE_ROLES(nonRemovedRoles) });
   }
 });

@@ -21,28 +21,30 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     // Find out 64-bit encoded steamid
     const userId = await getUserId(bot, content);
     if (!userId) {
-      return await bot.replyError(msg, STEAM.ERROR.USER_NOT_FOUND);
+      return await bot.replyError(ctx, STEAM.ERROR.USER_NOT_FOUND);
     }
 
     // Get user summary
     const summary = await getUserSummary(bot, userId);
     if (!summary) {
-      return await bot.replyError(msg, STEAM.ERROR.USER_NOT_FOUND);
+      return await bot.replyError(ctx, STEAM.ERROR.USER_NOT_FOUND);
     }
 
     // Get games owning
     const owningGames = await getOwningGames(bot, userId);
     if (!owningGames || !owningGames.length) {
-      return await bot.replyError(msg, STEAM.ERROR.EMPTY_GAMES);
+      return await bot.replyError(ctx, STEAM.ERROR.EMPTY_GAMES);
     }
 
     const pages: MessageEmbed[] = [];

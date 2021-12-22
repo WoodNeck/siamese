@@ -7,12 +7,16 @@ export default new Command({
   description: DISCHARGE.REMOVE.DESC,
   usage: DISCHARGE.REMOVE.USAGE,
   alias: DISCHARGE.REMOVE.ALIAS,
-  execute: async ({ bot, channel, guild, msg, content }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, content } = ctx;
+
     // No multiline is allowed
     const name = content.split("\n")[0];
 
     if (!name) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.PROVIDE_NAME_TO_REMOVE);
+      return await bot.replyError(ctx, DISCHARGE.ERROR.PROVIDE_NAME_TO_REMOVE);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -22,11 +26,11 @@ export default new Command({
     }).exec() as DischargeDocument;
 
     if (!prevInfo) {
-      return await bot.replyError(msg, DISCHARGE.ERROR.NOT_FOUND);
+      return await bot.replyError(ctx, DISCHARGE.ERROR.NOT_FOUND);
     }
 
     await prevInfo.remove();
 
-    await bot.send(channel, DISCHARGE.REMOVE.SUCCESS(name));
+    await bot.send(ctx, { content: DISCHARGE.REMOVE.SUCCESS(name) });
   }
 });

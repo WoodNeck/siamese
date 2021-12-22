@@ -1,6 +1,8 @@
 import Discord, { MessageEmbed } from "discord.js";
 
 import Siamese from "~/Siamese";
+import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
 import { dedent } from "~/util/helper";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
@@ -40,18 +42,17 @@ class ChannelLogger {
   }
 
   // Helper function for formatted error logging
-  public async error(err: Error, msg?: {
-    channel: Discord.TextBasedChannels;
-    guild: Discord.Guild | null;
-    content: string;
-  }) {
+  public async error(err: Error, ctx?: CommandContext | SlashCommandContext) {
     const log = new MessageEmbed();
-    if (msg) {
-      log.setTitle(ERROR.CMD.FAIL_TITLE(err).substr(0, 256))
+
+    if (ctx && !ctx.isSlashCommand()) {
+      const { msg } = ctx;
+
+      log.setTitle(ERROR.CMD.FAIL_TITLE(err).substring(0, 256))
         .setDescription(dedent`
-					${ERROR.CMD.FAIL_PLACE(msg.channel, msg.guild)}
-					${ERROR.CMD.FAIL_CMD(msg.content)}
-          ${ERROR.CMD.FAIL_DESC(err)}`.substr(0, 2048));
+          ${ERROR.CMD.FAIL_PLACE(msg.channel, msg.guild)}
+          ${ERROR.CMD.FAIL_CMD(msg.content)}
+          ${ERROR.CMD.FAIL_DESC(err)}`.substring(0, 2048));
     } else {
       log.setTitle(ERROR.CMD.FAIL_TITLE(err))
         .setDescription(ERROR.CMD.FAIL_DESC(err));

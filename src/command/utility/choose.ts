@@ -6,13 +6,17 @@ export default new Command({
   description: CHOOSE.DESC,
   usage: CHOOSE.USAGE,
   sendTyping: false,
-  execute: async ({ bot, msg, args }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, args } = ctx;
+
     // It needs least 2 arguments to choose
     if (args.length < 2) {
-      await bot.replyError(msg, CHOOSE.ARG_NOT_SUFFICIENT(bot.prefix));
+      await bot.replyError(ctx, CHOOSE.ARG_NOT_SUFFICIENT(bot.prefix));
       return;
     }
 
-    await msg.reply({ content: args[Math.random() * args.length | 0] });
+    await bot.send(ctx, { content: args[Math.random() * args.length | 0] });
   }
 });

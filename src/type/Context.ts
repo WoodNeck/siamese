@@ -7,7 +7,6 @@ interface Context {
   bot: Siamese;
   author: Discord.GuildMember;
   guild: Discord.Guild;
-  channel: Discord.TextChannel;
   isSlashCommand(): this is SlashCommandContext;
 }
 

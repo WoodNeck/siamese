@@ -8,11 +8,14 @@ export default new Command({
   usage: ROLE_RESTRICT.REMOVE.USAGE,
   alias: ROLE_RESTRICT.REMOVE.ALIAS,
   adminOnly: true,
-  execute: async ({ bot, guild, channel, msg }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, guild, msg } = ctx;
     const rolesMentioned = msg.mentions.roles;
 
     if (rolesMentioned.size <= 0) {
-      return await bot.replyError(msg, ROLE_RESTRICT.ERROR.MENTION_ROLE);
+      return await bot.replyError(ctx, ROLE_RESTRICT.ERROR.MENTION_ROLE);
     }
 
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;
@@ -30,9 +33,9 @@ export default new Command({
 
       await guildConfig.save();
 
-      await bot.send(channel, ROLE_RESTRICT.REMOVE.REMOVED(bot, guild, removingRoles));
+      await bot.send(ctx, { content: ROLE_RESTRICT.REMOVE.REMOVED(bot, guild, removingRoles) });
     } else {
-      await bot.send(channel, ROLE_RESTRICT.ERROR.NO_ROLES_TO_REMOVE);
+      await bot.send(ctx, { content: ROLE_RESTRICT.ERROR.NO_ROLES_TO_REMOVE });
     }
   }
 });

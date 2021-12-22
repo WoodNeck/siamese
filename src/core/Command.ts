@@ -1,8 +1,10 @@
 import Discord from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Siamese from "~/Siamese";
 import Cooldown from "~/core/Cooldown";
 import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
 import { Permission } from "~/const/permission";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
@@ -14,7 +16,7 @@ interface CommandOption {
   description: string;
   usage: string;
   alias: readonly string[];
-  execute: ((ctx: CommandContext) => Promise<void>) | null;
+  execute: ((ctx: CommandContext | SlashCommandContext) => Promise<void>) | null;
   beforeRegister: ((bot: Siamese) => boolean) | null;
   devOnly: boolean;
   adminOnly: boolean;
@@ -22,21 +24,23 @@ interface CommandOption {
   sendTyping: boolean;
   permissions: Permission[];
   subcommands: Command[];
+  slashData: SlashCommandBuilder | null;
 }
 
 class Command {
-  public readonly name: string;
-  public readonly description: string;
-  public readonly usage: string;
-  public readonly alias: readonly string[];
+  public readonly name: CommandOption["name"];
+  public readonly description: CommandOption["description"];
+  public readonly usage: CommandOption["usage"];
+  public readonly alias: CommandOption["alias"];
   public readonly execute: CommandOption["execute"];
   public readonly beforeRegister: CommandOption["beforeRegister"];
-  public readonly devOnly: boolean;
-  public readonly adminOnly: boolean;
-  public readonly cooldown: Cooldown | null;
-  public readonly sendTyping: boolean;
-  public readonly permissions: Permission[];
-  public readonly subcommands: Command[];
+  public readonly devOnly: CommandOption["devOnly"];
+  public readonly adminOnly: CommandOption["adminOnly"];
+  public readonly cooldown: CommandOption["cooldown"];
+  public readonly sendTyping: CommandOption["sendTyping"];
+  public readonly permissions: CommandOption["permissions"];
+  public readonly subcommands: CommandOption["subcommands"];
+  public readonly slashData: CommandOption["slashData"];
 
   public constructor({
     name,
@@ -50,7 +54,8 @@ class Command {
     cooldown = null,
     sendTyping = true,
     permissions = [],
-    subcommands = []
+    subcommands = [],
+    slashData = null
   }: RequiredField<Partial<CommandOption>, "name">) {
     this.name = name;
     this.description = description;
@@ -64,6 +69,7 @@ class Command {
     this.sendTyping = sendTyping;
     this.permissions = permissions;
     this.subcommands = subcommands;
+    this.slashData = slashData;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
@@ -85,7 +91,8 @@ class Command {
     if (permissionsGranted && this.permissions && !this.permissions.every(permission => permissionsGranted.has(permission.flag))) {
       if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
         const neededPermissionList = this.permissions.map(permission => `- ${permission.message}`).join("\n");
-        await bot.send(ctx.channel, ERROR.CMD.PERMISSION_IS_MISSING(bot, neededPermissionList));
+
+        await bot.send(ctx, { content: ERROR.CMD.PERMISSION_IS_MISSING(bot, neededPermissionList) });
       } else if (
         permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)
         && permissionsGranted.has(PERMISSION.READ_MESSAGE_HISTORY.flag

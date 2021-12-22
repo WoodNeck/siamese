@@ -71,10 +71,12 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   async execute(ctx) {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const result = await axios.get(STOCK.URL(content)) as AxiosResponse<ItemSearchResult>;
@@ -92,7 +94,7 @@ export default new Command({
     }, [] as Item[]);
 
     if (stockItems.length <= 0) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(STOCK.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(STOCK.TARGET));
     }
 
     if (stockItems.length === 1) {
@@ -260,6 +262,7 @@ const fetchWorldStockData = async (item: Item) => await axios.get(STOCK.WORLD_BA
 const fetchWorldSiseData = async (item: Item) => await axios.get(STOCK.WORLD_SISE_URL(item.id)).then(res => res.data);
 
 const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockData) => {
+  const { bot } = ctx;
   const stockDetailsMessage = new MessageEmbed();
   const change = parseFloat(data.compareToPreviousClosePrice.replace(",", ""));
   const changePct = parseFloat(data.fluctuationsRatio.replace(",", ""));
@@ -290,7 +293,7 @@ const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockDa
     return page;
   });
 
-  await ctx.bot.send(ctx.channel, stockDetailsMessage);
+  await bot.send(ctx, { embeds: [stockDetailsMessage] });
 
   const menu = new Menu(ctx, { maxWaitTime: STOCK.DETAIL_MENU_TIME });
   menu.setPages(stockPages);
@@ -298,6 +301,7 @@ const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockDa
 };
 
 const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData) => {
+  const { bot } = ctx;
   const stockDetailsMessage = new MessageEmbed();
 
   stockDetailsMessage.setTitle(`${data.change >= 0 ? EMOJI.CHART_UP : EMOJI.CHART_DOWN} ${data.name}`);
@@ -321,7 +325,7 @@ const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData
     return page;
   });
 
-  await ctx.bot.send(ctx.channel, stockDetailsMessage);
+  await bot.send(ctx, { embeds: [stockDetailsMessage] });
 
   const menu = new Menu(ctx, { maxWaitTime: STOCK.DETAIL_MENU_TIME });
   menu.setPages(stockPages);

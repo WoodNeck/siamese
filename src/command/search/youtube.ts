@@ -21,9 +21,11 @@ export default new Command({
   cooldown: Cooldown.PER_USER(3),
   beforeRegister: (bot: Siamese) => bot.env.GOOGLE_API_KEY != null,
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const searchResult = await google.youtube("v3").search.list({
@@ -36,7 +38,7 @@ export default new Command({
     const videos = searchResult.data.items || [];
 
     if (!videos.length) {
-      return bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
+      return bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
     }
 
     const menu = new ReactionMenu(ctx, { maxWaitTime: YOUTUBE.MENU_TIME });

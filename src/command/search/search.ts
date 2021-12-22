@@ -22,10 +22,12 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(3),
   execute: async ctx => {
-    const { bot, msg, content } = ctx;
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
 
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const searchResult = await google.customsearch("v1").cse.list({
@@ -35,7 +37,7 @@ export default new Command({
     }).then(res => res.data.items) as SearchResult[];
 
     if (searchResult.length <= 0) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_RESULT(SEARCH.TARGET));
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(SEARCH.TARGET));
     }
 
     const pages = searchResult

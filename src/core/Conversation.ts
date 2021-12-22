@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 
-import Siamese from "~/Siamese";
+import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
 import * as EMOJI from "~/const/emoji";
 import * as ERROR from "~/const/error";
 
@@ -17,13 +18,11 @@ enum END_REASON {
 }
 
 class Conversation {
-  private _bot: Siamese;
-  private _userMsg: Discord.Message;
+  private _ctx: CommandContext | SlashCommandContext;
   private _dialogues: Dialogue[];
 
-  public constructor(bot: Siamese, userMsg: Discord.Message) {
-    this._bot = bot;
-    this._userMsg = userMsg;
+  public constructor(ctx: CommandContext | SlashCommandContext) {
+    this._ctx = ctx;
     this._dialogues = [];
   }
 
@@ -32,8 +31,8 @@ class Conversation {
   }
 
   public async start(maxTime: number): Promise<string[]> {
-    const bot = this._bot;
-    const userMsg = this._userMsg;
+    const ctx = this._ctx;
+    const { bot } = ctx;
     const responses: Discord.Message[] = [];
     const messagesSent: Discord.Message[] = [];
 
@@ -46,17 +45,24 @@ class Conversation {
     };
 
     for (const dialogue of this._dialogues) {
-      const message = await bot.send(userMsg.channel as Discord.TextChannel, dialogue.content);
+      const message = await bot.send(ctx, {
+        embeds: [dialogue.content],
+        fetchReply: true
+      }) as Discord.Message;
 
       if (!message) {
-        await userMsg.react(EMOJI.CROSS).catch(() => void 0);
+        if (!ctx.isSlashCommand()) {
+          await ctx.msg.react(EMOJI.CROSS).catch(() => void 0);
+        } else {
+          // TODO:
+        }
         await removeAllMessagesSent();
         throw new Error(ERROR.CMD.FAILED);
       }
       messagesSent.push(message);
 
-      const collector = userMsg.channel.createMessageCollector({
-        filter: (msg: Discord.Message) => msg.author.id === userMsg.author.id,
+      const collector = ctx.channel.createMessageCollector({
+        filter: (msg: Discord.Message) => msg.author.id === ctx.author.id,
         time: maxTime * 1000
       });
 
@@ -79,13 +85,13 @@ class Conversation {
           break;
           // Response was invalid
         case END_REASON.INVALID:
-          await bot.replyError(userMsg, dialogue.errMsg);
+          await bot.replyError(ctx, dialogue.errMsg);
           await removeAllMessagesSent();
           throw new Error(END_REASON.INVALID);
           // Opponent not responded
         case END_REASON.NO_RESPONSE:
         default:
-          await bot.replyError(userMsg, ERROR.CONVERSATION.NO_RESPONSE(maxTime));
+          await bot.replyError(ctx, ERROR.CONVERSATION.NO_RESPONSE(maxTime));
           await removeAllMessagesSent();
           throw new Error(END_REASON.NO_RESPONSE);
       }

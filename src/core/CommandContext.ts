@@ -1,11 +1,13 @@
 import Discord from "discord.js";
 
 import Siamese from "~/Siamese";
+import Command from "~/core/Command";
 import SlashCommandContext from "~/core/SlashCommandContext";
 import Context from "~/type/Context";
 
 class CommandContext implements Context {
   public readonly bot: Siamese;
+  public readonly command: Command;
   public readonly msg: Discord.Message;
   public readonly content: string;
   public readonly author: Discord.GuildMember;
@@ -15,6 +17,7 @@ class CommandContext implements Context {
 
   public constructor(ctx: {
     bot: Siamese;
+    command: Command;
     msg: Discord.Message;
     content: string;
     author: Discord.GuildMember;

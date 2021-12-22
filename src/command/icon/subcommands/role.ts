@@ -8,11 +8,15 @@ export default new Command({
   usage: ROLE.USAGE,
   alias: ROLE.ALIAS,
   adminOnly: true,
-  execute: async ({ bot, msg, channel, guild }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, msg, guild } = ctx;
+
     const rolesMentioned = msg.mentions.roles;
 
     if (rolesMentioned.size > 1) {
-      return await bot.replyError(msg, ROLE.ERROR.PROVIDE_EXACTLY_ONE_ROLE);
+      return await bot.replyError(ctx, ROLE.ERROR.PROVIDE_EXACTLY_ONE_ROLE);
     }
 
     const role = rolesMentioned.size > 0
@@ -24,6 +28,6 @@ export default new Command({
       { upsert: true }
     ).lean();
 
-    await bot.send(channel, role ? ROLE.MSG.SUCCESS_WITH_ROLE(role.toString()) : ROLE.MSG.SUCCESS_WITHOUT_ROLE);
+    await bot.send(ctx, { content: role ? ROLE.MSG.SUCCESS_WITH_ROLE(role.toString()) : ROLE.MSG.SUCCESS_WITHOUT_ROLE });
   }
 });

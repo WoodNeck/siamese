@@ -43,15 +43,19 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(3),
-  async execute({ bot, msg, content, channel }) {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, content } = ctx;
+
     if (!content) {
-      return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
+      return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
     const result = /^(\d+)(\D+)$/.exec(content);
 
     if (!result) {
-      return await bot.replyError(msg, EXCHANGE.ERROR.WRONG_FORM);
+      return await bot.replyError(ctx, EXCHANGE.ERROR.WRONG_FORM);
     }
 
     const amount = parseFloat(result[1]) as number;
@@ -75,7 +79,7 @@ export default new Command({
     const currencyToDataMap = exchangeCache.get(EXCHANGE.CACHE_KEY) as Map<string, ExchangeAPIData>;
 
     if (!currencyToDataMap.has(unit)) {
-      return await bot.replyError(msg, EXCHANGE.ERROR.WRONG_FORM);
+      return await bot.replyError(ctx, EXCHANGE.ERROR.WRONG_FORM);
     }
 
     const data = currencyToDataMap.get(unit)!;
@@ -95,6 +99,6 @@ export default new Command({
     embed.setColor(COLOR.BOT);
     embed.setTimestamp(new Date(data.date));
 
-    await bot.send(channel, embed);
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

@@ -6,11 +6,15 @@ export default new Command({
   description: DICE.DESC,
   usage: DICE.USAGE,
   sendTyping: false,
-  execute: async ({ bot, msg, author, args }) => {
+  execute: async ctx => {
+    if (ctx.isSlashCommand()) return;
+
+    const { bot, author, args } = ctx;
+
     const isNum = /^\d+$/;
     // Non-number case
     if (args.length && !isNum.test(args[0])) {
-      await bot.replyError(msg, DICE.ARG_INCORRECT(DICE.MIN, DICE.MAX));
+      await bot.replyError(ctx, DICE.ARG_INCORRECT(DICE.MIN, DICE.MAX));
       return;
     }
 
@@ -19,12 +23,12 @@ export default new Command({
 
     // Out-of-range case
     if (diceNum > DICE.MAX || diceNum < DICE.MIN) {
-      await bot.replyError(msg, DICE.ARG_INCORRECT(DICE.MIN, DICE.MAX));
+      await bot.replyError(ctx, DICE.ARG_INCORRECT(DICE.MIN, DICE.MAX));
       return;
     }
 
     const diceResult = Math.floor(Math.random() * (diceNum)) + 1;
 
-    await msg.reply({ content: DICE.MSG(author.toString(), diceResult, diceNum) });
+    await bot.send(ctx, { content: DICE.MSG(author.toString(), diceResult, diceNum) });
   }
 });
