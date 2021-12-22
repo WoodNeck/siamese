@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageButtonStyle } from "discord.js";
+import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageButtonStyle, MessageOptions } from "discord.js";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
@@ -30,6 +30,7 @@ class Menu {
   protected _defaultColor: `#${string}`;
   protected _circular: boolean;
   protected _addPageNumber: boolean;
+  protected _ephemeral: boolean;
 
   // Internal States
   protected _pageIndex: number;
@@ -44,6 +45,7 @@ class Menu {
     defaultColor: `#${string}`;
     circular: boolean;
     addPageNumber: boolean;
+    ephemeral: boolean;
   }> = {}) {
     this._ctx = ctx;
     this._menuMsg = null;
@@ -52,13 +54,15 @@ class Menu {
       maxWaitTime = 30,
       defaultColor = COLOR.BOT,
       circular = true,
-      addPageNumber = true
+      addPageNumber = true,
+      ephemeral = false
     } = options;
 
     this._maxWaitTime = maxWaitTime;
     this._defaultColor = defaultColor;
     this._circular = circular;
     this._addPageNumber = addPageNumber;
+    this._ephemeral = ephemeral;
 
     this._pageIndex = 0;
     this._pages = [];
@@ -128,35 +132,41 @@ class Menu {
     const ctx = this._ctx;
     const pages = this._pages;
     const firstPage = this._pages[0];
-    const firstPageObj = typeof firstPage === "string"
+    const firstPageObj: Discord.InteractionReplyOptions = typeof firstPage === "string"
       ? { content: firstPage }
       : { embeds: [firstPage] };
+
+    if (ctx.isSlashCommand()) {
+      firstPageObj.ephemeral = this._ephemeral;
+    }
 
     if (pages.length > 1) {
       this._attachButtons(firstPageObj);
     }
 
+    const { bot } = ctx;
+    const menuMsg = await bot.send(ctx, { ...firstPageObj, fetchReply: !firstPageObj.ephemeral && true });
+
+    if (pages.length <= 1) return;
 
     if (!ctx.isSlashCommand()) {
-      const { bot } = ctx;
-      const menuMsg = await bot.send(ctx, firstPageObj);
-
       if (!menuMsg) return;
 
       this._menuMsg = menuMsg;
 
-      if (pages.length <= 1) return;
-
       await this._attachBotReactions(menuMsg);
-      this._listenReaction();
-    } else {
-      // TODO:
     }
+
+    this._listenReaction();
   }
 
   public prev = (interaction: ButtonInteraction) => {
     // Message could been deleted
-    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
+    if (!this._ctx.isSlashCommand()) {
+      if (!this._menuMsg || this._menuMsg.deleted) {
+        return END_TYPE.IGNORE;
+      }
+    }
     if (!this._circular && this._pageIndex === 0) return END_TYPE.CONTINUE;
 
     const pages = this._pages;
@@ -173,7 +183,11 @@ class Menu {
 
   public next = (interaction: ButtonInteraction) => {
     // Message could been deleted
-    if (!this._menuMsg || this._menuMsg.deleted) return END_TYPE.IGNORE;
+    if (!this._ctx.isSlashCommand()) {
+      if (!this._menuMsg || this._menuMsg.deleted) {
+        return END_TYPE.IGNORE;
+      }
+    }
     if (!this._circular && this._pageIndex === this._pages.length - 1) return END_TYPE.CONTINUE;
 
     const pages = this._pages;
@@ -194,7 +208,17 @@ class Menu {
     const menuMsg = this._menuMsg;
 
     if (ctx.isSlashCommand()) {
-      // TODO:
+      if (ctx.interaction.ephemeral) {
+        void ctx.interaction.editReply({ components: [] });
+
+        return END_TYPE.REMOVE_ONLY_REACTIONS;
+      }
+
+      if (menuMsg && !menuMsg.deleted) {
+        menuMsg.delete().catch(async err => {
+          await bot.logger.error(err, ctx);
+        });
+      }
     } else {
       const cmdMsg = ctx.msg;
 
@@ -214,14 +238,30 @@ class Menu {
   };
 
   protected _listenReaction() {
-    if (!this._menuMsg) return;
+    const ctx = this._ctx;
 
-    const interactionCollector = this._menuMsg.createMessageComponentCollector({
-      filter: (interaction: ButtonInteraction) => {
-        return this._callbacks.has(interaction.customId) && interaction.user.id === this._ctx.author.id;
-      },
-      time: this._maxWaitTime * 1000
-    });
+    let interactionCollector: Discord.InteractionCollector<Discord.ButtonInteraction>;
+
+    if (ctx.isSlashCommand() && this._ephemeral) {
+      const { channel } = ctx;
+
+      interactionCollector = channel.createMessageComponentCollector({
+        filter: (interaction: ButtonInteraction) => {
+          return interaction.message.interaction?.id === ctx.interaction.id && this._callbacks.has(interaction.customId) && interaction.user.id === this._ctx.author.id;
+        },
+        time: this._maxWaitTime * 1000
+      });
+    } else {
+      if (!this._menuMsg) return;
+
+      interactionCollector = this._menuMsg.createMessageComponentCollector({
+        filter: (interaction: ButtonInteraction) => {
+          return this._callbacks.has(interaction.customId) && interaction.user.id === this._ctx.author.id;
+        },
+        time: this._maxWaitTime * 1000
+      });
+    }
+
     interactionCollector.on("collect", async (interaction: ButtonInteraction) => {
       const callback = this._callbacks.get(interaction.customId);
       if (!callback) return;
@@ -229,6 +269,7 @@ class Menu {
       const endReason = callback(interaction);
       interactionCollector.stop(endReason as string);
     });
+
     interactionCollector.on("end", this._onEnd);
   }
 
@@ -260,16 +301,23 @@ class Menu {
   }
 
   protected async _removeBotReactions(interaction?: ButtonInteraction) {
+    const ctx = this._ctx;
     const msg = this._menuMsg;
 
-    if (!msg || !msg.editable || msg.deleted) return;
-
-    if (interaction) {
-      await interaction.update({
-        components: []
-      });
+    if (ctx.isSlashCommand()) {
+      if (ctx.interaction.ephemeral) {
+        await ctx.interaction.editReply({ components: [] });
+      }
     } else {
-      await msg.edit({ components: [] });
+      if (!msg || !msg.editable || msg.deleted) return;
+
+      if (interaction) {
+        await interaction.update({
+          components: []
+        });
+      } else {
+        await msg.edit({ components: [] });
+      }
     }
   }
 
@@ -297,26 +345,33 @@ class Menu {
   protected _addDefaultReactionCallback() {
     this.addReactionCallback({ id: "PREV", emoji: EMOJI.ARROW_LEFT, style: "SECONDARY" }, this.prev);
     this.addReactionCallback({ id: "NEXT", emoji: EMOJI.ARROW_RIGHT, style: "SECONDARY" }, this.next);
-    this.addReactionCallback({ id: "DELETE", emoji: EMOJI.CROSS, style: "SECONDARY" }, () => END_TYPE.DELETE_ALL_MESSAGES);
+    this.addReactionCallback({ id: "DELETE", emoji: EMOJI.CROSS, style: "SECONDARY" }, this.delete);
   }
 
-  private _changePage(page: Discord.MessageEmbed | string, prevPage: Discord.MessageEmbed | string, interaction?: ButtonInteraction) {
+  private _changePage(page: Discord.MessageEmbed | string, prevPage: Discord.MessageEmbed | string, btnInteraction?: ButtonInteraction) {
     const msg = this._menuMsg;
 
-    if (!msg || !msg.editable || msg.deleted) return;
+    if (!btnInteraction && (!msg || !msg.editable || msg.deleted)) return;
 
-    const update = interaction
-      ? interaction.update.bind(interaction)
-      : msg.edit.bind(msg);
+    const update = btnInteraction
+      ? btnInteraction.update.bind(btnInteraction)
+      : msg!.edit.bind(msg);
+
+    const components = msg && msg.components;
+    const baseMsg: MessageOptions = {};
+
+    if (components) {
+      baseMsg.components = components;
+    }
 
     if (page instanceof Discord.MessageEmbed) {
       if (!page.color) page.setColor(this._defaultColor);
 
-      update({ content: null, embeds: [page], components: msg.components });
+      update({ content: null, embeds: [page], ...baseMsg });
     } else if (prevPage instanceof Discord.MessageEmbed) {
-      update({ content: page, embeds: [], components: msg.components });
+      update({ content: page, embeds: [], ...baseMsg });
     } else {
-      update({ content: page, components: msg.components });
+      update({ content: page, ...baseMsg });
     }
   }
 }

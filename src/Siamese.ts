@@ -454,9 +454,7 @@ class Siamese extends Discord.Client {
     ) return;
 
     if (!interaction.inGuild()) {
-      await interaction.reply({ content: ERROR.CMD.ONLY_IN_TEXT_CHANNEL });
-
-      return;
+      return await interaction.reply({ content: ERROR.CMD.ONLY_IN_TEXT_CHANNEL });
     }
 
     const cmd = commands.get(interaction.commandName)!;
@@ -475,6 +473,7 @@ class Siamese extends Discord.Client {
     try {
       await cmd.execute(ctx);
     } catch (err) {
+      console.error(err);
       await this.handleSlashError(ctx, err);
     }
   };

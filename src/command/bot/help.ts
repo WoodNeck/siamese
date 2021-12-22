@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -21,6 +22,9 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_CHANNEL(5),
+  slashData: new SlashCommandBuilder()
+    .setName(HELP.CMD)
+    .setDescription(HELP.DESC),
   execute: async (ctx: CommandContext) => {
     const { bot } = ctx;
     const prefix = bot.prefix;
@@ -52,7 +56,7 @@ export default new Command({
         return embed;
       });
 
-    const menu = new Menu(ctx, { maxWaitTime: HELP.MENU_TIME });
+    const menu = new Menu(ctx, { maxWaitTime: HELP.MENU_TIME, ephemeral: true });
     menu.addReactionCallback({ id: "LINK", style: "LINK", text: "웹에서 보기", url: HELP.WEB_CATEGORY_INVITE_LINK }, () => END_TYPE.CONTINUE);
     menu.setPages(categories);
 
