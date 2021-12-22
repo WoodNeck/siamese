@@ -29,12 +29,6 @@ interface ExchangeAPIData {
   name: string;
 }
 
-interface ExchangeAPIResult {
-  base: string;
-  data: ExchangeAPIData[];
-  provider: string;
-}
-
 // Store exchange rate data for 1 hour
 const exchangeCache = new NodeCache({ stdTTL: 60 * 60, useClones: false });
 
@@ -48,7 +42,7 @@ export default new Command({
     PERMISSION.READ_MESSAGE_HISTORY,
     PERMISSION.MANAGE_MESSAGES
   ],
-  cooldown: Cooldown.PER_USER(5),
+  cooldown: Cooldown.PER_USER(3),
   async execute({ bot, msg, content, channel }) {
     if (!content) {
       return await bot.replyError(msg, ERROR.SEARCH.EMPTY_CONTENT);
@@ -64,17 +58,14 @@ export default new Command({
     const unit = result[2].trim() as string;
 
     if (!exchangeCache.has(EXCHANGE.CACHE_KEY)) {
-      const { data: exchangeInfo } = await axios.get(EXCHANGE.API_URL, {
-        headers: {
-          referer: EXCHANGE.API_REFERER
-        }
-      }) as AxiosResponse<ExchangeAPIResult>;
+      const { data: exchangeInfo } = await axios.get(EXCHANGE.API_URL) as AxiosResponse<ExchangeAPIData[]>;
 
       const currencyToDataMap = new Map();
-      exchangeInfo.data.forEach(item => {
+      exchangeInfo.forEach(item => {
         if (!currencyToDataMap.has(item.currencyName)) {
           currencyToDataMap.set(item.currencyName, item);
         }
+        currencyToDataMap.set(`${item.country} ${item.currencyName}`, item);
         currencyToDataMap.set(item.currencyCode, item);
       });
 
@@ -100,7 +91,7 @@ export default new Command({
     const changeRate = parseFloat((changeSign * data.changeRate * 100).toFixed(3));
 
     embed.setTitle(`${EMOJI.DOLLAR} ${exchangedAmount}${EXCHANGE.DEFAULT_UNIT}`);
-    embed.setDescription(`${data.country} ${data.currencyName}(${data.currencyCode})\n${EMOJI.MIDDLE_DOT} ${data.basePrice} (${changeEmoji}${changeAmount}, ${changeRate}%)`);
+    embed.setDescription(`${data.currencyUnit} ${data.country} ${data.currencyName}(${data.currencyCode}) = ${data.basePrice}${EXCHANGE.DEFAULT_UNIT} (${changeEmoji}${changeAmount}, ${changeRate}%)`);
     embed.setColor(COLOR.BOT);
     embed.setTimestamp(new Date(data.date));
 

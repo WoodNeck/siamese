@@ -6,7 +6,7 @@ import Cheapest from "./cheapest";
 import Search from "./search";
 import Stock from "./stock";
 import Coin from "./coin";
-// import Exchange from "./exchange";
+import Exchange from "./exchange";
 
 import Category from "~/core/Category";
 import { SEARCH } from "~/const/category";
@@ -21,7 +21,8 @@ category.add(
   Cheapest,
   Search,
   Stock,
-  Coin
+  Coin,
+  Exchange
 );
 
 export default category;
