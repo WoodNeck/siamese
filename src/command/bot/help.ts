@@ -4,7 +4,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
 import CommandContext from "~/core/CommandContext";
-import Menu, { END_TYPE } from "~/core/Menu";
+import Menu, { MENU_END_REASON } from "~/core/Menu";
 import { strong, block } from "~/util/markdown";
 import { HELP } from "~/const/command/bot";
 import * as COLOR from "~/const/color";
@@ -56,8 +56,8 @@ export default new Command({
         return embed;
       });
 
-    const menu = new Menu(ctx, { maxWaitTime: HELP.MENU_TIME, ephemeral: true });
-    menu.addReactionCallback({ id: "LINK", style: "LINK", text: "웹에서 보기", url: HELP.WEB_CATEGORY_INVITE_LINK }, () => END_TYPE.CONTINUE);
+    const menu = new Menu(ctx, { ephemeral: true });
+    menu.addReactionCallback({ id: "LINK", style: "LINK", text: "웹에서 보기", url: HELP.WEB_CATEGORY_INVITE_LINK }, () => MENU_END_REASON.CONTINUE);
     menu.setPages(categories);
 
     await menu.start();

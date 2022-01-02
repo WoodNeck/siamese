@@ -23,7 +23,6 @@ export const HELP = {
   CMD: "도움",
   DESC: "명령어 목록을 보여준다냥!",
   ALIAS: ["help", "도움말"],
-  MENU_TIME: 30,
   WEB_CATEGORY_INVITE_LINK: "https://para.n-e.kr/#/command/bot"
 } as const;
 

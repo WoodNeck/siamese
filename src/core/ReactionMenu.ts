@@ -1,65 +1,177 @@
 import Discord from "discord.js";
 
-import Menu from "~/core/Menu";
 import * as EMOJI from "~/const/emoji";
+import { MENU_END_REASON } from "~/core/Menu";
+import MenuStrategy from "~/core/menu/MenuStrategy";
+import TextMenuStrategy from "~/core/menu/TextMenuStrategy";
+import SlashMenuStrategy from "~/core/menu/SlashMenuStrategy";
+import CommandContext from "~/core/CommandContext";
+import SlashCommandContext from "~/core/SlashCommandContext";
+import { getMinusCompensatedIndex } from "~/util/helper";
 
-enum END_TYPE {
-  IGNORE = "IGNORE",
-  CONTINUE = "CONTINUE",
-  DELETE_ALL_MESSAGES = "DELETE_ALL_MESSAGES",
-  REMOVE_ONLY_REACTIONS = "REMOVE_ONLY_REACTIONS"
-}
+export type ReactionMenuCallback = () => MENU_END_REASON;
 
-class ReactionMenu extends Menu {
+class ReactionMenu {
+  // Options
+  private _ctx: CommandContext | SlashCommandContext;
+  private _maxWaitTime: number;
+  private _circular: boolean;
+  private _addPageNumber: boolean;
+
+  // Internal States
+  private _menuMsg: Discord.Message;
+  private _pageIndex: number;
+  private _pages: string[];
+  private _emojis: string[];
+  private _callbacks: Discord.Collection<string, ReactionMenuCallback>;
+  private _strategy: MenuStrategy;
+
+  public constructor(ctx: CommandContext | SlashCommandContext, {
+    maxWaitTime = 10 * 60, // 10 min
+    circular = true,
+    addPageNumber = true
+  }: Partial<{
+    maxWaitTime: number;
+    circular: boolean;
+    addPageNumber: boolean;
+  }> = {}) {
+    this._ctx = ctx;
+    this._strategy = ctx.isSlashCommand()
+      ? new SlashMenuStrategy(false)
+      : new TextMenuStrategy();
+
+    this._maxWaitTime = maxWaitTime;
+    this._circular = circular;
+    this._addPageNumber = addPageNumber;
+
+    this._pageIndex = 0;
+    this._pages = [];
+    this._emojis = [];
+    this._callbacks = new Discord.Collection();
+
+    // Default menu
+    this._addDefaultReactionCallback();
+  }
+
+  public setPages(pages: string[]) {
+    if (this._addPageNumber) {
+      pages = pages.map((page, pageIdx) => {
+        return `${page} (${pageIdx + 1}/${pages.length})`;
+      });
+    }
+
+    this._pages = pages;
+  }
+
   // All reaction callbacks must return recital end reason
   // else recital will be end without listening additional reactions
   // reasons are defined in const
-  public addEmojiReactionCallback(emoji: string, callback: () => END_TYPE, index?: number) {
-    super.addReactionCallback({
-      id: emoji,
-      emoji
-    }, callback.bind(this), index);
+  public addReactionCallback(emoji: string, callback: ReactionMenuCallback, index?: number) {
+    const emojis = this._emojis;
+    const buttonIdx = index
+      ? getMinusCompensatedIndex(index, emojis.length)
+      : emojis.length;
+
+    emojis.splice(buttonIdx, 0, emoji);
+
+    this._callbacks.set(emoji, callback.bind(this));
   }
 
-  public removeEmojiReactionCallback(emoji: string) {
-    super.removeReactionCallback({ id: emoji, emoji });
+  public removeReactionCallback(emoji: string) {
+    const emojis = this._emojis;
+    const callbackIdx = emojis.findIndex(emj => emj === emoji);
+
+    if (callbackIdx >= 0) {
+      emojis.splice(callbackIdx, 1);
+      this._callbacks.delete(emoji);
+    }
   }
 
-  protected _listenReaction() {
-    if (!this._menuMsg) return;
+  public async start() {
+    const ctx = this._ctx;
+    const pages = this._pages;
+    const firstPage = this._pages[0];
+    const firstPageObj = this._strategy.getPageAsObject(firstPage);
 
+    const menuMsg = await this._strategy.sendMenuMessage(ctx, firstPageObj);
+
+    if (pages.length <= 1) return;
+
+    if (menuMsg) {
+      this._menuMsg = menuMsg;
+
+      await this._attachReactions();
+      this._listenReaction();
+    }
+  }
+
+  public prev: ReactionMenuCallback = () => {
+    if (!this._circular && this._pageIndex === 0) return MENU_END_REASON.CONTINUE;
+
+    const pages = this._pages;
+    const pageCount = pages.length;
+
+    const prevIndex = this._circular
+      ? (pageCount + this._pageIndex - 1) % pageCount
+      : this._pageIndex - 1;
+    const prevPage = this._pages[prevIndex];
+
+    this._changePage(prevPage);
+    this._pageIndex = prevIndex;
+
+    return MENU_END_REASON.CONTINUE;
+  };
+
+  public next: ReactionMenuCallback = () => {
+    if (!this._circular && this._pageIndex === this._pages.length - 1) return MENU_END_REASON.CONTINUE;
+
+    const pages = this._pages;
+    const pageCount = pages.length;
+
+    const nextIndex = this._circular
+      ? (this._pageIndex + 1) % pageCount
+      : this._pageIndex + 1;
+    const nextPage = this._pages[nextIndex];
+
+    this._changePage(nextPage);
+    this._pageIndex = nextIndex;
+
+    return MENU_END_REASON.CONTINUE;
+  };
+
+  public delete: ReactionMenuCallback = () => {
+    return MENU_END_REASON.DELETE_ALL;
+  };
+
+  private _listenReaction() {
     const reactionCollector = this._menuMsg.createReactionCollector({
       filter: (reaction: Discord.MessageReaction, user: Discord.User) => this._callbacks.has(reaction.emoji.name!) && user.id === this._ctx.author.id,
       time: this._maxWaitTime * 1000
     });
+
     reactionCollector.on("collect", async reaction => {
       await this._onCollect(reaction, reactionCollector);
     });
+
     reactionCollector.on("end", this._onEnd);
   }
 
-  protected _attachButtons() {
-    // DO NOTHING
-  }
+  private async _attachReactions() {
+    const menuMsg = this._menuMsg;
 
-  protected async _attachBotReactions(msg: Discord.Message): Promise<void> {
-    for (const button of this._buttons) {
-      if (!button.emoji) continue;
-
-      const emoji = button.emoji;
-
-      await msg.react(emoji)
+    for (const emoji of this._emojis) {
+      await menuMsg.react(emoji)
         .catch(() => {
           // Recital message deleted, how fast
-          if (msg.deleted) return;
+          if (menuMsg.deleted) return;
 
           // Retry one more time, without order assurance
-          msg.react(emoji).catch(() => void 0);
+          menuMsg.react(emoji).catch(() => void 0);
         });
     }
   }
 
-  protected async _removeBotReactions() {
+  private async _removeBotReactions() {
     const bot = this._ctx.bot;
     const msg = this._menuMsg;
 
@@ -79,20 +191,56 @@ class ReactionMenu extends Menu {
     }
   }
 
-  protected _addDefaultReactionCallback() {
-    this.addReactionCallback({ id: EMOJI.ARROW_LEFT, emoji: EMOJI.ARROW_LEFT }, this.prev);
-    this.addReactionCallback({ id: EMOJI.ARROW_RIGHT, emoji: EMOJI.ARROW_RIGHT }, this.next);
-    this.addReactionCallback({ id: EMOJI.CROSS, emoji: EMOJI.CROSS }, () => END_TYPE.DELETE_ALL_MESSAGES);
+  private _addDefaultReactionCallback() {
+    this.addReactionCallback(EMOJI.ARROW_LEFT, this.prev);
+    this.addReactionCallback(EMOJI.ARROW_RIGHT, this.next);
+    this.addReactionCallback(EMOJI.CROSS, () => MENU_END_REASON.DELETE_ALL);
+  }
+
+  private _changePage(page: string) {
+    const ctx = this._ctx;
+
+    this._strategy.update({ content: page })
+      .catch(err => {
+        if (ctx.isSlashCommand()) {
+          void ctx.bot.handleSlashError(ctx, err);
+        } else {
+          void ctx.bot.handleError(ctx, ctx.command, err);
+        }
+      });
   }
 
   private _onCollect = async (reaction: Discord.MessageReaction, collector: Discord.ReactionCollector) => {
     await reaction.users.remove(this._ctx.author).catch(() => void 0);
-    const callback = this._callbacks.get(reaction.emoji.name!) as () => END_TYPE;
+    const callback = this._callbacks.get(reaction.emoji.name!) as ReactionMenuCallback;
     if (!callback) return;
 
     const endReason = callback();
-    collector.stop(endReason as string);
+
+    if (endReason === MENU_END_REASON.CONTINUE) return;
+
+    collector.stop(endReason);
   };
+
+  private _onEnd = async (_, reason: MENU_END_REASON) => {
+    switch (reason) {
+      case MENU_END_REASON.DELETE_ALL:
+        this._deleteMessages();
+        break;
+      // By timeout
+      case MENU_END_REASON.END:
+      default:
+        // Removing bot reactions indicates that
+        // bot won't listen to reactions anymore
+        await this._removeBotReactions();
+    }
+  };
+
+  private _deleteMessages() {
+    const ctx = this._ctx;
+
+    void this._strategy.deleteMessage(ctx);
+  }
 }
 
 export default ReactionMenu;

@@ -1,0 +1,81 @@
+import { ButtonInteraction, Collection, Message, MessageEditOptions, MessageEmbed, MessageOptions } from "discord.js";
+
+import CommandContext from "../CommandContext";
+import { MenuCallback } from "../Menu";
+
+import MenuStrategy from "./MenuStrategy";
+
+class TextMenuStrategy implements MenuStrategy {
+  private _menuMessage: Message;
+
+  public getPageAsObject(page: MessageEmbed | string) {
+    if (typeof page === "string") {
+      return {
+        content: page
+      };
+    } else {
+      return {
+        embeds: [page]
+      };
+    }
+  }
+
+  public async sendMenuMessage(ctx: CommandContext, options: MessageOptions) {
+    const { bot } = ctx;
+
+    this._menuMessage = await bot.send(ctx, {
+      ...options,
+      fetchReply: true
+    }) as Message;
+
+    return this._menuMessage;
+  }
+
+  public async update(options: MessageEditOptions, btnInteraction?: ButtonInteraction) {
+    if (btnInteraction) {
+      await btnInteraction.update(options);
+    } else {
+      await this._menuMessage.edit(options);
+    }
+  }
+
+  public listenInteractions(ctx: CommandContext, callbacks: Collection<string, MenuCallback>, maxWaitTime: number) {
+    const { author } = ctx;
+
+    const interactionCollector = this._menuMessage.createMessageComponentCollector({
+      filter: (btnInteraction: ButtonInteraction) => {
+        return callbacks.has(btnInteraction.customId) && btnInteraction.user.id === author.id;
+      },
+      time: maxWaitTime
+    });
+
+    return interactionCollector;
+  }
+
+  public async deleteMessage(ctx: CommandContext) {
+    const { msg: cmdMsg, bot } = ctx;
+    const menuMsg = this._menuMessage;
+
+    if (cmdMsg && !cmdMsg.deleted) {
+      cmdMsg.delete().catch(async err => {
+        await bot.logger.error(err, ctx);
+      });
+    }
+
+    if (menuMsg && !menuMsg.deleted) {
+      menuMsg.delete().catch(async err => {
+        await bot.logger.error(err, new CommandContext({ ...ctx, msg: menuMsg }));
+      });
+    }
+  }
+
+  public async removeReactions(btnInteraction?: ButtonInteraction) {
+    if (btnInteraction) {
+      await btnInteraction.editReply({ components: [] });
+    } else {
+      await this._menuMessage.edit({ components: [] });
+    }
+  }
+}
+
+export default TextMenuStrategy;

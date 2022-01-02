@@ -40,7 +40,7 @@ export const YOUTUBE = {
   DESC: "유튜브 동영상을 검색한다냥!",
   USAGE: "검색어",
   TARGET: "동영상",
-  MENU_TIME: 30,
+  DESC_OPTION: "검색할 동영상의 키워드를 입력하라냥!",
   MAX_RESULTS: 10,
   VIDEO_URL: (videoId: string) => `https://youtu.be/${videoId}`
 } as const;

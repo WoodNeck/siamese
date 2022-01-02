@@ -10,7 +10,7 @@ import * as EMOJI from "~/const/emoji";
 import * as COLOR from "~/const/color";
 import * as PERMISSION from "~/const/permission";
 import { STOCK } from "~/const/command/search";
-import Menu, { END_TYPE } from "~/core/Menu";
+import Menu, { MENU_END_REASON } from "~/core/Menu";
 import { strong } from "~/util/markdown";
 
 interface ItemSearchResult {
@@ -119,7 +119,7 @@ export default new Command({
         void bot.handleError(ctx, this, err);
       });
 
-      return END_TYPE.DELETE_ALL_MESSAGES;
+      return MENU_END_REASON.DELETE_ALL;
     }, 1);
     await stockSelectorMenu.start();
   }

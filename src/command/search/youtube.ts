@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { google } from "googleapis";
 
 import Siamese from "~/Siamese";
@@ -20,10 +21,20 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(3),
   beforeRegister: (bot: Siamese) => bot.env.GOOGLE_API_KEY != null,
+  slashData: new SlashCommandBuilder()
+    .setName(YOUTUBE.CMD)
+    .setDescription(YOUTUBE.DESC)
+    .addStringOption(option => option
+      .setName(YOUTUBE.USAGE)
+      .setDescription(YOUTUBE.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(YOUTUBE.USAGE, true)
+      : ctx.content;
 
-    const { bot, content } = ctx;
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
@@ -41,7 +52,7 @@ export default new Command({
       return bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(YOUTUBE.TARGET));
     }
 
-    const menu = new ReactionMenu(ctx, { maxWaitTime: YOUTUBE.MENU_TIME });
+    const menu = new ReactionMenu(ctx);
     menu.setPages(videos.map(video => YOUTUBE.VIDEO_URL(video.id?.videoId || "")).filter(video => !!video));
 
     await menu.start();
