@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import date from "date-and-time";
 
 import Add from "./discharge/add";
@@ -22,10 +23,23 @@ export default new Command({
   subcommands: [
     Add, List, Remove
   ],
+  slashData: new SlashCommandBuilder()
+    .setName(DISCHARGE.CMD)
+    .setDescription(DISCHARGE.DESC)
+    .addSubcommand(subCmd => subCmd
+      .setName(DISCHARGE.CHECK)
+      .setDescription(DISCHARGE.DESC)
+      .addStringOption(option => option
+        .setName(DISCHARGE.USAGE)
+        .setDescription(DISCHARGE.DESC_OPTION)
+        .setRequired(true)
+      ),
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
-    const { bot, guild, content } = ctx;
+    const { bot, guild } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(DISCHARGE.USAGE, true)
+      : ctx.content;
 
     // No multiline is allowed
     const name = content.split("\n")[0];

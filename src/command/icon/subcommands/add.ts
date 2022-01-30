@@ -8,6 +8,7 @@ import * as PERMISSION from "~/const/permission";
 import { ICON, ADD } from "~/const/command/icon";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
+import { parseArgs } from "~/util/helper";
 
 export default new Command({
   name: ADD.CMD,
@@ -18,7 +19,8 @@ export default new Command({
   execute: async ctx => {
     if (ctx.isSlashCommand()) return;
 
-    const { bot, guild, author, msg, args } = ctx;
+    const { bot, guild, author, msg, content } = ctx;
+    const args = parseArgs(content);
 
     if (msg.attachments.size <= 0) {
 		  return await bot.replyError(ctx, ADD.ERROR.PROVIDE_IMAGES, ADD.TUTORIAL_URL);

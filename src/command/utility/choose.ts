@@ -1,5 +1,6 @@
 import Command from "~/core/Command";
 import { CHOOSE } from "~/const/command/utility";
+import { parseArgs } from "~/util/helper";
 
 export default new Command({
   name: CHOOSE.CMD,
@@ -9,7 +10,8 @@ export default new Command({
   execute: async ctx => {
     if (ctx.isSlashCommand()) return;
 
-    const { bot, args } = ctx;
+    const { bot, content } = ctx;
+    const args = parseArgs(content);
 
     // It needs least 2 arguments to choose
     if (args.length < 2) {

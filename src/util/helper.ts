@@ -1,3 +1,8 @@
+import Discord from "discord.js";
+
+import GuildConfigModel, { GuildConfigDocument } from "~/model/GuildConfig";
+import * as PERMISSION from "~/const/permission";
+
 // Dedent from string, useful for multiline string template
 export const dedent = (callSite: TemplateStringsArray, ...args: any[]) => {
   const format = (str: string) => {
@@ -56,3 +61,67 @@ export const rgbaToHex = (val: string): `#${string}` | [number, number, number] 
 
 export const userMention = (id: string) => `<@${id}>`;
 export const roleMention = (id: string) => `<@&${id}>`;
+
+export const range = (end: number): number[] => new Array(end).fill(0).map((_, idx) => idx);
+
+export const checkIconPermission = async (member: Discord.GuildMember, guild: Discord.Guild) => {
+  if (member.permissions.has(PERMISSION.ADMINISTRATOR.flag)) return true;
+
+  const guildConfig = await GuildConfigModel.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
+
+  if (!guildConfig || !guildConfig.iconManageRoleID) return true;
+
+  const role = await guild.roles.fetch(guildConfig.iconManageRoleID);
+
+  if (!role) return false;
+
+  return role.members.has(member.id);
+};
+
+export const parseArgs = (content: string) => {
+  const args: string[] = [];
+  let lastIdx = 0;
+  let idx = 0;
+
+  while (idx < content.length) {
+    const char = content[idx];
+
+    if (char === " ") {
+      // Split args by blank space;
+      // Exclude multiple blanks
+      if (lastIdx !== idx) {
+        args.push(content.substring(lastIdx, idx));
+      }
+
+      idx += 1;
+      lastIdx = idx;
+    } else if (char === "\"" && lastIdx === idx) {
+      // Bundle args bound in double quotes
+      // Exclude quotes only separated by blank space
+      const endIdx = content.indexOf("\" ", idx + 1);
+      if (endIdx > 0) {
+        args.push(content.substring(idx + 1, endIdx));
+        lastIdx = endIdx + 2;
+        idx = lastIdx;
+      } else if (content.endsWith("\"")) {
+        // Case of all remaining string is bound in double quote
+        args.push(content.substring(idx + 1, content.length - 1));
+        lastIdx = content.length;
+        idx = lastIdx;
+        break;
+      } else {
+        idx += 1;
+      }
+    } else {
+      idx += 1;
+    }
+  }
+
+  // Append last arg
+  if (lastIdx < content.length) {
+    args.push(content.substring(lastIdx, content.length));
+  }
+
+  // For blank arg, add double quotes for it as Discord won't accept blank message
+  return args.map(arg => arg === " " ? `"${arg}"` : arg);
+};

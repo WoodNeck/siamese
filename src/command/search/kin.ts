@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios, { AxiosResponse } from "axios";
 
 import Siamese from "~/Siamese";
@@ -24,10 +25,22 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   beforeRegister: (bot: Siamese) => bot.env.NAVER_ID != null && bot.env.NAVER_SECRET != null,
+  slashData: new SlashCommandBuilder()
+    .setName(KIN.CMD)
+    .setDescription(KIN.DESC)
+    .addStringOption(option => option
+      .setName(KIN.USAGE)
+      .setDescription(KIN.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(KIN.USAGE, true)
+      : ctx.content;
+
+    if (ctx.isSlashCommand()) return;
 
     if (!content) {
       return bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
@@ -71,7 +84,7 @@ export default new Command({
         pages.push(page);
       }
 
-      const menu = new Menu(ctx, { maxWaitTime: KIN.MENU_TIME });
+      const menu = new Menu(ctx);
       menu.setPages(pages);
 
       await menu.start();

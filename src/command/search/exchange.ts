@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios, { AxiosResponse } from "axios";
 import NodeCache from "node-cache";
 
@@ -43,10 +44,20 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(3),
+  slashData: new SlashCommandBuilder()
+    .setName(EXCHANGE.CMD)
+    .setDescription(EXCHANGE.DESC)
+    .addStringOption(option => option
+      .setName(EXCHANGE.USAGE_OPTION)
+      .setDescription(EXCHANGE.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(EXCHANGE.USAGE_OPTION, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);

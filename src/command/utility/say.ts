@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import Command from "~/core/Command";
 import { SAY } from "~/const/command/utility";
 import * as ERROR from "~/const/error";
@@ -11,10 +13,20 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(SAY.CMD)
+    .setDescription(SAY.DESC)
+    .addStringOption(option => option
+      .setName(SAY.USAGE_OPTION)
+      .setDescription(SAY.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, msg, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(SAY.USAGE_OPTION, true)
+      : ctx.content;
 
     // Can't react for empty content
     if (!content) {
@@ -22,7 +34,12 @@ export default new Command({
       return;
     }
 
-    await msg.delete();
-    await bot.send(ctx, { content });
+    if (!ctx.isSlashCommand()) {
+      await ctx.msg.delete();
+    } else {
+      await ctx.interaction.reply({ content: SAY.SLASH_PLACEHOLDER, ephemeral: true });
+    }
+
+    await ctx.channel.send({ content });
   }
 });

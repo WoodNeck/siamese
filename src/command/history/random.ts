@@ -1,4 +1,5 @@
 import { Collection, Message, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
@@ -15,14 +16,20 @@ export default new Command({
     PERMISSION.EMBED_LINKS,
     PERMISSION.READ_MESSAGE_HISTORY
   ],
+  slashData: new SlashCommandBuilder()
+    .setName(RANDOM.CMD)
+    .setDescription(RANDOM.DESC),
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
-    const { bot, guild, channel, msg } = ctx;
+    const { bot, guild, channel } = ctx;
+    const userMsgID = ctx.isSlashCommand()
+      ? ctx.interaction.channel?.lastMessageId as string
+      : ctx.msg.id;
 
     // Retrieve one msg from message history of channel
     const loggedMessage = await getRandomMessage(channel);
-    const msgId = loggedMessage ? loggedMessage.messageID : msg.id;
+    const msgId = loggedMessage
+      ? loggedMessage.messageID
+      : userMsgID;
 
     const data = await ((bot as any).api).channels[channel.id].messages.get({ query: {
       around: msgId,

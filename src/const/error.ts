@@ -32,7 +32,8 @@ export const CMD = {
   PERMISSION_FAILED: permission => `${permission} 권한이 없어 명령어를 실행할 수 없었다냥!`,
   MENTION_NEEDED: `명령어 대상을 ${code("@멘션")}해서 사용하는 명령어다냥!`,
   MENTION_ONLY_ONE: "한 명의 유저만 멘션해달라냥!",
-  MENTION_NO_BOT: "봇은 멘션할 수 없다냥!"
+  MENTION_NO_BOT: "봇은 멘션할 수 없다냥!",
+  ONLY_ACTIVE_ROLES: "봇을 사용할 수 있는 역할로 배정되지 않았다냥! 서버 관리자에게 문의해달라냥!"
 };
 
 export const API = {
@@ -66,4 +67,8 @@ export const SOUND = {
   NOT_PLAYING: "재생하고 있는 곡이 없다냥!",
   FAILED_TO_PLAY: "재생에 실패했다냥!",
   CONNECTION_NOT_ESTABLISHED_YET: "아직 음성채널에 연결중이다냥! 조금만 기다려달라냥!"
+};
+
+export const ICON = {
+  MISSING_PERMISSION: "아이콘 관리 권한이 없다냥!"
 };

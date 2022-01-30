@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import Command from "~/core/Command";
 import { AUTO_OUT } from "~/const/command/setting";
 import * as PERMISSION from "~/const/permission";
@@ -10,9 +12,10 @@ export default new Command({
   alias: AUTO_OUT.ALIAS,
   adminOnly: true,
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(AUTO_OUT.CMD)
+    .setDescription(AUTO_OUT.DESC),
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
     const { bot, guild } = ctx;
 
     let guildConfig = await GuildConfig.findOne({ guildID: guild.id }) as GuildConfigDocument;

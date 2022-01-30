@@ -1,4 +1,5 @@
-import Discord from "discord.js";
+import CommandContext from "./CommandContext";
+import SlashCommandContext from "./SlashCommandContext";
 
 class Cooldown {
   public static PER_GUILD(seconds: number) { return new Cooldown("guild", seconds); }
@@ -10,14 +11,16 @@ class Cooldown {
     public duration: number
   ) {}
 
-  public getKey(msg: Discord.Message, cmdName: string) {
+  public getKey(ctx: CommandContext | SlashCommandContext, cmdName: string) {
+    const { guild, channel, author } = ctx;
+
     switch (this._type) {
       case "guild":
-        return (msg.guild && `${msg.guild.id}${cmdName}`) || "";
+        return (guild && `${guild.id}${cmdName}`) || "";
       case "channel":
-        return (msg.channel && `${msg.channel.id}${cmdName}`) || "";
+        return (channel && `${channel.id}${cmdName}`) || "";
       case "author":
-        return (msg.author && `${msg.author.id}${cmdName}`) || "";
+        return (author && `${author.id}${cmdName}`) || "";
     }
   }
 }

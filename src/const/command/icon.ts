@@ -7,6 +7,8 @@ import { code } from "~/util/markdown";
 export const ICON = {
   CMD: "아이콘",
   DESC: "아이콘 관리 페이지를 반환한다냥!",
+  SLASH_DESC: "아이콘 관련 명령어들이다냥!",
+  MANAGE: "관리",
   ALIAS: ["콘"],
   TITLE: (guildName: string) => `${EMOJI.LINK} ${guildName}의 아이콘 관리 페이지다냥!`,
   NAME_MAX_LENGTH: 10
@@ -33,6 +35,10 @@ export const REMOVE = {
   CMD: "삭제해줘",
   DESC: "기존 아이콘을 삭제한다냥!",
   USAGE: "[그룹명] 아이콘명",
+  SLASH_USAGE_ICON: "아이콘",
+  SLASH_USAGE_GROUP: "그룹",
+  USAGE_DESC_ICON: "아이콘 이름을 달라냥!",
+  USAGE_DESC_GROUP: "아이콘 그룹이 있을 경우 그룹 이름을 달라냥!",
   ALIAS: ["삭제", "제거", "제거해줘"],
   SUCCESS: (name: string) => `${Josa.r(name, "을/를")} 삭제했다냥!`,
   ERROR: {
@@ -47,9 +53,9 @@ export const LIST = {
     그룹 안의 아이콘 목록을 표시한다냥!
     그룹 이름을 주지 않을 경우 그룹에 속하지 않은 아이콘들을 표시한다냥!`,
   USAGE: "그룹명",
+  USAGE_DESC: "아이콘을 찾을 그룹명을 달라냥!",
   ITEMS_NAME: "등록된 폴더랑 이미지",
   ITEM_PER_PAGE: 10,
-  RECITAL_TIME: 30,
   TYPE: {
     GROUP: "GROUP",
     ICON: "ICON"
@@ -67,6 +73,8 @@ export const ROLE = {
   CMD: "역할설정",
   DESC: "아이콘을 관리할 수 있는 역할을 설정한다냥!",
   USAGE: "[@역할명]",
+  SLASH_USAGE: "역할",
+  DESC_USAGE: "아이콘을 관리 권한을 토글할 역할을 달라냥! 역할을 주지 않을 경우, 모두가 역할을 사용할 수 있도록 설정한다냥!",
   ALIAS: ["역할"],
   MSG: {
     SUCCESS_WITH_ROLE: (roleMention: string) => `이제 서버 관리자랑 ${roleMention}만 아이콘을 관리할 수 있다냥!`,

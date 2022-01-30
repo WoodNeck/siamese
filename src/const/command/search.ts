@@ -10,7 +10,7 @@ export const IMAGE = {
   DESC: "구글 이미지를 검색한다냥!",
   USAGE: "검색어",
   TARGET: "이미지",
-  MENU_TIME: 30,
+  DESC_OPTION: "검색할 이미지 키워드를 달라냥!",
   SEARCH_URL: "https://www.google.com/search",
   SEARCH_PARAMS: (query, isSafeSearch) =>
     // nfpr: disable auto query correction(ex: museuk -> museum)
@@ -40,7 +40,7 @@ export const YOUTUBE = {
   DESC: "유튜브 동영상을 검색한다냥!",
   USAGE: "검색어",
   TARGET: "동영상",
-  DESC_OPTION: "검색할 동영상의 키워드를 입력하라냥!",
+  DESC_OPTION: "검색할 동영상의 키워드를 달라냥!",
   MAX_RESULTS: 10,
   VIDEO_URL: (videoId: string) => `https://youtu.be/${videoId}`
 } as const;
@@ -50,10 +50,10 @@ export const KIN = {
   DESC: "네이버 지식인을 검색한다냥!",
   USAGE: "검색어",
   TARGET: "지식인 항목",
+  DESC_OPTION: "검색할 키워드를 달라냥!",
   SERVICE_NAME: "네이버 지식인",
   ICON: "https://www.naver.com/favicon.ico?1",
   ITEMS_PER_PAGE: 5,
-  MENU_TIME: 30,
   SEARCH_URL: "https://openapi.naver.com/v1/search/kin.json",
   SEARCH_PARAMS: (query: string) => ({
     query,
@@ -67,7 +67,7 @@ export const CHEAPEST = {
   DESC: "게임 최저가를 cheapshark.com에서 검색한다냥!",
   USAGE: "게임명",
   TARGET: "게임",
-  MENU_TIME: 30,
+  DESC_OPTION: "검색할 게임 이름을 달라냥!",
   SEARCH_URL: "https://www.cheapshark.com/api/1.0/deals",
   SEARCH_PARAMS: (query: string) => ({
     title: query,
@@ -111,8 +111,8 @@ export const SHOPPING = {
   DESC: "네이버 쇼핑에 상품을 검색한다냥!",
   USAGE: "상품명",
   TARGET: "상품",
+  DESC_OPTION: "검색할 상품명을 달라냥!",
   ICON: "https://www.naver.com/favicon.ico?1",
-  MENU_TIME: 30,
   SEARCH_URL: "https://openapi.naver.com/v1/search/shop.json",
   SEARCH_PARAMS: (query: string) => ({
     query,
@@ -141,7 +141,8 @@ export const SEARCH = {
   DESC: "구글에서 문서를 검색한다냥!",
   USAGE: "검색할 내용",
   TARGET: "검색 결과",
-  MENU_TIME: 30,
+  USAGE_OPTION: "검색어",
+  DESC_OPTION: "검색할 키워드를 달라냥!",
   URL: "https://www.google.com/search",
   PARAMS: (query: string) => ({
     q: query
@@ -154,7 +155,7 @@ export const STOCK = {
   USAGE: "종목명",
   TARGET: "검색 결과",
   ALIAS: ["증권"],
-  DETAIL_MENU_TIME: 90,
+  DESC_OPTION: "검색할 주식/증권 항목을 달라냥!",
   URL: (query: string) => `https://ac.finance.naver.com/ac?q=${encodeURIComponent(query)}&q_enc=euc-kr&t_koreng=1&st=111&r_lt=111`,
   DOME_STOCK_HEADER_URL: (id: string) => `https://m.stock.naver.com/api/item/getOverallHeaderItem.nhn?code=${id}`,
   DOME_STOCK_INFO_URL: (id: string) => `https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${id}`,
@@ -183,6 +184,7 @@ export const COIN = {
   DESC: "가상화폐 정보를 검색한다냥!",
   USAGE: "코인명",
   TARGET: "코인",
+  DESC_OPTION: "검색할 코인명을 달라냥!",
   MARKET_KEY: "market",
   MARKET_URL: "https://api.upbit.com/v1/market/all?isDetails=true",
   TICKER_URL: "https://api.upbit.com/v1/ticker",
@@ -203,6 +205,8 @@ export const EXCHANGE = {
   CMD: "환율",
   DESC: "환율 정보를 검색한다냥!",
   USAGE: "금액 + 화폐 단위 (예: 100달러)",
+  DESC_OPTION: "변환할 금액을 금액 + 화폐 단위로 알려달라냥! (예: 100달러)",
+  USAGE_OPTION: "금액",
   CACHE_KEY: "exchange_cache_key",
   API_URL: "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD,FRX.KRWJPY,FRX.KRWCNY,FRX.KRWEUR,FRX.KRWGBP,FRX.KRWCHF,FRX.KRWCAD,FRX.KRWNZD,FRX.KRWHKD,FRX.KRWBRL,FRX.KRWMXN,FRX.KRWAED,FRX.KRWKWD,FRX.KRWBHD,FRX.KRWINR,FRX.KRWSAR,FRX.KRWNOK,FRX.KRWDKK,FRX.KRWMYR,FRX.KRWBDT,FRX.KRWPKR,FRX.KRWIDR,FRX.KRWTWD,FRX.KRWPHP,FRX.KRWSEK,FRX.KRWAUD,FRX.KRWSGD,FRX.KRWTHB,FRX.KRWEGP,FRX.KRWBND,FRX.KRWILS,FRX.KRWJOD,FRX.KRWVND,FRX.KRWRUB,FRX.KRWHUF,FRX.KRWPLN,FRX.KRWZAR,FRX.KRWMNT,FRX.KRWCZK,FRX.KRWKZT,FRX.KRWQAR,FRX.KRWTRY",
   DEFAULT_UNIT: "원",

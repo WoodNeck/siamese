@@ -28,7 +28,7 @@ export default new Command({
       pages.push(new MessageEmbed().setDescription(infosDesc));
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: TRANSLATE.LIST.MENU_TIME });
+    const menu = new Menu(ctx);
     menu.setPages(pages);
 
     await menu.start();

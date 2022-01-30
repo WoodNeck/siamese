@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import axios, { AxiosResponse } from "axios";
 
@@ -19,10 +20,19 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(5),
+  slashData: new SlashCommandBuilder()
+    .setName(CHEAPEST.CMD)
+    .setDescription(CHEAPEST.DESC)
+    .addStringOption(option => option
+      .setName(CHEAPEST.USAGE)
+      .setDescription(CHEAPEST.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
-    const { bot, content } = ctx;
+    const { bot } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(CHEAPEST.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
@@ -50,7 +60,7 @@ export default new Command({
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(CHEAPEST.TARGET));
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: CHEAPEST.MENU_TIME });
+    const menu = new Menu(ctx);
 
     const pages = games.map(game => {
       const page = new MessageEmbed()

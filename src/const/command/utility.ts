@@ -8,6 +8,8 @@ export const DICE = {
   CMD: "주사위",
   DESC: "n면짜리 주사위를 굴린다냥! (기본값: 100)",
   USAGE: "[n]",
+  DESC_OPTION: "굴릴 주사위 면 수를 알려달라냥!",
+  USAGE_OPTION: "n",
   MIN: 2,
   MAX: 10000,
   DEFAULT: 100,
@@ -24,6 +26,8 @@ export const CHOOSE = {
   CMD: "골라줘",
   DESC: "받은 항목들 중 하나를 임의로 골라준다냥!",
   USAGE: "항목1 항목2 [항목3...]",
+  USAGE_OPTION: "항목",
+  DESC_OPTION: "선택할 항목을 달라냥!",
   ARG_NOT_SUFFICIENT: (prefix: string) => dedent`
     고를 수 있는 항목을 충분히 달라냥!
     ${block(`> ${prefix}${CHOOSE.CMD} 샴 먼치킨 아비시니안 페르시안 메인쿤`)}`
@@ -33,7 +37,10 @@ export const SAY = {
   CMD: "따라해",
   DESC: "해준 말을 지운 후에 따라한다냥!",
   USAGE: "따라할 문장",
-  TARGET: "따라할 문장"
+  TARGET: "따라할 문장",
+  USAGE_OPTION: "문장",
+  DESC_OPTION: "따라할 문장을 달라냥!",
+  SLASH_PLACEHOLDER: "문장을 따라한다냥!"
 };
 
 export const VOTE = {
@@ -41,6 +48,7 @@ export const VOTE = {
   DESC: "채널 내에서 간단한 투표를 할 수 있다냥!",
   USAGE: "제목",
   TARGET: "투표 제목",
+  DESC_OPTION: "투표 제목을 달라냥!",
   CONVERSATION_TIME: 120,
   OPTIONS_TITLE: "투표 항목들을 말해달라냥!",
   OPTIONS_DESC: "콤마(,)로 항목들을 구분해서, 최소 2개에서 9개까지 투표 항목들을 말해달라냥!",
@@ -69,7 +77,9 @@ export const VOTE = {
 export const AVATAR = {
   CMD: "아바타",
   DESC: "사용자의 아바타 이미지를 크게 보여준다냥!",
-  USAGE: "@사용자"
+  USAGE: "@사용자",
+  USAGE_OPTION: "사용자",
+  DESC_OPTION: "아바타를 볼 사용자를 알려달라냥!"
 };
 
 export const TRANSLATE = {
@@ -77,6 +87,11 @@ export const TRANSLATE = {
   DESC: "문장을 번역한다냥!",
   USAGE: "[언어] 문장",
   ALIAS: ["번역해줘"],
+  DESC_OPTION: "번역할 문장을 달라냥!",
+  USAGE_OPTION: "문장",
+  LANG_DESC: "번역 결과로 나올 언어를 달라냥!",
+  LANG_OPTION: "언어",
+  FOOTER_FORMAT: orig => `원문: ${orig}`,
   DEFAULT_LANG: "한국어",
   LANGS: {
     "아프리칸스어": "af",

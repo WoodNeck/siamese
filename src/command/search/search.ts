@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { google } from "googleapis";
 
 import Command from "~/core/Command";
@@ -21,10 +22,20 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(3),
+  slashData: new SlashCommandBuilder()
+    .setName(SEARCH.CMD)
+    .setDescription(SEARCH.DESC)
+    .addStringOption(option => option
+      .setName(SEARCH.USAGE_OPTION)
+      .setDescription(SEARCH.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(SEARCH.USAGE_OPTION, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
@@ -42,21 +53,24 @@ export default new Command({
 
     const pages = searchResult
       .map(result => {
-        const metatags = result.pagemap?.metatags?.[0] || {};
-
-        return new MessageEmbed()
+        const embed = new MessageEmbed()
           .setTitle(result.title)
-          .setDescription(result.snippet)
           .setThumbnail(
             result.pagemap?.cse_image?.[0].src
             || result.pagemap?.cse_thumbnail?.[0].src
             || result.pagemap?.imageobject?.[0].src
             || "")
-          .setURL(result.link)
-          .setColor(
+          .setURL(result.link);
+
+        if (result.snippet) {
+          embed.setDescription(result.snippet);
+        }
+
+        const metatags = result.pagemap?.metatags?.[0];
+        if (metatags) {
+          embed.setColor(
             rgbaToHex(metatags["theme-color"] || metatags["msapplication-tilecolor"] || COLOR.BOT)
-          )
-          .setFooter(
+          ).setFooter(
             metatags["og:site_name"]
             || metatags["application-name"]
             || metatags["msapplication-tooltip"]
@@ -65,9 +79,12 @@ export default new Command({
             || "",
             toValidUrl(metatags["msapplication-tileimage"] || "")
           );
+        }
+
+        return embed;
       });
 
-    const menu = new Menu(ctx, { maxWaitTime: SEARCH.MENU_TIME });
+    const menu = new Menu(ctx);
     menu.setPages(pages);
     await menu.start();
   }
@@ -80,10 +97,10 @@ interface SearchResult {
   htmlTitle: string;
   link: string;
   displayLink: string;
-  snippet: string;
-  htmlSnippet: string;
   formattedUrl: string;
   htmlFormattedUrl: string;
+  snippet?: string;
+  htmlSnippet?: string;
   pagemap?: {
     metatags?: MetaTag[];
     cse_thumbnail?: Array<{

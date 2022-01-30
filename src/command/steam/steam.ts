@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import Library from "./subcommands/library";
 import Profile from "./subcommands/profile";
 import Random from "./subcommands/random";
@@ -17,5 +19,8 @@ export default new Command({
     Random,
     Players,
     TopGames
-  ]
+  ],
+  slashData: new SlashCommandBuilder()
+    .setName(STEAM.CMD)
+    .setDescription(STEAM.DESC)
 });

@@ -53,8 +53,6 @@ class Conversation {
       if (!message) {
         if (!ctx.isSlashCommand()) {
           await ctx.msg.react(EMOJI.CROSS).catch(() => void 0);
-        } else {
-          // TODO:
         }
         await removeAllMessagesSent();
         throw new Error(ERROR.CMD.FAILED);

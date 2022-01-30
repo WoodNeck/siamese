@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder  } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -14,12 +15,20 @@ export default new Command({
   description: LIST.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
   cooldown: Cooldown.PER_CHANNEL(5),
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(LIST.CMD)
+    .setDescription(LIST.DESC)
+    .addStringOption(option => option
+      .setName(LIST.USAGE)
+      .setDescription(LIST.USAGE_DESC)
+      .setRequired(false)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot, guild } = ctx;
 
-    const { bot, args, guild } = ctx;
-
-    const groupName = args[0];
+    const groupName = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(LIST.USAGE, false)
+      : ctx.content;
 
     let groupID = "0";
     if (groupName) {
@@ -57,7 +66,7 @@ export default new Command({
     }
 
     const pageCnt = Math.ceil(items.length / LIST.ITEM_PER_PAGE);
-    const menu = new Menu(ctx, { maxWaitTime: LIST.RECITAL_TIME });
+    const menu = new Menu(ctx);
     const pages = [...Array(pageCnt).keys()].map((_, idx) => idx).map(pageIdx => {
       const imageStr = items
         .slice(pageIdx * LIST.ITEM_PER_PAGE, (pageIdx + 1) * LIST.ITEM_PER_PAGE)

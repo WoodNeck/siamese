@@ -13,7 +13,6 @@ class CommandContext implements Context {
   public readonly author: Discord.GuildMember;
   public readonly guild: Discord.Guild;
   public readonly channel: Discord.TextChannel;
-  public readonly args: string[];
 
   public constructor(ctx: {
     bot: Siamese;
@@ -23,7 +22,6 @@ class CommandContext implements Context {
     author: Discord.GuildMember;
     guild: Discord.Guild;
     channel: Discord.TextChannel;
-    args: string[];
   }) {
     Object.keys(ctx).forEach(key => {
       this[key] = ctx[key];

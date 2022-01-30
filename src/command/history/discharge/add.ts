@@ -1,11 +1,14 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder  } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Conversation from "~/core/Conversation";
 import * as COLOR from "~/const/color";
+import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { DISCHARGE, FORCES } from "~/const/command/history";
 import Discharge, { DischargeDocument } from "~/model/Discharge";
+import { checkIconPermission } from "~/util/helper";
 
 export default new Command({
   name: DISCHARGE.ADD.CMD,
@@ -13,10 +16,25 @@ export default new Command({
   usage: DISCHARGE.ADD.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
   alias: DISCHARGE.ADD.ALIAS,
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(DISCHARGE.ADD.CMD)
+    .setDescription(DISCHARGE.ADD.DESC)
+    .addStringOption(option => option
+      .setName(DISCHARGE.ADD.USAGE)
+      .setDescription(DISCHARGE.ADD.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot, guild, author } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(DISCHARGE.ADD.USAGE, true)
+      : ctx.content;
 
-    const { bot, guild, content } = ctx;
+    // Check permission
+    const hasPermission = await checkIconPermission(author, guild);
+    if (!hasPermission) {
+      return await bot.replyError(ctx, ERROR.ICON.MISSING_PERMISSION);
+    }
 
     // No multiline is allowed
     const name = content.split("\n")[0];

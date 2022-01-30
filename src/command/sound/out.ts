@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import SoundCommand from "~/core/sound/SoundCommand";
 import { OUT } from "~/const/command/sound";
 import * as ERROR from "~/const/error";
@@ -8,6 +10,9 @@ export default new SoundCommand({
   description: OUT.DESC,
   permissions: [],
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(OUT.CMD)
+    .setDescription(OUT.DESC),
   execute: async ctx => {
     if (ctx.isSlashCommand()) return;
 

@@ -27,6 +27,8 @@ export const DISCHARGE = {
   DESC: "전역일 정보를 확인한다냥!",
   USAGE: "이름",
   TARGET: "찾을 사람",
+  CHECK: "확인",
+  DESC_OPTION: "전역일 정보를 알고 싶은 사람의 이름을 달라냥!",
   SHORTEN_AFTER_THIS_DATE: new Date(2018, 10 - 1, 1),
   FORCE_INFO: {
     육군: { duration: 21, maxShortenMonth: 3 },
@@ -53,6 +55,7 @@ export const DISCHARGE = {
     DESC: "새로운 전역일 정보를 추가한다냥!",
     USAGE: "이름",
     ALIAS: ["추가"],
+    DESC_OPTION: "추가할 사람의 이름을 달라냥!",
     NAME_MAX_LENGTH: 10,
     CONVERSATION_TIME: 30,
     PROMPT_TIME: 30,
@@ -67,7 +70,6 @@ export const DISCHARGE = {
   LIST: {
     CMD: "목록",
     DESC: "전역일 목록을 확인한다냥!",
-    RECITAL_TIME: 30,
     ENTRY_PER_PAGE: 10,
     ENTRY: (info: { name: string; joinDate: Date }) => `${EMOJI.SMALL_WHITE_SQUARE}${info.name} - ${DATE(info.joinDate)}`
   },
@@ -75,6 +77,7 @@ export const DISCHARGE = {
     CMD: "삭제해줘",
     DESC: "전역일 항목을 삭제한다냥!",
     USAGE: "이름",
+    DESC_OPTION: "삭제할 사람의 이름을 달라냥!",
     ALIAS: ["삭제", "제거", "제거해줘"],
     SUCCESS: (name: string) => `${EMOJI.MILITARY_HELMET} ${strong(name)}의 전역일 정보를 삭제했다냥!`
   },

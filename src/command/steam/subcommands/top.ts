@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import axios from "axios";
 import cheerio from "cheerio";
 
@@ -15,6 +16,9 @@ export default new Command({
     PERMISSION.EMBED_LINKS
   ],
   cooldown: Cooldown.PER_USER(5),
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(TOP.CMD)
+    .setDescription(TOP.DESC),
   execute: async ctx => {
     const topGamesPage = await axios.get(TOP.SEARCH_URL).then(body => body.data as string);
 
@@ -42,7 +46,7 @@ export default new Command({
       pages.push(page);
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: TOP.RECITAL_TIME });
+    const menu = new Menu(ctx);
     menu.setPages(pages);
 
     await menu.start();

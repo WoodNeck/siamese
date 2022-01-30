@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Add from "./subcommands/add";
 import Remove from "./subcommands/remove";
@@ -18,9 +19,14 @@ export default new Command({
   subcommands: [
     Add, List, Remove, Role
   ],
+  slashData: new SlashCommandBuilder()
+    .setName(ICON.CMD)
+    .setDescription(ICON.SLASH_DESC)
+    .addSubcommand(subCmd => subCmd
+      .setName(ICON.MANAGE)
+      .setDescription(ICON.DESC)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
     const { bot, guild } = ctx;
 
     const link = `${bot.env.WEB_URL_BASE}/#/icon/${guild.id}`;

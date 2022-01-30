@@ -1,4 +1,5 @@
 import Discord, { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import { joinVoiceChannel } from "@discordjs/voice";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
@@ -110,7 +111,11 @@ class Siamese extends Discord.Client {
     if (ctx.isSlashCommand()) {
       const { interaction } = ctx;
 
-      return await interaction.reply(content as Discord.InteractionReplyOptions);
+      if (interaction.replied) {
+        return await interaction.followUp(content as Discord.InteractionReplyOptions) as Discord.Message;
+      } else {
+        return await interaction.reply(content as Discord.InteractionReplyOptions);
+      }
     } else {
       const { channel, command } = ctx;
 
@@ -294,6 +299,17 @@ class Siamese extends Discord.Client {
         return [...allCommands, ...category.commands];
       }, [])
       .filter(command => !!command.slashData)
+      .map(command => {
+        const slashData = command.slashData as SlashCommandBuilder;
+
+        command.subcommands.forEach(subCmd => {
+          if (!subCmd.slashData) return;
+
+          slashData.addSubcommand(subCmd.slashData as SlashCommandSubcommandBuilder);
+        });
+
+        return command;
+      })
       .map(command => command.slashData!.toJSON());
 
     try {
@@ -377,8 +393,7 @@ class Siamese extends Discord.Client {
       content,
       channel: msg.channel as Discord.TextChannel,
       author: msg.member as Discord.GuildMember,
-      guild: msg.guild as Discord.Guild,
-      args: this._parseArgs(content)
+      guild: msg.guild as Discord.Guild
     });
 
     // Dev-only check
@@ -406,33 +421,11 @@ class Siamese extends Discord.Client {
 
     // Permissions check
     const permissionGranted = await cmd.checkPermissions(ctx);
-    if (!permissionGranted) {
-      return;
-    }
+    if (!permissionGranted) return;
 
     // Cooldown check
-    const cooldown = cmd.cooldown;
-    if (cooldown) {
-      const key = cooldown.getKey(msg, cmdName);
-      const prevExecuteTime = this._cooldowns.get(key);
-      if (prevExecuteTime) {
-        // it's on cooldown, send inform msg
-        const timeDiff = new Date().getTime() - prevExecuteTime.start.getTime();
-        const diffInSeconds = (prevExecuteTime.duration - (timeDiff / 1000)).toFixed(1);
-
-        await this.replyError(ctx, ERROR.CMD.ON_COOLDOWN(diffInSeconds));
-        return;
-      } else {
-        // it's not on cooldown
-        this._cooldowns.set(key, {
-          start: new Date(),
-          duration: cooldown.duration
-        });
-        setTimeout(() => {
-          this._cooldowns.delete(key);
-        }, cooldown.duration * 1000);
-      }
-    }
+    const isOnCoolDown = await this._checkCooldown(ctx, cmd);
+    if (isOnCoolDown) return;
 
     try {
       if (cmd.sendTyping) {
@@ -457,7 +450,19 @@ class Siamese extends Discord.Client {
       return await interaction.reply({ content: ERROR.CMD.ONLY_IN_TEXT_CHANNEL });
     }
 
-    const cmd = commands.get(interaction.commandName)!;
+    let cmd = commands.get(interaction.commandName)!;
+
+    if (cmd.subcommands) {
+      const subCmd = interaction.options.getSubcommand(false);
+      if (subCmd) {
+        const subcommand = cmd.subcommands
+          .find(subcmd => subcmd.name === subCmd || subcmd.alias.includes(subCmd));
+
+        if (subcommand) {
+          cmd = subcommand;
+        }
+      }
+    }
 
     if (!cmd.execute) return;
 
@@ -470,6 +475,34 @@ class Siamese extends Discord.Client {
       channel: interaction.channel as Discord.TextChannel
     });
 
+    // Dev-only check
+    if (cmd.devOnly && interaction.user.id !== this._env.BOT_DEV_USER_ID) return;
+
+    // Channel type check
+    if (!ctx.channel.permissionsFor) {
+      return await this.replyError(ctx, ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
+    }
+
+    // Config check
+    const hasAdminPermission = !!ctx.channel.permissionsFor(ctx.author)?.has(PERMISSION.ADMINISTRATOR.flag);
+    const hasActiveRole = await checkActiveRole({ guild: ctx.guild, author: ctx.author, hasAdminPermission });
+    if (!hasActiveRole) {
+      return await this.replyError(ctx, ERROR.CMD.ONLY_ACTIVE_ROLES);
+    }
+
+    // Admin permission check
+    if (cmd.adminOnly && !hasAdminPermission) {
+      return await this.replyError(ctx, ERROR.CMD.USER_SHOULD_BE_ADMIN);
+    }
+
+    // Permissions check
+    const permissionGranted = await cmd.checkPermissions(ctx);
+    if (!permissionGranted) return;
+
+    // Cooldown check
+    const isOnCoolDown = await this._checkCooldown(ctx, cmd);
+    if (isOnCoolDown) return;
+
     try {
       await cmd.execute(ctx);
     } catch (err) {
@@ -477,54 +510,6 @@ class Siamese extends Discord.Client {
       await this.handleSlashError(ctx, err);
     }
   };
-
-  private _parseArgs(content: string) {
-    const args: string[] = [];
-    let lastIdx = 0;
-    let idx = 0;
-
-    while (idx < content.length) {
-      const char = content[idx];
-
-      if (char === " ") {
-        // Split args by blank space;
-        // Exclude multiple blanks
-        if (lastIdx !== idx) {
-          args.push(content.substring(lastIdx, idx));
-        }
-
-        idx += 1;
-        lastIdx = idx;
-      } else if (char === "\"" && lastIdx === idx) {
-        // Bundle args bound in double quotes
-        // Exclude quotes only separated by blank space
-        const endIdx = content.indexOf("\" ", idx + 1);
-        if (endIdx > 0) {
-          args.push(content.substring(idx + 1, endIdx));
-          lastIdx = endIdx + 2;
-          idx = lastIdx;
-        } else if (content.endsWith("\"")) {
-          // Case of all remaining string is bound in double quote
-          args.push(content.substring(idx + 1, content.length - 1));
-          lastIdx = content.length;
-          idx = lastIdx;
-          break;
-        } else {
-          idx += 1;
-        }
-      } else {
-        idx += 1;
-      }
-    }
-
-    // Append last arg
-    if (lastIdx < content.length) {
-      args.push(content.substring(lastIdx, content.length));
-    }
-
-    // For blank arg, add double quotes for it as Discord won't accept blank message
-    return args.map(arg => arg === " " ? `"${arg}"` : arg);
-  }
 
   private _onGuildJoin = async (guild: Discord.Guild) => {
     if (!(guild.systemChannel)) return;
@@ -592,6 +577,35 @@ class Siamese extends Discord.Client {
     });
 
     return connection;
+  }
+
+  private async _checkCooldown(ctx: CommandContext | SlashCommandContext, cmd: Command): Promise<boolean> {
+    const cooldown = cmd.cooldown;
+
+    if (!cooldown) return false;
+
+    const key = cooldown.getKey(ctx, cmd.name);
+    const prevExecuteTime = this._cooldowns.get(key);
+    if (prevExecuteTime) {
+      // it's on cooldown, send inform msg
+      const timeDiff = new Date().getTime() - prevExecuteTime.start.getTime();
+      const diffInSeconds = (prevExecuteTime.duration - (timeDiff / 1000)).toFixed(1);
+
+      await this.replyError(ctx, ERROR.CMD.ON_COOLDOWN(diffInSeconds));
+
+      return true;
+    } else {
+      // it's not on cooldown
+      this._cooldowns.set(key, {
+        start: new Date(),
+        duration: cooldown.duration
+      });
+      setTimeout(() => {
+        this._cooldowns.delete(key);
+      }, cooldown.duration * 1000);
+
+      return false;
+    }
   }
 }
 

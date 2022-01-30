@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios from "axios";
 import cheerio from "cheerio";
 
@@ -22,10 +23,21 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(3),
   beforeRegister: (bot: Siamese) => bot.env.GOOGLE_SEARCH_ENGINE_ID != null && bot.env.GOOGLE_API_KEY != null,
+  slashData: new SlashCommandBuilder()
+    .setName(IMAGE.CMD)
+    .setDescription(IMAGE.DESC)
+    .addStringOption(option => option
+      .setName(IMAGE.USAGE)
+      .setDescription(IMAGE.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot, channel } = ctx;
 
-    const { bot, channel, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(IMAGE.USAGE, true)
+      : ctx.content;
+
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
@@ -42,7 +54,7 @@ export default new Command({
     }
 
     const pages = images.map(imageUrl => new MessageEmbed().setImage(imageUrl));
-    const menu = new Menu(ctx, { maxWaitTime: IMAGE.MENU_TIME });
+    const menu = new Menu(ctx);
 
     menu.setPages(pages);
 

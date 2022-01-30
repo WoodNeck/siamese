@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios, { AxiosResponse } from "axios";
 import cheerio from "cheerio";
 
@@ -70,6 +71,14 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(5),
+  slashData: new SlashCommandBuilder()
+    .setName(STOCK.CMD)
+    .setDescription(STOCK.DESC)
+    .addStringOption(option => option
+      .setName(STOCK.USAGE)
+      .setDescription(STOCK.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   async execute(ctx) {
     if (ctx.isSlashCommand()) return;
 
@@ -295,7 +304,7 @@ const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockDa
 
   await bot.send(ctx, { embeds: [stockDetailsMessage] });
 
-  const menu = new Menu(ctx, { maxWaitTime: STOCK.DETAIL_MENU_TIME });
+  const menu = new Menu(ctx);
   menu.setPages(stockPages);
   await menu.start();
 };
@@ -327,7 +336,7 @@ const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData
 
   await bot.send(ctx, { embeds: [stockDetailsMessage] });
 
-  const menu = new Menu(ctx, { maxWaitTime: STOCK.DETAIL_MENU_TIME });
+  const menu = new Menu(ctx);
   menu.setPages(stockPages);
   await menu.start();
 };

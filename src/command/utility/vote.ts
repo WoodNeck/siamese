@@ -1,4 +1,5 @@
 import Discord, { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -21,10 +22,20 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_CHANNEL(5),
+  slashData: new SlashCommandBuilder()
+    .setName(VOTE.CMD)
+    .setDescription(VOTE.DESC)
+    .addStringOption(option => option
+      .setName(VOTE.USAGE)
+      .setDescription(VOTE.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot, author } = ctx;
 
-    const { bot, content, author } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(VOTE.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(VOTE.TARGET));

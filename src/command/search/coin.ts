@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios from "axios";
 import NodeCache from "node-cache";
 import * as Hangul from "hangul-js";
@@ -30,10 +31,20 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   beforeRegister: (bot: Siamese) => bot.env.COIN_API_KEY != null,
+  slashData: new SlashCommandBuilder()
+    .setName(COIN.CMD)
+    .setDescription(COIN.DESC)
+    .addStringOption(option => option
+      .setName(COIN.USAGE)
+      .setDescription(COIN.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(COIN.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);

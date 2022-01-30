@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import axios, { AxiosResponse } from "axios";
 
 import Siamese from "~/Siamese";
@@ -23,10 +24,20 @@ export default new Command({
   ],
   cooldown: Cooldown.PER_USER(5),
   beforeRegister: (bot: Siamese) => bot.env.NAVER_ID != null && bot.env.NAVER_SECRET != null,
+  slashData: new SlashCommandBuilder()
+    .setName(SHOPPING.CMD)
+    .setDescription(SHOPPING.DESC)
+    .addStringOption(option => option
+      .setName(SHOPPING.USAGE)
+      .setDescription(SHOPPING.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(SHOPPING.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
@@ -72,7 +83,7 @@ export default new Command({
           .setColor(COLOR.BOT);
       });
 
-      const menu = new Menu(ctx, { maxWaitTime: SHOPPING.MENU_TIME });
+      const menu = new Menu(ctx);
       menu.setPages(pages);
 
       await menu.start();

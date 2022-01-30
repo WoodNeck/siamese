@@ -1,4 +1,5 @@
-import { MessageEmbed } from "discord.js";
+import { Collection, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
@@ -12,27 +13,37 @@ export default new Command({
   usage: AVATAR.USAGE,
   permissions: [PERMISSION.EMBED_LINKS],
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(AVATAR.CMD)
+    .setDescription(AVATAR.DESC)
+    .addUserOption(option => option
+      .setName(AVATAR.USAGE_OPTION)
+      .setDescription(AVATAR.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, msg } = ctx;
+    const users = ctx.isSlashCommand()
+      ? new Collection([["mentioned", ctx.interaction.options.getUser(AVATAR.USAGE_OPTION, true)]])
+      : ctx.msg.mentions.users;
 
-    if (!msg.mentions.users.size) {
+    if (!users.size) {
       await bot.replyError(ctx, ERROR.CMD.MENTION_NEEDED);
       return;
     }
-    if (msg.mentions.users.size > 1) {
+    if (users.size > 1) {
       await bot.replyError(ctx, ERROR.CMD.MENTION_ONLY_ONE);
       return;
     }
 
-    const mentioned = msg.mentions.users.first()!;
+    const mentioned = users.first()!;
 
     const embed = new MessageEmbed()
       .setImage(mentioned.avatarURL() || "")
       .setFooter(mentioned.username, mentioned.avatarURL() || "")
       .setColor(COLOR.BOT);
 
-    await msg.reply({ embeds: [embed] });
+    await bot.send(ctx, { embeds: [embed] });
   }
 });

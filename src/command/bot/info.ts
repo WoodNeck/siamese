@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import * as COLOR from "~/const/color";
@@ -11,6 +12,9 @@ export default new Command({
   description: INFO.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(INFO.CMD)
+    .setDescription(INFO.DESC),
   execute: async ctx => {
     const { bot, guild } = ctx;
     const guildCnt = bot.guilds.cache.size;

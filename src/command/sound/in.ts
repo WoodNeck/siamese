@@ -1,3 +1,5 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 import SoundCommand from "~/core/sound/SoundCommand";
 import { IN } from "~/const/command/sound";
 import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
@@ -7,9 +9,10 @@ export default new SoundCommand({
   description: IN.DESC,
   permissions: [],
   sendTyping: false,
+  slashData: new SlashCommandBuilder()
+    .setName(IN.CMD)
+    .setDescription(IN.DESC),
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
     const { bot, guild } = ctx;
 
     const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;

@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 
 import Siamese from "~/Siamese";
 import Cooldown from "~/core/Cooldown";
@@ -24,7 +24,7 @@ interface CommandOption {
   sendTyping: boolean;
   permissions: Permission[];
   subcommands: Command[];
-  slashData: SlashCommandBuilder | null;
+  slashData: SlashCommandBuilder | SlashCommandSubcommandBuilder | null;
 }
 
 class Command {
@@ -77,27 +77,31 @@ class Command {
     return;
   }
 
-  public async checkPermissions(ctx: CommandContext): Promise<boolean> {
+  public async checkPermissions(ctx: CommandContext | SlashCommandContext): Promise<boolean> {
     const { channel } = ctx;
 
     return this._checkPermissionsForChannel(channel, ctx);
   }
 
-  protected async _checkPermissionsForChannel(channel: Discord.TextChannel | Discord.BaseGuildVoiceChannel, ctx: CommandContext) {
-    const { bot, msg } = ctx;
+  protected async _checkPermissionsForChannel(channel: Discord.TextChannel | Discord.BaseGuildVoiceChannel, ctx: CommandContext | SlashCommandContext) {
+    const { bot } = ctx;
 
     const permissionsGranted = channel.permissionsFor(bot.user);
+    const permissionsNeeded = this.permissions.map(permission => `- ${permission.message}`).join("\n");
 
     if (permissionsGranted && this.permissions && !this.permissions.every(permission => permissionsGranted.has(permission.flag))) {
       if (permissionsGranted.has(PERMISSION.SEND_MESSAGES.flag)) {
-        const neededPermissionList = this.permissions.map(permission => `- ${permission.message}`).join("\n");
-
-        await bot.send(ctx, { content: ERROR.CMD.PERMISSION_IS_MISSING(bot, neededPermissionList) });
+        await bot.send(ctx, { content: ERROR.CMD.PERMISSION_IS_MISSING(bot, permissionsNeeded) });
       } else if (
         permissionsGranted.has(PERMISSION.ADD_REACTIONS.flag)
         && permissionsGranted.has(PERMISSION.READ_MESSAGE_HISTORY.flag
         )) {
-        await msg.react(EMOJI.CROSS);
+
+        if (ctx.isSlashCommand()) {
+          await bot.replyError(ctx, ERROR.CMD.PERMISSION_IS_MISSING(bot, permissionsNeeded));
+        } else {
+          await ctx.msg.react(EMOJI.CROSS);
+        }
       }
       return false;
     }

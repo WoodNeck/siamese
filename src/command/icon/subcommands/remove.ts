@@ -1,33 +1,62 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { SlashCommandSubcommandBuilder  } from "@discordjs/builders";
+
 import Command from "~/core/Command";
 import { REMOVE } from "~/const/command/icon";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
+import { checkIconPermission, parseArgs } from "~/util/helper";
+import * as ERROR from "~/const/error";
 
 export default new Command({
   name: REMOVE.CMD,
   description: REMOVE.DESC,
   usage: REMOVE.USAGE,
   alias: REMOVE.ALIAS,
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(REMOVE.CMD)
+    .setDescription(REMOVE.DESC)
+    .addStringOption(option => option
+      .setName(REMOVE.SLASH_USAGE_ICON)
+      .setDescription(REMOVE.USAGE_DESC_ICON)
+      .setRequired(true)
+    ).addStringOption(option => option
+      .setName(REMOVE.SLASH_USAGE_GROUP)
+      .setDescription(REMOVE.USAGE_DESC_GROUP)
+      .setRequired(false)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot, guild, author } = ctx;
 
-    const { bot, guild, content, args } = ctx;
-
-    // No multiline is allowed
-    const name = content.split("\n")[0];
-
-    if (!name) {
-      return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
+    // Check permission
+    const hasPermission = await checkIconPermission(author, guild);
+    if (!hasPermission) {
+      return await bot.replyError(ctx, ERROR.ICON.MISSING_PERMISSION);
     }
 
-    if (args.length <= 0 || args.length > 2) {
-      return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
-    }
+    let groupName: string | null;
+    let iconName: string;
 
-    const groupName = args.length === 2 ? args[0] : null;
-    const iconName = args.length === 2 ? args[1] : args[0];
+    if (!ctx.isSlashCommand()) {
+      const args = parseArgs(ctx.content);
+      // Multiline is not allowed
+      const name = ctx.content.split("\n")[0];
+
+      if (!name) {
+        return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
+      }
+
+      if (args.length <= 0 || args.length > 2) {
+        return await bot.replyError(ctx, REMOVE.ERROR.PROVIDE_NAME_TO_REMOVE);
+      }
+
+      groupName = args.length === 2 ? args[0] : null;
+      iconName = args.length === 2 ? args[1] : args[0];
+    } else {
+      groupName = ctx.interaction.options.getString(REMOVE.SLASH_USAGE_GROUP);
+      iconName = ctx.interaction.options.getString(REMOVE.SLASH_USAGE_ICON, true);
+    }
 
     let group: IconGroupDocument | null = null;
 
@@ -65,6 +94,6 @@ export default new Command({
       }
     }
 
-    await bot.send(ctx, { content: REMOVE.SUCCESS(name) });
+    await bot.send(ctx, { content: REMOVE.SUCCESS(iconName) });
   }
 });

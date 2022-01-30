@@ -5,6 +5,8 @@ import EnvVariables from "~/type/EnvVariables";
 
 export const STEAM = {
   CMD: "스팀",
+  DESC: "스팀과 관련된 내용들을 조회할 수 있는 명령어들이다냥!",
+  COMMUNITY_ID_DESC: "스팀 계정의 커뮤니티 ID를 달라냥!",
   SEARCH_BY_COMMUNITY_ID_URL: "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
   SEARCH_BY_GAME_NAME_URL: "https://store.steampowered.com/api/storesearch/",
   SUMMARY_URL: "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002",
@@ -66,7 +68,7 @@ export const STEAM = {
 export const PROFILE = {
   CMD: "프로필",
   DESC: "프로필 정보를 요약해서 보여준다냥!",
-  USAGE: "커뮤니티_ID",
+  USAGE: "커뮤니티id",
   PERSONA_STATE: {
     0: "오프라인",
     1: "온라인",
@@ -130,16 +132,15 @@ export const PROFILE = {
 export const RANDOM = {
   CMD: "랜덤",
   DESC: "계정에서 무작위 게임을 가져와서 보여준다냥!",
-  USAGE: "커뮤니티_ID"
+  USAGE: "커뮤니티id"
 } as const;
 
 export const LIBRARY = {
   CMD: "라이브러리",
   DESC: "계정의 게임들을 플레이 시간이 높은 것부터 보여준다냥!",
-  USAGE: "커뮤니티_ID",
+  USAGE: "커뮤니티id",
   GAMES_PER_PAGE: 10,
-  MAX_PAGES: 5,
-  RECITAL_TIME: 30
+  MAX_PAGES: 5
 } as const;
 
 export const PLAYERS = {
@@ -147,9 +148,9 @@ export const PLAYERS = {
   DESC: "게임의 현재 접속자 수를 알려준다냥!",
   ALIAS: ["동접자수"],
   USAGE: "게임명",
+  USAGE_DESC: "현재 접속자 수를 조회할 게임 이름을 달라냥!",
   TARGET: "게임",
-  CURRENT: players => `현재 플레이어 수: ${players}`,
-  RECITAL_TIME: 30
+  CURRENT: players => `현재 플레이어 수: ${players}`
 } as const;
 
 export const TOP = {
@@ -157,7 +158,6 @@ export const TOP = {
   DESC: "현재 동접순위를 확인한다냥!",
   SEARCH_URL: "https://store.steampowered.com/stats/Steam-Game-and-Player-Statistics?l=koreana",
   GAMES_PER_PAGE: 10,
-  RECITAL_TIME: 30,
   FORMAT_INFO: "동접순위 (현재 / 최고)",
   GAME_TITLE: (idx: number, game: string[]) => `${idx}. ${strong(game[2])}`,
   GAME_STATISTICS: (game: string[]) => `${EMOJI.MIDDLE_DOT} ${game[0]}명 / ${game[1]}명`

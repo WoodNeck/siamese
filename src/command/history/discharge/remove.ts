@@ -1,3 +1,5 @@
+import { SlashCommandSubcommandBuilder  } from "@discordjs/builders";
+
 import Command from "~/core/Command";
 import { DISCHARGE } from "~/const/command/history";
 import Discharge, { DischargeDocument } from "~/model/Discharge";
@@ -7,10 +9,19 @@ export default new Command({
   description: DISCHARGE.REMOVE.DESC,
   usage: DISCHARGE.REMOVE.USAGE,
   alias: DISCHARGE.REMOVE.ALIAS,
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(DISCHARGE.REMOVE.CMD)
+    .setDescription(DISCHARGE.REMOVE.DESC)
+    .addStringOption(option => option
+      .setName(DISCHARGE.REMOVE.USAGE)
+      .setDescription(DISCHARGE.REMOVE.DESC_OPTION)
+      .setRequired(true)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
-    const { bot, guild, content } = ctx;
+    const { bot, guild } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(DISCHARGE.REMOVE.USAGE, true)
+      : ctx.content;
 
     // No multiline is allowed
     const name = content.split("\n")[0];

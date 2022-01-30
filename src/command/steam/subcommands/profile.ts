@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -18,10 +19,19 @@ export default new Command({
     PERMISSION.EMBED_LINKS
   ],
   cooldown: Cooldown.PER_USER(5),
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(PROFILE.CMD)
+    .setDescription(PROFILE.DESC)
+    .addStringOption(option => option
+      .setName(PROFILE.USAGE)
+      .setDescription(STEAM.COMMUNITY_ID_DESC)
+      .setRequired(true)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
-    const { bot, content } = ctx;
+    const { bot } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(PROFILE.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);

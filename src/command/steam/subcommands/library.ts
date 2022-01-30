@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -20,10 +21,20 @@ export default new Command({
     PERMISSION.MANAGE_MESSAGES
   ],
   cooldown: Cooldown.PER_USER(5),
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(LIBRARY.CMD)
+    .setDescription(LIBRARY.DESC)
+    .addStringOption(option => option
+      .setName(LIBRARY.USAGE)
+      .setDescription(STEAM.COMMUNITY_ID_DESC)
+      .setRequired(true)
+    ) as SlashCommandSubcommandBuilder,
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
+    const { bot } = ctx;
 
-    const { bot, content } = ctx;
+    const content = ctx.isSlashCommand()
+      ? ctx.interaction.options.getString(LIBRARY.USAGE, true)
+      : ctx.content;
 
     if (!content) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
@@ -63,7 +74,7 @@ export default new Command({
       );
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: LIBRARY.RECITAL_TIME });
+    const menu = new Menu(ctx);
     menu.setPages(pages);
 
     await menu.start();

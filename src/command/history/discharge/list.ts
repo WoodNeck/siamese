@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { SlashCommandSubcommandBuilder  } from "@discordjs/builders";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -12,9 +13,10 @@ export default new Command({
   description: DISCHARGE.LIST.DESC,
   permissions: [PERMISSION.EMBED_LINKS],
   cooldown: Cooldown.PER_CHANNEL(5),
+  slashData: new SlashCommandSubcommandBuilder()
+    .setName(DISCHARGE.LIST.CMD)
+    .setDescription(DISCHARGE.LIST.DESC),
   execute: async ctx => {
-    if (ctx.isSlashCommand()) return;
-
     const { bot, guild } = ctx;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -38,7 +40,7 @@ export default new Command({
       pages.push(new MessageEmbed().setDescription(infosDesc));
     }
 
-    const menu = new Menu(ctx, { maxWaitTime: DISCHARGE.LIST.RECITAL_TIME });
+    const menu = new Menu(ctx);
     menu.setPages(pages);
 
     await menu.start();
