@@ -44,7 +44,7 @@ class Menu {
   public get index() { return this._pageIndex; }
 
   public constructor(ctx: CommandContext | SlashCommandContext, {
-    maxWaitTime = 10 * 60, // 10 min
+    maxWaitTime = 9.5 * 60, // 9 min 30sec
     defaultColor = COLOR.BOT,
     circular = true,
     addPageNumber = true,
