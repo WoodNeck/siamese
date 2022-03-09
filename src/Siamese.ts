@@ -120,7 +120,7 @@ class Siamese extends Discord.Client {
       const { channel, command } = ctx;
 
       if (command.sendTyping) {
-        await channel.sendTyping();
+        await channel.sendTyping().catch(() => void 0);
       }
 
       return await channel.send(content as Discord.MessageOptions)
@@ -130,8 +130,6 @@ class Siamese extends Discord.Client {
             && err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION)) {
             this._fileLogger.error(err);
           }
-
-          throw err;
         });
     }
   }
@@ -201,12 +199,12 @@ class Siamese extends Discord.Client {
   public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
     cmd.onFail(ctx);
 
-    await this.replyError(ctx, ERROR.CMD.FAILED);
+    await this.replyError(ctx, ERROR.CMD.FAILED).catch(() => void 0);
     await this._logger.error(err, ctx);
   }
 
   public async handleSlashError(ctx: SlashCommandContext, err: Error) {
-    await ctx.interaction.reply(ERROR.CMD.FAILED);
+    await ctx.interaction.reply(ERROR.CMD.FAILED).catch(() => void 0);
     await this._logger.error(err, ctx);
   }
 

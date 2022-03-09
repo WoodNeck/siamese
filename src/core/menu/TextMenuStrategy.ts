@@ -72,9 +72,14 @@ class TextMenuStrategy implements MenuStrategy {
 
   public async removeReactions(btnInteraction?: ButtonInteraction) {
     if (btnInteraction) {
-      await btnInteraction.editReply({ components: [] });
+      await btnInteraction.editReply({ components: [] })
+        .catch(() => void 0);
     } else {
-      await this._menuMessage.edit({ components: [] });
+      const menuMsg = this._menuMessage;
+      if (menuMsg && menuMsg.editable) {
+        await this._menuMessage.edit({ components: [] })
+          .catch(() => void 0);
+      }
     }
   }
 }
