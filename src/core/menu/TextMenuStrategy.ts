@@ -1,7 +1,8 @@
-import { ButtonInteraction, Collection, Message, MessageEditOptions, MessageEmbed, MessageOptions } from "discord.js";
+import { ButtonInteraction, Collection, InteractionCollector, Message, MessageEditOptions, MessageEmbed, MessageOptions } from "discord.js";
 
 import CommandContext from "../CommandContext";
 import { MenuCallback } from "../Menu";
+import SlashCommandContext from "../SlashCommandContext";
 
 import MenuStrategy from "./MenuStrategy";
 
@@ -39,8 +40,8 @@ class TextMenuStrategy implements MenuStrategy {
     }
   }
 
-  public listenInteractions(ctx: CommandContext, callbacks: Collection<string, MenuCallback>, maxWaitTime: number) {
-    const { author } = ctx;
+  public listenInteractions(ctx: CommandContext | SlashCommandContext, callbacks: Collection<string, MenuCallback>, maxWaitTime: number) {
+    const { author } = ctx as CommandContext;
 
     const interactionCollector = this._menuMessage.createMessageComponentCollector({
       filter: (btnInteraction: ButtonInteraction) => {
@@ -49,7 +50,7 @@ class TextMenuStrategy implements MenuStrategy {
       time: maxWaitTime
     });
 
-    return interactionCollector;
+    return interactionCollector as InteractionCollector<ButtonInteraction>;
   }
 
   public async deleteMessage(ctx: CommandContext) {

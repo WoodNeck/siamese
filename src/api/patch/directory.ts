@@ -62,7 +62,7 @@ const register: Register = ({ app, bot }) => {
 
     await (IconGroupModel.findByIdAndUpdate(iconGroupID, {
       name: newName
-    }) as Promise<void>).then(() => res.sendStatus(200))
+    })).then(() => res.sendStatus(200))
       .catch(() => res.status(402).send("폴더명 변경에 실패했습니다."));
   });
 };

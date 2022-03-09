@@ -62,11 +62,11 @@ export default ({ app, bot }: { app: Express; bot: Siamese }) => {
       id: profile.id,
       username: profile.username,
       tag: `${profile.username}#${profile.discriminator}`,
-      avatarURL: getUserAvatar(profile.id, profile.discriminator, profile.avatar),
+      avatarURL: getUserAvatar(profile.id, profile.discriminator, profile.avatar!),
       guilds: profile.guilds!.map(guild => ({
         id: guild.id,
         name: guild.name,
-        iconURL: getGuildIcon(guild.id, guild.icon)
+        iconURL: getGuildIcon(guild.id, guild.icon!)
       }))
     };
 

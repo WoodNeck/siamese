@@ -22,7 +22,7 @@ export const CMD = {
   PERMISSION_IS_MISSING: (bot: Discord.Client, permissions: string) => `명령어를 실행할 수 있는 권한이 없다냥! ${bot.user}에 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
   USER_SHOULD_BE_ADMIN: "이 명령어는 관리자 권한이 있는 사용자만 쓸 수 있다냥!",
   FAIL_TITLE: (error: Error) => `${error.name}: ${error.message}`,
-  FAIL_PLACE: (channel: Discord.TextBasedChannels, guild: Discord.Guild | null) => `${guild?.name}(${guild?.id}):${(channel as Discord.TextChannel).name}(${channel.id})`,
+  FAIL_PLACE: (channel: Discord.TextBasedChannel, guild: Discord.Guild | null) => `${guild?.name}(${guild?.id}):${(channel as Discord.TextChannel).name}(${channel.id})`,
   FAIL_CMD: (content: string) => `이 명령어를 실행중이었다냥: ${strong(content)}`,
   FAIL_DESC: (error: Error) => `${error.stack ? error.stack : ""}`,
   ON_COOLDOWN: (seconds: string) => `명령어가 쿨다운중이다냥! ${seconds}초 더 기다리라냥!`,

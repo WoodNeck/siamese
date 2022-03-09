@@ -1,6 +1,6 @@
 import Siamese from "~/Siamese";
 import * as PERMISSION from "~/const/permission";
-import { checkIconPermission } from "~/util/helper";
+import { checkIconPermission } from "~/util/db-helper";
 
 export const hasPermission = async (bot: Siamese, userID: string, guildID: string) => {
   const guild = bot.guilds.cache.get(guildID);

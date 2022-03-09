@@ -42,7 +42,7 @@ export default new Command({
 
     const randomMsgID = randomMsgs
       .filter(message => !message.author.bot)
-      .random().id;
+      .random()!.id;
     const randomMsg = randomMsgID
       ? await channel.messages.fetch(randomMsgID)
       : null;
@@ -62,7 +62,7 @@ export default new Command({
       .setColor(COLOR.BOT)
       .setTimestamp(randomMsg.createdTimestamp);
     if (randomMsg.attachments.size) {
-      embed.setImage(randomMsg.attachments.random().url);
+      embed.setImage(randomMsg.attachments.random()!.url);
     }
 
     await bot.send(ctx, { embeds: [embed] });

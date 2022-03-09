@@ -54,6 +54,12 @@ const Sidebar: React.FC = () => {
       active: location.pathname.startsWith("/command"),
       subcategories: Object.values(CATEGORY)
         .map(category => <SubcategoryLink to={`/command/${category.ID}`} key={category.ID}>{category.EMOJI} {category.NAME}</SubcategoryLink>)
+    },
+    {
+      path: "/privacy",
+      name: "개인정보 처리방침",
+      icon: "info",
+      active: location.pathname.startsWith("/privacy")
     }
   ], [user, location]);
 

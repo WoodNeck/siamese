@@ -8,7 +8,7 @@ import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { DISCHARGE, FORCES } from "~/const/command/history";
 import Discharge, { DischargeDocument } from "~/model/Discharge";
-import { checkIconPermission } from "~/util/helper";
+import { checkIconPermission } from "~/util/db-helper";
 
 export default new Command({
   name: DISCHARGE.ADD.CMD,

@@ -1,8 +1,3 @@
-import Discord from "discord.js";
-
-import GuildConfigModel, { GuildConfigDocument } from "~/model/GuildConfig";
-import * as PERMISSION from "~/const/permission";
-
 // Dedent from string, useful for multiline string template
 export const dedent = (callSite: TemplateStringsArray, ...args: any[]) => {
   const format = (str: string) => {
@@ -63,20 +58,6 @@ export const userMention = (id: string) => `<@${id}>`;
 export const roleMention = (id: string) => `<@&${id}>`;
 
 export const range = (end: number): number[] => new Array(end).fill(0).map((_, idx) => idx);
-
-export const checkIconPermission = async (member: Discord.GuildMember, guild: Discord.Guild) => {
-  if (member.permissions.has(PERMISSION.ADMINISTRATOR.flag)) return true;
-
-  const guildConfig = await GuildConfigModel.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
-
-  if (!guildConfig || !guildConfig.iconManageRoleID) return true;
-
-  const role = await guild.roles.fetch(guildConfig.iconManageRoleID);
-
-  if (!role) return false;
-
-  return role.members.has(member.id);
-};
 
 export const parseArgs = (content: string) => {
   const args: string[] = [];

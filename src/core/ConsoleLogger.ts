@@ -14,7 +14,7 @@ class ConsoleLogger {
     const strMsg = dedent`
 			${chalk.hex(color)(msg.title ? msg.title : "")}
 			${msg.description ? msg.description : ""}
-      ${msg.footer ? (msg.footer.text ? msg.footer.text : msg.footer as string) : ""}
+      ${msg.footer ? (msg.footer.text ? msg.footer.text : msg.footer as unknown as string) : ""}
       ${new Date().toLocaleString()}
 		`;
 
@@ -29,7 +29,7 @@ class ConsoleLogger {
     const strMsg = dedent`
 			${chalk.hex(color)(msg.title ? msg.title : "")}
 			${msg.description ? msg.description : ""}
-      ${msg.footer ? (msg.footer.text ? msg.footer.text : msg.footer as string) : ""}
+      ${msg.footer ? (msg.footer.text ? msg.footer.text : msg.footer as unknown as string) : ""}
       ${new Date().toLocaleString()}
 		`;
 

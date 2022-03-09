@@ -215,14 +215,14 @@ const fetchDomesticStockData = async (item: Item): Promise<StockData> => {
     const result: string[][] = [];
 
     details.each((_, el) => {
-      const keyEl = $(el.firstChild);
-      const valEl = $(el.lastChild);
+      const keyEl = $(el.firstChild!);
+      const valEl = $(el.lastChild!);
 
-      const key = keyEl[0].childNodes
-        ? keyEl[0].childNodes.map(child => $(child).text().trim()).join(" / ")
+      const key = (keyEl[0] as any).childNodes
+        ? (keyEl[0] as any).childNodes.map(child => $(child).text().trim()).join(" / ")
         : keyEl.text().trim();
-      const val = valEl[0].childNodes
-        ? valEl[0].childNodes.map(child => $(child).text().trim()).join(" / ")
+      const val = (valEl[0] as any).childNodes
+        ? (valEl[0] as any).childNodes.map(child => $(child).text().trim()).join(" / ")
         : valEl.text().trim();
 
       if (key && val) {

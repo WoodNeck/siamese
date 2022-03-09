@@ -8,13 +8,11 @@ export const DISCORD_ERROR_CODE = {
   MISSING_PERMISSION: 50013
 };
 
-export const ACTIVITY: {
-  [key: string]: Discord.ActivityType;
-} = {
+export const ACTIVITY = {
   PLAYING: "PLAYING",
   STREAMING: "STREAMING",
   LISTENING: "LISTENING",
   WATCHING: "WATCHING"
-};
+} as const;
 
 export const MSG_RETRIEVE_MAXIMUM = 100;

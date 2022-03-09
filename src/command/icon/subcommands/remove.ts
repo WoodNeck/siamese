@@ -6,7 +6,8 @@ import Command from "~/core/Command";
 import { REMOVE } from "~/const/command/icon";
 import Icon, { IconDocument } from "~/model/Icon";
 import IconGroup, { IconGroupDocument } from "~/model/IconGroup";
-import { checkIconPermission, parseArgs } from "~/util/helper";
+import { checkIconPermission } from "~/util/db-helper";
+import { parseArgs } from "~/util/helper";
 import * as ERROR from "~/const/error";
 
 export default new Command({

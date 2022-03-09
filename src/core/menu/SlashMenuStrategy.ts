@@ -1,7 +1,8 @@
-import { ButtonInteraction, Collection, CommandInteraction, InteractionReplyOptions, MessageEmbed, MessagePayload } from "discord.js";
+import { ButtonInteraction, Collection, CommandInteraction, InteractionCollector, InteractionReplyOptions, MessageEmbed, MessagePayload } from "discord.js";
 
 import { MenuCallback } from "../Menu";
 import SlashCommandContext from "../SlashCommandContext";
+import CommandContext from "../CommandContext";
 
 import MenuStrategy from "./MenuStrategy";
 
@@ -45,17 +46,17 @@ class SlashMenuStrategy implements MenuStrategy {
     }
   }
 
-  public listenInteractions(ctx: SlashCommandContext, callbacks: Collection<string, MenuCallback>, maxWaitTime: number) {
-    const { channel, interaction, author } = ctx;
+  public listenInteractions(ctx: CommandContext | SlashCommandContext, callbacks: Collection<string, MenuCallback>, maxWaitTime: number) {
+    const { channel, interaction, author } = ctx as SlashCommandContext;
 
     const interactionCollector = channel.createMessageComponentCollector({
-      filter: (btnInteraction: ButtonInteraction) => {
+      filter: btnInteraction => {
         return btnInteraction.message.interaction?.id === interaction.id && callbacks.has(btnInteraction.customId) && btnInteraction.user.id === author.id;
       },
       time: maxWaitTime
     });
 
-    return interactionCollector;
+    return interactionCollector as InteractionCollector<ButtonInteraction>;
   }
 
   public async deleteMessage(ctx: SlashCommandContext) {

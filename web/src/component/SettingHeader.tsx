@@ -1,14 +1,7 @@
-import React, { useCallback } from "react";
-import ReactTooltip from "react-tooltip";
+import React from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 
-import { RootState } from "../redux/reducers";
-import * as URL from "~/api/const/url";
 import Guild from "~/api/type/Guild";
-import IconGroup from "~/api/type/IconGroup";
-import Icon from "~/api/type/Icon";
 
 import "./SettingHeader.css";
 

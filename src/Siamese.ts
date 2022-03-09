@@ -560,7 +560,7 @@ class Siamese extends Discord.Client {
     const connection = joinVoiceChannel({
       channelId: voiceChannel.id,
       guildId: guild.id,
-      adapterCreator: guild.voiceAdapterCreator
+      adapterCreator: guild.voiceAdapterCreator as any
     });
 
     const stopBoomBox = () => {

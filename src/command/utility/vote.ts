@@ -132,9 +132,9 @@ export default new Command({
       const voteCollection = collection.reduce((collected: { [id: string]: ButtonInteraction }, interaction) => {
         const prevInteraction = collected[interaction.user.id];
         if (!prevInteraction || prevInteraction.createdTimestamp < interaction.createdTimestamp) {
-          collected[interaction.user.id] = interaction;
+          collected[interaction.user.id] = interaction as any;
         } else {
-          collected[interaction.user.id] = interaction;
+          collected[interaction.user.id] = interaction as any;
         }
 
         return collected;
