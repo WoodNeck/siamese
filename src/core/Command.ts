@@ -16,7 +16,7 @@ interface CommandOption {
   description: string;
   usage: string;
   alias: readonly string[];
-  execute: ((ctx: CommandContext | SlashCommandContext) => Promise<void>) | null;
+  execute: ((ctx: CommandContext | SlashCommandContext) => Promise<any>) | null;
   beforeRegister: ((bot: Siamese) => boolean) | null;
   devOnly: boolean;
   adminOnly: boolean;

@@ -70,5 +70,6 @@ export const SOUND = {
 };
 
 export const ICON = {
-  MISSING_PERMISSION: "아이콘 관리 권한이 없다냥!"
+  MISSING_PERMISSION: "아이콘 관리 권한이 없다냥!",
+  NOT_FOUND: (name: string) => `이 이름을 가진 아이콘을 찾을 수가 없다냥! - "${name}"`
 };

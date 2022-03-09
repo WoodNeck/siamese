@@ -9,15 +9,23 @@ export const ICON = {
   DESC: "아이콘 관리 페이지를 반환한다냥!",
   SLASH_DESC: "아이콘 관련 명령어들이다냥!",
   MANAGE: "관리",
-  ALIAS: ["콘"],
   TITLE: (guildName: string) => `${EMOJI.LINK} ${guildName}의 아이콘 관리 페이지다냥!`,
   NAME_MAX_LENGTH: 10
+};
+
+export const SHOW = {
+  CMD: "콘",
+  DESC: "저장해둔 아이콘을 표시한다냥!",
+  USAGE: "아이콘",
+  ALIAS: ["보여줘"],
+  SLASH_DESC: "아이콘 관련 명령어들이다냥!",
+  DESC_OPTION: "보여줄 아이콘 이름을 \"그룹이름 아이콘이름\"으로 달라냥! 그룹은 생략 가능하다냥"
 };
 
 export const ADD = {
   CMD: "추가해줘",
   DESC: "새로운 아이콘을 추가한다냥!",
-  USAGE: "[그룹명] 아이콘명",
+  USAGE: "[그룹이름] 아이콘이름",
   ALIAS: ["추가"],
   REPLACE_TITLE: "이미 해당 이름을 가진 아이콘이 존재한다냥! 교체할거냥?",
   SUCCESS: (name: string) => `${Josa.r(name, "을/를")} 추가했다냥!`,
@@ -34,7 +42,7 @@ export const ADD = {
 export const REMOVE = {
   CMD: "삭제해줘",
   DESC: "기존 아이콘을 삭제한다냥!",
-  USAGE: "[그룹명] 아이콘명",
+  USAGE: "[그룹이름] 아이콘이름",
   SLASH_USAGE_ICON: "아이콘",
   SLASH_USAGE_GROUP: "그룹",
   USAGE_DESC_ICON: "아이콘 이름을 달라냥!",

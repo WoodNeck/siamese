@@ -27,7 +27,7 @@ export const CHOOSE = {
   DESC: "받은 항목들 중 하나를 임의로 골라준다냥!",
   USAGE: "항목1 항목2 [항목3...]",
   USAGE_OPTION: "항목",
-  DESC_OPTION: "선택할 항목을 달라냥!",
+  DESC_OPTION: "선택할 항목들을 띄어쓰기로 구분해서 달라냥! ex) 샴 먼치킨 아비시니안 페르시안 메인쿤",
   ARG_NOT_SUFFICIENT: (prefix: string) => dedent`
     고를 수 있는 항목을 충분히 달라냥!
     ${block(`> ${prefix}${CHOOSE.CMD} 샴 먼치킨 아비시니안 페르시안 메인쿤`)}`
