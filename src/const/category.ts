@@ -36,12 +36,6 @@ export const STEAM = {
   DESC: "스팀에서 여러가지 정보를 검색한다냥!",
   EMOJI: EMOJI.MONEY_WITH_WINGS
 };
-export const GAME = {
-  ID: "game",
-  NAME: "게임",
-  DESC: "간단한 미니게임들이다냥!",
-  EMOJI: EMOJI.JOYSTICK
-};
 export const ICON = {
   ID: "icon",
   NAME: "아이콘",

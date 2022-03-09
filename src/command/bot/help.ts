@@ -58,6 +58,7 @@ export default new Command({
 
     const menu = new Menu(ctx, { ephemeral: true });
     menu.addReactionCallback({ id: "LINK", style: "LINK", text: "웹에서 보기", url: HELP.WEB_CATEGORY_INVITE_LINK }, () => MENU_END_REASON.CONTINUE);
+    menu.addReactionCallback({ id: "LINK", style: "LINK", text: "개인정보 처리방침", url: HELP.WEB_PRIVACY_LINK }, () => MENU_END_REASON.CONTINUE);
     menu.setPages(categories);
 
     await menu.start();
