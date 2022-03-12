@@ -9,7 +9,7 @@ import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import * as COLOR from "~/const/color";
 import { SEARCH } from "~/const/command/search";
-import { rgbaToHex, toValidUrl } from "~/util/helper";
+import { rgbaToHex, toValidURL } from "~/util/helper";
 
 export default new Command({
   name: SEARCH.CMD,
@@ -55,12 +55,12 @@ export default new Command({
       .map(result => {
         const embed = new MessageEmbed()
           .setTitle(result.title)
-          .setThumbnail(
+          .setThumbnail(toValidURL(
             result.pagemap?.cse_image?.[0].src
             || result.pagemap?.cse_thumbnail?.[0].src
             || result.pagemap?.imageobject?.[0].src
-            || "")
-          .setURL(result.link);
+            || ""))
+          .setURL(toValidURL(result.link));
 
         if (result.snippet) {
           embed.setDescription(result.snippet);
@@ -70,15 +70,15 @@ export default new Command({
         if (metatags) {
           embed.setColor(
             rgbaToHex(metatags["theme-color"] || metatags["msapplication-tilecolor"] || COLOR.BOT)
-          ).setFooter(
-            metatags["og:site_name"]
+          ).setFooter({
+            text: metatags["og:site_name"]
             || metatags["application-name"]
             || metatags["msapplication-tooltip"]
             || metatags["al:android:app_name"]
             || metatags["al:ios:app_name"]
             || "",
-            toValidUrl(metatags["msapplication-tileimage"] || "")
-          );
+            iconURL: toValidURL(metatags["msapplication-tileimage"] || "")
+          });
         }
 
         return embed;

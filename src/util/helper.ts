@@ -35,7 +35,7 @@ export const shuffle = <T>(arr: T[]) => {
   return arr;
 };
 
-export const toValidUrl = (url: string) => {
+export const toValidURL = (url: string) => {
   if (url.startsWith("//")) return `https:${url}`;
   return url;
 };
