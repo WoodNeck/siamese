@@ -121,3 +121,19 @@ export const MANAGE_EMOJIS: Permission = {
   flag: "MANAGE_EMOJIS_AND_STICKERS",
   message: "이모지 관리"
 };
+export const CREATE_PUBLIC_THREADS: Permission = {
+  flag: "CREATE_PUBLIC_THREADS",
+  message: "공개 스레드 만들기"
+};
+export const CREATE_PRIVATE_THREADS: Permission = {
+  flag: "CREATE_PRIVATE_THREADS",
+  message: "비공개 스레드 만들기"
+};
+export const SEND_MESSAGES_IN_THREADS: Permission = {
+  flag: "SEND_MESSAGES_IN_THREADS",
+  message: "스레드에서 메시지 보내기"
+};
+export const MANAGE_THREADS: Permission = {
+  flag: "MANAGE_THREADS",
+  message: "스레드 관리하기"
+};

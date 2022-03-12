@@ -1,6 +1,8 @@
 export const TOOLS = "🛠️";
 export const SMALL_BLUE_DIAMOND = "🔹";
 export const SMALL_ORANGE_DIAMOND = "🔸";
+export const LARGE_BLUE_DIAMOND = "🔷";
+export const LARGE_ORANGE_DIAMOND = "🔶";
 export const SMALL_WHITE_SQUARE = "▫️";
 export const SMALL_BLACK_SQUARE = "▪️";
 export const UP_TRIANGLE = "🔺";
@@ -43,6 +45,7 @@ export const ANGER = "💢";
 export const NO_ENTRY = "⛔";
 export const LARGE_CIRCLE = "⭕";
 export const BLUE_CIRCLE = "🔵";
+export const ORANGE_CIRCLE = "🟠";
 export const VIDEO_GAME = "🎮";
 export const JOYSTICK = "🕹️";
 export const PEOPLE = "👥";
@@ -89,47 +92,17 @@ export const BALLOT_BOX = "🗳️";
 export const MILITARY_HELMET = "🪖";
 export const TROPHY = "🏆";
 export const SCROLL = "📜";
-export const LETTER = {
-  A: "🇦",
-  B: "🇧",
-  C: "🇨",
-  D: "🇩",
-  E: "🇪",
-  F: "🇫",
-  G: "🇬",
-  H: "🇭",
-  I: "🇮",
-  J: "🇯",
-  K: "🇰",
-  L: "🇱",
-  M: "🇲",
-  N: "🇳",
-  O: "🇴",
-  P: "🇵",
-  Q: "🇶",
-  R: "🇷",
-  S: "🇸",
-  T: "🇹",
-  U: "🇺",
-  V: "🇻",
-  W: "🇼",
-  X: "🇽",
-  Y: "🇾",
-  Z: "🇿"
-};
+export const LETTER = [
+  "🇦", "🇧", "🇨", "🇩", "🇪",
+  "🇫", "🇬", "🇭", "🇮", "🇯",
+  "🇰", "🇱", "🇲", "🇳", "🇴",
+  "🇵", "🇶", "🇷", "🇸", "🇹",
+  "🇺", "🇻", "🇼", "🇽", "🇾",
+  "🇿"
+];
 export const ZERO_WIDTH_SPACE = "​";
-export const GRID = {
-  NW: "┌",
-  N: "┬",
-  NE: "┐",
-  W: "├",
-  MID: "┼",
-  E: "┤",
-  SW: "└",
-  S: "┴",
-  SE: "┘"
-};
 export const BLACK_DIAMOND = "◆";
 export const WHITE_DIAMOND = "◇";
 export const BLACK_CIRCLE = "⚫";
 export const WHITE_CIRCLE = "⚪";
+export const WHITE_FLAG = "🏳️";

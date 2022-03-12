@@ -17,7 +17,10 @@ export default new Command({
   usage: OTHELLO.USAGE,
   alias: OTHELLO.ALIAS,
   permissions: [
-    PERMISSION.EMBED_LINKS
+    PERMISSION.EMBED_LINKS,
+    PERMISSION.CREATE_PUBLIC_THREADS,
+    PERMISSION.SEND_MESSAGES_IN_THREADS,
+    PERMISSION.MANAGE_THREADS
   ],
   cooldown: Cooldown.PER_USER(10),
   slashData: new SlashCommandBuilder()
@@ -73,14 +76,16 @@ export default new Command({
         : threadChannel.send.bind(threadChannel);
 
       if (finished) {
-        await send({ content: drawFinishedGrid(game.grid, candidates, players) });
+        await send({ ...drawFinishedGrid(game, players) });
+        await threadChannel.setLocked(true).catch(() => void 0);
+        await threadChannel.setArchived(true).catch(() => void 0);
       } else {
         const buttonCount = Math.min(markerCount, 25);
         const rowCount = Math.floor((buttonCount - 1) / 5) + 1;
         const buttonRows = createButtons(rowCount, buttonCount, 0);
 
         const messages = [await send({
-          ...drawPlayingGrid(game.grid, candidates, players, playerIdx),
+          ...drawPlayingGrid(game, candidates, players, playerIdx),
           components: buttonRows,
           fetchReply: true
         })];
@@ -102,7 +107,7 @@ export default new Command({
 
         const collector = threadChannel.createMessageComponentCollector({
           filter: interaction => messages.some(msg => msg.id === interaction.message.id),
-          time: 1000 * 60 * 9, // 9 min
+          time: 1000 * 3600, // 1 hour
           dispose: true
         });
 
@@ -116,17 +121,44 @@ export default new Command({
             return;
           }
 
+          if (interaction.customId === OTHELLO.SYMBOL.GG) {
+            collector.stop(OTHELLO.SYMBOL.GG);
+            return;
+          }
+
           const candidatePositions = candidates.reduce((positions, row, rowIdx) => {
             const posMapped = row.map((val, colIdx) => val && [rowIdx, colIdx]).filter(val => !!val);
             return [...positions, ...posMapped];
           }, []);
 
           const [rowIdx, colIdx] = candidatePositions[interaction.customId];
-          placeAtGrid(game.grid, rowIdx, colIdx, playerIdx);
+          placeAtGrid(game, rowIdx, colIdx, playerIdx);
 
-          collector.stop();
+          collector.stop(OTHELLO.SYMBOL.NEXT_TURN);
 
           void nextTurn(opponentIdx, interaction);
+        });
+
+        collector.on("end", async (collected, reason) => {
+          if (reason === OTHELLO.SYMBOL.NEXT_TURN) return;
+
+          const lastGrid = drawFinishedGrid(game, players);
+
+          if (reason === OTHELLO.SYMBOL.GG) {
+            const lastInteraction = collected.last()!;
+            await lastInteraction.reply({
+              ...lastGrid,
+              content: OTHELLO.MSG.END_BY_SURRENDER(lastInteraction.member as Discord.GuildMember)
+            }).catch(() => void 0);
+          } else {
+            await threadChannel.send({
+              ...lastGrid,
+              content: OTHELLO.MSG.END_BY_TIME
+            }).catch(() => void 0);
+          }
+
+          await threadChannel.setLocked(true).catch(() => void 0);
+          await threadChannel.setArchived(true).catch(() => void 0);
         });
       }
     };
@@ -138,6 +170,7 @@ export default new Command({
 interface OrthelloGame {
   id: string;
   grid: number[][];
+  changes: number[][];
 }
 
 const createNewGame = (id: string): OrthelloGame => ({
@@ -151,7 +184,8 @@ const createNewGame = (id: string): OrthelloGame => ({
     gridArr[4][4] = 1;
 
     return gridArr;
-  })()
+  })(),
+  changes: range(8).map(() => [...range(8).map(() => -1)])
 });
 
 const calcCandidates = (grid: number[][], playerIdx: number): {
@@ -200,15 +234,13 @@ const calcCandidates = (grid: number[][], playerIdx: number): {
   };
 };
 
-const drawPlayingGrid = (grid: number[][], candidates: Array<Array<(string | null)>>, players: Discord.GuildMember[], playerIdx: number) => {
+const drawPlayingGrid = (game: OrthelloGame, candidates: Array<Array<(string | null)>>, players: Discord.GuildMember[], playerIdx: number) => {
   const embed = new MessageEmbed();
-  const board = drawBoard(grid, candidates);
+  const board = drawBoard(game, candidates);
+  const [whiteCount, blackCount] = getDiscCount(game.grid);
 
   embed.setDescription(board);
-  embed.setColor(playerIdx === 0 ? COLOR.WHITE : COLOR.BLACK);
-
-  const [whiteCount, blackCount] = getDiscCount(grid);
-
+  embed.setColor(getPlayerColor(playerIdx));
   embed.addField(OTHELLO.FIELD_TITLE(players), OTHELLO.FIELD_DESC(players, whiteCount, blackCount));
 
   return {
@@ -217,54 +249,44 @@ const drawPlayingGrid = (grid: number[][], candidates: Array<Array<(string | nul
   };
 };
 
-const drawFinishedGrid = (grid: number[][], candidates: Array<Array<(string | null)>>, players: Discord.GuildMember[]): string => {
+const drawFinishedGrid = (game: OrthelloGame, players: Discord.GuildMember[]) => {
   const embed = new MessageEmbed();
-  const board = drawBoard(grid, candidates);
-  const [whiteCount, blackCount] = getDiscCount(grid);
+
+  game.changes.forEach(row => {
+    row.forEach((_, idx) => row[idx] = -1);
+  });
+
+  const board = drawBoard(game);
+  const [whiteCount, blackCount] = getDiscCount(game.grid);
 
   const winner = whiteCount > blackCount
     ? 0
     : blackCount > whiteCount
       ? 1
       : -1;
-  const winnerColor = winner === 0
-    ? COLOR.WHITE
-    : winner === 1
-      ? COLOR.BLACK
-      : COLOR.INFO;
+
+  const winnerColor = getPlayerColor(winner);
 
   embed.setDescription(board);
   embed.setColor(winnerColor);
   embed.addField(OTHELLO.FIELD_TITLE(players), OTHELLO.FIELD_DESC(players, whiteCount, blackCount));
 
-  return `${OTHELLO.FINISHED_HEADER(players, winner)}\n\n${board}`;
+  return {
+    content: OTHELLO.FINISHED_HEADER(players, winner),
+    embeds: [embed]
+  };
 };
 
-const drawBoard = (grid: number[][], candidates: Array<Array<(string | null)>>) => {
+const drawBoard = (game: OrthelloGame, candidates?: Array<Array<(string | null)>>) => {
+  const { grid, changes } = game;
+
   return grid.map((row, rowIdx) => {
     return row.map((val, colIdx) => {
-      if (val === 0) return EMOJI.WHITE_DIAMOND;
-      if (val === 1) return EMOJI.BLACK_DIAMOND;
-      if (candidates[rowIdx][colIdx]) return candidates[rowIdx][colIdx];
+      if (changes[rowIdx][colIdx] >= 0) return OTHELLO.DISC_ACTIVE[changes[rowIdx][colIdx]];
+      if (val >= 0) return OTHELLO.DISC[val];
+      if (candidates && candidates[rowIdx][colIdx]) return candidates[rowIdx][colIdx];
 
-      const isFirstRow = rowIdx === 0;
-      const isLastRow = rowIdx === 7;
-      const isFirstCol = colIdx === 0;
-      const isLastCol = colIdx === 7;
-
-      if (isFirstRow) {
-        if (isFirstCol) return EMOJI.GRID.NW;
-        if (isLastCol) return EMOJI.GRID.NE;
-        return EMOJI.GRID.N;
-      }
-      if (isLastRow) {
-        if (isFirstCol) return EMOJI.GRID.SW;
-        if (isLastCol) return EMOJI.GRID.SE;
-        return EMOJI.GRID.S;
-      }
-      if (isFirstCol) return EMOJI.GRID.W;
-      if (isLastCol) return EMOJI.GRID.E;
-      return EMOJI.GRID.MID;
+      return EMOJI.SMALL_BLACK_SQUARE;
     }).join(" ");
   }).join("\n");
 };
@@ -277,7 +299,7 @@ const createButtons = (rowCount: number, buttonCount: number, markerOffset: numb
         const markerIndex = rowIdx * 5 + colIdx + markerOffset;
         const btn = new MessageButton();
 
-        btn.setLabel(OTHELLO.CANDIDATE_MARKERS[markerIndex]);
+        btn.setEmoji(OTHELLO.CANDIDATE_MARKERS[markerIndex]);
         btn.setCustomId(markerIndex.toString());
         btn.setStyle("SECONDARY");
 
@@ -289,13 +311,32 @@ const createButtons = (rowCount: number, buttonCount: number, markerOffset: numb
       return row;
     });
 
+  const otherActions = new MessageActionRow();
+  const ggButton = new MessageButton();
+
+  ggButton.setLabel(OTHELLO.MSG.SURRENDER);
+  ggButton.setEmoji(EMOJI.WHITE_FLAG);
+  ggButton.setCustomId(OTHELLO.SYMBOL.GG);
+  ggButton.setStyle("DANGER");
+  otherActions.addComponents(ggButton);
+
+  buttonRows.push(otherActions);
+
   return buttonRows;
 };
 
-const placeAtGrid = (grid: number[][], x: number, y: number, playerIdx: number) => {
+const placeAtGrid = (game: OrthelloGame, x: number, y: number, playerIdx: number) => {
+  const { grid, changes } = game;
   const opponentIdx = 1 - playerIdx;
 
   grid[x][y] = playerIdx;
+
+  // reset changes
+  changes.forEach(row => {
+    row.forEach((_, idx) => row[idx] = -1);
+  });
+
+  changes[x][y] = playerIdx;
 
   for (const direction of OTHELLO.DIRECTIONS) {
     const pos = [x + direction[0], y + direction[1]];
@@ -316,7 +357,11 @@ const placeAtGrid = (grid: number[][], x: number, y: number, playerIdx: number) 
       ) {
         range(count).forEach(idx => {
           const offset = idx + 1;
-          grid[x + direction[0] * offset][y + direction[1] * offset] = playerIdx;
+          const posX = x + direction[0] * offset;
+          const posY = y + direction[1] * offset;
+
+          grid[posX][posY] = playerIdx;
+          changes[posX][posY] = playerIdx + 2;
         });
         break;
       }
@@ -335,4 +380,11 @@ const getDiscCount = (grid: number[][]) => {
   }, []).length;
 
   return [whiteCount, blackCount];
+};
+
+const getPlayerColor = (index: number) => {
+  if (index < 0) return COLOR.BLACK;
+  return index === 0
+    ? "#f4900c"
+    : "#55acee";
 };
