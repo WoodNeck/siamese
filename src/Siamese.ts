@@ -130,6 +130,8 @@ class Siamese extends Discord.Client {
             && err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION)) {
             this._fileLogger.error(err);
           }
+
+          throw err;
         });
     }
   }

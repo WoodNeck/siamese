@@ -11,3 +11,4 @@ export const STEAM = {
   PLAYING: "#8fb93b"
 } as const;
 export const WHITE = "#ffffff";
+export const BLACK = "#000000";

@@ -87,6 +87,7 @@ export const LINK = "🔗";
 export const CROWN = "👑";
 export const BALLOT_BOX = "🗳️";
 export const MILITARY_HELMET = "🪖";
+export const TROPHY = "🏆";
 export const SCROLL = "📜";
 export const LETTER = {
   A: "🇦",
@@ -117,3 +118,18 @@ export const LETTER = {
   Z: "🇿"
 };
 export const ZERO_WIDTH_SPACE = "​";
+export const GRID = {
+  NW: "┌",
+  N: "┬",
+  NE: "┐",
+  W: "├",
+  MID: "┼",
+  E: "┤",
+  SW: "└",
+  S: "┴",
+  SE: "┘"
+};
+export const BLACK_DIAMOND = "◆";
+export const WHITE_DIAMOND = "◇";
+export const BLACK_CIRCLE = "⚫";
+export const WHITE_CIRCLE = "⚪";

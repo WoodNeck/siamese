@@ -48,3 +48,9 @@ export const SETTING = {
   DESC: "서버 설정 관련 명령어들이다냥!",
   EMOJI: EMOJI.GEAR
 };
+export const GAME = {
+  ID: "game",
+  NAME: "게임",
+  DESC: "미니게임들이다냥!",
+  EMOJI: EMOJI.JOYSTICK
+};
