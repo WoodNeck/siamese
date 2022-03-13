@@ -70,10 +70,20 @@ class TextBoard {
         return `│${line}│`;
       } else {
         const { label, values } = entry;
-        const paddedLabel = `${space.repeat(paddingLeft + maxLabelLength - label.length)}${label}${space.repeat(paddingRight)}`;
+
+        const format = (text: string, leftover: number) => {
+          const padLeft = Math.ceil(leftover / 2);
+          const padRight = Math.floor(leftover / 2);
+
+          return `${space.repeat(paddingLeft + padLeft)}${text}${space.repeat(paddingRight + padRight)}`;
+        };
+
+        const paddedLabel = format(label, maxLabelLength - label.length);
         const paddedValues = values.map((val, colIdx) => {
           const maxColLength = maxColLengths[colIdx];
-          return `${space.repeat(paddingLeft + maxColLength - val.length)}${val}${space.repeat(paddingRight)}`;
+          const leftover = maxColLength - val.length;
+
+          return format(val, leftover);
         });
 
         return `│${[paddedLabel, ...paddedValues].join("│")}│`;

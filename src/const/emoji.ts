@@ -108,3 +108,4 @@ export const BLACK_CIRCLE = "⚫";
 export const WHITE_CIRCLE = "⚪";
 export const WHITE_FLAG = "🏳️";
 export const LOCKED = "🔒";
+export const ROTATE = "🔄";

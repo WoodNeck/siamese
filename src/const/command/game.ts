@@ -57,7 +57,7 @@ export const YACHT = {
   ALIAS: ["얏찌", "야추"],
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
-  TURN_HEADER: (user: GuildMember) => `${user.toString()}의 차례다냥!`,
+  TURN_HEADER: (user: GuildMember) => `${user.toString()}의 차례다냥! 주사위 버튼을 누르면 잠글 수 있다냥!`,
   FINISHED_HEADER: (players: GuildMember[], winner: number) => winner >= 0
     ? `${EMOJI.TROPHY} ${players[winner].displayName}의 승리다냥!`
     : "무승부다냥!",
@@ -70,8 +70,8 @@ export const YACHT = {
     "Fives",
     "Sixes",
     "Choice",
-    `4${EMOJI.FIGURE_SPACE}of${EMOJI.FIGURE_SPACE}a${EMOJI.FIGURE_SPACE}Kind`,
-    `Full${EMOJI.FIGURE_SPACE}House`,
+    "Quads",
+    "F.House",
     "S.Straight",
     "L.Straight",
     "Yacht"
@@ -79,7 +79,8 @@ export const YACHT = {
   SYMBOL: {
     ROLL: "ROLL",
     EYE: "EYE",
-    NEXT_TURN: "NEXT_TURN"
+    NEXT_TURN: "NEXT_TURN",
+    GG: "GG"
   },
   LABEL: {
     ROLL: (rerollLeft: number) => `주사위 굴리기 (남은 횟수: ${rerollLeft})`

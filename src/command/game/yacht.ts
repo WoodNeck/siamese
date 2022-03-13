@@ -118,15 +118,16 @@ export default new Command({
         const diceEmbed = new MessageEmbed();
         const diceButtons = game.getDiceButtons();
 
-        diceEmbed.setDescription(game.turnInfo.diceText);
         if (playerIdx === 0) {
           diceEmbed.setColor(COLOR.ORANGE);
         } else {
           diceEmbed.setColor(COLOR.BLUE);
         }
 
+        diceEmbed.setDescription(YACHT.TURN_HEADER(players[playerIdx]));
+
         const diceMsg = await followUp({
-          content: YACHT.TURN_HEADER(players[playerIdx]),
+          content: players[playerIdx].toString(),
           embeds: [diceEmbed],
           components: diceButtons,
           fetchReply: true
@@ -168,8 +169,6 @@ export default new Command({
 
             game.rollDice();
 
-            diceEmbed.setDescription(game.turnInfo.diceText);
-
             await Promise.all([
               interaction.update({
                 embeds: [diceEmbed],
@@ -179,6 +178,8 @@ export default new Command({
                 components: game.getScoreButtons(playerIdx)
               }).catch(() => void 0)
             ]);
+          } else if (interaction.customId === YACHT.SYMBOL.GG) {
+            return collector.stop(YACHT.SYMBOL.GG);
           } else {
             // Update Score
             const scoreIndex = interaction.customId;
@@ -189,13 +190,21 @@ export default new Command({
           }
         });
 
-        collector.on("end", async (_, reason) => {
+        collector.on("end", async (collected, reason) => {
           if (reason === YACHT.SYMBOL.NEXT_TURN) return;
 
-          await threadChannel.send({
-            embeds: [game.draw(-1)],
-            content: GAME.END_BY_TIME
-          }).catch(() => void 0);
+          if (reason === YACHT.SYMBOL.GG) {
+            const lastInteraction = collected.last()!;
+            await lastInteraction.reply({
+              embeds: [game.draw(opponentIdx)],
+              content: GAME.END_BY_SURRENDER(lastInteraction.member as Discord.GuildMember)
+            }).catch(() => void 0);
+          } else {
+            await threadChannel.send({
+              embeds: [game.draw(-1)],
+              content: GAME.END_BY_TIME
+            }).catch(() => void 0);
+          }
 
           await threadChannel.setLocked(true).catch(() => void 0);
           await threadChannel.setArchived(true).catch(() => void 0);
@@ -221,7 +230,6 @@ class YachtGame {
     rerollLeft: number;
     eyes: number[];
     locked: boolean[];
-    diceText: string;
   };
 
   private _players: Discord.GuildMember[];
@@ -256,13 +264,12 @@ class YachtGame {
   }
 
   public newTurn() {
-    const { eyes, text: diceText } = this._dice.roll();
+    const { eyes } = this._dice.roll();
 
     this.turnInfo = {
       rerollLeft: 2,
       eyes,
-      locked: eyes.map(() => false),
-      diceText
+      locked: eyes.map(() => false)
     };
   }
 
@@ -271,13 +278,12 @@ class YachtGame {
       eyes: prevEyes,
       locked
     } = this.turnInfo;
-    const { eyes, text: diceText } = this._dice.roll(prevEyes, locked);
+    const { eyes } = this._dice.roll(prevEyes, locked);
 
     this.turnInfo = {
       rerollLeft: this.turnInfo.rerollLeft - 1,
       eyes,
-      locked: eyes.map(() => false),
-      diceText
+      locked: eyes.map(() => false)
     };
   }
 
@@ -294,7 +300,7 @@ class YachtGame {
   public draw(playerIdx: number) {
     const players = this._players;
     const embed = new MessageEmbed();
-    const board = new TextBoard({ paddingLeft: 1, paddingRight: 1 });
+    const board = new TextBoard({ paddingLeft: 0, paddingRight: 0 });
     const parseScore = score => score < 0 ? "" : score.toString();
     const singles = this.singles.map(single => single.map(val => parseScore(val)));
     const { subtotal, total } = this.getScores();
@@ -372,6 +378,14 @@ class YachtGame {
       row.addComponents(btn);
     });
 
+    const surrenderBtn = new MessageButton();
+    surrenderBtn.setLabel(GAME.SURRENDER);
+    surrenderBtn.setEmoji(EMOJI.WHITE_FLAG);
+    surrenderBtn.setStyle("DANGER");
+    surrenderBtn.setCustomId(YACHT.SYMBOL.GG);
+
+    rows[2].addComponents(surrenderBtn);
+
     return rows;
   }
 
@@ -394,6 +408,8 @@ class YachtGame {
 
       if (isLocked) {
         btn.setEmoji(EMOJI.LOCKED);
+      } else {
+        btn.setEmoji(EMOJI.DICE);
       }
 
       if (rerollLeft <= 0) {
@@ -415,7 +431,7 @@ class YachtGame {
       rollBtn.setStyle("SUCCESS");
     }
 
-    rollBtn.setEmoji(EMOJI.DICE);
+    rollBtn.setEmoji(EMOJI.ROTATE);
 
     actionRow.addComponents(rollBtn);
 

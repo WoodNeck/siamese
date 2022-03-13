@@ -56,7 +56,7 @@ export default new SoundCommand({
       await ctx.interaction.reply({
         content: TTS.TTS_EPHEMERAL_MESSAGE(content, voiceChannel),
         ephemeral: true
-      });
+      }).catch(() => void 0);
     } else {
       // Ignore error created when Siamese is blocked by the user
       await ctx.msg.react(EMOJI.MUSIC_NOTE).catch(() => void 0);
