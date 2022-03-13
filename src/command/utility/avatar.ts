@@ -40,8 +40,8 @@ export default new Command({
     const mentioned = users.first()!;
 
     const embed = new MessageEmbed()
-      .setImage(mentioned.avatarURL() || "")
-      .setFooter(mentioned.username, mentioned.avatarURL() || "")
+      .setImage(mentioned.displayAvatarURL())
+      .setFooter(mentioned.username, mentioned.displayAvatarURL())
       .setColor(COLOR.BOT);
 
     await bot.send(ctx, { embeds: [embed] });

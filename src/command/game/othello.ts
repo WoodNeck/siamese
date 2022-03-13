@@ -8,7 +8,7 @@ import * as COLOR from "~/const/color";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-import { OTHELLO } from "~/const/command/game";
+import { GAME, OTHELLO } from "~/const/command/game";
 import { range } from "~/util/helper";
 
 export default new Command({
@@ -114,9 +114,9 @@ export default new Command({
         collector.on("collect", async interaction => {
           if (interaction.user.id !== players[playerIdx].id) {
             if (interaction.user.id === players[opponentIdx].id) {
-              await interaction.reply({ content: OTHELLO.MSG.NOT_YOUR_TURN, ephemeral: true });
+              await interaction.reply({ content: GAME.NOT_YOUR_TURN, ephemeral: true });
             } else {
-              await interaction.reply({ content: OTHELLO.MSG.NOT_IN_GAME, ephemeral: true });
+              await interaction.reply({ content: GAME.NOT_IN_GAME, ephemeral: true });
             }
             return;
           }
@@ -148,12 +148,12 @@ export default new Command({
             const lastInteraction = collected.last()!;
             await lastInteraction.reply({
               ...lastGrid,
-              content: OTHELLO.MSG.END_BY_SURRENDER(lastInteraction.member as Discord.GuildMember)
+              content: GAME.END_BY_SURRENDER(lastInteraction.member as Discord.GuildMember)
             }).catch(() => void 0);
           } else {
             await threadChannel.send({
               ...lastGrid,
-              content: OTHELLO.MSG.END_BY_TIME
+              content: GAME.END_BY_TIME
             }).catch(() => void 0);
           }
 
@@ -314,7 +314,7 @@ const createButtons = (rowCount: number, buttonCount: number, markerOffset: numb
   const otherActions = new MessageActionRow();
   const ggButton = new MessageButton();
 
-  ggButton.setLabel(OTHELLO.MSG.SURRENDER);
+  ggButton.setLabel(GAME.SURRENDER);
   ggButton.setEmoji(EMOJI.WHITE_FLAG);
   ggButton.setCustomId(OTHELLO.SYMBOL.GG);
   ggButton.setStyle("DANGER");
@@ -385,6 +385,6 @@ const getDiscCount = (grid: number[][]) => {
 const getPlayerColor = (index: number) => {
   if (index < 0) return COLOR.BLACK;
   return index === 0
-    ? "#f4900c"
-    : "#55acee";
+    ? COLOR.ORANGE
+    : COLOR.BLUE;
 };

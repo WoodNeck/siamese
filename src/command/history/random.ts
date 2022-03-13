@@ -54,7 +54,7 @@ export default new Command({
     const embed = new MessageEmbed()
       .setAuthor(
         randomMsg.author.username,
-        randomMsg.author.avatarURL() || "",
+        randomMsg.author.displayAvatarURL(),
       )
       .setDescription(dedent`
         ${randomMsg.content.substr(0, MESSAGE_MAX_LENGTH)}

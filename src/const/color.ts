@@ -12,3 +12,5 @@ export const STEAM = {
 } as const;
 export const WHITE = "#ffffff";
 export const BLACK = "#000000";
+export const ORANGE = "#f4900c";
+export const BLUE = "#55acee";

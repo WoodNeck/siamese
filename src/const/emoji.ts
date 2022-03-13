@@ -101,8 +101,10 @@ export const LETTER = [
   "🇿"
 ];
 export const ZERO_WIDTH_SPACE = "​";
+export const FIGURE_SPACE = " ";
 export const BLACK_DIAMOND = "◆";
 export const WHITE_DIAMOND = "◇";
 export const BLACK_CIRCLE = "⚫";
 export const WHITE_CIRCLE = "⚪";
 export const WHITE_FLAG = "🏳️";
+export const LOCKED = "🔒";

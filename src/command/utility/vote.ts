@@ -89,7 +89,7 @@ export default new Command({
     const voteEmbed = new MessageEmbed()
       .setTitle(VOTE.TITLE(content))
       .setDescription(EMOJI.ZERO_WIDTH_SPACE)
-      .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.avatarURL() || "")
+      .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.displayAvatarURL())
       .setColor(COLOR.BOT)
       .setTimestamp(voteCreated);
 
@@ -164,7 +164,7 @@ export default new Command({
         .setTitle(VOTE.TITLE(content))
         .setDescription(EMOJI.ZERO_WIDTH_SPACE)
         .setColor(COLOR.BOT)
-        .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.avatarURL() || "")
+        .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.displayAvatarURL())
         .setTimestamp(voteCreated);
 
       options.forEach((option, idx) => {

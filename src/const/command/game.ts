@@ -4,9 +4,19 @@ import Josa from "josa-js";
 import * as EMOJI from "~/const/emoji";
 import { range } from "~/util/helper";
 
+export const GAME = {
+  THREAD_NAME: (gameName: string, p1: string, p2: string, id: string) => `${EMOJI.JOYSTICK} ${gameName}: ${p1} VS ${p2} (ID ${id})`,
+  START_MSG: (gameName: string) => `${EMOJI.JOYSTICK} ${gameName} 게임을 생성한다냥!`,
+  SURRENDER: "항복하기",
+  NOT_YOUR_TURN: "상대방의 턴이다냥!",
+  NOT_IN_GAME: "게임 참가자가 아니다냥!",
+  END_BY_TIME: `${EMOJI.STOPWATCH} 제한시간이 종료되어 게임을 끝낸다냥!`,
+  END_BY_SURRENDER: (player: GuildMember) => `${EMOJI.WHITE_FLAG} ${Josa.r(player.displayName, "이/가")} 항복했다냥!`
+};
+
 export const OTHELLO = {
   CMD: "오셀로",
-  DESC: "오셀로 게임을 플레이한다냥! 대전할 상대를 지정하려면 @멘션으로 지정해달라냥!",
+  DESC: "오셀로 게임을 플레이한다냥!",
   USAGE: "@대전상대",
   ALIAS: ["리버시"],
   USAGE_SLASH: "대전상대",
@@ -34,15 +44,44 @@ export const OTHELLO = {
     ...range(10).map(val => `${val}${EMOJI.KEYCAP}`),
     ...EMOJI.LETTER
   ],
-  MSG: {
-    SURRENDER: "항복하기",
-    NOT_YOUR_TURN: "상대방의 턴이다냥!",
-    NOT_IN_GAME: "게임 참가자가 아니다냥!",
-    END_BY_TIME: `${EMOJI.STOPWATCH} 제한시간이 종료되어 게임을 끝낸다냥!`,
-    END_BY_SURRENDER: (player: GuildMember) => `${EMOJI.WHITE_FLAG} ${Josa.r(player.displayName, "이/가")} 항복했다냥!`
-  },
   SYMBOL: {
     NEXT_TURN: "NEXT_TURN",
     GG: "GG"
   }
 } as const;
+
+export const YACHT = {
+  CMD: "요트",
+  DESC: "요트(Yacht) 게임을 플레이한다냥!",
+  USAGE: "@대전상대",
+  ALIAS: ["얏찌", "야추"],
+  USAGE_SLASH: "대전상대",
+  DESC_SLASH: "대전상대를 지정한다냥!",
+  TURN_HEADER: (user: GuildMember) => `${user.toString()}의 차례다냥!`,
+  FINISHED_HEADER: (players: GuildMember[], winner: number) => winner >= 0
+    ? `${EMOJI.TROPHY} ${players[winner].displayName}의 승리다냥!`
+    : "무승부다냥!",
+  ALL_LOCKED: "모든 주사위가 잠겨있다냥!",
+  NAMES: [
+    "Aces",
+    "Deuces",
+    "Threes",
+    "Fours",
+    "Fives",
+    "Sixes",
+    "Choice",
+    `4${EMOJI.FIGURE_SPACE}of${EMOJI.FIGURE_SPACE}a${EMOJI.FIGURE_SPACE}Kind`,
+    `Full${EMOJI.FIGURE_SPACE}House`,
+    "S.Straight",
+    "L.Straight",
+    "Yacht"
+  ],
+  SYMBOL: {
+    ROLL: "ROLL",
+    EYE: "EYE",
+    NEXT_TURN: "NEXT_TURN"
+  },
+  LABEL: {
+    ROLL: (rerollLeft: number) => `주사위 굴리기 (남은 횟수: ${rerollLeft})`
+  }
+};
