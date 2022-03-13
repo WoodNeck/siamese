@@ -324,7 +324,8 @@ class YachtGame {
     board.add(YACHT.NAMES[4], singles[4]);
     board.add(YACHT.NAMES[5], singles[5]);
     board.addSeparator();
-    board.add("Subtotal", subtotal.map(val => `${val}/63`));
+    board.add("Subtotal", subtotal.map(val => val.toString()));
+    board.add("", [`${EMOJI.FIGURE_SPACE}/63`, `${EMOJI.FIGURE_SPACE}/63`]);
     board.add(`+35${EMOJI.FIGURE_SPACE}Bonus`, bonusText);
     board.addSeparator();
     board.add(YACHT.NAMES[6], this.choice.map(val => parseScore(val)));
