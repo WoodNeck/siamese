@@ -2,9 +2,9 @@ import Othello from "./othello";
 import Yacht from "./yacht";
 
 import Category from "~/core/Category";
-import { GAME } from "~/const/category";
+import { MINIGAME } from "~/const/category";
 
-const category = new Category(GAME);
+const category = new Category(MINIGAME);
 
 category.add(
   Othello,

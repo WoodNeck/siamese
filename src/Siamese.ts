@@ -152,13 +152,16 @@ class Siamese extends Discord.Client {
       await interaction.reply({
         embeds: [embed],
         ephemeral: true
-      });
+      }).catch(() => void 0);
     } else {
       const { msg } = ctx;
 
       embed.setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg));
 
-      await this.send(ctx, { embeds: [embed] });
+      await this.send(ctx, { embeds: [embed] })
+        .catch(() => {
+          void msg.react(EMOJI.CROSS).catch(() => void 0);
+        });
     }
   }
 
@@ -345,7 +348,7 @@ class Siamese extends Discord.Client {
   }
 
   private _listenEvents() {
-    this.on("message", this._onMessage);
+    this.on("messageCreate", this._onMessage);
     this.on("interactionCreate", this._onInteractionCreate);
     this.on("guildCreate", this._onGuildJoin);
     this.on("error", this._onError);

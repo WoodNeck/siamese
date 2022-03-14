@@ -8,7 +8,7 @@ import * as COLOR from "~/const/color";
 import * as ERROR from "~/const/error";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-import { GAME, OTHELLO } from "~/const/command/game";
+import { GAME, OTHELLO } from "~/const/command/minigame";
 import { range } from "~/util/helper";
 
 export default new Command({
