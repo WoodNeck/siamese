@@ -114,7 +114,7 @@ export default new Command({
       const embed = new MessageEmbed();
 
       embed.setTitle(`${EMOJI.BAR_CHART} ${item.name}`);
-      embed.setFooter(`${item.type}(${item.id})`);
+      embed.setFooter({ text: `${item.type}(${item.id})` });
 
       return embed;
     });
@@ -280,7 +280,7 @@ const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockDa
   stockDetailsMessage.setColor(COLOR.BOT);
   stockDetailsMessage.setDescription(`${strong(data.closePrice)}${data.currencyType ? ` ${data.currencyType.name}` : ""} (${change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${change}, ${changePct > 0 ? `+${changePct}` : changePct}%)`);
   stockDetailsMessage.setThumbnail(STOCK.WORLD_THUMB(item.id, item.enumType === ItemType.WORLD_STOCK));
-  stockDetailsMessage.setFooter(`${item.type}(${item.id})`);
+  stockDetailsMessage.setFooter({ text: `${item.type}(${item.id})` });
   stockDetailsMessage.setTimestamp();
 
   data.stockItemTotalInfos.forEach(detail => {
@@ -297,7 +297,7 @@ const showWorldData = async (ctx: CommandContext, item: Item, data: WorldStockDa
 
     page.setTitle(`${EMOJI.BAR_CHART} ${data.stockNameEng ?? data.indexNameEng}`);
     page.setImage(STOCK.WORLD_IMAGE(item.id, STOCK.TIMES[time], item.enumType === ItemType.WORLD_STOCK));
-    page.setFooter(time);
+    page.setFooter({ text: time });
 
     return page;
   });
@@ -317,7 +317,7 @@ const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData
   stockDetailsMessage.setColor(COLOR.BOT);
   stockDetailsMessage.setDescription(`${strong(data.price.toString())} (${data.change >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${data.change}, ${data.changePct > 0 ? `+${data.changePct}` : data.changePct}%)`);
   stockDetailsMessage.setThumbnail(STOCK.DOME_THUMB(item.id));
-  stockDetailsMessage.setFooter(`${item.type}(${item.id})`);
+  stockDetailsMessage.setFooter({ text: `${item.type}(${item.id})` });
   stockDetailsMessage.setTimestamp();
 
   data.details.forEach(detail => {
@@ -329,7 +329,7 @@ const showDomesticData = async (ctx: CommandContext, item: Item, data: StockData
 
     page.setTitle(`${EMOJI.BAR_CHART} ${data.name}`);
     page.setImage(STOCK.DOME_IMAGE(item.id, STOCK.TIMES[time]));
-    page.setFooter(time);
+    page.setFooter({ text: time });
 
     return page;
   });

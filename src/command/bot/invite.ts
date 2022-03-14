@@ -26,7 +26,7 @@ export default new Command({
     });
 
     const embed = new MessageEmbed()
-      .setAuthor(INVITE.TITLE(botName), bot.user.avatarURL() || "")
+      .setAuthor({ name: INVITE.TITLE(botName), iconURL: bot.user.displayAvatarURL() })
       .setDescription(`[${INVITE.MSG(botName)}](${link})`)
       .setColor(COLOR.BOT);
     await bot.send(ctx, { embeds: [embed] });

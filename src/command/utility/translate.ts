@@ -76,7 +76,7 @@ export default new Command({
     const embed = new MessageEmbed()
       .setDescription(`${EMOJI.MEMO} ${result.text}`)
       .setColor(COLOR.BOT)
-      .setFooter(TRANSLATE.FOOTER_FORMAT(translateContent));
+      .setFooter({ text: TRANSLATE.FOOTER_FORMAT(translateContent) });
 
     await bot.send(ctx, { embeds: [embed] });
   }

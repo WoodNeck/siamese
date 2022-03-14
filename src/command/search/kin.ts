@@ -79,7 +79,10 @@ export default new Command({
             })
             .join("\n\n")
         );
-        page.setFooter(KIN.SERVICE_NAME, KIN.ICON);
+        page.setFooter({
+          text: KIN.SERVICE_NAME,
+          iconURL: KIN.ICON
+        });
 
         pages.push(page);
       }

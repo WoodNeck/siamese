@@ -42,7 +42,7 @@ export default new Command({
 
     const randomGame = getRandom(owningGames);
     const embed = new MessageEmbed()
-      .setAuthor(randomGame.name, STEAM.GAME_IMG_URL(randomGame.appid, randomGame.img_icon_url))
+      .setAuthor({ name: randomGame.name, iconURL: STEAM.GAME_IMG_URL(randomGame.appid, randomGame.img_icon_url) })
       .setThumbnail(STEAM.GAME_IMG_URL(randomGame.appid, randomGame.img_logo_url))
       .setDescription(STEAM.PLAYTIME(randomGame.playtime_forever))
       .setColor(COLOR.BOT);

@@ -65,7 +65,10 @@ export default async (bot: Siamese, msg: Message) => {
   const embed = new MessageEmbed()
     .setImage(icon.url)
     .setColor(COLOR.BOT)
-    .setFooter(`${iconPrefix}${groupName ? `${groupName} ` : ""}${icon.name} - ${bot.getDisplayName(msg.guild, msg.author)}`, msg.author.displayAvatarURL());
+    .setFooter({
+      text: `${iconPrefix}${groupName ? `${groupName} ` : ""}${icon.name} - ${bot.getDisplayName(msg.guild, msg.author)}`,
+      iconURL: msg.author.displayAvatarURL()
+    });
 
   await msg.channel.send({ embeds: [embed] });
 };

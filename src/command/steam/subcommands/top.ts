@@ -41,7 +41,10 @@ export default new Command({
         TOP.GAME_TITLE(perPage * pageNum + index + 1, game),
         TOP.GAME_STATISTICS(game),
       ));
-      page.setFooter(`${TOP.FORMAT_INFO}`, STEAM.ICON_URL);
+      page.setFooter({
+        text: TOP.FORMAT_INFO,
+        iconURL: STEAM.ICON_URL
+      });
 
       pages.push(page);
     }

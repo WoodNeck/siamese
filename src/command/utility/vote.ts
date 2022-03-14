@@ -48,7 +48,7 @@ export default new Command({
       .setTitle(VOTE.OPTIONS_TITLE)
       .setDescription(VOTE.OPTIONS_DESC)
       .setColor(COLOR.BOT)
-      .setFooter(VOTE.OPTIONS_FOOTER);
+      .setFooter({ text: VOTE.OPTIONS_FOOTER });
     conversation.add({
       content: optionsDialogue,
       // Should contain more than 1 comma, and should not empty
@@ -65,7 +65,7 @@ export default new Command({
       .setTitle(VOTE.DURATION_TITLE)
       .setDescription(VOTE.DURATION_DESC)
       .setColor(COLOR.BOT)
-      .setFooter(VOTE.DURATION_FOOTER);
+      .setFooter({ text: VOTE.DURATION_FOOTER });
     conversation.add({
       content: durationDialogue,
       // Should in between 1 and DURATION_MAX
@@ -89,7 +89,7 @@ export default new Command({
     const voteEmbed = new MessageEmbed()
       .setTitle(VOTE.TITLE(content))
       .setDescription(EMOJI.ZERO_WIDTH_SPACE)
-      .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.displayAvatarURL())
+      .setFooter({ text: VOTE.FOOTER(author.displayName, durationMinute), iconURL: author.user.displayAvatarURL() })
       .setColor(COLOR.BOT)
       .setTimestamp(voteCreated);
 
@@ -164,7 +164,7 @@ export default new Command({
         .setTitle(VOTE.TITLE(content))
         .setDescription(EMOJI.ZERO_WIDTH_SPACE)
         .setColor(COLOR.BOT)
-        .setFooter(VOTE.FOOTER(author.displayName, durationMinute), author.user.displayAvatarURL())
+        .setFooter({ text: VOTE.FOOTER(author.displayName, durationMinute), iconURL: author.user.displayAvatarURL() })
         .setTimestamp(voteCreated);
 
       options.forEach((option, idx) => {

@@ -21,9 +21,12 @@ export default new Command({
     const botName = bot.getDisplayName(guild);
 
     const embed = new MessageEmbed()
-      .setAuthor(botName, bot.user.avatarURL() || "")
+      .setAuthor({
+        name: botName,
+        iconURL: bot.user.displayAvatarURL()
+      })
       .setColor(COLOR.BOT)
-      .setThumbnail(bot.user.avatarURL() || "");
+      .setThumbnail(bot.user.displayAvatarURL());
 
     const descs = [ INFO.GUILD_CNT(guildCnt) ];
 
@@ -38,7 +41,7 @@ export default new Command({
     embed.setDescription(descs.join("\n"));
 
     if (bot.env.BOT_GITHUB_URL) {
-      embed.setFooter(bot.env.BOT_GITHUB_URL, INFO.GITHUB_ICON_URL);
+      embed.setFooter({ text: bot.env.BOT_GITHUB_URL, iconURL: INFO.GITHUB_ICON_URL });
     }
 
     await bot.send(ctx, { embeds: [embed] });

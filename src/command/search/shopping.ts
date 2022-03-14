@@ -78,7 +78,10 @@ export default new Command({
           .setTitle(title)
           .setDescription(price)
           .setURL(item.link)
-          .setFooter(`${item.mallName} - ${productType}`, SHOPPING.ICON)
+          .setFooter({
+            text: `${item.mallName} - ${productType}`,
+            iconURL: SHOPPING.ICON
+          })
           .setThumbnail(item.image)
           .setColor(COLOR.BOT);
       });

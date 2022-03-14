@@ -525,7 +525,7 @@ class Siamese extends Discord.Client {
     const embedMsg = new MessageEmbed().setTitle(MSG.BOT.GUILD_JOIN_TITLE)
       .setDescription(MSG.BOT.GUILD_JOIN_DESC(this, helpCmd))
       .setThumbnail(this.user.avatarURL() || "")
-      .setFooter(MSG.BOT.GUILD_JOIN_FOOTER(this))
+      .setFooter({ text: MSG.BOT.GUILD_JOIN_FOOTER(this) })
       .setColor(COLOR.BOT);
 
     await guild.systemChannel.send({ embeds: [embedMsg] });

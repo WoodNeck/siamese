@@ -102,7 +102,7 @@ export default new Command({
       const embed = new MessageEmbed();
       const currency = coin.market.split("-")[0];
 
-      embed.setAuthor(`${coin.korean_name}`, COIN.COIN_IMAGE_URL(coin.id));
+      embed.setAuthor({ name: coin.korean_name, iconURL: COIN.COIN_IMAGE_URL(coin.id) });
       embed.setDescription(`${strong(coinInfo.trade_price.toString())} ${currency} (${coinInfo.signed_change_price >= 0 ? EMOJI.UP_TRIANGLE : EMOJI.DOWN_TRIANGLE} ${coinInfo.signed_change_price > 0 ? "+" : ""}${coinInfo.signed_change_price}, ${coinInfo.signed_change_rate > 0 ? "+" : ""}${coinInfo.signed_change_rate.toFixed(3)}%)`);
       embed.setImage(COIN.CHART_IMAGE_URL(coin.id));
 
@@ -113,7 +113,7 @@ export default new Command({
       embed.addField(COIN.NAME.HIGHEST_52_WEEK_PRICE, `${coinInfo.highest_52_week_price} (${coinInfo.highest_52_week_date})`, true);
       embed.addField(COIN.NAME.LOWEST_52_WEEK_PRICE, `${coinInfo.lowest_52_week_price} (${coinInfo.lowest_52_week_date})`, true);
 
-      embed.setFooter(coin.market);
+      embed.setFooter({ text: coin.market });
       embed.setTimestamp(coinInfo.timestamp);
 
       return embed;

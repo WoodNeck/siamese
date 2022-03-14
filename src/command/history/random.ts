@@ -52,10 +52,10 @@ export default new Command({
     }
 
     const embed = new MessageEmbed()
-      .setAuthor(
-        randomMsg.author.username,
-        randomMsg.author.displayAvatarURL(),
-      )
+      .setAuthor({
+        name: randomMsg.author.username,
+        iconURL: randomMsg.author.displayAvatarURL()
+      })
       .setDescription(dedent`
         ${randomMsg.content.substr(0, MESSAGE_MAX_LENGTH)}
         ${RANDOM.MSG_CHECK(RANDOM.MSG_URL(guild.id, channel.id, randomMsg.id))}`)

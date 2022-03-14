@@ -63,7 +63,7 @@ export default new Command({
       .setTitle(DISCHARGE.ADD.DIALOGUE_JOIN_DATE_TITLE(name))
       .setDescription(DISCHARGE.ADD.DIALOGUE_JOIN_DATE_DESC)
       .setColor(COLOR.BOT)
-      .setFooter(DISCHARGE.ADD.DIALOGUE_JOIN_DATE_EXAMPLE);
+      .setFooter({ text: DISCHARGE.ADD.DIALOGUE_JOIN_DATE_EXAMPLE });
     conversation.add({
       content: joinDateDialogue,
       checker: message => {

@@ -41,7 +41,7 @@ export default new Command({
 
     const embed = new MessageEmbed()
       .setImage(mentioned.displayAvatarURL())
-      .setFooter(mentioned.username, mentioned.displayAvatarURL())
+      .setFooter({ text: mentioned.username, iconURL: mentioned.displayAvatarURL() })
       .setColor(COLOR.BOT);
 
     await bot.send(ctx, { embeds: [embed] });

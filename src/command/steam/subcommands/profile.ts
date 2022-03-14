@@ -85,7 +85,10 @@ export default new Command({
       .setThumbnail(summary.avatarmedium)
       .setColor(profileColor);
     if (summary.timecreated) {
-      embed.setFooter(PROFILE.REGISTERED(summary.timecreated * 1000), STEAM.ICON_URL);
+      embed.setFooter({
+        text: PROFILE.REGISTERED(summary.timecreated * 1000),
+        iconURL: STEAM.ICON_URL
+      });
     }
     if (userDetail.length) {
       embed.addField(PROFILE.FIELD_DETAIL, userDetail, true);

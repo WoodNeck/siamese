@@ -89,11 +89,14 @@ export default new Command({
       }
 
       if (game.steamRatingText) {
-        page.setFooter(CHEAPEST.REVIEW_FOOTER(
-          CHEAPEST.REVIEW_TEXT[game.steamRatingText],
-          game.steamRatingPercent,
-          game.steamRatingCount,
-        ), CHEAPEST.REVIEW_ICON(parseInt(game.steamRatingPercent, 10)));
+        page.setFooter({
+          text: CHEAPEST.REVIEW_FOOTER(
+            CHEAPEST.REVIEW_TEXT[game.steamRatingText],
+            game.steamRatingPercent,
+            game.steamRatingCount,
+          ),
+          iconURL: CHEAPEST.REVIEW_ICON(parseInt(game.steamRatingPercent, 10))
+        });
       }
 
       return page;
