@@ -3,6 +3,7 @@ import Josa from "josa-js";
 
 import * as EMOJI from "~/const/emoji";
 import { range } from "~/util/helper";
+import { strong } from "~/util/markdown";
 
 export const GAME = {
   THREAD_NAME: (gameName: string, p1: string, p2: string, id: string) => `${EMOJI.JOYSTICK} ${gameName}: ${p1} VS ${p2} (ID ${id})`,
@@ -84,5 +85,24 @@ export const YACHT = {
   },
   LABEL: {
     ROLL: (rerollLeft: number) => `주사위 굴리기 (남은 횟수: ${rerollLeft})`
+  }
+};
+
+export const GUESS = {
+  CMD: "단어추리",
+  DESC: "채널 안에서 단어추리 게임을 플레이한다냥!",
+  USAGE_SLASH: "단어",
+  DESC_SLASH: "3글자 ~ 10글자 사이의 단어를 지정해달라냥!",
+  DM_HELP_MSG_TITLE: `${EMOJI.PAW} 맞출 단어를 지정해달라냥!`,
+  DM_HELP_MSG_DESC: `지금 여기서 ${strong("3")} ~ ${strong("10")} 글자 사이의 단어를 하나 말해달라냥!`,
+  DM_HELP_MSG_FOOTER: "예) 먼치킨",
+  ALREADY_ENABLED: "이 서버에선 이미 단어추리 게임을 플레이하고 있다냥!",
+  RANGE_EXCEED: "단어는 3글자 ~ 10글자 사이여야 한다냥!",
+  CH_START_GAME: (answer: string) => `이 채널에서 단어추리 게임을 시작한다냥! ${answer.length}글자짜리 단어를 맞춰보라냥!`,
+  CH_ANSWER: "정답이다냥!",
+  CH_NO_ANSWER: (answer: string) => `아무도 정답을 맞추지 못했다냥, 정답은 ${strong(answer)} 이었다냥!`,
+  SYMBOL: {
+    GAME_START: "GAME_START",
+    GAME_OVER: "GAME_OVER"
   }
 };

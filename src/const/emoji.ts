@@ -1,3 +1,4 @@
+export const THUMB_UP = "👍";
 export const TOOLS = "🛠️";
 export const SMALL_BLUE_DIAMOND = "🔹";
 export const SMALL_ORANGE_DIAMOND = "🔸";

@@ -144,10 +144,10 @@ class Siamese extends Discord.Client {
       embed.setImage(imageURL);
     }
 
+    embed.setDescription(MSG.BOT.ERROR_MSG(ctx.author, errorMsg));
+
     if (ctx.isSlashCommand()) {
       const { interaction } = ctx;
-
-      embed.setDescription(MSG.BOT.ERROR_MSG(interaction.user, errorMsg));
 
       if (interaction.replied) {
         await interaction.followUp({
@@ -162,8 +162,6 @@ class Siamese extends Discord.Client {
       }
     } else {
       const { msg } = ctx;
-
-      embed.setDescription(MSG.BOT.ERROR_MSG(msg.author, errorMsg));
 
       await this.send(ctx, { embeds: [embed] })
         .catch(() => {
@@ -209,14 +207,18 @@ class Siamese extends Discord.Client {
   }
 
   public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
+    const devServerInviteLink = this._env.BOT_DEV_SERVER_INVITE;
+
     cmd.onFail(ctx);
 
-    await this.replyError(ctx, ERROR.CMD.FAILED).catch(() => void 0);
+    await this.replyError(ctx, ERROR.CMD.FAILED(devServerInviteLink)).catch(() => void 0);
     await this._logger.error(err, ctx);
   }
 
   public async handleSlashError(ctx: SlashCommandContext, err: Error) {
-    await ctx.interaction.reply(ERROR.CMD.FAILED).catch(() => void 0);
+    const devServerInviteLink = this._env.BOT_DEV_SERVER_INVITE;
+
+    await ctx.interaction.reply(ERROR.CMD.FAILED(devServerInviteLink)).catch(() => void 0);
     await this._logger.error(err, ctx);
   }
 
@@ -365,6 +367,8 @@ class Siamese extends Discord.Client {
   private _onMessage = async (msg: Discord.Message) => {
     const prefix = this._env.BOT_DEFAULT_PREFIX;
     const iconPrefix = this._env.BOT_ICON_PREFIX;
+
+    if (msg.channel.type === "DM") return;
 
     void logMessage(this, msg);
 

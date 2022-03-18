@@ -1,7 +1,7 @@
 import type Discord from "discord.js";
 import Josa from "josa-js";
 
-import { strong, block, code } from "~/util/markdown";
+import { strong, block, code, link } from "~/util/markdown";
 
 export const BOT = {
   FAILED_TO_START: "❗ 봇 시작을 실패했다냥 ❗",
@@ -18,7 +18,9 @@ export const CMD = {
   CATEGORY_LOAD_FAILED: (category: string) => `"${category}" 명령어 카테고리를 로드하는데 실패했다냥! ("index.js"가 폴더 안에 있는지 확인하라냥!)`,
   LOAD_FAILED: (cmd: string) => `"${cmd}" 명령어를 로드하는데 실패했다냥!`,
   SUB_LOAD_FAILED: (cmd: string, sub: string) => `"${cmd}/${sub}" 서브 명령어를 로드하는데 실패했다냥!`,
-  FAILED: "명령어 실행에 실패했다냥!",
+  FAILED: (inviteLink?: string) => inviteLink
+    ? `명령어 실행에 실패했다냥!\n똑같은 문제가 계속 발생한다면 ${link("개발서버", inviteLink)}에 와서 물어보라냥!`
+    : "명령어 실행에 실패했다냥!",
   PERMISSION_IS_MISSING: (bot: Discord.Client, permissions: string) => `명령어를 실행할 수 있는 권한이 없다냥! ${bot.user}에 아래 권한들이 있는지 확인해달라냥!${block(permissions)}`,
   USER_SHOULD_BE_ADMIN: "이 명령어는 관리자 권한이 있는 사용자만 쓸 수 있다냥!",
   FAIL_TITLE: (error: Error) => `${error.name}: ${error.message}`,
@@ -49,7 +51,7 @@ export const SEARCH = {
 };
 
 export const CONVERSATION = {
-  NO_RESPONSE: (time: number) => `${time.toFixed(0)}초 안에 대답해달라냥!`
+  NO_RESPONSE: (time: number) => `제한시간이 지났다냥! ${time.toFixed(0)}초 안에 대답해달라냥!`
 };
 
 export const SOUND = {

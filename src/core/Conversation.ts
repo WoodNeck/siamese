@@ -30,7 +30,7 @@ class Conversation {
     this._dialogues.push(dialogue);
   }
 
-  public async start(maxTime: number): Promise<string[]> {
+  public async start(maxTime: number): Promise<string[] | null> {
     const ctx = this._ctx;
     const { bot } = ctx;
     const responses: Discord.Message[] = [];
@@ -53,7 +53,7 @@ class Conversation {
           await ctx.msg.react(EMOJI.CROSS).catch(() => void 0);
         }
         await removeAllMessagesSent();
-        throw new Error(ERROR.CMD.FAILED);
+        return null;
       }
       messagesSent.push(message);
 
