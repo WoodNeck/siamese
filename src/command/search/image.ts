@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import axios from "axios";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 
 import Siamese from "~/Siamese";
 import Command from "~/core/Command";

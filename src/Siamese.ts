@@ -149,10 +149,17 @@ class Siamese extends Discord.Client {
 
       embed.setDescription(MSG.BOT.ERROR_MSG(interaction.user, errorMsg));
 
-      await interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-      }).catch(() => void 0);
+      if (interaction.replied) {
+        await interaction.followUp({
+          embeds: [embed],
+          ephemeral: true
+        }).catch(() => void 0);
+      } else {
+        await interaction.reply({
+          embeds: [embed],
+          ephemeral: true
+        }).catch(() => void 0);
+      }
     } else {
       const { msg } = ctx;
 

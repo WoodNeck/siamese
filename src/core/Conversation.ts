@@ -38,9 +38,7 @@ class Conversation {
 
     const removeAllMessagesSent = async () => {
       for (const message of [...messagesSent, ...responses]) {
-        if (!message.deleted) {
-          await message.delete().catch(() => void 0);
-        }
+        await message.delete().catch(() => void 0);
       }
     };
 

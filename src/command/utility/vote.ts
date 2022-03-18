@@ -125,9 +125,7 @@ export default new Command({
 
     reactionCollector.on("end", async (collection) => {
       // Remove vote msg, could been deleted already
-      if (!voteMsg.deleted) {
-        await voteMsg.delete().catch(() => void 0);
-      }
+      await voteMsg.delete().catch(() => void 0);
 
       const voteCollection = collection.reduce((collected: { [id: string]: ButtonInteraction }, interaction) => {
         const prevInteraction = collected[interaction.user.id];

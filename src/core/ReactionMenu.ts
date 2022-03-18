@@ -162,9 +162,6 @@ class ReactionMenu {
     for (const emoji of this._emojis) {
       await menuMsg.react(emoji)
         .catch(() => {
-          // Recital message deleted, how fast
-          if (menuMsg.deleted) return;
-
           // Retry one more time, without order assurance
           menuMsg.react(emoji).catch(() => void 0);
         });
@@ -175,18 +172,17 @@ class ReactionMenu {
     const bot = this._ctx.bot;
     const msg = this._menuMsg;
 
-    if (msg && !msg.deleted) {
-      const reactions = msg.reactions.cache;
+    if (!msg) return;
 
-      for (const [, reaction] of reactions) {
-        if (reaction.users.cache.has(bot.user.id)) {
-          await reaction.users.remove(bot.user)
-            .catch(async () => {
-              if (msg.deleted) return;
-              // Try one more time
-              await reaction.users.remove().catch(() => void 0);
-            });
-        }
+    const reactions = msg.reactions.cache;
+
+    for (const [, reaction] of reactions) {
+      if (reaction.users.cache.has(bot.user.id)) {
+        await reaction.users.remove(bot.user)
+          .catch(async () => {
+            // Try one more time
+            await reaction.users.remove().catch(() => void 0);
+          });
       }
     }
   }

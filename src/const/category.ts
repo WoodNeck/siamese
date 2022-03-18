@@ -54,3 +54,9 @@ export const MINIGAME = {
   DESC: "채널 안에서 플레이 가능한 미니게임들이다냥!",
   EMOJI: EMOJI.JOYSTICK
 };
+export const GAME = {
+  ID: "game",
+  NAME: "게임",
+  DESC: "각종 게임 관련 정보를 검색할 수 있는 명령어들이다냥!",
+  EMOJI: EMOJI.VIDEO_GAME
+};

@@ -57,13 +57,13 @@ class TextMenuStrategy implements MenuStrategy {
     const { msg: cmdMsg, bot } = ctx;
     const menuMsg = this._menuMessage;
 
-    if (cmdMsg && !cmdMsg.deleted) {
+    if (cmdMsg) {
       cmdMsg.delete().catch(async err => {
         await bot.logger.error(err, ctx);
       });
     }
 
-    if (menuMsg && !menuMsg.deleted) {
+    if (menuMsg) {
       menuMsg.delete().catch(async err => {
         await bot.logger.error(err, new CommandContext({ ...ctx, msg: menuMsg }));
       });
