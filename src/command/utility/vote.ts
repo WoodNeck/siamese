@@ -9,7 +9,7 @@ import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
-import { isBetween } from "~/util/helper";
+import { groupBy, isBetween, parseArgs, randInt } from "~/util/helper";
 
 export default new Command({
   name: VOTE.CMD,
@@ -49,11 +49,12 @@ export default new Command({
       .setDescription(VOTE.OPTIONS_DESC)
       .setColor(COLOR.BOT)
       .setFooter({ text: VOTE.OPTIONS_FOOTER });
+
     conversation.add({
       content: optionsDialogue,
       // Should contain more than 1 comma, and should not empty
       checker: message => {
-        const correctOptions = message.content.split(",")
+        const correctOptions = parseArgs(message.content)
           .map(option => option.trim())
           .filter(option => !!option);
         return isBetween(correctOptions.length, 2, 9);
@@ -78,8 +79,7 @@ export default new Command({
 
     if (!result) return;
 
-    const options = result[0]
-      .split(",")
+    const options = parseArgs(result[0])
       .map(option => option.trim())
       .filter(option => option);
 
@@ -88,29 +88,62 @@ export default new Command({
     const voteCreated = new Date();
     const voteEmbed = new MessageEmbed()
       .setTitle(VOTE.TITLE(content))
-      .setDescription(EMOJI.ZERO_WIDTH_SPACE)
       .setFooter({ text: VOTE.FOOTER(author.displayName, durationMinute), iconURL: author.user.displayAvatarURL() })
       .setColor(COLOR.BOT)
       .setTimestamp(voteCreated);
 
-    options.forEach((option, idx) => {
-      voteEmbed.addField(`${idx + 1}${EMOJI.KEYCAP} ${option}`, EMOJI.ZERO_WIDTH_SPACE);
+    const desc = options.map((option, idx) => {
+      return `${idx + 1}${EMOJI.KEYCAP} ${option}`;
+    }).join("\n");
+
+    voteEmbed.setDescription(desc);
+
+    const messageRows = groupBy(options, 5).map((optionGroup, groupIdx) => {
+      const row = new MessageActionRow();
+
+      optionGroup.forEach((option, idx) => {
+        const btnIdx = 5 * groupIdx + idx;
+        const btn = new MessageButton()
+          .setLabel(option)
+          .setCustomId(btnIdx.toString())
+          .setEmoji(`${btnIdx + 1}${EMOJI.KEYCAP}`)
+          .setStyle("SECONDARY");
+
+        row.addComponents(btn);
+      });
+
+      return row;
     });
 
-    const buttons = options.map((option, idx) => new MessageButton()
-      .setLabel(option)
-      .setCustomId(idx.toString())
-      .setEmoji(`${idx + 1}${EMOJI.KEYCAP}`)
-      .setStyle("SECONDARY")
-    );
+    const randomButton = new MessageButton()
+      .setLabel(VOTE.RANDOM_LABEL)
+      .setCustomId(VOTE.RANDOM_SYMBOL)
+      .setEmoji(EMOJI.DICE)
+      .setStyle("SECONDARY");
+    const cancelButton = new MessageButton()
+      .setLabel(VOTE.STOP_LABEL)
+      .setCustomId(VOTE.STOP_SYMBOL)
+      .setEmoji(EMOJI.WARNING)
+      .setStyle("DANGER");
 
-    const row = new MessageActionRow()
-      .addComponents(...buttons);
+    const addButton = (button: MessageButton) => {
+      const lastRow = messageRows[messageRows.length - 1];
+      if (lastRow.components.length < 5) {
+        lastRow.addComponents(button);
+      } else {
+        const newRow = new MessageActionRow();
+        newRow.addComponents(button);
+        messageRows.push(newRow);
+      }
+    };
+
+    addButton(randomButton);
+    addButton(cancelButton);
 
     const voteMsg = await bot.send(ctx, {
       content: VOTE.HELP_DESC,
       embeds: [voteEmbed],
-      components: [row],
+      components: messageRows,
       fetchReply: true
     }) as Discord.Message;
 
@@ -120,7 +153,19 @@ export default new Command({
     });
 
     reactionCollector.on("collect", (interaction: ButtonInteraction) => {
-      void interaction.deferUpdate();
+      if (interaction.customId === VOTE.STOP_SYMBOL) {
+        if (interaction.user.id === author.id) {
+          reactionCollector.stop();
+        } else {
+          void interaction.reply({ content: VOTE.ERROR.ONLY_AUTHOR_CAN_STOP, ephemeral: true });
+        }
+      } else if (interaction.customId === VOTE.RANDOM_SYMBOL) {
+        const voteIdx = randInt(options.length - 1);
+        interaction.customId = voteIdx.toString();
+        void interaction.reply({ content: VOTE.RANDOM_VOTE_MSG(voteIdx), ephemeral: true });
+      } else {
+        void interaction.deferUpdate();
+      }
     });
 
     reactionCollector.on("end", async (collection) => {
@@ -128,6 +173,8 @@ export default new Command({
       await voteMsg.delete().catch(() => void 0);
 
       const voteCollection = collection.reduce((collected: { [id: string]: ButtonInteraction }, interaction) => {
+        if (interaction.customId === VOTE.STOP_SYMBOL) return collected;
+
         const prevInteraction = collected[interaction.user.id];
         if (!prevInteraction || prevInteraction.createdTimestamp < interaction.createdTimestamp) {
           collected[interaction.user.id] = interaction as any;
@@ -142,7 +189,9 @@ export default new Command({
         counts[idx] = 0;
         return counts;
       }, {});
-      Object.values(voteCollection).forEach(interaction => voteCounts[interaction.customId] += 1);
+      Object.values(voteCollection).forEach(interaction => {
+        voteCounts[interaction.customId] += 1;
+      });
 
       const bestIndexes: number[] = [0];
       options.forEach((_, idx) => {

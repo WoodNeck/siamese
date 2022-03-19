@@ -25,7 +25,8 @@ export const isBetween = (val: number, min: number, max: number) => val >= min &
 export const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
 export const getMinusCompensatedIndex = (idx: number, max: number) => idx < 0 ? clamp(idx + max, 0, max) : clamp(idx, 0, max);
 
-export const getRandom = <T>(arr: T[]): T => arr[Math.floor((Math.random() * arr.length))];
+export const randInt = (max: number) => Math.floor(Math.random() * (max + 1));
+export const getRandom = <T>(arr: T[]): T => arr[randInt(arr.length - 1)];
 
 export const shuffle = <T>(arr: T[]) => {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -105,4 +106,10 @@ export const parseArgs = (content: string) => {
 
   // For blank arg, add double quotes for it as Discord won't accept blank message
   return args.map(arg => arg === " " ? `"${arg}"` : arg);
+};
+
+export const groupBy = (arr: any[], count: number) => {
+  return new Array(Math.ceil(arr.length / count)).fill(0).map((_, idx) => {
+    return arr.slice(idx * count, idx * count + count);
+  });
 };

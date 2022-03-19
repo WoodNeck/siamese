@@ -51,8 +51,8 @@ export const VOTE = {
   DESC_OPTION: "투표 제목을 달라냥!",
   CONVERSATION_TIME: 120,
   OPTIONS_TITLE: "투표 항목들을 말해달라냥!",
-  OPTIONS_DESC: "콤마(,)로 항목들을 구분해서, 최소 2개에서 9개까지 투표 항목들을 말해달라냥!",
-  OPTIONS_FOOTER: "예) 옵션1, 옵션2, 옵션3",
+  OPTIONS_DESC: "띄어쓰기로 항목들을 구분해서, 최소 2개에서 9개까지 투표 항목들을 말해달라냥!",
+  OPTIONS_FOOTER: "예) 옵션1 옵션2 \"띄어쓰기가 포함된 옵션\"",
   DURATION_TITLE: "투표를 몇 분동안 하면 될까냥?",
   DURATION_DESC: dedent`
 			투표를 종료하기까지 시간을 분 단위로 말해달라냥!
@@ -68,9 +68,15 @@ export const VOTE = {
   TITLE: (title: string) => `${EMOJI.BALLOT_BOX} ${title}`,
   FOOTER: (name: string, time: number) => `${name}의 투표 (${EMOJI.STOPWATCH}${time}m)`,
   COUNT: (cnt: number) => `${cnt}표`,
+  RANDOM_LABEL: "랜덤",
+  RANDOM_SYMBOL: "RANDOM",
+  RANDOM_VOTE_MSG: (index: number) => `${index + 1}번에 투표했다냥!`,
+  STOP_LABEL: "투표종료",
+  STOP_SYMBOL: "STOP",
   ERROR: {
-    OPTIONS_BETWEEN_2_9: "투표 항목을 콤마(,)로 구분해서 2개에서 9개 사이로 달라냥!",
-    DURATION_SHOULD_CLAMPED: max => `투표 시간은 1에서 ${max} 사이의 숫자를 말해달라냥!`
+    OPTIONS_BETWEEN_2_9: "투표 항목을 띄어쓰기로 구분해서 2개에서 9개 사이로 달라냥!",
+    DURATION_SHOULD_CLAMPED: max => `투표 시간은 1에서 ${max} 사이의 숫자를 말해달라냥!`,
+    ONLY_AUTHOR_CAN_STOP: "투표를 생성한 사람만 투표를 종료할 수 있다냥!"
   }
 };
 
