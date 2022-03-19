@@ -208,7 +208,7 @@ const addViewBase = (viewBase: cheerio.Cheerio<cheerio.Element>, embed: MessageE
 
   try {
     if (materiaEls.length) {
-      embed.addField(title, EMOJI.HOLLOW_CIRCLE.repeat(materiaEls.length), false);
+      embed.addField(title, EMOJI.CIRCLE.HOLLOW.repeat(materiaEls.length), false);
     } else {
       const p = viewBase.find("p:not([name])").toArray();
 

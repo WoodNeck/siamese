@@ -2,6 +2,8 @@ import Discord, { MessageActionRow, MessageButton, MessageEmbed } from "discord.
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
+import { createGameChannel, getOpponent } from "./utils";
+
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
 import * as COLOR from "~/const/color";
@@ -33,39 +35,20 @@ export default new Command({
     ) as SlashCommandBuilder,
   sendTyping: false,
   execute: async ctx => {
-    const { bot, author, channel, guild } = ctx;
-
-    const mentionedUser = ctx.isSlashCommand()
-      ? ctx.interaction.options.getUser(OTHELLO.USAGE_SLASH, true)
-      : ctx.msg.mentions.users.first();
+    const { bot, author, channel } = ctx;
 
     if (channel.isThread()) {
       return await bot.replyError(ctx, ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
     }
-    if (!mentionedUser) {
-      return await bot.replyError(ctx, ERROR.CMD.MENTION_NEEDED);
-    }
-    if (mentionedUser.bot) {
-      return await bot.replyError(ctx, ERROR.CMD.MENTION_NO_BOT);
-    }
 
-    const players = [author, guild.members.resolve(mentionedUser)!];
+    const opponent = getOpponent(ctx, OTHELLO.USAGE_SLASH);
+    if (!opponent) return;
+
+    const players = [author, opponent];
 
     const game = createNewGame(new PhraseGen().generatePhrase());
 
-    const message = ctx.isSlashCommand()
-      ? await bot.send(ctx, { content: OTHELLO.SLASH_MSG, fetchReply: true })
-      : ctx.msg;
-
-    const threadChannel = await message!.startThread({
-      name: OTHELLO.THREAD_NAME(players[0].displayName, players[1].displayName, game.id),
-      autoArchiveDuration: 60 // 1hour
-    });
-
-    await Promise.all([
-      threadChannel.members.add(players[0]),
-      threadChannel.members.add(players[1])
-    ]);
+    const threadChannel = await createGameChannel(ctx, OTHELLO.CMD, players, game.id);
 
     const nextTurn = async (playerIdx: number, prevInteraction: Discord.MessageComponentInteraction | null) => {
       const { candidates, markerCount, finished } = calcCandidates(game.grid, playerIdx);
@@ -163,7 +146,7 @@ export default new Command({
       }
     };
 
-    void nextTurn(1, null);
+    void nextTurn(Math.round(Math.random()), null);
   }
 });
 
@@ -272,7 +255,7 @@ const drawFinishedGrid = (game: OrthelloGame, players: Discord.GuildMember[]) =>
   embed.addField(OTHELLO.FIELD_TITLE(players), OTHELLO.FIELD_DESC(players, whiteCount, blackCount));
 
   return {
-    content: OTHELLO.FINISHED_HEADER(players, winner),
+    content: GAME.WINNER_HEADER(players, winner),
     embeds: [embed]
   };
 };

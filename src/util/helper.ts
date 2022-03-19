@@ -108,7 +108,7 @@ export const parseArgs = (content: string) => {
   return args.map(arg => arg === " " ? `"${arg}"` : arg);
 };
 
-export const groupBy = (arr: any[], count: number) => {
+export const groupBy = <T>(arr: T[], count: number) => {
   return new Array(Math.ceil(arr.length / count)).fill(0).map((_, idx) => {
     return arr.slice(idx * count, idx * count + count);
   });

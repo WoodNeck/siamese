@@ -47,9 +47,20 @@ export const GREEN_CHECK = "✅";
 export const ANGER = "💢";
 export const NO_ENTRY = "⛔";
 export const LARGE_CIRCLE = "⭕";
-export const BLUE_CIRCLE = "🔵";
-export const ORANGE_CIRCLE = "🟠";
-export const HOLLOW_CIRCLE = "○";
+export const CIRCLE = {
+  BLUE: "🔵",
+  ORAGNE: "🟠",
+  HOLLOW: "○",
+  RED: "🔴",
+  YELLOW: "🟡",
+  BLACK: "⚫",
+  WHITE: "⚪"
+};
+export const HEART = {
+  RED: "❤",
+  YELLOW: "💛",
+  BLUE: "💙"
+};
 export const VIDEO_GAME = "🎮";
 export const JOYSTICK = "🕹️";
 export const PEOPLE = "👥";

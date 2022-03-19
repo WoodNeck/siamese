@@ -2,6 +2,8 @@ import Discord, { MessageActionRow, MessageButton, MessageEmbed } from "discord.
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
+import { createGameChannel, getOpponent } from "./utils";
+
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
 import * as COLOR from "~/const/color";
@@ -35,39 +37,20 @@ export default new Command({
     ) as SlashCommandBuilder,
   sendTyping: false,
   execute: async ctx => {
-    const { bot, author, channel, guild } = ctx;
-
-    const mentionedUser = ctx.isSlashCommand()
-      ? ctx.interaction.options.getUser(YACHT.USAGE_SLASH, true)
-      : ctx.msg.mentions.users.first();
+    const { bot, author, channel } = ctx;
 
     if (channel.isThread()) {
       return await bot.replyError(ctx, ERROR.CMD.ONLY_IN_TEXT_CHANNEL);
     }
-    if (!mentionedUser) {
-      return await bot.replyError(ctx, ERROR.CMD.MENTION_NEEDED);
-    }
-    if (mentionedUser.bot) {
-      return await bot.replyError(ctx, ERROR.CMD.MENTION_NO_BOT);
-    }
 
-    const players = [author, guild.members.resolve(mentionedUser)!];
+    const opponent = getOpponent(ctx, YACHT.USAGE_SLASH);
+    if (!opponent) return;
+
+    const players = [author, opponent];
 
     const game = new YachtGame(players);
 
-    const message = ctx.isSlashCommand()
-      ? await bot.send(ctx, { content: GAME.START_MSG(YACHT.CMD), fetchReply: true })
-      : ctx.msg;
-
-    const threadChannel = await message!.startThread({
-      name: GAME.THREAD_NAME(YACHT.CMD, players[0].displayName, players[1].displayName, game.id),
-      autoArchiveDuration: 60 // 1hour
-    });
-
-    await Promise.all([
-      threadChannel.members.add(players[0]),
-      threadChannel.members.add(players[1])
-    ]);
+    const threadChannel = await createGameChannel(ctx, YACHT.CMD, players, game.id);
 
     const nextTurn = async (playerIdx: number, prevInteraction: Discord.MessageComponentInteraction | null) => {
       const send = prevInteraction
@@ -87,11 +70,11 @@ export default new Command({
 
         if (players[winner]) {
           winnerEmbed.setAuthor({
-            name: YACHT.FINISHED_HEADER(players, winner),
+            name: GAME.WINNER_HEADER(players, winner),
             iconURL: players[winner].displayAvatarURL()
           });
         } else {
-          winnerEmbed.setTitle(YACHT.FINISHED_HEADER(players, winner));
+          winnerEmbed.setTitle(GAME.WINNER_HEADER(players, winner));
         }
 
         await send({
