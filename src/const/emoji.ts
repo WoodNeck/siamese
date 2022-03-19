@@ -46,7 +46,7 @@ export const MONEY_WITH_WINGS = "💸";
 export const GREEN_CHECK = "✅";
 export const ANGER = "💢";
 export const NO_ENTRY = "⛔";
-export const LARGE_CIRCLE = "⭕";
+export const OK = "⭕";
 export const CIRCLE = {
   BLUE: "🔵",
   ORAGNE: "🟠",

@@ -67,10 +67,10 @@ export default new Command({
         : COLOR.STEAM.OFFLINE;
     const regionFlag = summary.loccountrycode ? `:flag_${summary.loccountrycode.toLowerCase()}: ` : null;
     const banStr = dedent`
-			${ban.CommunityBanned ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_COMMUNITY}
-			${ban.VACBanned ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_VAC}
-			${ban.NumberOfGameBans > 0 ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_GAME}
-			${ban.EconomyBan !== "none" ? EMOJI.LARGE_CIRCLE : EMOJI.CROSS} - ${PROFILE.BAN_ECONOMY}`;
+			${ban.CommunityBanned ? EMOJI.OK : EMOJI.CROSS} - ${PROFILE.BAN_COMMUNITY}
+			${ban.VACBanned ? EMOJI.OK : EMOJI.CROSS} - ${PROFILE.BAN_VAC}
+			${ban.NumberOfGameBans > 0 ? EMOJI.OK : EMOJI.CROSS} - ${PROFILE.BAN_GAME}
+			${ban.EconomyBan !== "none" ? EMOJI.OK : EMOJI.CROSS} - ${PROFILE.BAN_ECONOMY}`;
     const profileDesc = `${summary.gameextrainfo ? PROFILE.PLAYING_STATE(summary.gameextrainfo) : PROFILE.PERSONA_STATE[summary.personastate]}`;
     const userDetail = dedent`
 			${regionFlag ? regionFlag : ""}

@@ -113,3 +113,20 @@ export const CONNECT4 = {
   },
   TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${CONNECT4.CIRCLE[playerIdx]})의 차례다냥!`
 };
+
+
+export const TICTACTOE = {
+  CMD: "틱택토",
+  DESC: "틱택토 게임을 플레이한다냥!",
+  USAGE: "@대전상대",
+  USAGE_SLASH: "대전상대",
+  DESC_SLASH: "대전상대를 지정한다냥!",
+  MARK: {
+    [0]: EMOJI.OK,
+    [1]: EMOJI.CROSS
+  },
+  TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${TICTACTOE.MARK[playerIdx]})의 차례다냥!`,
+  SYMBOL: {
+    NEXT_TURN: "NEXT_TURN"
+  }
+};
