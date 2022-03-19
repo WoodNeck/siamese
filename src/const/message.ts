@@ -5,6 +5,7 @@ import type Siamese from "~/Siamese";
 import type Command from "~/core/Command";
 import { dedent } from "~/util/helper";
 import * as EMOJI from "~/const/emoji";
+import * as PERMISSION from "~/const/permission";
 import { link, strong, underline } from "~/util/markdown";
 
 export const BOT = {
@@ -27,6 +28,7 @@ export const BOT = {
   GUILD_JOIN_FOOTER: (bot: Siamese) => dedent`
     여기는 ${Josa.r(bot.user.username, "이/가")} 일하는 ${bot.guilds.cache.size.toString()}번째 서버다냥!`,
   ERROR_MSG: (user: Discord.GuildMember, errorMsg: string) => `${user.toString()}냥, ${errorMsg}`,
+  DM_ERROR_MSG: (user: Discord.GuildMember, guild: Discord.Guild, channel: Discord.TextChannel, errorMsg: string) => `${user.toString()}냥, ${guild.toString()}/${channel.toString()}에 ${PERMISSION.SEND_MESSAGES.message} 권한이 없다냥!\n${errorMsg}`,
   CMD_REGISTER_FAILED: (cmd: Command) => `명령어 "${cmd.name}"의 beforeReigster 판정에 실패해서 명령어를 등록하지 못했다냥!`,
   SKIP_SLASH_CMD_REGISTER: "BOT_DEV_SERVER_ID가 bot.env파일에 없다냥! 슬래시 명령어 등록을 스킵한다냥!"
 } as const;

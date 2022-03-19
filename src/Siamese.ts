@@ -149,24 +149,23 @@ class Siamese extends Discord.Client {
     if (ctx.isSlashCommand()) {
       const { interaction } = ctx;
 
-      if (interaction.replied) {
-        await interaction.followUp({
-          embeds: [embed],
-          ephemeral: true
-        }).catch(() => void 0);
-      } else {
-        await interaction.reply({
-          embeds: [embed],
-          ephemeral: true
-        }).catch(() => void 0);
-      }
-    } else {
-      const { msg } = ctx;
+      const send = interaction.replied
+        ? interaction.followUp.bind(interaction)
+        : interaction.reply.bind(interaction);
 
-      await this.send(ctx, { embeds: [embed] })
-        .catch(() => {
-          void msg.react(EMOJI.CROSS).catch(() => void 0);
-        });
+      await send({
+        embeds: [embed],
+        ephemeral: true
+      }).catch(() => void 0);
+    } else {
+      await this.send(ctx, { embeds: [embed] }).catch(() => {
+        const { guild, channel } = ctx;
+
+        embed.setDescription(MSG.BOT.DM_ERROR_MSG(ctx.author, guild, channel, errorMsg));
+
+        void ctx.author.send({ embeds: [embed] })
+          .catch(() => void 0);
+      });
     }
   }
 
