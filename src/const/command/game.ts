@@ -14,6 +14,8 @@ export const FFXIV = {
       "col4": "#910fff",
       "col7": "#ff3dad",
       "col8": "#959595"
-    }
+    },
+    HQ_ITEM_FOOTER: "*는 HQ 아이템일때의 정보를 뜻한다냥",
+    HQ_ITEM_IMAGE: "https://image.ff14.co.kr/html2/guide/img/item_hq_icon.png"
   }
 } as const;

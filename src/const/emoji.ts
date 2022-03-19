@@ -47,6 +47,7 @@ export const NO_ENTRY = "⛔";
 export const LARGE_CIRCLE = "⭕";
 export const BLUE_CIRCLE = "🔵";
 export const ORANGE_CIRCLE = "🟠";
+export const HOLLOW_CIRCLE = "○";
 export const VIDEO_GAME = "🎮";
 export const JOYSTICK = "🕹️";
 export const PEOPLE = "👥";
@@ -103,6 +104,7 @@ export const LETTER = [
 ];
 export const ZERO_WIDTH_SPACE = "​";
 export const FIGURE_SPACE = " ";
+export const TAB_SPACE = "	";
 export const BLACK_DIAMOND = "◆";
 export const WHITE_DIAMOND = "◇";
 export const BLACK_CIRCLE = "⚫";
