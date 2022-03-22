@@ -75,3 +75,12 @@ export const ICON = {
   MISSING_PERMISSION: "아이콘 관리 권한이 없다냥!",
   NOT_FOUND: (name: string) => `이 이름을 가진 아이콘을 찾을 수가 없다냥! - "${name}"`
 };
+
+export const GAME = {
+  ALREADY_JOINED: "이미 게임에 참가해있다냥!",
+  ROOM_FULL: "참가 가능한 인원 수를 초과했다냥!",
+  NOT_JOINED: "게임에 참가해있지 않다냥!",
+  INITIATOR_CANT_LEAVE: "게임 주최자는 취소할 수 없다냥!",
+  ONLY_FOR_INITIATOR: "게임 주최자만 할 수 있다냥!",
+  MISSING_PLAYERS: "게임을 시작하기 위한 최소 인원수에 도달하지 못했다냥!"
+};

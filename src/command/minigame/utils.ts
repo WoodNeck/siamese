@@ -30,7 +30,23 @@ export const createGameChannel = async (ctx: CommandContext | SlashCommandContex
     : ctx.msg;
 
   const threadChannel = await message!.startThread({
-    name: GAME.THREAD_NAME(gameName, players[0].displayName, players[1].displayName, id),
+    name: GAME.THREAD_NAME(gameName, id),
+    autoArchiveDuration: 60 // 1hour
+  });
+
+  await Promise.all(players.map(player => threadChannel.members.add(player)));
+
+  return threadChannel;
+};
+
+
+export const create1vs1GameChannel = async (ctx: CommandContext | SlashCommandContext, gameName: string, players: GuildMember[], id: string) => {
+  const message = ctx.isSlashCommand()
+    ? await ctx.bot.send(ctx, { content: GAME.START_MSG(gameName), fetchReply: true })
+    : ctx.msg;
+
+  const threadChannel = await message!.startThread({
+    name: GAME.THREAD_1VS1_NAME(gameName, players[0].displayName, players[1].displayName, id),
     autoArchiveDuration: 60 // 1hour
   });
 

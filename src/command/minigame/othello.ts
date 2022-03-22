@@ -2,7 +2,7 @@ import Discord, { MessageActionRow, MessageButton, MessageEmbed } from "discord.
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
-import { createGameChannel, getOpponent } from "./utils";
+import { create1vs1GameChannel, getOpponent } from "./utils";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -48,7 +48,7 @@ export default new Command({
 
     const game = createNewGame(new PhraseGen().generatePhrase());
 
-    const threadChannel = await createGameChannel(ctx, OTHELLO.CMD, players, game.id);
+    const threadChannel = await create1vs1GameChannel(ctx, OTHELLO.CMD, players, game.id);
 
     const nextTurn = async (playerIdx: number, prevInteraction: Discord.MessageComponentInteraction | null) => {
       const { candidates, markerCount, finished } = calcCandidates(game.grid, playerIdx);

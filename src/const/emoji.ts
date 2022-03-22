@@ -39,6 +39,7 @@ export const MUSIC_8TH = "♪";
 export const LOOP = "🔁";
 export const SHUFFLE = "🔀";
 export const ROTATE = "🔄";
+export const SKIP = "⏭️";
 export const HOURGLASS_NOT_DONE = "⏳";
 export const DOLLAR = "💵";
 export const BOOKS = "📚";
@@ -124,3 +125,10 @@ export const BLACK_CIRCLE = "⚫";
 export const WHITE_CIRCLE = "⚪";
 export const WHITE_FLAG = "🏳️";
 export const LOCKED = "🔒";
+export const CARD = {
+  SPADE: "♠️",
+  CLUB: "♣️",
+  HEART: "♥️",
+  DIAMOND: "♦️",
+  JOKER: "🃏"
+};

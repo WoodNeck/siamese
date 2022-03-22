@@ -2,7 +2,7 @@ import Discord, { MessageActionRow, MessageButton, MessageEmbed } from "discord.
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
-import { createGameChannel, getOpponent } from "./utils";
+import { create1vs1GameChannel, getOpponent } from "./utils";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -12,8 +12,8 @@ import * as EMOJI from "~/const/emoji";
 import * as PERMISSION from "~/const/permission";
 import { GAME, YACHT } from "~/const/command/minigame";
 import { range } from "~/util/helper";
-import TextBoard from "~/core/TextBoard";
-import TextDice from "~/core/TextDice";
+import TextBoard from "~/core/game/TextBoard";
+import TextDice from "~/core/game/TextDice";
 
 export default new Command({
   name: YACHT.CMD,
@@ -50,7 +50,7 @@ export default new Command({
 
     const game = new YachtGame(players);
 
-    const threadChannel = await createGameChannel(ctx, YACHT.CMD, players, game.id);
+    const threadChannel = await create1vs1GameChannel(ctx, YACHT.CMD, players, game.id);
 
     const nextTurn = async (playerIdx: number, prevInteraction: Discord.MessageComponentInteraction | null) => {
       const send = prevInteraction
