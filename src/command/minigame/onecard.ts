@@ -11,7 +11,7 @@ import * as EMOJI from "~/const/emoji";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { GAME, ONECARD } from "~/const/command/minigame";
-import { groupBy } from "~/util/helper";
+import { groupBy, shuffle } from "~/util/helper";
 import PlayingCards, { Card } from "~/core/game/PlayingCards";
 import GameRoom from "~/core/game/GameRoom";
 
@@ -42,13 +42,14 @@ export default new Command({
     const canStart = await game.waitForPlayers(ONECARD.JOIN_MSG_TITLE(author), threadChannel);
 
     if (canStart) {
-      const oneCard = new OneCardGame(threadChannel, game.players);
+      const oneCard = new OneCardGame(ctx, threadChannel, game.players);
       void oneCard.start();
     }
   }
 });
 
 class OneCardGame {
+  private _ctx: any;
   private _deck: PlayingCards;
   private _lastCard: Card;
   private _threadChannel: Discord.ThreadChannel;
@@ -63,11 +64,12 @@ class OneCardGame {
     cards: Card[];
   }>;
 
-  public constructor(threadChannel: Discord.ThreadChannel, players: GameRoom["players"]) {
+  public constructor(ctx, threadChannel: Discord.ThreadChannel, players: GameRoom["players"]) {
+    this._ctx = ctx;
     this._deck = new PlayingCards();
     this._lastCard = this._deck.draw(1)[0];
     this._threadChannel = threadChannel;
-    this._players = players.map(player => ({
+    this._players = shuffle(players).map(player => ({
       user: player.user,
       interaction: player.interaction!,
       cards: []
@@ -113,6 +115,21 @@ class OneCardGame {
   private async _nextTurn(playerIdx: number) {
     const players = this._players;
     const currentPlayer = players[playerIdx];
+
+    if (!currentPlayer) {
+      const { bot } = this._ctx;
+      const gameMsg = new MessageEmbed()
+        .setTitle("ONECARD GAME DOWN")
+        .setDescription(`playerIdx: ${playerIdx}, players count: ${players}`);
+
+      void bot.logger.info(gameMsg);
+
+      this._finished = true;
+      this._threadChannel.send({
+        content: "미안하다냥! 게임 진행중에 오류가 발생했다냥! 버그를 제보했으니 금방 수정하도록 하겠다냥!"
+      }).catch(() => void 0);
+    }
+
     const { cards } = currentPlayer;
 
     const sortedCards = [...cards].sort((a, b) => a.id - b.id).map(card => ({

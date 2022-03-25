@@ -538,7 +538,8 @@ class Siamese extends Discord.Client {
       .setFooter({ text: MSG.BOT.GUILD_JOIN_FOOTER(this) })
       .setColor(COLOR.BOT);
 
-    await guild.systemChannel.send({ embeds: [embedMsg] });
+    await guild.systemChannel.send({ embeds: [embedMsg] })
+      .catch(() => void 0);
   };
 
   private _onError = async (err: Error) => {

@@ -79,5 +79,8 @@ export default new Command({
 const findAllImages = page => {
   const $ = cheerio.load(page);
 
-  return $(".islrtb").toArray().slice(0, 10).map(el => el.attribs["data-ou"]) as string[];
+  return $(".islrtb").toArray()
+    .slice(0, 10)
+    .map(el => el.attribs["data-ou"])
+    .map(url => decodeURIComponent(url)) as string[];
 };
