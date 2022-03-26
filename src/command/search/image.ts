@@ -78,9 +78,10 @@ export default new Command({
 
 const findAllImages = page => {
   const $ = cheerio.load(page);
+  const hasKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
 
   return $(".islrtb").toArray()
     .slice(0, 10)
     .map(el => el.attribs["data-ou"])
-    .map(url => decodeURIComponent(url)) as string[];
+    .filter(url => !hasKorean.test(url)) as string[];
 };

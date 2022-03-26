@@ -525,7 +525,7 @@ class Siamese extends Discord.Client {
   };
 
   private _onGuildJoin = async (guild: Discord.Guild) => {
-    if (!(guild.systemChannel)) return;
+    if (!guild.systemChannel) return;
 
     const permissions = guild.systemChannel.permissionsFor(this.user);
 
