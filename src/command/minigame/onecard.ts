@@ -116,20 +116,6 @@ class OneCardGame {
     const players = this._players;
     const currentPlayer = players[playerIdx];
 
-    if (!currentPlayer) {
-      const { bot } = this._ctx;
-      const gameMsg = new MessageEmbed()
-        .setTitle("ONECARD GAME DOWN")
-        .setDescription(`playerIdx: ${playerIdx}, players count: ${players}`);
-
-      void bot.logger.info(gameMsg);
-
-      this._finished = true;
-      this._threadChannel.send({
-        content: "미안하다냥! 게임 진행중에 오류가 발생했다냥! 버그를 제보했으니 금방 수정하도록 하겠다냥!"
-      }).catch(() => void 0);
-    }
-
     const { cards } = currentPlayer;
 
     const sortedCards = [...cards].sort((a, b) => a.id - b.id).map(card => ({
@@ -346,7 +332,7 @@ class OneCardGame {
 
     newTurn %= playerCount;
 
-    if (currentTurn < 0) {
+    if (newTurn < 0) {
       return playerCount + newTurn;
     } else {
       return newTurn;
