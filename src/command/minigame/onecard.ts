@@ -42,14 +42,13 @@ export default new Command({
     const canStart = await game.waitForPlayers(ONECARD.JOIN_MSG_TITLE(author), threadChannel);
 
     if (canStart) {
-      const oneCard = new OneCardGame(ctx, threadChannel, game.players);
+      const oneCard = new OneCardGame(threadChannel, game.players);
       void oneCard.start();
     }
   }
 });
 
 class OneCardGame {
-  private _ctx: any;
   private _deck: PlayingCards;
   private _lastCard: Card;
   private _threadChannel: Discord.ThreadChannel;
@@ -64,8 +63,7 @@ class OneCardGame {
     cards: Card[];
   }>;
 
-  public constructor(ctx, threadChannel: Discord.ThreadChannel, players: GameRoom["players"]) {
-    this._ctx = ctx;
+  public constructor(threadChannel: Discord.ThreadChannel, players: GameRoom["players"]) {
     this._deck = new PlayingCards();
     this._lastCard = this._deck.draw(1)[0];
     this._threadChannel = threadChannel;

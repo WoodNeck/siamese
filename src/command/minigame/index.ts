@@ -3,6 +3,7 @@ import Yacht from "./yacht";
 import Connect4 from "./connect4";
 import TicTacToe from "./tictactoe";
 import OneCard from "./onecard";
+import Ladder from "./ladder";
 
 import Category from "~/core/Category";
 import { MINIGAME } from "~/const/category";
@@ -14,7 +15,8 @@ category.add(
   Yacht,
   Connect4,
   TicTacToe,
-  OneCard
+  OneCard,
+  Ladder
 );
 
 export default category;

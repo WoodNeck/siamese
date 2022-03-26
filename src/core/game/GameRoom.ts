@@ -28,7 +28,7 @@ class GameRoom {
     this._maxPlayer = maxPlayer;
   }
 
-  public async waitForPlayers(gameName: string, threadChannel: Discord.ThreadChannel) {
+  public async waitForPlayers(gameName: string, channel: Discord.TextChannel | Discord.ThreadChannel) {
     const ctx = this._ctx;
     const { author, guild } = ctx;
     const joinEmbed = new MessageEmbed();
@@ -78,10 +78,15 @@ class GameRoom {
     const row2 = new MessageActionRow();
     row2.addComponents(controlBtnHeader, startBtn, cancelBtn);
 
-    const joinMsg = await threadChannel.send({
+    const msgArgs = {
       embeds: [joinEmbed],
-      components: [row, row2]
-    });
+      components: [row, row2],
+      fetchReply: true
+    };
+
+    const joinMsg = channel.isThread()
+      ? await channel.send(msgArgs)
+      : await ctx.bot.send(ctx, msgArgs) as Discord.Message;
 
     const collector = joinMsg.createMessageComponentCollector({
       filter: interaction => !interaction.user.bot,
@@ -124,7 +129,7 @@ class GameRoom {
         } else {
           // First one is always initiator
           players[0].interaction = interaction;
-          await interaction.reply(GAME.INITIATING_GAME);
+          await interaction.update({ components: [] });
           collector.stop(GAME.SYMBOL.START);
         }
       } else if (interaction.customId === GAME.SYMBOL.CANCEL) {
@@ -143,13 +148,24 @@ class GameRoom {
 
     return new Promise<boolean>(resolve => {
       collector.on("end", async (_, reason) => {
-        if (reason === GAME.SYMBOL.CANCEL) return resolve(false);
-        if (reason === GAME.SYMBOL.START) {
+        if (reason === GAME.SYMBOL.CANCEL) {
+          if ((channel as Discord.ThreadChannel).isThread()) {
+            const threadChannel = channel as Discord.ThreadChannel;
+            await threadChannel.setLocked(true).catch(() => void 0);
+            await threadChannel.setArchived(true).catch(() => void 0);
+          }
 
-          await Promise.all(players.slice(1).map(player => threadChannel.members.add(player.user)));
+          return resolve(false);
+        }
+
+        if (reason === GAME.SYMBOL.START) {
+          if ((channel as Discord.ThreadChannel).isThread()) {
+            await Promise.all(players.slice(1).map(player => (channel as Discord.ThreadChannel).members.add(player.user)));
+          }
 
           return resolve(true);
         }
+
         resolve(false); // AFK
       });
     });

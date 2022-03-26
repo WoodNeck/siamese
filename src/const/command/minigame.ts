@@ -245,3 +245,27 @@ export const ONECARD = {
   SKIP_LABEL: "턴 넘기기",
   PENALTY_LABEL: (count: number) => `${count}장 먹기`
 };
+
+export const LADDER = {
+  CMD: "사다리",
+  DESC: "사다리 게임을 한다냥!",
+  USAGE: "당첨1 당첨2 당첨3...",
+  SLASH_USAGE: "당첨항목들",
+  USAGE_DESC: "당첨 항목들을 띄어쓰기로 구분해서 달라냥!",
+  ALIAS: ["사다리게임", "사다리타기"],
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.LADDER} ${author.displayName}의 사다리게임`,
+  ARG_NOT_IN_RANGE: "고를 수 있는 당첨항목이 너무 적거나 많다냥! 2~9개 사이의 당첨항목을 달라냥!",
+  NUMBER_URL: [
+    "https://discord.com/assets/68546f5fc3b2166f42cf90b7e23c5ae9.svg",
+    "https://discord.com/assets/eb29ce5fcf54bc3b23ff77039a4ecf3c.svg",
+    "https://discord.com/assets/67f896405747f26f63f09e0cb048d358.svg",
+    "https://discord.com/assets/09fe8a2882cac4cdb4712ab9622d3fe1.svg",
+    "https://discord.com/assets/5575865e2cb3d50ea051b09d7e1d2550.svg",
+    "https://discord.com/assets/f8b3e0e54d99d2b2962a2e474b2110e4.svg",
+    "https://discord.com/assets/c5ef2ff553f9cecd81add57e79aaf81d.svg",
+    "https://discord.com/assets/71de2e3efd19455f1c63b9bd00329ec5.svg",
+    "https://discord.com/assets/488cb48b4a6952b728df8bbe99fdbb20.svg"
+  ],
+  SHOW_RESULT: "전체 결과 보기",
+  RESULT_SENT_ALREADY: "그 결과는 이미 표시했다냥!"
+} as const;
