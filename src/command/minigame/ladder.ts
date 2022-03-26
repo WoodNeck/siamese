@@ -183,7 +183,7 @@ export default new Command({
     }) as Discord.Message<boolean>;
 
     const collector = ladderMsg.createMessageComponentCollector({
-      filter: interaction => !interaction.user.bot,
+      filter: interaction => !interaction.user.bot && interaction.message.id === ladderMsg.id,
       time: 9 * 60 * 1000 // 9 min
     });
     const sent = users.map(() => false);
