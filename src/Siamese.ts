@@ -117,7 +117,7 @@ class Siamese extends Discord.Client {
         return await interaction.reply(content as Discord.InteractionReplyOptions);
       }
     } else {
-      const { channel, command } = ctx;
+      const { channel, author, guild, command } = ctx;
 
       if (command.sendTyping) {
         await channel.sendTyping().catch(() => void 0);
@@ -125,13 +125,26 @@ class Siamese extends Discord.Client {
 
       return await channel.send(content as Discord.MessageOptions)
         .catch(err => {
-          // Not a case of missing permission
-          if (!(err instanceof Discord.DiscordAPIError
-            && err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION)) {
-            this._fileLogger.error(err);
-          }
+          const isDiscordAPIError = err instanceof Discord.DiscordAPIError;
+          const isPermissionError = err.code === DISCORD_ERROR_CODE.MISSING_PERMISSION;
 
-          throw err;
+          // Not a case of missing permission
+          if (!(isDiscordAPIError && isPermissionError)) {
+            this._fileLogger.error(err);
+
+            // Send error msg at channel
+            const errorEmbed = new Discord.MessageEmbed().setColor(COLOR.ERROR);
+            errorEmbed.setDescription(MSG.BOT.ERROR_MSG(ctx.author, err.toString()));
+
+            void channel.send({ embeds: [errorEmbed] }).catch(() => void 0);
+          } else {
+            // Send permission error msg
+            const errorEmbed = new Discord.MessageEmbed().setColor(COLOR.ERROR);
+            errorEmbed.setDescription(MSG.BOT.DM_ERROR_MSG(ctx.author, guild, channel, ERROR.CMD.FAILED(this._env.BOT_DEV_SERVER_INVITE)));
+
+            void author.send({ embeds: [errorEmbed] })
+              .catch(() => void 0);
+          }
         });
     }
   }
