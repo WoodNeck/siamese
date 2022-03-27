@@ -4,6 +4,7 @@ import Choose from "./choose";
 import Say from "./say";
 import Vote from "./vote";
 import Translate from "./translate";
+import Calculator from "./calculator";
 
 import Category from "~/core/Category";
 import { UTILITY } from "~/const/category";
@@ -16,7 +17,8 @@ category.add(
   Choose,
   Say,
   Vote,
-  Translate
+  Translate,
+  Calculator
 );
 
 export default category;

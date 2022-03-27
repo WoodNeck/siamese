@@ -217,3 +217,8 @@ export const TRANSLATE = {
     MENU_TIME: 30
   }
 };
+
+export const CALCULATOR = {
+  CMD: "계산기",
+  DESC: "계산기를 표시한다냥!"
+} as const;

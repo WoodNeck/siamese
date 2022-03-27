@@ -1,4 +1,4 @@
-import type Discord from "discord.js";
+import { MessageButtonStyleResolvable } from "discord.js";
 
 export const MESSAGE_MAX_LENGTH = 1950;
 
@@ -16,3 +16,11 @@ export const ACTIVITY = {
 } as const;
 
 export const MSG_RETRIEVE_MAXIMUM = 100;
+
+export const BUTTON_STYLE: Record<string, MessageButtonStyleResolvable> = {
+  PRIMARY: "PRIMARY",
+  SECONDARY: "SECONDARY",
+  DANGER: "DANGER",
+  LINK: "LINK",
+  SUCCESS: "SUCCESS"
+};
