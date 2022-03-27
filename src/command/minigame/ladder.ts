@@ -207,14 +207,14 @@ export default new Command({
         resultEmbed.setColor(COLOR.BOT);
 
         const resultIndexes = users.map((_, idx) => {
-          let resultIdx = idx;
+          let currentIdx = idx;
 
           [...connections].reverse().forEach(row => {
-            if (row[idx]) resultIdx += 1;
-            if (row[idx - 1]) resultIdx -= 1;
+            if (row[currentIdx]) currentIdx += 1;
+            else if (row[currentIdx - 1]) currentIdx -= 1;
           });
 
-          return resultIdx;
+          return currentIdx;
         });
 
         const result = users.map((_, idx) => {
