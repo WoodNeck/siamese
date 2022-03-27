@@ -93,6 +93,8 @@ class GameRoom {
       time: 60 * 60 * 1000
     });
 
+    let maxPlayerAlertSent = false;
+
     collector.on("collect", async interaction => {
       const user = guild.members.resolve(interaction.user.id)!;
       if (interaction.customId === GAME.SYMBOL.JOIN) {
@@ -104,9 +106,16 @@ class GameRoom {
           players.push({ user, interaction });
           joinEmbed.setDescription(GAME.JOIN_PLAYERS_LIST(players, maxPlayer));
 
-          interaction.update({
+          await interaction.update({
             embeds: [joinEmbed]
           }).catch(() => void 0);
+
+          if (players.length === maxPlayer && !maxPlayerAlertSent) {
+            maxPlayerAlertSent = true;
+            await interaction.followUp({
+              content: GAME.READY(author)
+            });
+          }
         }
       } else if (interaction.customId === GAME.SYMBOL.LEAVE) {
         if (!players.some(player => player.user.id === user.id)) {

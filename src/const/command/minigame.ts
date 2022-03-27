@@ -9,6 +9,7 @@ export const GAME = {
   THREAD_NAME: (gameName: string, id: string) => `${EMOJI.JOYSTICK} ${gameName} (ID ${id})`,
   THREAD_1VS1_NAME: (gameName: string, p1: string, p2: string, id: string) => `${EMOJI.JOYSTICK} ${gameName}: ${p1} VS ${p2} (ID ${id})`,
   START_MSG: (gameName: string) => `${EMOJI.JOYSTICK} ${gameName} 게임을 생성한다냥!`,
+  READY: (initiator: GuildMember) => `${initiator.toString()}냥, 게임이 준비됐다냥!`,
   SURRENDER: "항복하기",
   NOT_YOUR_TURN: "상대방의 턴이다냥!",
   NOT_IN_GAME: "게임 참가자가 아니다냥!",
