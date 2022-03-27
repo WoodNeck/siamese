@@ -34,9 +34,9 @@ class TextMenuStrategy implements MenuStrategy {
 
   public async update(options: MessageEditOptions, btnInteraction?: ButtonInteraction) {
     if (btnInteraction) {
-      await btnInteraction.update(options);
+      await btnInteraction.update(options).catch(() => void 0);
     } else {
-      await this._menuMessage.edit(options);
+      await this._menuMessage.edit(options).catch(() => void 0);
     }
   }
 
@@ -54,19 +54,15 @@ class TextMenuStrategy implements MenuStrategy {
   }
 
   public async deleteMessage(ctx: CommandContext) {
-    const { msg: cmdMsg, bot } = ctx;
+    const { msg: cmdMsg } = ctx;
     const menuMsg = this._menuMessage;
 
     if (cmdMsg) {
-      cmdMsg.delete().catch(async err => {
-        await bot.logger.error(err, ctx);
-      });
+      cmdMsg.delete().catch(() => void 0);
     }
 
     if (menuMsg) {
-      menuMsg.delete().catch(async err => {
-        await bot.logger.error(err, new CommandContext({ ...ctx, msg: menuMsg }));
-      });
+      menuMsg.delete().catch(() => void 0);
     }
   }
 

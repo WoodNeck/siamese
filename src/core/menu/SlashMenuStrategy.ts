@@ -40,9 +40,9 @@ class SlashMenuStrategy implements MenuStrategy {
 
   public async update(options: MessagePayload, btnInteraction?: ButtonInteraction) {
     if (btnInteraction) {
-      await btnInteraction.update(options);
+      await btnInteraction.update(options).catch(() => void 0);
     } else {
-      await this._interaction.editReply(options);
+      await this._interaction.editReply(options).catch(() => void 0);
     }
   }
 
@@ -64,17 +64,17 @@ class SlashMenuStrategy implements MenuStrategy {
 
     if (this._ephemeral) {
       // You cannot delete an ephemeral message
-      await interaction.editReply({ components: [] });
+      await interaction.editReply({ components: [] }).catch(() => void 0);
     } else {
-      await interaction.deleteReply();
+      await interaction.deleteReply().catch(() => void 0);
     }
   }
 
   public async removeReactions(btnInteraction?: ButtonInteraction) {
     if (btnInteraction) {
-      await btnInteraction.editReply({ components: [] });
+      await btnInteraction.editReply({ components: [] }).catch(() => void 0);
     } else {
-      await this._interaction.editReply({ components: [] });
+      await this._interaction.editReply({ components: [] }).catch(() => void 0);
     }
   }
 }
