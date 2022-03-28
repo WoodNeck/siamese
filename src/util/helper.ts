@@ -113,3 +113,9 @@ export const groupBy = <T>(arr: T[], count: number) => {
     return arr.slice(idx * count, idx * count + count);
   });
 };
+
+export const toEmoji = (name: string, id: string) => `<:${name}:${id}>`;
+
+export function staticImplements<T>() {
+  return <U extends T>(constructor: U) => { constructor; }; // eslint-disable-line @typescript-eslint/no-unused-expressions
+}

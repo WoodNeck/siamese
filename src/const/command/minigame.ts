@@ -270,3 +270,8 @@ export const LADDER = {
   SHOW_RESULT: "전체 결과 보기",
   RESULT_SENT_ALREADY: "그 결과는 이미 표시했다냥!"
 } as const;
+
+export const MAHJONG = {
+  CMD: "마작",
+  DESC: "리치마작을 플레이한다냥!"
+} as const;

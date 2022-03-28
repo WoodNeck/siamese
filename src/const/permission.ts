@@ -71,7 +71,7 @@ export const MENTION_EVERYONE: Permission = {
 };
 export const USE_EXTERNAL_EMOJIS: Permission = {
   flag: "USE_EXTERNAL_EMOJIS",
-  message: "외부 스티커를 사용"
+  message: "외부 이모티콘 사용"
 };
 export const CONNECT: Permission = {
   flag: "CONNECT",
