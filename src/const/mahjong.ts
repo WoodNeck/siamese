@@ -79,7 +79,11 @@ export const EMOJI = {
     [TILE_TYPE.PIN]: { name: "pin5dora", id: "957691327825453147" },
     [TILE_TYPE.SOU]: { name: "sou5dora", id: "957691328295211028" }
   },
-  BACK: { name: "tile", id: "957691326932062239" }
+  BACK: { name: "tile", id: "957691326932062239" },
+  RIICHI: [
+    { name: "riichi_0", id: "958359902332547113" },
+    { name: "riichi_1", id: "958360239424561163" }
+  ]
 } as const;
 
 export const EMOJI_ROTATED = {

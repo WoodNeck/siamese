@@ -17,17 +17,19 @@ class MahjongPlayer {
   public currentTurn: number;
   public riichiTurn: number;
 
+  public get isRiichi() { return this.riichiTurn >= 0; }
+
   public constructor({ user, interaction }: {
     user: Discord.GuildMember;
-    interaction: Discord.MessageComponentInteraction;
+    interaction: Discord.MessageComponentInteraction | null;
   }, idx: number) {
     this.user = user;
-    this.interaction = interaction;
+    this.interaction = interaction!;
     this.playerIdx = idx;
     this.hands = new MahjongHands(this);
 
     this.point = DEFAULT_POINT;
-    this.wind = WIND.EAST;
+    this.wind = idx;
     this.riichiTurn = -1;
     this.currentTurn = -1;
   }

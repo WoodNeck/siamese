@@ -21,7 +21,7 @@ const availableCharacters = [
 ];
 
 class MahjongDragonGenerator {
-  public game = new MahjongGame([]);
+  public game = new MahjongGame([], null as any);
   public parser = new MahjongSetParser();
   public hands = new MahjongHands(new MahjongPlayerMock());
 

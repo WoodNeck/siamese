@@ -12,7 +12,7 @@ import { pick } from "~/util/helper";
 
 class MahjongSetParser {
   public parse(hands: MahjongHands): MahjongSetInfo {
-    const head: MahjongTile[][] = [];
+    const head: MahjongSet[] = [];
     const ordered: MahjongSet[] = [];
     const same: MahjongSet[] = [];
     const kang: MahjongSet[] = [];
@@ -22,16 +22,16 @@ class MahjongSetParser {
     Object.keys(group).forEach(type => {
       const groupByType = group[type];
 
-      head.push(...this._findSameByCount(groupByType, 2));
-      same.push(...this._findSameByCount(groupByType, 3).map(tiles => ({ tiles, borrowed: false })));
-      ordered.push(...this._findOrderedByCount(parseFloat(type), groupByType, 3).map(tiles => ({ tiles, borrowed: false })));
+      head.push(...this._findSameByCount(groupByType, 2).map(tiles => ({ tiles, type: -1, borrowed: false })));
+      same.push(...this._findSameByCount(groupByType, 3).map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.SAME, borrowed: false })));
+      ordered.push(...this._findOrderedByCount(parseFloat(type), groupByType, 3).map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.ORDERED, borrowed: false })));
     });
 
-    ordered.push(...hands.borrows.ordered.map(tiles => ({ tiles, borrowed: true })));
-    same.push(...hands.borrows.same.map(tiles => ({ tiles, borrowed: true })));
+    ordered.push(...hands.borrows.ordered.map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.ORDERED, borrowed: true })));
+    same.push(...hands.borrows.same.map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.SAME, borrowed: true })));
     kang.push(
-      ...hands.kang.map(tiles => ({ tiles, borrowed: false })),
-      ...hands.borrows.kang.map(tiles => ({ tiles, borrowed: true }))
+      ...hands.kang.map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.KANG, borrowed: false })),
+      ...hands.borrows.kang.map(tiles => ({ tiles, type: MAHJONG.BODY_TYPE.KANG, borrowed: true }))
     );
 
     return {
@@ -97,7 +97,7 @@ class MahjongSetParser {
     const isSevenPairs = head.length === 7 && (ordered.length + same.length + kang.length) === 0;
 
     if (isSevenPairs) {
-      const dragon = { head, body: [], tiles, lastTile, hands };
+      const dragon = { head: head.map(headPiece => headPiece.tiles), body: [], tiles, lastTile, hands };
 
       return {
         dragon,
@@ -219,11 +219,11 @@ class MahjongSetParser {
       const hasDuplication = tileSet.size < allTiles.length;
 
       if (!hasDuplication) {
-        const actualHead = head.find(piece => piece.every(tile => !tileSet.has(tile.id)));
+        const actualHead = head.find(piece => piece.tiles.every(tile => !tileSet.has(tile.id)));
 
         if (actualHead) {
           return {
-            head: [actualHead],
+            head: [actualHead.tiles],
             body: combination
           };
         }

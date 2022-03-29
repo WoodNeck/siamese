@@ -127,6 +127,7 @@ export const WHITE_FLAG = "🏳️";
 export const LOCKED = "🔒";
 export const LADDER = "🪜";
 export const CURSOR = "|";
+export const MAHJONG = "🀄";
 export const CARD = {
   SPADE: "♠️",
   CLUB: "♣️",

@@ -2,11 +2,12 @@ import MahjongTile from "./MahjongTile";
 
 export interface MahjongSet {
   tiles: MahjongTile[];
+  type: number;
   borrowed: boolean;
 }
 
 interface MahjongSetInfo {
-  head: MahjongTile[][];
+  head: MahjongSet[];
   ordered: MahjongSet[];
   same: MahjongSet[];
   kang: MahjongSet[];

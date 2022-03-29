@@ -7,9 +7,15 @@ import * as EMOJI from "~/const/emoji";
 export const PING = {
   CMD: "핑",
   DESC: "퐁을 대답한다냥!",
-  MSG: (ping: string, botName: string, botDisplayName: string, uptime: Date) => dedent`
+  MSG: (ping: string, botName: string, botDisplayName: string, uptime: string) => dedent`
     퐁이다냥! 현재 샴고양이 웹소켓 핑 평균은 ${strong(`${ping}ms`)}다냥!
-    ${botName}${Josa.c(botDisplayName, "은/는")} ${uptime.getUTCHours()}시간 ${uptime.getUTCMinutes()}분 ${uptime.getUTCSeconds()}초동안 일하고 있다냥!`
+    ${botName}${Josa.c(botDisplayName, "은/는")} ${uptime}동안 일하고 있다냥!`,
+  FORMAT: {
+    DAYS: (val: number) => `${val}일`,
+    HOURS: (val: number) => `${val}시간`,
+    MINUTES: (val: number) => `${val}분`,
+    SECONDS: (val: number) => `${val}초`
+  }
 } as const;
 
 export const INVITE = {

@@ -3,7 +3,8 @@ import Josa from "josa-js";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
-import { range } from "~/util/helper";
+import { EMOJI as MAHJONG_EMOJI, TILE_TYPE } from "~/const/mahjong";
+import { range, toEmoji } from "~/util/helper";
 
 export const GAME = {
   THREAD_NAME: (gameName: string, id: string) => `${EMOJI.JOYSTICK} ${gameName} (ID ${id})`,
@@ -273,5 +274,23 @@ export const LADDER = {
 
 export const MAHJONG = {
   CMD: "마작",
-  DESC: "리치마작을 플레이한다냥!"
+  DESC: "리치마작을 플레이한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.MAHJONG} ${author.displayName}의 작탁`,
+  SUMMARY_FIELD_TITLE: (user: GuildMember, idx: number) => {
+    const windEmoji = MAHJONG_EMOJI[TILE_TYPE.KAZE][idx];
+    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}의 버림패`;
+  },
+  TILES_LEFT: (count: number) => `남은 패 수: ${count}`,
+  DISCARD_TITLE: (user: GuildMember) => `${user.displayName}의 타패다냥!`,
+  LABEL: {
+    KANG: "깡",
+    RIICHI: "리치",
+    TSUMO: "쯔모"
+  },
+  SYMBOL: {
+    KANG: "KANG",
+    RIICHI: "RIICHI",
+    TSUMO: "TSUMO",
+    DISCARD: "DISCARD"
+  }
 } as const;
