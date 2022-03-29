@@ -7,6 +7,7 @@ class MahjongTiles {
   private _tiles: MahjongTile[];
 
   public get tiles() { return this._tiles; }
+  public get left() { return this._tiles.length; }
 
   public constructor() {
     const datas = [

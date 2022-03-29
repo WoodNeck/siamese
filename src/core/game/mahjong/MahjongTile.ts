@@ -4,7 +4,7 @@ import * as MAHJONG from "~/const/mahjong";
 class MahjongTile {
   public readonly id: number;
   public readonly index: number;
-  public readonly type: MAHJONG.TILE_TYPE;
+  public readonly type: number;
   public readonly isRedDora: boolean;
 
   public get tileID() { return this.type * 9 + this.index; }
@@ -20,7 +20,7 @@ class MahjongTile {
   }: {
     id: number;
     index: number; // index within type
-    type: MAHJONG.TILE_TYPE; // type of the tile
+    type: number; // type of the tile
     isRedDora: boolean;
   }) {
     this.id = id;

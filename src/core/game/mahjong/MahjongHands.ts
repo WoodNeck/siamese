@@ -1,11 +1,16 @@
 import MahjongTile from "./MahjongTile";
-import MahjongSetInfo from "./MahjongSetInfo";
+import MahjongPlayer from "./MahjongPlayer";
 
 class MahjongHands {
+  public player: MahjongPlayer;
   public holding: MahjongTile[];
-  public borrows: Omit<MahjongSetInfo, "head">;
   public kang: MahjongTile[][];
   public discards: MahjongTile[];
+  public borrows: {
+    ordered: MahjongTile[][];
+    same: MahjongTile[][];
+    kang: MahjongTile[][];
+  };
 
   public get tiles() {
     return [
@@ -23,7 +28,8 @@ class MahjongHands {
       || this.borrows.kang.length > 0;
   }
 
-  public constructor() {
+  public constructor(player: MahjongPlayer) {
+    this.player = player;
     this.reset();
   }
 

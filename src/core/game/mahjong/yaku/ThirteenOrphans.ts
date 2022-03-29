@@ -8,10 +8,10 @@ import { TILE_TYPE, YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class ThirteenOrphans {
   public static check() {
-    return false;
+    return 0;
   }
 
-  public static checkByHands(hands: MahjongHands) {
+  public static checkByHands(hands: MahjongHands): boolean {
     const { holding } = hands;
 
     const allYaoChu = holding.every(tile => {
@@ -24,7 +24,7 @@ class ThirteenOrphans {
       } else return true;
     });
 
-    if (!allYaoChu) return;
+    if (!allYaoChu) return false;
 
     const tileCount = holding.reduce((counts, tile) => {
       if (!counts[tile.tileID]) counts[tile.tileID] = 0;
@@ -33,12 +33,12 @@ class ThirteenOrphans {
       return counts;
     }, {});
 
-    return Object.values(tileCount).filter(val => val === 1).length === 13;
+    return Object.values(tileCount).filter(val => val === 1).length === 12;
   }
 
   public static readonly closedOnly = true;
   public static readonly score = 13;
-  public static readonly yakuName = YAKU.RIICHI;
+  public static readonly yakuName = YAKU.THIRTEEN_ORPHANS;
 }
 
 export default ThirteenOrphans;

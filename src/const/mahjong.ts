@@ -1,19 +1,25 @@
 import { range } from "~/util/helper";
 
-export enum TILE_TYPE {
-  MAN,
-  PIN,
-  SOU,
-  KAZE,
-  SANGEN
-}
+export const TILE_TYPE = {
+  MAN: 0,
+  PIN: 1,
+  SOU: 2,
+  KAZE: 3,
+  SANGEN: 4
+} as const;
 
-export enum WIND {
-  EAST,
-  SOUTH,
-  WEST,
-  NORTH
-}
+export const WIND = {
+  EAST: 0,
+  SOUTH: 1,
+  WEST: 2,
+  NORTH: 3
+} as const;
+
+export const BODY_TYPE = {
+  ORDERED: 0,
+  SAME: 1,
+  KANG: 2
+} as const;
 
 export const DATA = {
   MAN: range(9).map(index => ({ type: TILE_TYPE.MAN, index })),
@@ -184,5 +190,36 @@ export const YAKU = {
   MENZEN_TSUMO: "멘젠쯔모",
   RIICHI: "리치",
   ONE_SHOT: "일발",
-  PINGHU: "핑후"
+  SEVEN_PAIRS: "치또이쯔",
+  PINGHU: "핑후",
+  ONE_PEKO: "이페코",
+  YAKUHAI: "역패",
+  TANGYAO: "탕야오",
+  LINSHANG: "영상개화",
+  CHANGKANG: "창깡",
+  HAITEI_MOON: "해저로월",
+  HAITEI_FISH: "하저로어",
+  THREE_COLOR_STRAIGHT: "삼색동순",
+  STRAIGHT: "일기통관",
+  CHANTA: "찬타",
+  TOITOI: "또이또이",
+  THREE_CLOSED: "삼암각",
+  THREE_COLOR_TRIPLET: "삼색동각",
+  LITTLE_THREE_DRAGON: "소삼원",
+  HONNODU: "혼노두",
+  THREE_QUADS: "삼공자",
+  TWO_PEKO: "량페코",
+  JUN_CHANTA: "준찬타",
+  HALF_FLUSH: "혼일색",
+  FLUSH: "청일색",
+  FOUR_CLOSED: "사암각",
+  THIRTEEN_ORPHANS: "국사무쌍",
+  NINE_GATES: "구련보등",
+  ALL_GREENS: "녹일색",
+  ALL_WORDS: "자일색",
+  ALL_TERMINALS: "청노두",
+  BIG_THREE_DRAGON: "대삼원",
+  LITTLE_FOUR_WINDS: "소사희",
+  BIG_FOUR_WINDS: "대사희",
+  FOUR_QUADS: "사공자"
 } as const;

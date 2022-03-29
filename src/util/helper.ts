@@ -119,3 +119,42 @@ export const toEmoji = (name: string, id: string) => `<:${name}:${id}>`;
 export function staticImplements<T>() {
   return <U extends T>(constructor: U) => { constructor; }; // eslint-disable-line @typescript-eslint/no-unused-expressions
 }
+
+// nCr
+const combinations = (n: number, r: number): number => {
+  if (r > n) return 0;
+
+  let numerator = 1;
+  let denominator = 1;
+
+  for (let i = 0; i < r; i++) {
+    numerator *= (n - i);
+    denominator *= (r - i);
+  }
+
+  return numerator / denominator;
+};
+
+export const pick = <T>(arr: T[], by: number) => {
+  const indexes = range(by);
+  const totalCount = combinations(arr.length, by);
+
+  const cases: T[][] = [];
+
+  for (let i = 0; i < totalCount; i++) {
+    cases.push(indexes.map(idx => arr[idx]));
+
+    for (let idx = by - 1; idx >= 0; idx--) {
+      const idxReversed = by - 1 - idx;
+      const startIdx = indexes[idx] + 1;
+      if (startIdx > arr.length - 1 - idxReversed) continue;
+
+      indexes.slice(idx).forEach((_, offset) => {
+        indexes[idx + offset] = startIdx + offset;
+      });
+      break;
+    }
+  }
+
+  return cases;
+};

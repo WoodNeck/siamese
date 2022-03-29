@@ -7,12 +7,12 @@ import { YAKU } from "~/const/mahjong";
 
 @staticImplements<Yaku>()
 class Riichi {
-  public static check(dragon: MahjongDragon) {
-    return true;
+  public static check({ hands }: MahjongDragon) {
+    // FIXME: 더블리치 체크
+    return hands.player.riichiTurn >= 0 ? 1 : 0;
   }
 
   public static readonly closedOnly = true;
-  public static readonly score = 1;
   public static readonly yakuName = YAKU.RIICHI;
 }
 

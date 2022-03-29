@@ -6,13 +6,14 @@ import { staticImplements } from "~/util/helper";
 import { YAKU } from "~/const/mahjong";
 
 @staticImplements<Yaku>()
-class SevenPairs {
+class LinShang {
   public static check(dragon: MahjongDragon) {
-    return dragon.head.length === 7 ? 2 : 0;
+    const { lastTile } = dragon;
+    return lastTile.isTsumo && lastTile.isKangTile ? 1 : 0;
   }
 
   public static readonly closedOnly = true;
-  public static readonly yakuName = YAKU.SEVEN_PAIRS;
+  public static readonly yakuName = YAKU.LINSHANG;
 }
 
-export default SevenPairs;
+export default LinShang;
