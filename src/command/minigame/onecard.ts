@@ -156,19 +156,18 @@ class OneCardGame {
     return new Promise<void>(resolve => {
       collector.on("collect", async interaction => {
         const id = interaction.customId;
-        const playerCards = currentPlayer.cards;
 
         await interaction.deferUpdate().catch(() => void 0);
 
         if (id === GAME.SYMBOL.PENALTY) {
           await this._showPenaltyMsg(playerIdx, true);
         } else if (id !== GAME.SYMBOL.SKIP) {
-          const selectedCard = playerCards.splice(playerCards.findIndex(card => card.id.toString() === id), 1)[0];
+          const selectedCard = cards.splice(cards.findIndex(card => card.id.toString() === id), 1)[0];
 
           this._play(selectedCard);
 
           const nextTurnIsMyTurn = this._getNewPlayerIndex(playerIdx) === playerIdx;
-          const nextCards = [...playerCards]
+          const nextCards = [...cards]
             .sort((a, b) => a.id - b.id)
             .map(card => ({ ...card, canplay: nextTurnIsMyTurn ? false : card.index === selectedCard.index }));
 
@@ -351,8 +350,10 @@ class OneCardGame {
   }
 
   private _createCardButtons(cards: Array<Card & { canplay: boolean }>, shouldShowSkip: boolean) {
+    const cardsForButtons = [...cards];
+
     if (shouldShowSkip) {
-      cards.push({
+      cardsForButtons.push({
         id: GAME.SYMBOL.SKIP as any,
         index: -1,
         url: "",
@@ -363,7 +364,7 @@ class OneCardGame {
     }
 
     if (this._attackSum > 0) {
-      cards.push({
+      cardsForButtons.push({
         id: GAME.SYMBOL.PENALTY as any,
         index: -1,
         url: "",
@@ -373,7 +374,7 @@ class OneCardGame {
       });
     }
 
-    const buttonGroups = groupBy(cards, 25).reduce((all, cardGroup) => {
+    const buttonGroups = groupBy(cardsForButtons, 25).reduce((all, cardGroup) => {
       const rows = groupBy(cardGroup, 5).map(cardBy5 => {
         const row  = new MessageActionRow();
         const cardBtns = cardBy5.map(card => {
