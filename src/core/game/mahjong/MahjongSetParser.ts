@@ -4,8 +4,9 @@ import MahjongSetInfo, { MahjongSet } from "./MahjongSetInfo";
 import MahjongTile from "./MahjongTile";
 import MahjongDragon from "./MahjongDragon";
 import Yaku from "./yaku/Yaku";
-import ThirteenOrphans from "./yaku/ThirteenOrphans";
 import { YAKU_LIST } from "./yaku";
+import ThirteenOrphans from "./yaku/ThirteenOrphans";
+import SevenPairs from "./yaku/SevenPairs";
 
 import * as MAHJONG from "~/const/mahjong";
 import { pick } from "~/util/helper";
@@ -75,7 +76,6 @@ class MahjongSetParser {
     game: MahjongGame,
     lastTile: MahjongDragon["lastTile"],
   ): { dragon: MahjongDragon; scores: Array<{ yaku: Yaku; score: number }> } | null {
-    const { head, ordered, same, kang } = set;
     const tiles = hands.tiles;
 
     if (ThirteenOrphans.checkByHands(hands)) {
@@ -93,19 +93,6 @@ class MahjongSetParser {
         }]
       };
     }
-
-    const isSevenPairs = head.length === 7 && (ordered.length + same.length + kang.length) === 0;
-
-    if (isSevenPairs) {
-      const dragon = { head: head.map(headPiece => headPiece.tiles), body: [], tiles, lastTile, hands };
-
-      return {
-        dragon,
-        scores: this._getScore(dragon, hands, game)
-      };
-    }
-
-    if (ordered.length + same.length + kang.length < 4) return null;
 
     const headAndBodys = this._getDragonHeadAndBody(set);
     if (headAndBodys.length <= 0) return null;
@@ -140,6 +127,7 @@ class MahjongSetParser {
 
     YAKU_LIST.forEach(yaku => {
       if (yaku.closedOnly && cried) return;
+      if (yaku.isNormalForm && (dragon.head.length !== 1 || dragon.body.length !== 4)) return;
       const score = yaku.check(dragon, game);
 
       if (score > 0) {
@@ -238,6 +226,19 @@ class MahjongSetParser {
         type: number;
       }>;
     }>;
+
+    if (head.length >= 7) {
+      const sevenPairs = SevenPairs.checkBySet(set).map(heads => ({
+        head: heads,
+        body: [] as Array<{
+          tiles: MahjongTile[];
+          borrowed: boolean;
+          type: number;
+        }>
+      }));
+
+      correctCombinations.push(...sevenPairs);
+    }
 
     return correctCombinations;
   }

@@ -17,6 +17,7 @@ class AllWords {
     return isAllWords ? 13 : 0;
   }
 
+  public static readonly isNormalForm = false;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.ALL_WORDS;
 }

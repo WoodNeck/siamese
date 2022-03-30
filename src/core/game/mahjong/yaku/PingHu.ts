@@ -35,6 +35,7 @@ class PingHu {
     return 1;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = true;
   public static readonly yakuName = YAKU.PINGHU;
 }

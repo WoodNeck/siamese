@@ -4,6 +4,7 @@ import Josa from "josa-js";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import { EMOJI as MAHJONG_EMOJI, TILE_TYPE } from "~/const/mahjong";
+import MahjongTile from "~/core/game/mahjong/MahjongTile";
 import { range, toEmoji } from "~/util/helper";
 
 export const GAME = {
@@ -14,7 +15,7 @@ export const GAME = {
   SURRENDER: "항복하기",
   NOT_YOUR_TURN: "상대방의 턴이다냥!",
   NOT_IN_GAME: "게임 참가자가 아니다냥!",
-  END_BY_TIME: `${EMOJI.STOPWATCH} 제한시간이 종료되어 게임을 끝낸다냥!`,
+  END_BY_TIME: `${EMOJI.STOPWATCH} 플레이어가 반응하지 않아 게임을 끝낸다냥!`,
   END_BY_SURRENDER: (player: GuildMember) => `${EMOJI.WHITE_FLAG} ${Josa.r(player.displayName, "이/가")} 항복했다냥!`,
   WINNER_HEADER: (players: GuildMember[], winner: number) => winner >= 0
     ? `${EMOJI.TROPHY} ${players[winner].displayName}의 승리다냥!`
@@ -30,6 +31,8 @@ export const GAME = {
   CANCELED: "게임을 취소했다냥!",
   INITIATING_GAME: "게임을 시작한다냥!",
   TURN_HEADER: (player: GuildMember) => `${player.toString()}의 차례다냥!`,
+  RECONNECT_TITLE: (player: GuildMember) => `${player.toString()}냥, 게임을 계속하려면 재접속이 필요하다냥! 아래 버튼을 눌러달라냥!`,
+  RECONNECT_LABEL: "갱신하기",
   SYMBOL: {
     PLAYER: "PLAYER",
     JOIN: "JOIN",
@@ -41,7 +44,8 @@ export const GAME = {
     SKIP: "SKIP",
     SELECT: "SELECT",
     PENALTY: "PENALTY",
-    GG: "GG"
+    GG: "GG",
+    RECONNECT: "RECONNECT"
   }
 };
 
@@ -278,10 +282,36 @@ export const MAHJONG = {
   JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.MAHJONG} ${author.displayName}의 작탁`,
   SUMMARY_FIELD_TITLE: (user: GuildMember, idx: number) => {
     const windEmoji = MAHJONG_EMOJI[TILE_TYPE.KAZE][idx];
-    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}의 버림패`;
+    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}`;
   },
   TILES_LEFT: (count: number) => `남은 패 수: ${count}`,
   DISCARD_TITLE: (user: GuildMember) => `${user.displayName}의 타패다냥!`,
+  RIICHI_TITLE: (user: GuildMember) => `${user.displayName}의 리치냥!`,
+  KANG_TITLE: (user: GuildMember) => `${user.displayName}의 깡이다냥!`,
+  TSUMO_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 쯔모다냥!`,
+  RON_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 론이다냥!`,
+  SCORE_FORMAT: (score: number) => `${score}판`,
+  YAKU_TITLE: "역",
+  DORA_INDICATOR_TITLE: "도라표시패",
+  ROUND_FORMAT: (wind: number, windRepeat: number) => {
+    const roundWind = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
+    const roundWindEmoji = toEmoji(roundWind.name, roundWind.id);
+
+    return `${roundWindEmoji} 동장전 동${wind + 1}국${windRepeat > 0 ? ` ${windRepeat}본장` : ""}`;
+  },
+  RIICHI_BAR: [
+    MAHJONG_EMOJI.RIICHI[0],
+    MAHJONG_EMOJI.RIICHI[1],
+    MAHJONG_EMOJI.RIICHI[0]
+  ].map(emoji => toEmoji(emoji.name, emoji.id)).join(""),
+  RIICHI_BAR_LONG: [
+    MAHJONG_EMOJI.RIICHI[0],
+    MAHJONG_EMOJI.RIICHI[0],
+    MAHJONG_EMOJI.RIICHI[1],
+    MAHJONG_EMOJI.RIICHI[0],
+    MAHJONG_EMOJI.RIICHI[0]
+  ].map(emoji => toEmoji(emoji.name, emoji.id)).join(""),
+  POINT: (point: number) => `${point}점`,
   LABEL: {
     KANG: "깡",
     RIICHI: "리치",

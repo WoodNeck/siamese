@@ -15,6 +15,7 @@ class ToiToi {
     return isToiToi ? 2 : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.TOITOI;
 }

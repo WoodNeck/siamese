@@ -19,6 +19,8 @@ class AllTerminals {
     return isAllTerminals ? 13 : 0;
   }
 
+  // 청노두는 6종의 패만 사용 가능하므로 치또이쯔 불가능
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.ALL_TERMINALS;
 }

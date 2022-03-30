@@ -19,6 +19,7 @@ class LittleFourWinds {
     return windBodies.length === 3 ? 13 : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.LITTLE_FOUR_WINDS;
 }

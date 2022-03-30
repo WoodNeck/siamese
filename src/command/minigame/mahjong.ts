@@ -31,12 +31,17 @@ export default new Command({
     }
 
     const id = new PhraseGen().generatePhrase();
-    const gameRoom = new GameRoom(ctx, 2, 2);
+    const gameRoom = new GameRoom(ctx, 1, 4);
     const threadChannel = await createGameChannel(ctx, MAHJONG.CMD, [author], id);
     const canStart = await gameRoom.waitForPlayers(MAHJONG.JOIN_MSG_TITLE(author), threadChannel);
 
     if (canStart) {
-      const game = new MahjongGame([...gameRoom.players, ...gameRoom.players], threadChannel);
+      const game = new MahjongGame([
+        ...gameRoom.players,
+        ...gameRoom.players,
+        ...gameRoom.players,
+        ...gameRoom.players
+      ], threadChannel);
       void game.start();
     }
   }

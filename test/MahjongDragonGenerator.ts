@@ -27,7 +27,7 @@ class MahjongDragonGenerator {
 
   public reset(): void {
     this.hands.reset();
-    this.game.startNewRound();
+    this.game.startNewRound(true);
     this.game.wind = WIND.EAST;
   }
 

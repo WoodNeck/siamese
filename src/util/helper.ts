@@ -121,7 +121,7 @@ export function staticImplements<T>() {
 }
 
 // nCr
-const combinations = (n: number, r: number): number => {
+export const combinations = (n: number, r: number): number => {
   if (r > n) return 0;
 
   let numerator = 1;

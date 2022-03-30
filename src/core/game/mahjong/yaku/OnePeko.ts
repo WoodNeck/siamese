@@ -10,8 +10,6 @@ class OnePeko {
   public static check(dragon: MahjongDragon) {
     const { body } = dragon;
 
-    if (body.length !== 4) return 0;
-
     const orderedBodies = body.filter(comb => comb.type === BODY_TYPE.ORDERED);
 
     if (orderedBodies.length < 2) return 0;
@@ -32,6 +30,7 @@ class OnePeko {
     return hasOnePeko ? 1 : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = true;
   public static readonly yakuName = YAKU.ONE_PEKO;
 }

@@ -28,6 +28,7 @@ class JunChanTa {
     });
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.JUN_CHANTA;
 }

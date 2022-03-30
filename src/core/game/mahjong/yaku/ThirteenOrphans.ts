@@ -1,4 +1,5 @@
 import MahjongHands from "../MahjongHands";
+import MahjongTile from "../MahjongTile";
 
 import Yaku from "./Yaku";
 
@@ -14,15 +15,7 @@ class ThirteenOrphans {
   public static checkByHands(hands: MahjongHands): boolean {
     const { holding } = hands;
 
-    const allYaoChu = holding.every(tile => {
-      if (
-        tile.type === TILE_TYPE.MAN
-        || tile.type === TILE_TYPE.PIN
-        || tile.type === TILE_TYPE.SOU
-      ) {
-        return tile.index === 0 || tile.index === 8;
-      } else return true;
-    });
+    const allYaoChu = holding.every(tile => ThirteenOrphans.isYaoChu(tile));
 
     if (!allYaoChu) return false;
 
@@ -33,9 +26,44 @@ class ThirteenOrphans {
       return counts;
     }, {});
 
-    return Object.values(tileCount).filter(val => val === 1).length === 12;
+    return Object.values(tileCount).length === 13;
   }
 
+  public static riichiableByTiles(tiles: MahjongTile[]): MahjongTile[] {
+    const yaochuTiles = tiles.filter(tile => ThirteenOrphans.isYaoChu(tile));
+
+    if (yaochuTiles.length < 13) return [];
+
+    const discardables = tiles.map((tile, idx) => {
+      const tilesExceptThis = [...tiles];
+      tilesExceptThis.splice(idx, 1);
+      const allYaoChu = tilesExceptThis.every(t => ThirteenOrphans.isYaoChu(t));
+      if (!allYaoChu) return null;
+
+      const yaochuCount = tilesExceptThis.reduce((counts, t) => {
+        if (!counts[t.tileID]) counts[t.tileID] = 0;
+
+        counts[t.tileID] += 1;
+        return counts;
+      }, {});
+
+      return Object.values(yaochuCount).length >= 12
+        ? tile
+        : null;
+    }).filter(val => !!val);
+
+    return discardables as MahjongTile[];
+  }
+
+  private static isYaoChu(tile: MahjongTile) {
+    if (
+      tile.type === TILE_TYPE.SANGEN
+      || tile.type === TILE_TYPE.KAZE
+    ) return true;
+    else return tile.index === 0 || tile.index === 8;
+  }
+
+  public static readonly isNormalForm = false;
   public static readonly closedOnly = true;
   public static readonly score = 13;
   public static readonly yakuName = YAKU.THIRTEEN_ORPHANS;

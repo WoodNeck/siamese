@@ -16,9 +16,17 @@ export const WIND = {
 } as const;
 
 export const BODY_TYPE = {
+  HEAD: -1,
   ORDERED: 0,
   SAME: 1,
   KANG: 2
+} as const;
+
+export const KANG_TYPE = {
+  NONE: 0,
+  CLOSED: 1,
+  OPEN: 2,
+  ADDITIVE: 3
 } as const;
 
 export const DATA = {

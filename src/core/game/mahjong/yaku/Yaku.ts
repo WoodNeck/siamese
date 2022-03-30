@@ -3,6 +3,7 @@ import MahjongGame from "../MahjongGame";
 
 interface Yaku {
   closedOnly: boolean;
+  isNormalForm: boolean;
   yakuName: string;
   check(dragon: MahjongDragon, game: MahjongGame): number;
 }

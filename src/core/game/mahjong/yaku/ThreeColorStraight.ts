@@ -30,6 +30,7 @@ class ThreeColorStraight {
       : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.THREE_COLOR_STRAIGHT;
 }

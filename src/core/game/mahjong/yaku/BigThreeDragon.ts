@@ -17,6 +17,7 @@ class BigThreeDragon {
     return sangenBodies.length === 3 ? 13 : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = false;
   public static readonly yakuName = YAKU.BIG_THREE_DRAGON;
 }

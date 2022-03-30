@@ -13,6 +13,7 @@ class HaiTeiMoon {
     return lastTile.isTsumo && game.tiles.left === 0 ? 1 : 0;
   }
 
+  public static readonly isNormalForm = false;
   public static readonly closedOnly = true;
   public static readonly yakuName = YAKU.HAITEI_MOON;
 }

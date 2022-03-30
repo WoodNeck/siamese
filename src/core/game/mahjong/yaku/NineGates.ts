@@ -37,6 +37,7 @@ class NineGates {
       : 0;
   }
 
+  public static readonly isNormalForm = true;
   public static readonly closedOnly = true;
   public static readonly yakuName = YAKU.NINE_GATES;
 }

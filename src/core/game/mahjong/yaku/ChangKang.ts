@@ -12,6 +12,7 @@ class ChangKang {
     return lastTile.isAdditiveKang ? 1 : 0;
   }
 
+  public static readonly isNormalForm = false;
   public static readonly closedOnly = true;
   public static readonly yakuName = YAKU.CHANGKANG;
 }

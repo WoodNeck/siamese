@@ -14,6 +14,7 @@ class MahjongPlayer {
   public hands: MahjongHands;
   public wind: number;
   public playerIdx: number;
+  public riichiFlag: boolean;
   public currentTurn: number;
   public riichiTurn: number;
 
@@ -30,6 +31,7 @@ class MahjongPlayer {
 
     this.point = DEFAULT_POINT;
     this.wind = idx;
+    this.riichiFlag = false;
     this.riichiTurn = -1;
     this.currentTurn = -1;
   }
@@ -39,8 +41,14 @@ class MahjongPlayer {
 
     this.point = DEFAULT_POINT;
     this.wind = WIND.EAST;
+    this.riichiFlag = false;
     this.riichiTurn = -1;
     this.currentTurn = -1;
+  }
+
+  public onTurnStart() {
+    this.currentTurn += 1;
+    this.riichiFlag = false;
   }
 
   public isParent() { return this.wind === WIND.EAST; }

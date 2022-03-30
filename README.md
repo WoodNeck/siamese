@@ -58,3 +58,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="[PATH_TO_YOUR_JSON]"
 Check [GCP Docs](https://cloud.google.com/text-to-speech/docs/quickstart-client-libraries#client-libraries-install-nodejs) for further information.
 
 Then, run with `npm run start` at project root folder.
+
+## CREDITS
+- Riichi Mahjong tiles are used in form of Discord emoji, made with images from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)
+  - [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
