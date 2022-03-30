@@ -20,8 +20,6 @@ interface EnvVariables {
   BOT_LOG_INFO_CHANNEL?: string;
   BOT_LOG_ERROR_CHANNEL?: string;
   BOT_GITHUB_URL?: string;
-  // Discord Bot Lists
-  DBL_KEY?: string;
   // GOOGLE
   GOOGLE_API_KEY?: string;
   GOOGLE_SEARCH_ENGINE_ID?: string;

@@ -123,7 +123,7 @@ class MahjongHands {
       return false;
     });
 
-    // TODO: 리치 가능한 타일 캐시
+    // TODO: 리치 가능한 타일 (버릴 패) 캐시
 
     return riichiableCombinations.length > 0;
   }

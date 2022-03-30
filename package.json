@@ -55,7 +55,6 @@
     "passport-discord": "^0.1.4",
     "pino": "^6.11.0",
     "to-readable-stream": "^2.1.0",
-    "topgg-autoposter": "^1.1.6",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
   },

@@ -3,8 +3,6 @@ import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/b
 import { joinVoiceChannel } from "@discordjs/voice";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
-import AutoPoster from "topgg-autoposter";
-import { BasePoster } from "topgg-autoposter/dist/structs/BasePoster";
 import pino from "pino";
 import chalk from "chalk";
 import mongoose from "mongoose";
@@ -45,7 +43,6 @@ class Siamese extends Discord.Client {
   private _permissions: Readonly<Discord.BitField<Discord.PermissionString, bigint>>;
   private _msgCounts: Discord.Collection<string, number>;
   private _boomBoxes: Discord.Collection<string, BoomBox>;
-  private _dbl: BasePoster | null;
   private _logger: ChannelLogger | ConsoleLogger;
   private _fileLogger: pino.Logger;
 
@@ -58,7 +55,6 @@ class Siamese extends Discord.Client {
   public get database() { return this._database; }
   public get permissions() { return this._permissions; }
   public get logger() { return this._logger; }
-  public get dbl() { return this._dbl; }
 
   public constructor({
     env,
@@ -79,11 +75,6 @@ class Siamese extends Discord.Client {
     this._msgCounts = new Discord.Collection();
     this._boomBoxes = new Discord.Collection();
     this._fileLogger = logger;
-    this._dbl = null;
-
-    if (env.DBL_KEY) {
-      this._dbl = AutoPoster(env.DBL_KEY, this);
-    }
   }
 
   public async setup() {
