@@ -280,9 +280,13 @@ export const MAHJONG = {
   CMD: "마작",
   DESC: "리치마작을 플레이한다냥!",
   JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.MAHJONG} ${author.displayName}의 작탁`,
-  SUMMARY_FIELD_TITLE: (user: GuildMember, idx: number) => {
-    const windEmoji = MAHJONG_EMOJI[TILE_TYPE.KAZE][idx];
-    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}`;
+  PLAYER_FIELD_TITLE: (user: GuildMember, wind: number, postfix: string = "") => {
+    const windEmoji = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
+    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}${postfix}`;
+  },
+  PLAYER_FIELD_OVERFLOW_TITLE: (user: GuildMember, wind: number) => {
+    const windEmoji = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
+    return `${toEmoji(windEmoji.name, windEmoji.id)}${user.displayName}의 버림패 (계속)`;
   },
   TILES_LEFT: (count: number) => `남은 패 수: ${count}`,
   DISCARD_TITLE: (user: GuildMember) => `${user.displayName}의 타패다냥!`,
@@ -290,15 +294,17 @@ export const MAHJONG = {
   KANG_TITLE: (user: GuildMember) => `${user.displayName}의 깡이다냥!`,
   TSUMO_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 쯔모다냥!`,
   RON_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 론이다냥!`,
-  SCORE_FORMAT: (score: number) => `${score}판`,
+  SCORE_FORMAT: (score: number, subscore: number) => `${score}판 ${subscore}부`,
   YAKU_TITLE: "역",
   DORA_INDICATOR_TITLE: "도라표시패",
   ROUND_FORMAT: (wind: number, windRepeat: number) => {
     const roundWind = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
     const roundWindEmoji = toEmoji(roundWind.name, roundWind.id);
 
-    return `${roundWindEmoji} 동장전 동${wind + 1}국${windRepeat > 0 ? ` ${windRepeat}본장` : ""}`;
+    return `${roundWindEmoji} 동${wind + 1}국${windRepeat > 0 ? ` ${windRepeat}본장` : ""}`;
   },
+  RESULT_FOOTER: `${EMOJI.STOPWATCH} 10초 뒤 다음 게임을 시작한다냥!`,
+  END_ROUND_TITLE: "유국이다냥!",
   RIICHI_BAR: [
     MAHJONG_EMOJI.RIICHI[0],
     MAHJONG_EMOJI.RIICHI[1],
@@ -315,7 +321,9 @@ export const MAHJONG = {
   LABEL: {
     KANG: "깡",
     RIICHI: "리치",
-    TSUMO: "쯔모"
+    TSUMO: "쯔모",
+    TENPAI: "텐파이",
+    NO_TENPAI: "노텐"
   },
   SYMBOL: {
     KANG: "KANG",

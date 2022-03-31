@@ -55,7 +55,7 @@ class MahjongDragonGenerator {
     return this.hands;
   }
 
-  public dragonBystring(handStrings: string[], lastTileIdx: number, { isTsumo = true, isKangTile = false, isAdditiveKang = false }: Partial<Omit<MahjongDragon["lastTile"], "tile">> = {}): MahjongDragon {
+  public dragonBystring(handStrings: string[], lastTileIdx: number, { isTsumo = true, isAdditiveKang = false }: Partial<Omit<MahjongDragon["lastTile"], "tile">> = {}): MahjongDragon {
     const { game, parser, hands } = this;
     const charMap = availableCharacters.map(val => val.char);
 
@@ -84,7 +84,6 @@ class MahjongDragonGenerator {
     const result = parser.parseFinished(hands, set, game, {
       tile: tiles[lastTileIdx],
       isTsumo,
-      isKangTile,
       isAdditiveKang
     });
 

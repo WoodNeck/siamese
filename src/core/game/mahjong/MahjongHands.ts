@@ -6,6 +6,7 @@ import SevenPairs from "./yaku/SevenPairs";
 import ThirteenOrphans from "./yaku/ThirteenOrphans";
 
 import { pick } from "~/util/helper";
+import * as EMOJI from "~/const/emoji";
 import { BODY_TYPE, KANG_TYPE, TILE_TYPE } from "~/const/mahjong";
 import { ValueOf } from "~/type/helper";
 
@@ -17,27 +18,21 @@ class MahjongHands {
   public riichiDiscardables: Set<MahjongTile>;
   public scoreInfo: ReturnType<MahjongSetParser["parseFinished"]>;
   public prevTurnKang: ValueOf<typeof KANG_TYPE>;
-  public borrows: {
-    ordered: MahjongTile[][];
-    same: MahjongTile[][];
-    kang: MahjongTile[][];
-  };
+  public borrows: Array<{
+    type: number;
+    tiles: MahjongTile[];
+  }>;
 
   public get tiles() {
     return [
       ...this.holding,
       ...this.kang.flat(1),
-      ...this.borrows.ordered.flat(1),
-      ...this.borrows.same.flat(1),
-      ...this.borrows.kang.flat(1)
+      ...this.borrows.map(({ tiles }) => tiles).flat(1)
     ];
   }
 
   public get cried() {
-    const { ordered, same, kang } = this.borrows;
-    return ordered.length > 0
-      || same.length > 0
-      || kang.length > 0;
+    return this.borrows.length > 0;
   }
 
   public constructor(player: MahjongPlayer) {
@@ -50,11 +45,7 @@ class MahjongHands {
   public reset() {
     this.holding = [];
     this.kang = [];
-    this.borrows = {
-      ordered: [],
-      same: [],
-      kang: []
-    };
+    this.borrows = [];
     this.discards = [];
     this.prevTurnKang = KANG_TYPE.NONE;
   }
@@ -81,6 +72,18 @@ class MahjongHands {
     this.holding = this.holding.filter(tile => tile.tileID !== tileID);
 
     if (kangTiles.length === 4) {
+      const kangTile = kangTiles[0];
+
+      if ((kangTile.type !== TILE_TYPE.KAZE) && (kangTile.type !== TILE_TYPE.SANGEN)) {
+        if (kangTile.index === 4) {
+          kangTiles.sort((a, b) => a.id - b.id);
+          kangTiles.splice(0, 2, ...kangTiles.slice(0, 2).reverse());
+        }
+      }
+
+      kangTiles[0].closedKang = true;
+      kangTiles[3].closedKang = true;
+
       this.kang.push(kangTiles);
 
       this.prevTurnKang = KANG_TYPE.CLOSED;
@@ -88,11 +91,12 @@ class MahjongHands {
       // TODO: 대명깡 구현
     } else if (kangTiles.length === 1) {
       const singleTile = kangTiles[0];
-      const sameTilesIdx = borrows.same.findIndex(tiles => tiles[0].tileID === tileID);
-      const sameTiles = borrows.same.splice(sameTilesIdx, 1)[0];
+      const sameTilesIdx = borrows.findIndex(({ tiles, type }) => tiles[0].tileID === tileID && type === BODY_TYPE.SAME);
+      const sameTiles = borrows[sameTilesIdx];
 
-      sameTiles.splice(sameTiles.findIndex(tile => tile.borrowed), 0, singleTile);
-      borrows.kang.push(sameTiles);
+      // Add kang tile
+      sameTiles.tiles.splice(sameTiles.tiles.findIndex(tile => tile.borrowed), 0, singleTile);
+      sameTiles.type = BODY_TYPE.KANG;
 
       this.prevTurnKang = KANG_TYPE.ADDITIVE;
     }
@@ -117,6 +121,58 @@ class MahjongHands {
   public isRiichiable(): boolean {
     if (this.cried) return false;
 
+    const discardables = this._getTenpaiDiscardables();
+
+    if (discardables.length <= 0) return false;
+
+    const discards = this.discards;
+    const discardablesSet = new Set(discardables);
+
+    for (const tile of discardablesSet.values()) {
+      if (discards.includes(tile)) return false;
+    }
+
+    this.riichiDiscardables = discardablesSet;
+    return true;
+  }
+
+  public isTenpai(): boolean {
+    const discardables = this._getTenpaiDiscardables();
+
+    return discardables.length > 0;
+  }
+
+  public isTsumoable(game: MahjongGame): boolean {
+    const parser = new MahjongSetParser();
+    const holding = this.holding;
+    const set = parser.parse(this);
+    const lastTile = holding[holding.length - 1];
+
+    this.scoreInfo = parser.parseFinished(this, set, game, {
+      tile: lastTile,
+      isTsumo: true,
+      isAdditiveKang: false
+    });
+
+    return !!this.scoreInfo;
+  }
+
+  public toEmoji(): string {
+    const holding = this.holding;
+    const borrows = this.borrows;
+
+    const emojis: string[] = [];
+
+    emojis.push(holding.map(tile => tile.getEmoji()).join(""));
+
+    borrows.forEach(({ tiles }) => {
+      emojis.push(tiles.map(tile => tile.getEmoji()).join(""));
+    });
+
+    return emojis.join(EMOJI.TAB_SPACE);
+  }
+
+  private _getTenpaiDiscardables() {
     const parser = new MahjongSetParser();
     const set = parser.parse(this);
     const tiles = this.tiles;
@@ -168,33 +224,7 @@ class MahjongHands {
     discardables.push(...SevenPairs.riichiableBySet(set, tiles));
     discardables.push(...ThirteenOrphans.riichiableByTiles(tiles));
 
-    if (discardables.length <= 0) return false;
-
-    const discards = this.discards;
-    const discardablesSet = new Set(discardables);
-
-    for (const tile of discardablesSet.values()) {
-      if (discards.includes(tile)) return false;
-    }
-
-    this.riichiDiscardables = discardablesSet;
-    return true;
-  }
-
-  public isTsumoable(game: MahjongGame): boolean {
-    const parser = new MahjongSetParser();
-    const holding = this.holding;
-    const set = parser.parse(this);
-    const lastTile = holding[holding.length - 1];
-
-    this.scoreInfo = parser.parseFinished(this, set, game, {
-      tile: lastTile,
-      isTsumo: true,
-      isKangTile: false,
-      isAdditiveKang: false
-    });
-
-    return !!this.scoreInfo;
+    return discardables;
   }
 }
 

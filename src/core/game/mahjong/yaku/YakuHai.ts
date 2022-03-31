@@ -20,7 +20,7 @@ class YakuHai {
       if (tile.type === TILE_TYPE.SANGEN) {
         allPoints += 1;
       } else if (tile.type === TILE_TYPE.KAZE) {
-        if (tile.index === player.wind) allPoints += 1;
+        if (tile.index === player.getWind(game.wind)) allPoints += 1;
         if (tile.index === game.wind) allPoints += 1;
       }
 

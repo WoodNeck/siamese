@@ -5,13 +5,15 @@ import GameRoom from "../GameRoom";
 import MahjongTile from "./MahjongTile";
 import MahjongTiles from "./MahjongTiles";
 import MahjongPlayer from "./MahjongPlayer";
+import NagashiMangwan from "./yaku/NagashiMangwan";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import { GAME, MAHJONG } from "~/const/command/minigame";
-import { WIND, EMOJI as MAHJONG_EMOJI, KANG_TYPE } from "~/const/mahjong";
+import { WIND, EMOJI as MAHJONG_EMOJI, KANG_TYPE, BODY_TYPE, SCORE } from "~/const/mahjong";
 import { BUTTON_STYLE, MAX_INTERACTION_DURATION } from "~/const/discord";
-import { groupBy, shuffle, toEmoji } from "~/util/helper";
+import { groupBy, shuffle, toEmoji, waitFor } from "~/util/helper";
+import { block } from "~/util/markdown";
 
 class MahjongGame {
   private _threadChannel: ThreadChannel;
@@ -36,6 +38,8 @@ class MahjongGame {
   public get wind() { return this._wind; }
   public get round() { return this._round; }
   public get tiles() { return this._tiles; }
+  public get doras() { return this._doras; }
+  public get uraDoras() { return this._uraDoras; }
   public get currentPlayer() { return this._players[this._currentPlayerIdx]; }
 
   public set wind(val: number) { this._wind = val; }
@@ -91,25 +95,31 @@ class MahjongGame {
     if (this._timeoutFlag || this._round.wind > WIND.NORTH) {
       return false;
     } else {
+      await waitFor(10000); // 다음 라운드까지 10초 대기
       return true;
     }
   }
 
   public startNewRound(changeWind: boolean) {
+    const round = this._round;
     const tiles = new MahjongTiles();
 
     this._doras = tiles.draw(5);
     this._uraDoras = tiles.draw(5);
     this._kangTiles = tiles.draw(4);
 
-    this._round.turn = 0;
-    this._round.doraCount = 1;
+    this._kangTiles.forEach(tile => {
+      tile.isKangTile = true;
+    });
+
+    round.turn = 0;
+    round.doraCount = 1;
 
     if (changeWind) {
-      this._round.wind += 1;
-      this._round.windRepeat = 0;
+      round.wind = (round.wind + 1) % 4;
+      round.windRepeat = 0;
     } else {
-      this._round.windRepeat += 1;
+      round.windRepeat += 1;
     }
 
     this._players.forEach(player => {
@@ -117,14 +127,17 @@ class MahjongGame {
       player.hands.add(tiles.draw(13).sort((a, b) => a.id - b.id));
     });
 
+    this._currentPlayerIdx = (4 - round.wind) % 4;
+
     this._tiles = tiles;
   }
 
   public async nextTurn(): Promise<boolean> {
+    const tiles = this._tiles;
     const currentPlayer = this.currentPlayer;
     const newTile = currentPlayer.hands.prevTurnKang !== KANG_TYPE.NONE
       ? this._drawKangTile()
-      : this._tiles.draw(1)[0];
+      : tiles.draw(1)[0];
 
     currentPlayer.hands.add([newTile]);
     currentPlayer.onTurnStart();
@@ -137,42 +150,75 @@ class MahjongGame {
     const discardInfo = await this._listenDiscard(handsMsg as Discord.Message);
     if (!discardInfo) return false;
 
+    this._round.turn += 1;
+
     if (discardInfo.tsumo) {
-      await this._showRoundResult(true);
-      this.startNewRound(!currentPlayer.isParent());
+      await this._showRoundResult(currentPlayer, true);
       return false;
+    } else if (discardInfo.kang) {
+      await this._showKang();
+      return true;
     } else {
       await this._showDiscard(discardInfo);
       // TODO: 플레이어별 액션 메시지 전송
       // TODO: 현재 플레이어 인덱스 업데이트 & 턴 정보 업데이트
-      return true;
     }
+
+    // 유국
+    if (tiles.left <= 0) {
+      await this._onRoundFinish();
+      return false;
+    }
+
+    return true;
   }
 
   private async _showSummary() {
     const players = this._players;
     const threadChannel = this._threadChannel;
     const currentPlayer = this.currentPlayer;
+    const round = this._round;
     const embed = new MessageEmbed();
 
-    embed.setTitle(MAHJONG.ROUND_FORMAT(this._round.wind, this._round.windRepeat));
-    embed.addField(MAHJONG.DORA_INDICATOR_TITLE, this._doras.map((tile, idx) => {
-      if ((idx + 1) <= this._round.doraCount) return tile.getEmoji();
-      else return toEmoji(MAHJONG_EMOJI.BACK.name, MAHJONG_EMOJI.BACK.id);
-    }).join(""), false);
+    embed.setTitle(MAHJONG.ROUND_FORMAT(round.wind, round.windRepeat));
+    embed.addField(MAHJONG.DORA_INDICATOR_TITLE, this._formatDoraTiles(this._doras), false);
+
+    const additionalFields: Array<{ player: MahjongPlayer; desc: string }> = [];
 
     players.forEach((player, idx) => {
+      const maxTiles = 37;
       const riichi = player.isRiichi ? MAHJONG.RIICHI_BAR : null;
       const point = `${MAHJONG.POINT(player.point)}`;
-      const discards = player.hands.discards.map(tile => tile.getEmoji()).join("") || EMOJI.ZERO_WIDTH_SPACE;
+      const discards = player.hands.discards.map(tile => tile.getEmoji());
+      const cries = player.hands.borrows.map(({ tiles }) => tiles.map(tile => tile.getEmoji()).join(" "));
+      cries.push(...player.hands.kang.map(tiles => tiles.map(tile => tile.getEmoji()).join("")));
 
-      const desc = [[riichi, point].filter(val => !!val).join(" / "), discards].join("\n");
+      const riichiTileCount = riichi ? 3 : 0;
+      const cryTileCount = player.hands.borrows.reduce((total, { tiles }) => total + tiles.length, 0);
 
-      embed.addField(MAHJONG.SUMMARY_FIELD_TITLE(player.user, player.playerIdx), desc, true);
+      if (riichiTileCount + cryTileCount + discards.length > maxTiles) {
+        const overCount = riichiTileCount + cryTileCount + discards.length - maxTiles;
+        const overDiscards = discards.splice(discards.length - overCount);
+
+        additionalFields.push({ player, desc: overDiscards.join("") });
+      }
+
+      const desc = [[riichi, point].filter(val => !!val).join(" / "), discards.join("") || EMOJI.ZERO_WIDTH_SPACE];
+
+      if (cries.length) {
+        desc.splice(1, 0, cries.join(" "));
+      }
+
+      embed.addField(MAHJONG.PLAYER_FIELD_TITLE(player.user, player.getWind(round.wind)), desc.join("\n"), true);
       if (idx % 2) {
         embed.addField(EMOJI.ZERO_WIDTH_SPACE, EMOJI.ZERO_WIDTH_SPACE, true);
       }
     });
+
+    additionalFields.forEach(({ player, desc }) => {
+      embed.addField(MAHJONG.PLAYER_FIELD_OVERFLOW_TITLE(player.user, player.getWind(round.wind)), desc, false);
+    });
+
     embed.setColor(COLOR.BOT);
 
     embed.setFooter({
@@ -320,7 +366,6 @@ class MahjongGame {
   }
 
   private async _showDiscard({ riichi }: {
-    kang: boolean;
     riichi: boolean;
   }) {
     const threadChannel = this._threadChannel;
@@ -349,11 +394,36 @@ class MahjongGame {
     });
   }
 
-  private async _showRoundResult(isTsumo: boolean) {
+  private async _showKang() {
     const threadChannel = this._threadChannel;
     const currentPlayer = this.currentPlayer;
     const embed = new MessageEmbed();
-    const scoreInfo = currentPlayer.hands.scoreInfo!;
+
+    const hands = currentPlayer.hands;
+
+    const kangBorrows = hands.borrows.filter(({ type }) => type === BODY_TYPE.KANG);
+    const kangTiles = hands.prevTurnKang === KANG_TYPE.CLOSED
+      ? hands.kang[hands.kang.length - 1]
+      : kangBorrows[kangBorrows.length - 1].tiles;
+
+    embed.setAuthor({
+      name: MAHJONG.KANG_TITLE(currentPlayer.user),
+      iconURL: currentPlayer.user.displayAvatarURL()
+    });
+
+    embed.setColor(COLOR.BOT);
+
+    await threadChannel.send({
+      content: kangTiles.map(tile => tile.getEmoji()).join(""),
+      embeds: [embed]
+    });
+  }
+
+  private async _showRoundResult(winner: MahjongPlayer, isTsumo: boolean) {
+    const threadChannel = this._threadChannel;
+    const players = this._players;
+    const embed = new MessageEmbed();
+    const scoreInfo = winner.hands.scoreInfo!;
 
     const { head, body, lastTile } = scoreInfo.dragon;
     const last = lastTile.tile;
@@ -366,19 +436,79 @@ class MahjongGame {
     ].join("");
 
     const totalScore = scoreInfo.scores.reduce((total, { score }) => total + score, 0);
+    const subscore = scoreInfo.subscore;
+    const roundWind = this._round.wind;
+    const windRepeat = this._round.windRepeat;
 
-    embed.setTitle(isTsumo ? MAHJONG.TSUMO_TITLE(currentPlayer.user, last) : MAHJONG.RON_TITLE(currentPlayer.user, last));
-    embed.setDescription(MAHJONG.SCORE_FORMAT(totalScore));
+    const { name: scoreName, score: baseScore } = this._getBaseScore(totalScore, subscore);
 
-    // TODO: 플레이어별 점수 증감 표시 (diff 이용)
+    embed.setTitle(isTsumo ? MAHJONG.TSUMO_TITLE(winner.user, last) : MAHJONG.RON_TITLE(winner.user, last));
 
-    embed.addField(MAHJONG.YAKU_TITLE, scoreInfo.scores.map(({ yaku, score }) => `${EMOJI.MIDDLE_DOT} ${yaku.yakuName} - ${MAHJONG.SCORE_FORMAT(score)}`).join("\n"));
+    let winnerScore = 0;
+    const scoreDiff = players.map(() => 0);
+
+    if (isTsumo) {
+      const tsumoBaseScore = winner.isParent(roundWind)
+        ? 2 * baseScore
+        : baseScore;
+
+      players.forEach((player, playerIdx) => {
+        if (player === winner) return;
+
+        let basePointToDecrease = player.isParent(roundWind)
+          ? tsumoBaseScore * 2
+          : tsumoBaseScore;
+
+        basePointToDecrease = Math.ceil(basePointToDecrease / 100) * 100;
+
+        const riichiPoint = player.isRiichi ? 1000 : 0;
+        const pointToDecrease = basePointToDecrease + windRepeat * 100 + riichiPoint;
+
+        scoreDiff[playerIdx] = -pointToDecrease;
+        winnerScore += pointToDecrease;
+      });
+
+      scoreDiff[winner.playerIdx] = winnerScore;
+    } else {
+      // TODO: 론
+    }
+
+    embed.setDescription([scoreName, MAHJONG.POINT(winnerScore)].join(" / "));
+
+    const doras = [this._formatDoraTiles(this._doras)];
+
+    if (winner.isRiichi) {
+      doras.push(this._formatDoraTiles(this._uraDoras));
+    }
+
+    embed.addField(MAHJONG.DORA_INDICATOR_TITLE, doras.join(EMOJI.TAB_SPACE), false);
+
+    players.forEach((player, idx) => {
+      const prevScore = player.point;
+      const pointDiff = scoreDiff[idx];
+      const desc = this._formatPointDiff(pointDiff, prevScore);
+
+      // 실제 포인트 증감
+      player.point += pointDiff;
+
+      embed.addField(MAHJONG.PLAYER_FIELD_TITLE(player.user, player.getWind(roundWind)), desc, true);
+      if (idx % 2) {
+        embed.addField(EMOJI.ZERO_WIDTH_SPACE, EMOJI.ZERO_WIDTH_SPACE, true);
+      }
+    });
+
+    embed.addField(MAHJONG.YAKU_TITLE, scoreInfo.scores.map(({ yaku, score }) => `${EMOJI.MIDDLE_DOT} ${yaku.yakuName} - ${score}`).join("\n"));
     embed.setColor(COLOR.BOT);
+    embed.setFooter({
+      text: MAHJONG.RESULT_FOOTER
+    });
 
     await threadChannel.send({
       content: dragon,
       embeds: [embed]
     });
+
+    this.startNewRound(!winner.isParent(this._round.wind));
   }
 
   private async _showTimeoutMessage() {
@@ -389,6 +519,130 @@ class MahjongGame {
     }).catch(() => void 0);
 
     await this.destroy();
+  }
+
+  private _getBaseScore(score: number, subscore: number): {
+    name: string;
+    score: number;
+  } {
+    // 만관 이상
+    const isOver5 = score >= 5
+      || (score === 4 && subscore >= 40)
+      || (score === 3 && subscore >= 70);
+
+    if (isOver5) {
+      return this._getBaseScoreOverMangwan(Math.max(score, 5)); // 최소 만관
+    }
+
+    return {
+      score: subscore * (2 ** (score + 2)),
+      name: MAHJONG.SCORE_FORMAT(score, subscore)
+    };
+  }
+
+  private _getBaseScoreOverMangwan(score: number): {
+    name: string;
+    score: number;
+  } {
+    if (score <= 5) {
+      return {
+        name: SCORE.MANGWAN,
+        score: 2000
+      };
+    } else if (score <= 7) {
+      return {
+        name: SCORE.HANEMAN,
+        score: 3000
+      };
+    } else if (score <= 10) {
+      return {
+        name: SCORE.BAIMAN,
+        score: 4000
+      };
+    } else if (score <= 12) {
+      return {
+        name: SCORE.SANBAIMAN,
+        score: 6000
+      };
+    } else {
+      return {
+        name: SCORE.YAKUMAN,
+        score: 8000
+      };
+    }
+  }
+
+  // 유국
+  private async _onRoundFinish() {
+    const round = this._round;
+    const players = this._players;
+
+    // 나가시만관 체크
+    const mangwanPlayer = players.find(player => NagashiMangwan.checkByHands(player.hands));
+
+    if (mangwanPlayer) {
+      mangwanPlayer.hands.scoreInfo = {
+        dragon: {
+          head: [],
+          body: [],
+          hands: mangwanPlayer.hands,
+          tiles: mangwanPlayer.hands.tiles,
+          lastTile: {
+            tile: mangwanPlayer.hands.holding[mangwanPlayer.hands.holding.length - 1],
+            isTsumo: true,
+            isAdditiveKang: false
+          }
+        },
+        scores: [
+          { yaku: NagashiMangwan, score: 5 }
+        ],
+        subscore: 20
+      };
+
+      return await this._showRoundResult(mangwanPlayer, true);
+    }
+
+    const threadChannel = this._threadChannel;
+
+    // 텐파이 체크
+    const tenpais = players.map(player => player.hands.isTenpai());
+    const tenpaiEmbed = new MessageEmbed();
+    const parentIdx = players.findIndex(player => player.isParent(round.wind));
+
+    tenpaiEmbed.setTitle(MAHJONG.END_ROUND_TITLE);
+    tenpaiEmbed.setColor(COLOR.BOT);
+    tenpaiEmbed.setFooter({
+      text: MAHJONG.RESULT_FOOTER
+    });
+
+    const tenpaiCount = tenpais.filter(val => val).length;
+    const tenpaiScore = tenpaiCount === 4 || tenpaiCount === 0
+      ? 0
+      : 3000;
+
+    players.forEach((player, idx) => {
+      const isTenpai = tenpais[idx];
+      const tenpaiStr = isTenpai ? MAHJONG.LABEL.TENPAI : MAHJONG.LABEL.NO_TENPAI;
+      const handsEmoji = player.hands.toEmoji();
+      const prevScore = player.point;
+      const pointDiff = isTenpai
+        ? tenpaiScore / tenpaiCount
+        : -tenpaiScore / (4 - tenpaiCount);
+
+      player.point += pointDiff;
+
+      tenpaiEmbed.addField(
+        MAHJONG.PLAYER_FIELD_TITLE(player.user, player.getWind(round.wind), ` - ${tenpaiStr}`),
+        [handsEmoji, this._formatPointDiff(pointDiff, prevScore)].join("\n"),
+        false
+      );
+    });
+
+    await threadChannel.send({
+      embeds: [tenpaiEmbed]
+    });
+
+    this.startNewRound(!tenpais[parentIdx]);
   }
 
   private _shouldContinueRound() {
@@ -428,7 +682,7 @@ class MahjongGame {
     hands.getKangableTiles().forEach(kangTiles => {
       const tile = kangTiles[0];
       const kangBtn = new MessageButton();
-      kangBtn.setCustomId(`${MAHJONG.SYMBOL.KANG}${tile.id}`);
+      kangBtn.setCustomId(`${MAHJONG.SYMBOL.KANG}${tile.tileID}`);
       kangBtn.setStyle(BUTTON_STYLE.PRIMARY);
       kangBtn.setLabel(MAHJONG.LABEL.KANG);
       kangBtn.setEmoji(tile.getEmoji());
@@ -465,6 +719,21 @@ class MahjongGame {
     this._round.doraCount += 1;
 
     return this._kangTiles.splice(0, 1)[0];
+  }
+
+  private _formatDoraTiles(tiles: MahjongTile[]) {
+    return tiles.map((tile, idx) => {
+      if ((idx + 1) <= this._round.doraCount) return tile.getEmoji();
+      else return toEmoji(MAHJONG_EMOJI.BACK.name, MAHJONG_EMOJI.BACK.id);
+    }).join("");
+  }
+
+  private _formatPointDiff(pointDiff: number, prevScore: number) {
+    return pointDiff > 0
+      ? block(`${prevScore}\n+ ${pointDiff}`, "diff")
+      : pointDiff < 0
+        ? block(`${prevScore}\n- ${Math.abs(pointDiff)}`, "diff")
+        : block(`${prevScore}`);
   }
 }
 

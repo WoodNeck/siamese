@@ -13,7 +13,6 @@ interface MahjongDragon {
   lastTile: {
     tile: MahjongTile;
     isTsumo: boolean;
-    isKangTile: boolean;
     isAdditiveKang: boolean;
   };
 }

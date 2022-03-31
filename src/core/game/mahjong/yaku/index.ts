@@ -33,8 +33,9 @@ import BigThreeDragon from "./BigThreeDragon";
 import LittleFourWinds from "./LittleFourWinds";
 import BigFourWinds from "./BigFourWinds";
 import FourQuads from "./FourQuads";
+import Dora from "./Dora";
 
-// !! Don't include ThirteenOrphans
+// !! Don't include ThirteenOrphans & NagashiMangwan
 export const YAKU_LIST: Yaku[] = [
   MenzenTsumo,
   Riichi,
@@ -69,5 +70,6 @@ export const YAKU_LIST: Yaku[] = [
   BigThreeDragon,
   LittleFourWinds,
   BigFourWinds,
-  FourQuads
+  FourQuads,
+  Dora
 ];

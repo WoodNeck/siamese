@@ -9,7 +9,7 @@ import { YAKU } from "~/const/mahjong";
 class LinShang {
   public static check(dragon: MahjongDragon) {
     const { lastTile } = dragon;
-    return lastTile.isTsumo && lastTile.isKangTile ? 1 : 0;
+    return lastTile.isTsumo && lastTile.tile.isKangTile ? 1 : 0;
   }
 
   public static readonly isNormalForm = false;

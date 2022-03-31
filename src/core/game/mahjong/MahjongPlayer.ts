@@ -12,7 +12,7 @@ class MahjongPlayer {
   public interaction: Discord.MessageComponentInteraction;
   public point: number;
   public hands: MahjongHands;
-  public wind: number;
+  public baseWind: number;
   public playerIdx: number;
   public riichiFlag: boolean;
   public currentTurn: number;
@@ -30,17 +30,19 @@ class MahjongPlayer {
     this.hands = new MahjongHands(this);
 
     this.point = DEFAULT_POINT;
-    this.wind = idx;
+    this.baseWind = idx;
     this.riichiFlag = false;
     this.riichiTurn = -1;
     this.currentTurn = -1;
   }
 
+  public getWind(roundWind: number) {
+    return (this.baseWind + roundWind) % 4;
+  }
+
   public reset() {
     this.hands.reset();
 
-    this.point = DEFAULT_POINT;
-    this.wind = WIND.EAST;
     this.riichiFlag = false;
     this.riichiTurn = -1;
     this.currentTurn = -1;
@@ -51,7 +53,9 @@ class MahjongPlayer {
     this.riichiFlag = false;
   }
 
-  public isParent() { return this.wind === WIND.EAST; }
+  public isParent(roundWind: number) {
+    return this.getWind(roundWind) === WIND.EAST;
+  }
 }
 
 export default MahjongPlayer;

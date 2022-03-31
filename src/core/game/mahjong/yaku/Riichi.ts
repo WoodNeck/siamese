@@ -9,7 +9,7 @@ import { YAKU } from "~/const/mahjong";
 class Riichi {
   public static check({ hands }: MahjongDragon) {
     // FIXME: 더블리치 체크
-    return hands.player.riichiTurn >= 0 ? 1 : 0;
+    return hands.player.isRiichi ? 1 : 0;
   }
 
   public static readonly isNormalForm = false;

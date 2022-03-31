@@ -18,7 +18,7 @@ class PingHu {
     const currentPlayer = hands.player;
     const headTile = head[0][0];
     const isPlayerWind = headTile.type === TILE_TYPE.KAZE
-      && (headTile.index === currentPlayer.wind || headTile.index === game.wind);
+      && (headTile.index === currentPlayer.getWind(game.wind) || headTile.index === game.wind);
 
     if (headTile.type === TILE_TYPE.SANGEN || isPlayerWind) return 0;
 

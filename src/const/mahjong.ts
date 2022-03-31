@@ -233,5 +233,15 @@ export const YAKU = {
   BIG_THREE_DRAGON: "대삼원",
   LITTLE_FOUR_WINDS: "소사희",
   BIG_FOUR_WINDS: "대사희",
-  FOUR_QUADS: "사공자"
+  FOUR_QUADS: "사공자",
+  DORA: "도라",
+  NAGASHI_MANGWAN: "나가시만관"
+} as const;
+
+export const SCORE = {
+  MANGWAN: "만관",
+  HANEMAN: "하네만",
+  BAIMAN: "배만",
+  SANBAIMAN: "삼배만",
+  YAKUMAN: "역만"
 } as const;

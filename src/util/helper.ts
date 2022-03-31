@@ -158,3 +158,9 @@ export const pick = <T>(arr: T[], by: number) => {
 
   return cases;
 };
+
+export const waitFor = async (time: number) => {
+  return new Promise<void>(resolve => {
+    setTimeout(resolve, time);
+  });
+};

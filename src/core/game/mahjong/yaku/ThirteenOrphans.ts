@@ -1,10 +1,11 @@
 import MahjongHands from "../MahjongHands";
 import MahjongTile from "../MahjongTile";
+import MahjongSetParser from "../MahjongSetParser";
 
 import Yaku from "./Yaku";
 
 import { staticImplements } from "~/util/helper";
-import { TILE_TYPE, YAKU } from "~/const/mahjong";
+import { YAKU } from "~/const/mahjong";
 
 @staticImplements<Yaku>()
 class ThirteenOrphans {
@@ -15,7 +16,7 @@ class ThirteenOrphans {
   public static checkByHands(hands: MahjongHands): boolean {
     const { holding } = hands;
 
-    const allYaoChu = holding.every(tile => ThirteenOrphans.isYaoChu(tile));
+    const allYaoChu = holding.every(tile => MahjongSetParser.checkYaoChu(tile));
 
     if (!allYaoChu) return false;
 
@@ -30,14 +31,14 @@ class ThirteenOrphans {
   }
 
   public static riichiableByTiles(tiles: MahjongTile[]): MahjongTile[] {
-    const yaochuTiles = tiles.filter(tile => ThirteenOrphans.isYaoChu(tile));
+    const yaochuTiles = tiles.filter(tile => MahjongSetParser.checkYaoChu(tile));
 
     if (yaochuTiles.length < 13) return [];
 
     const discardables = tiles.map((tile, idx) => {
       const tilesExceptThis = [...tiles];
       tilesExceptThis.splice(idx, 1);
-      const allYaoChu = tilesExceptThis.every(t => ThirteenOrphans.isYaoChu(t));
+      const allYaoChu = tilesExceptThis.every(t => MahjongSetParser.checkYaoChu(t));
       if (!allYaoChu) return null;
 
       const yaochuCount = tilesExceptThis.reduce((counts, t) => {
@@ -53,14 +54,6 @@ class ThirteenOrphans {
     }).filter(val => !!val);
 
     return discardables as MahjongTile[];
-  }
-
-  private static isYaoChu(tile: MahjongTile) {
-    if (
-      tile.type === TILE_TYPE.SANGEN
-      || tile.type === TILE_TYPE.KAZE
-    ) return true;
-    else return tile.index === 0 || tile.index === 8;
   }
 
   public static readonly isNormalForm = false;

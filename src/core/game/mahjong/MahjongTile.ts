@@ -11,6 +11,8 @@ class MahjongTile {
 
   public borrowed: boolean;
   public lent: boolean;
+  public isKangTile: boolean; // 왕패
+  public closedKang: boolean; // 안깡 표시용
 
   public constructor({
     id,
@@ -28,9 +30,10 @@ class MahjongTile {
     this.type = type;
     this.isRedDora = isRedDora;
 
-    this.isRedDora = false;
     this.borrowed = false;
     this.lent = false;
+    this.isKangTile = false;
+    this.closedKang = false;
   }
 
   public getEmoji(): string {
@@ -43,9 +46,11 @@ class MahjongTile {
         ? MAHJONG.EMOJI_GRAYSCALE
         : MAHJONG.EMOJI;
 
-    const emoji = this.isRedDora
-      ? emojiPool.DORA[type]
-      : emojiPool[type][index];
+    const emoji = this.closedKang
+      ? MAHJONG.EMOJI.BACK
+      : this.isRedDora
+        ? emojiPool.DORA[type]
+        : emojiPool[type][index];
 
     return toEmoji(emoji.name, emoji.id);
   }
