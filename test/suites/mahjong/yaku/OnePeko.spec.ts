@@ -17,7 +17,7 @@ describe("이페코", () => {
       "삭3", "삭4", "삭5",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = OnePeko.check(dragon);
 
     expect(score).to.equal(1);
@@ -31,7 +31,7 @@ describe("이페코", () => {
       "삭2", "삭3", "삭4",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = OnePeko.check(dragon);
 
     expect(score).to.equal(0);
@@ -46,7 +46,7 @@ describe("이페코", () => {
       "통3", "통4", "통5",
       "만4", "만4"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = OnePeko.check(dragon);
 
     expect(score).to.equal(0);

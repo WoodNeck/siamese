@@ -8,7 +8,7 @@ import { BODY_TYPE, YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class ThreeColorStraight {
   public static check(dragon: MahjongDragon) {
-    const { body, hands } = dragon;
+    const { body, cried } = dragon;
     const ordered = body.filter(({ type }) => type === BODY_TYPE.ORDERED);
 
     const hasSame = pick(ordered, 3).some(([set1, set2, set3]) => {
@@ -24,7 +24,7 @@ class ThreeColorStraight {
     });
 
     return hasSame
-      ? hands.cried
+      ? cried
         ? 1
         : 2
       : 0;

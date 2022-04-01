@@ -17,8 +17,7 @@ describe("국사무쌍", () => {
       "동", "남", "서", "북",
       "백", "발", "중", "중"
     ];
-    const hands = generator.handsByString(tiles);
-    const success = ThirteenOrphans.checkByHands(hands);
+    const success = ThirteenOrphans.checkByTiles(generator.tilesByString(tiles));
 
     expect(success).to.be.true;
   });
@@ -31,8 +30,7 @@ describe("국사무쌍", () => {
       "동", "남", "서", "북",
       "백", "발", "중", "중"
     ];
-    const hands = generator.handsByString(tiles);
-    const success = ThirteenOrphans.checkByHands(hands);
+    const success = ThirteenOrphans.checkByTiles(generator.tilesByString(tiles));
 
     expect(success).to.be.false;
   });
@@ -45,8 +43,7 @@ describe("국사무쌍", () => {
       "동", "남", "서", "북",
       "백", "발", "중", "중"
     ];
-    const hands = generator.handsByString(tiles);
-    const success = ThirteenOrphans.checkByHands(hands);
+    const success = ThirteenOrphans.checkByTiles(generator.tilesByString(tiles));
 
     expect(success).to.be.false;
   });
@@ -59,9 +56,66 @@ describe("국사무쌍", () => {
       "동", "남", "서", "북",
       "백", "발", "중", "통5"
     ];
-    const hands = generator.handsByString(tiles);
-    const success = ThirteenOrphans.checkByHands(hands);
+    const success = ThirteenOrphans.checkByTiles(generator.tilesByString(tiles));
 
     expect(success).to.be.false;
+  });
+
+  describe("getTenpaiCandidates", () => {
+    it("13면팅", () => {
+      const tiles = generator.tilesByString([
+        "만1", "만9",
+        "삭1", "삭9",
+        "통1", "통9",
+        "동", "남", "서", "북",
+        "백", "발", "중"
+      ]);
+
+      const candidates = ThirteenOrphans.getTenpaiCandidates(tiles).sort((a, b) => a - b);
+
+      expect(candidates).to.deep.equal(tiles.map(tile => tile.tileID).sort((a, b) => a - b));
+    });
+
+    it("13면팅 (2)", () => {
+      const tiles = generator.tilesByString([
+        "만1", "만9",
+        "삭1", "삭9",
+        "통1", "통9",
+        "동", "남", "서", "북",
+        "백", "발", "중", "중"
+      ]);
+
+      const candidates = ThirteenOrphans.getTenpaiCandidates(tiles).sort((a, b) => a - b);
+      const tileIDSet = new Set(tiles.map(tile => tile.tileID).sort((a, b) => a - b));
+
+      expect(candidates).to.deep.equal([...tileIDSet.values()]);
+    });
+
+    it("텐파이", () => {
+      const tiles = generator.tilesByString([
+        "만1", "만9",
+        "삭1", "삭9",
+        "통1", "통9",
+        "동", "남", "서", "북",
+        "백", "발", "발"
+      ]);
+      const left = generator.tilesByString(["중"]);
+      const candidates = ThirteenOrphans.getTenpaiCandidates(tiles);
+
+      expect(candidates).to.deep.equal(left.map(tile => tile.tileID));
+    });
+
+    it("노텐", () => {
+      const tiles = generator.tilesByString([
+        "만1", "만9",
+        "삭1", "삭9",
+        "통1", "통9",
+        "동", "남", "서", "북",
+        "백", "발", "삭5"
+      ]);
+      const candidates = ThirteenOrphans.getTenpaiCandidates(tiles);
+
+      expect(candidates.length).to.equal(0);
+    });
   });
 });

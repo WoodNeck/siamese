@@ -17,7 +17,7 @@ describe("소삼원", () => {
       "발", "발", "발",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = LittleThreeDragon.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("소삼원", () => {
       "발", "발", "발",
       "만8", "만8"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = LittleThreeDragon.check(dragon);
 
     expect(score).to.equal(0);
@@ -45,7 +45,7 @@ describe("소삼원", () => {
       "발", "발", "발",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = LittleThreeDragon.check(dragon);
 
     expect(score).to.equal(0);

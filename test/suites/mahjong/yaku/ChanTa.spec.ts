@@ -17,7 +17,7 @@ describe("찬타", () => {
       "삭1", "삭1", "삭1",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ChanTa.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("찬타", () => {
       "남", "남", "남",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ChanTa.check(dragon);
 
     expect(score).to.equal(2);
@@ -45,7 +45,7 @@ describe("찬타", () => {
       "남", "남", "남",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ChanTa.check(dragon);
 
     expect(score).to.equal(0);
@@ -59,7 +59,7 @@ describe("찬타", () => {
       "통3", "통4", "통5",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ChanTa.check(dragon);
 
     expect(score).to.equal(0);

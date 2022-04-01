@@ -8,7 +8,7 @@ import { TILE_TYPE, YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class Flush {
   public static check(dragon: MahjongDragon) {
-    const { tiles, hands } = dragon;
+    const { tiles, cried } = dragon;
     const numTiles = tiles.filter(tile => tile.type !== TILE_TYPE.KAZE && tile.type !== TILE_TYPE.SANGEN);
 
     if (numTiles.length !== 14) return 0;
@@ -17,7 +17,7 @@ class Flush {
     const allSameType = numTiles.every(tile => tile.type === numType);
 
     return allSameType
-      ? hands.cried
+      ? cried
         ? 5
         : 6
       : 0;

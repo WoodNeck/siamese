@@ -1,33 +1,33 @@
 import { range } from "~/util/helper";
 
-export const TILE_TYPE = {
-  MAN: 0,
-  PIN: 1,
-  SOU: 2,
-  KAZE: 3,
-  SANGEN: 4
-} as const;
+export enum TILE_TYPE {
+  MAN,
+  PIN,
+  SOU,
+  KAZE,
+  SANGEN
+}
 
-export const WIND = {
-  EAST: 0,
-  SOUTH: 1,
-  WEST: 2,
-  NORTH: 3
-} as const;
+export enum WIND {
+  EAST,
+  SOUTH,
+  WEST,
+  NORTH
+}
 
-export const BODY_TYPE = {
-  HEAD: -1,
-  ORDERED: 0,
-  SAME: 1,
-  KANG: 2
-} as const;
+export enum BODY_TYPE {
+  HEAD,
+  ORDERED,
+  SAME,
+  KANG
+}
 
-export const KANG_TYPE = {
-  NONE: 0,
-  CLOSED: 1,
-  OPEN: 2,
-  ADDITIVE: 3
-} as const;
+export enum KANG_TYPE {
+  NONE,
+  CLOSED,
+  OPEN,
+  ADDITIVE
+}
 
 export const DATA = {
   MAN: range(9).map(index => ({ type: TILE_TYPE.MAN, index })),

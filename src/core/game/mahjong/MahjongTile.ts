@@ -6,6 +6,7 @@ class MahjongTile {
   public readonly index: number;
   public readonly type: number;
   public readonly isRedDora: boolean;
+  public readonly isLetter: boolean;
 
   public get tileID() { return this.type * 9 + this.index; }
 
@@ -29,6 +30,7 @@ class MahjongTile {
     this.index = index;
     this.type = type;
     this.isRedDora = isRedDora;
+    this.isLetter = type === MAHJONG.TILE_TYPE.SANGEN || type === MAHJONG.TILE_TYPE.KAZE;
 
     this.borrowed = false;
     this.lent = false;

@@ -6,6 +6,7 @@ import MahjongSetParser from "../src/core/game/mahjong/MahjongSetParser";
 import MahjongGame from "../src/core/game/mahjong/MahjongGame";
 
 import MahjongPlayerMock from "./MahjongPlayerMock";
+import MahjongHandsParser from "../src/core/game/mahjong/MahjongHandsParser";
 
 const availableCharacters = [
   { char: "만", index: 0, offset: 0, type: TILE_TYPE.MAN },
@@ -14,24 +15,33 @@ const availableCharacters = [
   { char: "동", index: 27, offset: 0, type: TILE_TYPE.KAZE },
   { char: "남", index: 27, offset: 1, type: TILE_TYPE.KAZE },
   { char: "서", index: 27, offset: 2, type: TILE_TYPE.KAZE },
-  { char: "북", index: 37, offset: 3, type: TILE_TYPE.KAZE },
+  { char: "북", index: 27, offset: 3, type: TILE_TYPE.KAZE },
   { char: "백", index: 31, offset: 0, type: TILE_TYPE.SANGEN },
   { char: "발", index: 31, offset: 1, type: TILE_TYPE.SANGEN },
   { char: "중", index: 31, offset: 2, type: TILE_TYPE.SANGEN }
 ];
 
 class MahjongDragonGenerator {
-  public game = new MahjongGame([], null as any);
-  public parser = new MahjongSetParser();
-  public hands = new MahjongHands(new MahjongPlayerMock());
+  public game: MahjongGame;
+  public setParser: MahjongSetParser;
+  public scoreParser: MahjongHandsParser;
+  public hands: MahjongHands;
+
+  public constructor() {
+    this.game = new MahjongGame([], null as any);
+    this.setParser = new MahjongSetParser();
+    this.scoreParser = new MahjongHandsParser();
+    this.hands = new MahjongHands(new MahjongPlayerMock(this.game), this.game);
+  }
 
   public reset(): void {
     this.hands.reset();
     this.game.startNewRound(true);
-    this.game.wind = WIND.EAST;
+    (this.game as any)._wind = WIND.EAST;
+    (this.game as any)._round.wind = WIND.EAST;
   }
 
-  public handsByString(handStrings: string[]): MahjongHands {
+  public tilesByString(handStrings: string[]): MahjongTile[] {
     const charMap = availableCharacters.map(val => val.char);
 
     handStrings.forEach(hand => {
@@ -50,48 +60,33 @@ class MahjongDragonGenerator {
         return tile;
       }).sort((a, b) => a.id - b.id);
 
-    this.hands.add(tiles);
+    return tiles;
+  }
+
+  public handsByString(handStrings: string[]): MahjongHands {
+    const tiles = this.tilesByString(handStrings);
+    const lastTile = tiles.splice(tiles.length - 1, 1)[0];
+
+    this.hands.init(tiles);
+    this.hands.add(lastTile);
 
     return this.hands;
   }
 
-  public dragonBystring(handStrings: string[], lastTileIdx: number, { isTsumo = true, isAdditiveKang = false }: Partial<Omit<MahjongDragon["lastTile"], "tile">> = {}): MahjongDragon {
-    const { game, parser, hands } = this;
-    const charMap = availableCharacters.map(val => val.char);
+  public dragonBystring(handStrings: string[]): MahjongDragon {
+    const tiles = this.tilesByString(handStrings);
+    const lastTile = tiles.splice(tiles.length - 1, 1)[0];
 
-    handStrings.forEach(hand => {
-      if (!charMap.includes(hand[0])) {
-        throw new Error(`${hand} is not an available character`);
-      }
-    });
+    this.hands.init(tiles);
+    this.hands.add(lastTile);
 
-    const duplications = new Map<string, number>();
+    const dragon = this.hands.handsInfo?.scoreInfo?.dragon;
 
-    const tiles = handStrings
-      .map(hand => {
-        const tile = this._toTile(hand, duplications);
-
-        (tile as any).name = hand;
-
-        return tile;
-      })
-      .sort((a, b) => a.id - b.id);
-
-    hands.add(tiles);
-
-    const set = parser.parse(hands);
-
-    const result = parser.parseFinished(hands, set, game, {
-      tile: tiles[lastTileIdx],
-      isTsumo,
-      isAdditiveKang
-    });
-
-    if (!result) {
+    if (!dragon) {
       throw new Error("Can't create dragon");
     }
 
-    return result.dragon;
+    return dragon;
   }
 
   private _toTile(hand: string, duplications: Map<string, number>) {

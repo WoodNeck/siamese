@@ -18,7 +18,7 @@ describe("역패", () => {
       "만4", "만5", "만6",
       "백", "백", "백"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = YakuHai.check(dragon, generator.game);
 
     expect(score).to.equal(1);
@@ -32,7 +32,7 @@ describe("역패", () => {
       "삭1", "삭2", "삭3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -47,7 +47,7 @@ describe("역패", () => {
       "삭1", "삭2", "삭3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -62,8 +62,7 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-
+    const dragon = generator.dragonBystring(hands);
     const score = YakuHai.check(dragon, generator.game);
 
     expect(score).to.equal(2);
@@ -77,8 +76,9 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-    generator.game.wind = WIND.SOUTH;
+    const dragon = generator.dragonBystring(hands);
+    (generator.game as any)._wind = WIND.SOUTH;
+    (generator.game as any)._round.wind = WIND.EAST;
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -93,8 +93,8 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-    dragon.hands.player.wind = WIND.SOUTH;
+    const dragon = generator.dragonBystring(hands);
+    (dragon.player as any)._baseWind = WIND.SOUTH;
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -109,8 +109,8 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-    dragon.hands.player.wind = WIND.SOUTH;
+    const dragon = generator.dragonBystring(hands);
+    (dragon.player as any)._baseWind = WIND.SOUTH;
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -125,8 +125,8 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-    dragon.hands.player.wind = WIND.WEST;
+    const dragon = generator.dragonBystring(hands);
+    (dragon.player as any)._baseWind = WIND.WEST;
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -141,8 +141,8 @@ describe("역패", () => {
       "통1", "통2", "통3",
       "삭4", "삭5", "삭6"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
-    dragon.hands.player.wind = WIND.NORTH;
+    const dragon = generator.dragonBystring(hands);
+    (dragon.player as any)._baseWind = WIND.NORTH;
 
     const score = YakuHai.check(dragon, generator.game);
 
@@ -157,7 +157,7 @@ describe("역패", () => {
       "만4", "만5", "만6",
       "만7", "만8", "만9"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = YakuHai.check(dragon, generator.game);
 
     expect(score).to.equal(0);

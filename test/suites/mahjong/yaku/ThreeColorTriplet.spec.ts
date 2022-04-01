@@ -17,7 +17,7 @@ describe("삼색동각", () => {
       "삭4", "삭5", "삭6",
       "동", "동"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorTriplet.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("삼색동각", () => {
       "동", "동", "동",
       "백", "백"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorTriplet.check(dragon);
 
     expect(score).to.equal(0);

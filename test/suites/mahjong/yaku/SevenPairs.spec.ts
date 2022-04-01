@@ -17,7 +17,7 @@ describe("치또이쯔", () => {
       "통8", "중", "중",
       "동", "동"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = SevenPairs.check(dragon);
 
     expect(score).to.equal(2);
@@ -33,7 +33,7 @@ describe("치또이쯔", () => {
       "중", "중"
     ];
 
-    expect(() => generator.dragonBystring(hands, 13)).to.throw("Can't create dragon");
+    expect(() => generator.dragonBystring(hands)).to.throw("Can't create dragon");
   });
 
   it("치또이쯔가 아닌 케이스 (2)", () => {
@@ -45,7 +45,7 @@ describe("치또이쯔", () => {
       "통3", "통4", "통5",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = SevenPairs.check(dragon);
 
     expect(score).to.equal(0);

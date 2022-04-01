@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 
 import MahjongHands from "./MahjongHands";
+import MahjongGame from "./MahjongGame";
 
 import { WIND } from "~/const/mahjong";
 
@@ -8,49 +9,69 @@ import { WIND } from "~/const/mahjong";
 const DEFAULT_POINT = 25000;
 
 class MahjongPlayer {
-  public user: Discord.GuildMember;
   public interaction: Discord.MessageComponentInteraction;
-  public point: number;
-  public hands: MahjongHands;
-  public baseWind: number;
-  public playerIdx: number;
-  public riichiFlag: boolean;
-  public currentTurn: number;
-  public riichiTurn: number;
 
-  public get isRiichi() { return this.riichiTurn >= 0; }
+  private _user: Discord.GuildMember;
+  private _point: number;
+  private _hands: MahjongHands;
+  private _baseWind: number;
+  private _playerIdx: number;
+  private _riichiFlag: boolean;
+  private _currentTurn: number;
+  private _riichiTurn: number;
+
+  public get user() { return this._user; }
+  public get hands() { return this._hands; }
+  public get isRiichi() { return this._riichiTurn >= 0; }
+  public get point() { return this._point; }
+  public get playerIdx() { return this._playerIdx; }
+  public get riichiFlag() { return this._riichiFlag; }
+  public get riichiTurn() { return this._riichiTurn; }
+  public get currentTurn() { return this._currentTurn; }
 
   public constructor({ user, interaction }: {
     user: Discord.GuildMember;
     interaction: Discord.MessageComponentInteraction | null;
-  }, idx: number) {
-    this.user = user;
+  }, game: MahjongGame, idx: number) {
+    this._user = user;
     this.interaction = interaction!;
-    this.playerIdx = idx;
-    this.hands = new MahjongHands(this);
+    this._playerIdx = idx;
+    this._hands = new MahjongHands(this, game);
 
-    this.point = DEFAULT_POINT;
-    this.baseWind = idx;
-    this.riichiFlag = false;
-    this.riichiTurn = -1;
-    this.currentTurn = -1;
+    this._point = DEFAULT_POINT;
+    this._baseWind = idx;
+    this._riichiFlag = false;
+    this._riichiTurn = -1;
+    this._currentTurn = -1;
   }
 
   public getWind(roundWind: number) {
-    return (this.baseWind + roundWind) % 4;
+    return (this._baseWind + roundWind) % 4;
   }
 
   public reset() {
-    this.hands.reset();
+    this._hands.reset();
 
-    this.riichiFlag = false;
-    this.riichiTurn = -1;
-    this.currentTurn = -1;
+    this._riichiFlag = false;
+    this._riichiTurn = -1;
+    this._currentTurn = -1;
   }
 
   public onTurnStart() {
-    this.currentTurn += 1;
-    this.riichiFlag = false;
+    this._currentTurn += 1;
+    this._riichiFlag = false;
+  }
+
+  public doRiichi() {
+    this._riichiTurn = this._currentTurn;
+  }
+
+  public toggleRiichiFlag() {
+    this._riichiFlag = !this._riichiFlag;
+  }
+
+  public setPoint(newPoint: number) {
+    this._point = newPoint;
   }
 
   public isParent(roundWind: number) {

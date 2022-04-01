@@ -17,7 +17,7 @@ describe("삼색동순", () => {
       "삭7", "삭7", "삭7",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorStraight.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("삼색동순", () => {
       "삭5", "삭6", "삭7",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorStraight.check(dragon);
 
     expect(score).to.equal(2);
@@ -45,7 +45,7 @@ describe("삼색동순", () => {
       "삭5", "삭6", "삭7",
       "동", "동"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorStraight.check(dragon);
 
     expect(score).to.equal(0);
@@ -59,7 +59,7 @@ describe("삼색동순", () => {
       "삭5", "삭6", "삭7",
       "동", "동"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = ThreeColorStraight.check(dragon);
 
     expect(score).to.equal(0);

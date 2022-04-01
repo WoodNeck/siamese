@@ -17,7 +17,7 @@ describe("청일색", () => {
       "만4", "만5", "만6",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Flush.check(dragon);
 
     expect(score).to.equal(6);
@@ -31,7 +31,7 @@ describe("청일색", () => {
       "동", "동", "동",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Flush.check(dragon);
 
     expect(score).to.equal(0);
@@ -45,7 +45,7 @@ describe("청일색", () => {
       "만4", "만5", "만6",
       "삭1", "삭1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Flush.check(dragon);
 
     expect(score).to.equal(0);
@@ -60,7 +60,7 @@ describe("청일색", () => {
       "동", "동", "동",
       "백", "백"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Flush.check(dragon);
 
     expect(score).to.equal(0);

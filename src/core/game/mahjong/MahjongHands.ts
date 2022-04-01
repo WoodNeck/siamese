@@ -1,109 +1,139 @@
 import MahjongTile from "./MahjongTile";
+import MahjongTileSet from "./MahjongTileSet";
 import MahjongPlayer from "./MahjongPlayer";
-import MahjongSetParser from "./MahjongSetParser";
 import MahjongGame from "./MahjongGame";
-import SevenPairs from "./yaku/SevenPairs";
-import ThirteenOrphans from "./yaku/ThirteenOrphans";
+import MahjongHandsParser, { MahjongHandsInfo } from "./MahjongHandsParser";
+import MahjongDragon from "./MahjongDragon";
 
-import { pick } from "~/util/helper";
 import * as EMOJI from "~/const/emoji";
-import { BODY_TYPE, KANG_TYPE, TILE_TYPE } from "~/const/mahjong";
-import { ValueOf } from "~/type/helper";
+import { BODY_TYPE, KANG_TYPE } from "~/const/mahjong";
 
 class MahjongHands {
-  public player: MahjongPlayer;
-  public holding: MahjongTile[];
-  public kang: MahjongTile[][];
-  public discards: MahjongTile[];
-  public riichiDiscardables: Set<MahjongTile>;
-  public scoreInfo: ReturnType<MahjongSetParser["parseFinished"]>;
-  public prevTurnKang: ValueOf<typeof KANG_TYPE>;
-  public borrows: Array<{
-    type: number;
-    tiles: MahjongTile[];
-  }>;
+  private _player: MahjongPlayer;
+  private _game: MahjongGame;
+
+  // 현재 손패
+  private _holding: MahjongTile[];
+
+  // 안깡 배열
+  private _kang: MahjongTileSet[];
+
+  // 버림패 배열
+  private _discards: MahjongTile[];
+
+  // 울은 패
+  private _borrows: MahjongTileSet[];
+
+  // 이전 턴에 깡한 방식
+  private _prevTurnKang: KANG_TYPE;
+
+  // 현재 패 관련 정보
+  private _handsInfo: MahjongHandsInfo | null;
+
+  public get player() { return this._player; }
+  public get game() { return this._game; }
+  public get holding() { return this._holding; }
+  public get borrows() { return this._borrows; }
+  public get kang() { return this._kang; }
+  public get discards() { return this._discards; }
+  public get prevTurnKang() { return this._prevTurnKang; }
+  public get handsInfo() { return this._handsInfo; }
 
   public get tiles() {
     return [
-      ...this.holding,
-      ...this.kang.flat(1),
-      ...this.borrows.map(({ tiles }) => tiles).flat(1)
+      ...this._holding,
+      ...this._kang.map(({ tiles }) => tiles).flat(1),
+      ...this._borrows.map(({ tiles }) => tiles).flat(1)
     ];
   }
 
   public get cried() {
-    return this.borrows.length > 0;
+    return this._borrows.length > 0;
   }
 
-  public constructor(player: MahjongPlayer) {
-    this.player = player;
-    this.riichiDiscardables = new Set();
-    this.scoreInfo = null;
+  public constructor(player: MahjongPlayer, game: MahjongGame) {
+    this._player = player;
+    this._game = game;
     this.reset();
   }
 
   public reset() {
-    this.holding = [];
-    this.kang = [];
-    this.borrows = [];
-    this.discards = [];
-    this.prevTurnKang = KANG_TYPE.NONE;
+    this._holding = [];
+    this._kang = [];
+    this._discards = [];
+    this._borrows = [];
+
+    this._prevTurnKang = KANG_TYPE.NONE;
+    this._handsInfo = null;
   }
 
-  public add(tiles: MahjongTile[]) {
-    this.holding.push(...tiles);
+  public init(tiles: MahjongTile[]) {
+    this._holding.push(...tiles.sort((a, b) => a.id - b.id));
+  }
+
+  public add(tile: MahjongTile) {
+    this._holding.push(tile);
+    this._updateInfo({
+      tile,
+      isTsumo: true,
+      isAdditiveKang: false
+    });
   }
 
   public play(index: number): MahjongTile {
-    const tile = this.holding.splice(index, 1)[0];
+    const tile = this._holding.splice(index, 1)[0];
 
-    this.discards.push(tile);
-    this.holding.sort((a, b) => a.id - b.id);
-    this.riichiDiscardables.clear();
-    this.scoreInfo = null;
-    this.prevTurnKang = KANG_TYPE.NONE;
+    this._discards.push(tile);
+    this._holding.sort((a, b) => a.id - b.id);
+    this._prevTurnKang = KANG_TYPE.NONE;
+
+    this._updateInfo(null);
 
     return tile;
   }
 
   public playKang(tileID: number) {
-    const borrows = this.borrows;
-    const kangTiles = this.holding.filter(tile => tile.tileID === tileID);
-    this.holding = this.holding.filter(tile => tile.tileID !== tileID);
+    const borrows = this._borrows;
+    const kangTiles = this._holding.filter(tile => tile.tileID === tileID);
+
+    this._holding = this._holding.filter(tile => tile.tileID !== tileID);
 
     if (kangTiles.length === 4) {
-      const kangTile = kangTiles[0];
+      const redDoraIndex = kangTiles.findIndex(tile => tile.isRedDora);
 
-      if ((kangTile.type !== TILE_TYPE.KAZE) && (kangTile.type !== TILE_TYPE.SANGEN)) {
-        if (kangTile.index === 4) {
-          kangTiles.sort((a, b) => a.id - b.id);
-          kangTiles.splice(0, 2, ...kangTiles.slice(0, 2).reverse());
-        }
+      if (redDoraIndex >= 0) {
+        const redDoraTile = kangTiles.splice(redDoraIndex, 1)[0];
+        kangTiles.splice(1, 0, redDoraTile);
       }
 
       kangTiles[0].closedKang = true;
       kangTiles[3].closedKang = true;
 
-      this.kang.push(kangTiles);
+      const kangTileSet = new MahjongTileSet({
+        tiles: kangTiles,
+        type: BODY_TYPE.KANG,
+        borrowed: false
+      });
 
-      this.prevTurnKang = KANG_TYPE.CLOSED;
+      this._kang.push(kangTileSet);
+      this._prevTurnKang = KANG_TYPE.CLOSED;
     } else if (kangTiles.length === 3) {
       // TODO: 대명깡 구현
     } else if (kangTiles.length === 1) {
       const singleTile = kangTiles[0];
       const sameTilesIdx = borrows.findIndex(({ tiles, type }) => tiles[0].tileID === tileID && type === BODY_TYPE.SAME);
-      const sameTiles = borrows[sameTilesIdx];
+      const { tiles: sameTiles } = borrows.splice(sameTilesIdx, 1)[0];
 
-      // Add kang tile
-      sameTiles.tiles.splice(sameTiles.tiles.findIndex(tile => tile.borrowed), 0, singleTile);
-      sameTiles.type = BODY_TYPE.KANG;
+      // 가깡
+      sameTiles.splice(sameTiles.findIndex(tile => tile.borrowed), 0, singleTile);
+      borrows.push(new MahjongTileSet({ tiles: sameTiles, type: BODY_TYPE.KANG, borrowed: true }));
 
-      this.prevTurnKang = KANG_TYPE.ADDITIVE;
+      this._prevTurnKang = KANG_TYPE.ADDITIVE;
     }
   }
 
   public getKangableTiles(): MahjongTile[][] {
-    const holding = this.holding;
+    const holding = this._holding;
     const tilesByID = new Map<number, MahjongTile[]>();
 
     holding.forEach(tile => {
@@ -119,47 +149,23 @@ class MahjongHands {
   }
 
   public isRiichiable(): boolean {
-    if (this.cried) return false;
-
-    const discardables = this._getTenpaiDiscardables();
-
-    if (discardables.length <= 0) return false;
-
-    const discards = this.discards;
-    const discardablesSet = new Set(discardables);
-
-    for (const tile of discardablesSet.values()) {
-      if (discards.includes(tile)) return false;
-    }
-
-    this.riichiDiscardables = discardablesSet;
-    return true;
+    if (!this._handsInfo) return false;
+    return this._handsInfo.riichiDiscardables.size > 0;
   }
 
   public isTenpai(): boolean {
-    const discardables = this._getTenpaiDiscardables();
-
-    return discardables.length > 0;
+    if (!this._handsInfo) return false;
+    return this._handsInfo.tenpaiTiles.size > 0;
   }
 
-  public isTsumoable(game: MahjongGame): boolean {
-    const parser = new MahjongSetParser();
-    const holding = this.holding;
-    const set = parser.parse(this);
-    const lastTile = holding[holding.length - 1];
-
-    this.scoreInfo = parser.parseFinished(this, set, game, {
-      tile: lastTile,
-      isTsumo: true,
-      isAdditiveKang: false
-    });
-
-    return !!this.scoreInfo;
+  public isTsumoable(): boolean {
+    if (!this._handsInfo) return false;
+    return !!this._handsInfo.scoreInfo;
   }
 
   public toEmoji(): string {
-    const holding = this.holding;
-    const borrows = this.borrows;
+    const holding = this._holding;
+    const borrows = this._borrows;
 
     const emojis: string[] = [];
 
@@ -172,59 +178,10 @@ class MahjongHands {
     return emojis.join(EMOJI.TAB_SPACE);
   }
 
-  private _getTenpaiDiscardables() {
-    const parser = new MahjongSetParser();
-    const set = parser.parse(this);
-    const tiles = this.tiles;
+  private _updateInfo(lastTile: MahjongDragon["lastTile"] | null) {
+    const parser = new MahjongHandsParser();
 
-    const combinations = [
-      ...set.head,
-      ...set.ordered,
-      ...set.same,
-      ...set.kang
-    ];
-
-    const discardables = pick(combinations, 4).map(combination => {
-      const headCount = combination.filter(comb => comb.type === BODY_TYPE.HEAD).length;
-
-      if (headCount !== 1) return null;
-
-      const allTiles = combination.reduce((total, comb) => {
-        return [...total, ...comb.tiles];
-      }, []);
-      const tilesSet = new Set<MahjongTile>(allTiles);
-
-      const hasDuplication = tilesSet.size < allTiles.length;
-      if (hasDuplication) return null;
-
-      const leftover = tiles.filter(tile => !tilesSet.has(tile));
-
-      if (leftover.length === 2) {
-        return leftover; // 어느쪽이든 단기대기
-      }
-
-      if (leftover.length === 3) {
-        const cases = pick([0, 1, 2], 2);
-
-        for (const [idx0, idx1] of cases) {
-          const tile1 = leftover[idx0];
-          const tile2 = leftover[idx1];
-          const leftoverTile = leftover[3 - idx0 - idx1];
-
-          if (tile1.type !== tile2.type) return null;
-          if (tile1.tileID === tile2.tileID) return [leftoverTile];
-          if (tile1.type === TILE_TYPE.SANGEN || tile1.type === TILE_TYPE.KAZE) return null;
-          if (Math.abs(tile1.index - tile2.index) < 3) return [leftoverTile];
-        }
-      }
-
-      return null;
-    }).filter(val => !!val).flat(1) as MahjongTile[];
-
-    discardables.push(...SevenPairs.riichiableBySet(set, tiles));
-    discardables.push(...ThirteenOrphans.riichiableByTiles(tiles));
-
-    return discardables;
+    this._handsInfo = parser.parse(this, lastTile);
   }
 }
 

@@ -1,4 +1,4 @@
-import MahjongHands from "./MahjongHands";
+import MahjongPlayer from "./MahjongPlayer";
 import MahjongTile from "./MahjongTile";
 
 interface MahjongDragon {
@@ -9,7 +9,8 @@ interface MahjongDragon {
     tiles: MahjongTile[];
   }>;
   tiles: MahjongTile[];
-  hands: MahjongHands;
+  player: MahjongPlayer;
+  cried: boolean;
   lastTile: {
     tile: MahjongTile;
     isTsumo: boolean;

@@ -20,7 +20,8 @@ describe("MahjongHands", () => {
 
       const hands = generator.handsByString(tiles);
 
-      expect(hands.isRiichiable()).to.be.false;
+      expect(hands.isRiichiable()).to.be.true;
+      expect(([...hands.handsInfo!.riichiDiscardables.values()][0] as any).name).equals("만3");
     })
   });
 });

@@ -17,7 +17,7 @@ describe("혼일색", () => {
       "동", "동", "동",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HalfFlush.check(dragon);
 
     expect(score).to.equal(3);
@@ -32,7 +32,7 @@ describe("혼일색", () => {
       "만8", "만8", "만8",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HalfFlush.check(dragon);
 
     expect(score).to.equal(0);
@@ -46,7 +46,7 @@ describe("혼일색", () => {
       "동", "동", "동",
       "삭1", "삭1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HalfFlush.check(dragon);
 
     expect(score).to.equal(0);
@@ -61,7 +61,7 @@ describe("혼일색", () => {
       "동", "동", "동",
       "백", "백"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HalfFlush.check(dragon);
 
     expect(score).to.equal(0);

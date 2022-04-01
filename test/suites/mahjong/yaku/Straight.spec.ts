@@ -17,7 +17,7 @@ describe("일기통관", () => {
       "삭7", "삭7", "삭7",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Straight.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("일기통관", () => {
       "만2", "만3", "만4",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Straight.check(dragon);
 
     expect(score).to.equal(2);
@@ -45,7 +45,7 @@ describe("일기통관", () => {
       "삭7", "삭7", "삭7",
       "만1", "만1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Straight.check(dragon);
 
     expect(score).to.equal(0);
@@ -59,7 +59,7 @@ describe("일기통관", () => {
       "만7", "만8", "만9",
       "만9", "만9"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = Straight.check(dragon);
 
     expect(score).to.equal(0);

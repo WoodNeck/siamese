@@ -1,9 +1,10 @@
+import MahjongGame from "../src/core/game/mahjong/MahjongGame";
 import MahjongPlayer from "../src/core/game/mahjong/MahjongPlayer";
 
 class MahjongPlayerMock extends MahjongPlayer {
-  public constructor() {
+  public constructor(game: MahjongGame) {
     // @ts-ignore
-    super({}, 0);
+    super({}, game, 0);
   }
 }
 

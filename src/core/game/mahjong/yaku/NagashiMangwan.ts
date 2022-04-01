@@ -1,10 +1,10 @@
 import MahjongHands from "../MahjongHands";
-import MahjongSetParser from "../MahjongSetParser";
 
 import Yaku from "./Yaku";
 
 import { staticImplements } from "~/util/helper";
 import { YAKU } from "~/const/mahjong";
+import { isYaoChu } from "~/util/mahjong";
 
 @staticImplements<Yaku>()
 class NagashiMangwan {
@@ -14,7 +14,7 @@ class NagashiMangwan {
 
   public static checkByHands(hands: MahjongHands): boolean {
     if (hands.discards.length <= 0) return false;
-    return hands.discards.every(tile => MahjongSetParser.checkYaoChu(tile) && !tile.lent);
+    return hands.discards.every(tile => isYaoChu(tile) && !tile.lent);
   }
 
   public static readonly isNormalForm = false;

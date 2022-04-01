@@ -17,7 +17,7 @@ describe("량페코", () => {
       "통3", "통4", "통5",
       "만4", "만4"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = TwoPeko.check(dragon);
 
     expect(score).to.equal(3);
@@ -31,7 +31,7 @@ describe("량페코", () => {
       "삭3", "삭4", "삭5",
       "중", "중"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = TwoPeko.check(dragon);
 
     expect(score).to.equal(0);

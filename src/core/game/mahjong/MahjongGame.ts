@@ -5,6 +5,8 @@ import GameRoom from "../GameRoom";
 import MahjongTile from "./MahjongTile";
 import MahjongTiles from "./MahjongTiles";
 import MahjongPlayer from "./MahjongPlayer";
+import MahjongSetParser from "./MahjongSetParser";
+import MahjongScoreInfo from "./MahjongScoreInfo";
 import NagashiMangwan from "./yaku/NagashiMangwan";
 
 import * as COLOR from "~/const/color";
@@ -42,8 +44,6 @@ class MahjongGame {
   public get uraDoras() { return this._uraDoras; }
   public get currentPlayer() { return this._players[this._currentPlayerIdx]; }
 
-  public set wind(val: number) { this._wind = val; }
-
   public constructor(players: GameRoom["players"], threadChannel: Discord.ThreadChannel) {
     this._threadChannel = threadChannel;
 
@@ -51,7 +51,7 @@ class MahjongGame {
     this._uraDoras = [];
     this._kangTiles = [];
 
-    this._players = shuffle(players).map((player, idx) => new MahjongPlayer(player, idx));
+    this._players = shuffle(players).map((player, idx) => new MahjongPlayer(player, this, idx));
     this._currentPlayerIdx = 0;
 
     this._wind = WIND.EAST;
@@ -124,7 +124,7 @@ class MahjongGame {
 
     this._players.forEach(player => {
       player.reset();
-      player.hands.add(tiles.draw(13).sort((a, b) => a.id - b.id));
+      player.hands.init(tiles.draw(13));
     });
 
     this._currentPlayerIdx = (4 - round.wind) % 4;
@@ -139,7 +139,7 @@ class MahjongGame {
       ? this._drawKangTile()
       : tiles.draw(1)[0];
 
-    currentPlayer.hands.add([newTile]);
+    currentPlayer.hands.add(newTile);
     currentPlayer.onTurnStart();
 
     await this._showSummary();
@@ -153,15 +153,18 @@ class MahjongGame {
     this._round.turn += 1;
 
     if (discardInfo.tsumo) {
-      await this._showRoundResult(currentPlayer, true);
+      await this._showRoundResult(currentPlayer, currentPlayer.hands.handsInfo!.scoreInfo!);
       return false;
     } else if (discardInfo.kang) {
       await this._showKang();
       return true;
     } else {
-      await this._showDiscard(discardInfo);
-      // TODO: 플레이어별 액션 메시지 전송
-      // TODO: 현재 플레이어 인덱스 업데이트 & 턴 정보 업데이트
+      const lastDiscard = await this._showDiscard(discardInfo);
+      const actionInfo = await this._showOthersActionMsg(lastDiscard);
+      if (!actionInfo) {
+        // Pass turn
+        this._currentPlayerIdx = (this._currentPlayerIdx + 1) % 4;
+      }
     }
 
     // 유국
@@ -191,7 +194,7 @@ class MahjongGame {
       const point = `${MAHJONG.POINT(player.point)}`;
       const discards = player.hands.discards.map(tile => tile.getEmoji());
       const cries = player.hands.borrows.map(({ tiles }) => tiles.map(tile => tile.getEmoji()).join(" "));
-      cries.push(...player.hands.kang.map(tiles => tiles.map(tile => tile.getEmoji()).join("")));
+      cries.push(...player.hands.kang.map(({ tiles }) => tiles.map(tile => tile.getEmoji()).join("")));
 
       const riichiTileCount = riichi ? 3 : 0;
       const cryTileCount = player.hands.borrows.reduce((total, { tiles }) => total + tiles.length, 0);
@@ -327,7 +330,7 @@ class MahjongGame {
       const tileIdx = currentPlayer.hands.holding.findIndex(tile => tile.id === tileID);
 
       if (currentPlayer.riichiFlag) {
-        currentPlayer.riichiTurn = currentPlayer.currentTurn;
+        currentPlayer.doRiichi();
       }
 
       currentPlayer.hands.play(tileIdx);
@@ -358,7 +361,7 @@ class MahjongGame {
   private async _updateRiichiTiles(interaction: Discord.MessageComponentInteraction) {
     const currentPlayer = this.currentPlayer;
 
-    currentPlayer.riichiFlag = !currentPlayer.riichiFlag;
+    currentPlayer.toggleRiichiFlag();
 
     const rows = this._getHandButtons(currentPlayer);
 
@@ -367,7 +370,7 @@ class MahjongGame {
 
   private async _showDiscard({ riichi }: {
     riichi: boolean;
-  }) {
+  }): Promise<MahjongTile> {
     const threadChannel = this._threadChannel;
     const currentPlayer = this.currentPlayer;
     const embed = new MessageEmbed();
@@ -392,6 +395,44 @@ class MahjongGame {
       content: lastDiscard.getEmoji(),
       embeds: [embed]
     });
+
+    return lastDiscard;
+  }
+
+  private async _showOthersActionMsg(lastTile: MahjongTile): Promise<any> {
+    const players = this._players;
+    const currentPlayerIdx = this._currentPlayerIdx;
+    const otherPlayers = [...players];
+    const parser = new MahjongSetParser();
+
+    otherPlayers.splice(currentPlayerIdx, 1);
+
+    const actions = otherPlayers.map(player => {
+      // TODO: 뻥, 깡, 치 체크
+      const candidates = parser.parseCandidates(player.hands);
+
+      const ordered = candidates.ordered.filter(tiles => {
+        const tile1 = tiles[0];
+        const tile2 = tiles[1];
+        const indexDiff = Math.abs(tile1.index - tile2.index);
+
+        if (indexDiff === 1) {
+          const minIdx = Math.min(tile1.index, tile2.index);
+          const maxIdx = Math.max(tile1.index, tile2.index);
+
+          return lastTile.index === minIdx - 1 || lastTile.index === maxIdx + 1;
+        } else {
+          return Math.abs(lastTile.index - tile1.index) === Math.abs(lastTile.index - tile2.index);
+        }
+      });
+      const same = candidates.same.filter(tiles => tiles[0].tileID === lastTile.tileID);
+      const kang = candidates.kang.filter(tiles => tiles[0].tileID === lastTile.tileID);
+
+      // 론 체크
+      // 뻥/치 중에 해당 세트 + 나머지 패들로 완성 가능할 경우...(스코어 테스트)를 테스트
+    });
+
+    return null;
   }
 
   private async _showKang() {
@@ -403,7 +444,7 @@ class MahjongGame {
 
     const kangBorrows = hands.borrows.filter(({ type }) => type === BODY_TYPE.KANG);
     const kangTiles = hands.prevTurnKang === KANG_TYPE.CLOSED
-      ? hands.kang[hands.kang.length - 1]
+      ? hands.kang[hands.kang.length - 1].tiles
       : kangBorrows[kangBorrows.length - 1].tiles;
 
     embed.setAuthor({
@@ -419,11 +460,11 @@ class MahjongGame {
     });
   }
 
-  private async _showRoundResult(winner: MahjongPlayer, isTsumo: boolean) {
+  private async _showRoundResult(winner: MahjongPlayer, scoreInfo: MahjongScoreInfo) {
     const threadChannel = this._threadChannel;
     const players = this._players;
     const embed = new MessageEmbed();
-    const scoreInfo = winner.hands.scoreInfo!;
+    const isTsumo = scoreInfo.dragon.lastTile.isTsumo;
 
     const { head, body, lastTile } = scoreInfo.dragon;
     const last = lastTile.tile;
@@ -489,7 +530,7 @@ class MahjongGame {
       const desc = this._formatPointDiff(pointDiff, prevScore);
 
       // 실제 포인트 증감
-      player.point += pointDiff;
+      player.setPoint(player.point + pointDiff);
 
       embed.addField(MAHJONG.PLAYER_FIELD_TITLE(player.user, player.getWind(roundWind)), desc, true);
       if (idx % 2) {
@@ -581,11 +622,12 @@ class MahjongGame {
     const mangwanPlayer = players.find(player => NagashiMangwan.checkByHands(player.hands));
 
     if (mangwanPlayer) {
-      mangwanPlayer.hands.scoreInfo = {
+      return await this._showRoundResult(mangwanPlayer, {
         dragon: {
           head: [],
           body: [],
-          hands: mangwanPlayer.hands,
+          player: mangwanPlayer,
+          cried: mangwanPlayer.hands.cried,
           tiles: mangwanPlayer.hands.tiles,
           lastTile: {
             tile: mangwanPlayer.hands.holding[mangwanPlayer.hands.holding.length - 1],
@@ -597,9 +639,7 @@ class MahjongGame {
           { yaku: NagashiMangwan, score: 5 }
         ],
         subscore: 20
-      };
-
-      return await this._showRoundResult(mangwanPlayer, true);
+      });
     }
 
     const threadChannel = this._threadChannel;
@@ -629,7 +669,7 @@ class MahjongGame {
         ? tenpaiScore / tenpaiCount
         : -tenpaiScore / (4 - tenpaiCount);
 
-      player.point += pointDiff;
+      player.setPoint(player.point + pointDiff);
 
       tenpaiEmbed.addField(
         MAHJONG.PLAYER_FIELD_TITLE(player.user, player.getWind(round.wind), ` - ${tenpaiStr}`),
@@ -652,7 +692,7 @@ class MahjongGame {
   private _getHandButtons(player: MahjongPlayer) {
     const hands = player.hands;
     const tiles = hands.holding;
-    const riichiDiscardables = hands.riichiDiscardables;
+    const riichiDiscardables = hands.handsInfo?.riichiDiscardables;
     const rows = groupBy(tiles, 5).map((tileRow, rowIdx) => {
       const row = new MessageActionRow();
       const btns = tileRow.map((tile, colIdx) => {
@@ -666,7 +706,7 @@ class MahjongGame {
 
         if (player.isRiichi && !isLastTile) {
           btn.setDisabled(true);
-        } else if (player.riichiFlag && !riichiDiscardables.has(tile)) {
+        } else if (player.riichiFlag && !riichiDiscardables?.has(tile)) {
           btn.setDisabled(true);
         }
 
@@ -700,7 +740,7 @@ class MahjongGame {
       extraActionsRow.addComponents(riichiBtn);
     }
 
-    if (hands.isTsumoable(this)) {
+    if (hands.isTsumoable()) {
       const tsumoBtn = new MessageButton();
       tsumoBtn.setCustomId(MAHJONG.SYMBOL.TSUMO);
       tsumoBtn.setStyle(BUTTON_STYLE.SUCCESS);

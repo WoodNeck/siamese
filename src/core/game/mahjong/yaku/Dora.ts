@@ -10,7 +10,7 @@ import { TILE_TYPE, YAKU } from "~/const/mahjong";
 class Dora {
   public static check(dragon: MahjongDragon, game: MahjongGame) {
     const doraCount = game.round.doraCount;
-    const isRiichi = dragon.hands.player.isRiichi;
+    const isRiichi = dragon.player.isRiichi;
 
     const doras = game.doras.slice(0, doraCount);
     if (isRiichi) {

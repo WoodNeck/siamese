@@ -1,16 +1,10 @@
-import MahjongTile from "./MahjongTile";
-
-export interface MahjongSet {
-  tiles: MahjongTile[];
-  type: number;
-  borrowed: boolean;
-}
+import MahjongTileSet from "./MahjongTileSet";
 
 interface MahjongSetInfo {
-  head: MahjongSet[];
-  ordered: MahjongSet[];
-  same: MahjongSet[];
-  kang: MahjongSet[];
+  head: MahjongTileSet[];
+  ordered: MahjongTileSet[];
+  same: MahjongTileSet[];
+  kang: MahjongTileSet[];
 }
 
 export default MahjongSetInfo;

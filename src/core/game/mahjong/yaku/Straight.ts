@@ -8,7 +8,7 @@ import { YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class Straight {
   public static check(dragon: MahjongDragon) {
-    const { body, hands } = dragon;
+    const { body, cried } = dragon;
     const combinations = pick(body, 3);
 
     const hasStraight = combinations.some(combination => {
@@ -28,7 +28,7 @@ class Straight {
     });
 
     return hasStraight
-      ? hands.cried
+      ? cried
         ? 1
         : 2
       : 0;

@@ -9,16 +9,15 @@ import { BODY_TYPE, TILE_TYPE, YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class PingHu {
   public static check(dragon: MahjongDragon, game: MahjongGame) {
-    const { head, body, hands } = dragon;
+    const { head, body, player } = dragon;
 
     if (head.length !== 1 || body.length !== 4) return 0;
 
     if (body.some(combination => combination.type !== BODY_TYPE.ORDERED)) return 0;
 
-    const currentPlayer = hands.player;
     const headTile = head[0][0];
     const isPlayerWind = headTile.type === TILE_TYPE.KAZE
-      && (headTile.index === currentPlayer.getWind(game.wind) || headTile.index === game.wind);
+      && (headTile.index === player.getWind(game.round.wind) || headTile.index === game.wind);
 
     if (headTile.type === TILE_TYPE.SANGEN || isPlayerWind) return 0;
 

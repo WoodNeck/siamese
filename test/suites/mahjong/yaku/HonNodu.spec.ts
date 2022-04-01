@@ -17,7 +17,7 @@ describe("혼노두", () => {
       "발", "발", "발",
       "삭1", "삭1"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HonNodu.check(dragon);
 
     expect(score).to.equal(2);
@@ -31,7 +31,7 @@ describe("혼노두", () => {
       "발", "발", "발",
       "만9", "만9"
     ];
-    const dragon = generator.dragonBystring(hands, 13);
+    const dragon = generator.dragonBystring(hands);
     const score = HonNodu.check(dragon);
 
     expect(score).to.equal(0);

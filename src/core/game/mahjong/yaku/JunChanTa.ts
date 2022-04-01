@@ -9,12 +9,12 @@ import { TILE_TYPE, YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class JunChanTa {
   public static check(dragon: MahjongDragon) {
-    const { head, body, hands } = dragon;
+    const { head, body, cried } = dragon;
     const isChanTa = head.every(tiles => JunChanTa.isYoguTile(tiles))
       && body.every(({ tiles }) => JunChanTa.isYoguTile(tiles));
 
     return isChanTa
-      ? hands.cried
+      ? cried
         ? 2
         : 3
       : 0;
