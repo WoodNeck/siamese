@@ -31,8 +31,10 @@ export const GAME = {
   CANCELED: "게임을 취소했다냥!",
   INITIATING_GAME: "게임을 시작한다냥!",
   TURN_HEADER: (player: GuildMember) => `${player.toString()}의 차례다냥!`,
-  RECONNECT_TITLE: (player: GuildMember) => `${player.toString()}냥, 게임을 계속하려면 재접속이 필요하다냥! 아래 버튼을 눌러달라냥!`,
-  RECONNECT_LABEL: "갱신하기",
+  RECONNECT_TITLE: (players: GuildMember[]) => `${players.map(player => player.toString()).join(", ")}냥, 게임을 계속하려면 재접속이 필요하다냥! 아래 버튼을 눌러달라냥!`,
+  RECONNECT_LABEL: "재접속하기",
+  RECONNECT_LIST_TITLE: "재접속이 필요한 플레이어들",
+  RECONNECT_COMPLETE: "게임을 재개한다냥!",
   SYMBOL: {
     PLAYER: "PLAYER",
     JOIN: "JOIN",
@@ -291,10 +293,15 @@ export const MAHJONG = {
   TILES_LEFT: (count: number) => `남은 패 수: ${count}`,
   DISCARD_TITLE: (user: GuildMember) => `${user.displayName}의 타패다냥!`,
   RIICHI_TITLE: (user: GuildMember) => `${user.displayName}의 리치냥!`,
+  CHI_TITLE: (user: GuildMember) => `${user.displayName}의 치다냥!`,
+  PONG_TITLE: (user: GuildMember) => `${user.displayName}의 퐁이다냥!`,
   KANG_TITLE: (user: GuildMember) => `${user.displayName}의 깡이다냥!`,
   TSUMO_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 쯔모다냥!`,
   RON_TITLE: (user: GuildMember, lastTile: MahjongTile) => `${lastTile.getEmoji()} ${user.displayName}의 론이다냥!`,
+  NAGASHI_MANGWAN_TITLE: (user: GuildMember) => `${user.displayName}의 유국만관이다냥!`,
   SCORE_FORMAT: (score: number, subscore: number) => `${score}판 ${subscore}부`,
+  FINAL_RANK_TITLE: `${EMOJI.TROPHY} 최종 순위다냥!`,
+  WAITING_OTHER_PLAYER: "다른 플레이어를 기다리는 중이다냥...",
   YAKU_TITLE: "역",
   DORA_INDICATOR_TITLE: "도라표시패",
   ROUND_FORMAT: (wind: number, windRepeat: number) => {
@@ -319,16 +326,25 @@ export const MAHJONG = {
   ].map(emoji => toEmoji(emoji.name, emoji.id)).join(""),
   POINT: (point: number) => `${point}점`,
   LABEL: {
+    CHI: "치",
+    PON: "퐁",
     KANG: "깡",
     RIICHI: "리치",
     TSUMO: "쯔모",
+    RON: "론",
     TENPAI: "텐파이",
-    NO_TENPAI: "노텐"
+    NO_TENPAI: "노텐",
+    SKIP: "스킵",
+    FURITEN: "후리텐"
   },
   SYMBOL: {
+    CHI: "CHI",
+    PON: "PON",
     KANG: "KANG",
     RIICHI: "RIICHI",
     TSUMO: "TSUMO",
-    DISCARD: "DISCARD"
+    RON: "RON",
+    DISCARD: "DISCARD",
+    SKIP: "SKIP"
   }
 } as const;

@@ -8,8 +8,11 @@ import { YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class Riichi {
   public static check({ player }: MahjongDragon) {
-    // FIXME: 더블리치 체크
-    return player.isRiichi ? 1 : 0;
+    return player.isRiichi
+      ? player.riichiTurn === player.getWind(player.hands.game.round.wind)
+        ? 2 // 더블 리치
+        : 1
+      : 0;
   }
 
   public static readonly isNormalForm = false;

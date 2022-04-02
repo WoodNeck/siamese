@@ -3,7 +3,7 @@ import MahjongSetInfo from "./MahjongSetInfo";
 import MahjongTile from "./MahjongTile";
 import MahjongTileSet from "./MahjongTileSet";
 
-import { pick } from "~/util/helper";
+import { pick, range } from "~/util/helper";
 import { BODY_TYPE, TILE_TYPE } from "~/const/mahjong";
 
 class MahjongSetParser {
@@ -26,9 +26,7 @@ class MahjongSetParser {
 
     const group = this._groupTilesByType(holding);
 
-    Object.keys(group).forEach(type => {
-      const groupByType = group[type];
-
+    group.forEach((groupByType, type) => {
       head.push(
         ...this._findSameByCount(groupByType, 2)
           .map(tiles => new MahjongTileSet({ tiles, type: BODY_TYPE.HEAD, borrowed: false }))
@@ -38,7 +36,7 @@ class MahjongSetParser {
           .map(tiles => new MahjongTileSet({ tiles, type: BODY_TYPE.SAME, borrowed: false }))
       );
       ordered.push(
-        ...this._findOrdered(parseFloat(type), groupByType)
+        ...this._findOrdered(type, groupByType)
           .map(tiles => new MahjongTileSet({ tiles, type: BODY_TYPE.ORDERED, borrowed: false })));
     });
 
@@ -67,12 +65,10 @@ class MahjongSetParser {
     const kang: MahjongTile[][] = [];
 
     const group = this._groupTilesByType(hands.holding);
-    Object.keys(group).forEach(type => {
-      const groupByType = group[type];
-
+    group.forEach((groupByType, type) => {
       same.push(...this._findSameByCount(groupByType, 2));
       kang.push(...this._findSameByCount(groupByType, 3));
-      ordered.push(...this._findOrderedCandidates(parseFloat(type), groupByType));
+      ordered.push(...this._findOrderedCandidates(type, groupByType));
     });
 
     kang.push(...hands.borrows.filter(({ type }) => type === BODY_TYPE.SAME).map(({ tiles }) => tiles));
@@ -84,24 +80,17 @@ class MahjongSetParser {
     };
   }
 
-  private _groupTilesByType(tiles: MahjongTile[]): Record<number, MahjongTile[]> {
+  private _groupTilesByType(tiles: MahjongTile[]) {
     const group = [
-      TILE_TYPE.MAN,
-      TILE_TYPE.PIN,
-      TILE_TYPE.SOU,
-      TILE_TYPE.KAZE,
-      TILE_TYPE.SANGEN
-    ].reduce((result, type) => {
-      result[type] = [];
-      return result;
-    }, {} as Record<number, MahjongTile[]>);
+      ...range(5).map(() => [])
+    ] as MahjongTile[][];
 
     tiles.forEach(tile => {
       group[tile.type].push(tile);
     });
 
     // Sort tiles
-    Object.values(group).forEach(groupArr => {
+    group.forEach(groupArr => {
       groupArr.sort((a, b) => a.id - b.id);
     });
 
@@ -110,42 +99,79 @@ class MahjongSetParser {
 
   private _findSameByCount(group: MahjongTile[], count: number): MahjongTile[][] {
     const combinations = pick(group, count);
+    const idMap = new Map<number, boolean>();
 
     return combinations.filter(comb => {
-      return comb.every((tile, idx) => {
+      const isSame = comb.every((tile, idx) => {
         if (idx === 0) return true;
         const prevTile = comb[idx - 1];
         return tile.index === prevTile.index && tile.type === prevTile.type;
       });
+
+      if (!isSame) return false;
+
+      const redDora = comb.find(tile => tile.isRedDora);
+      const combID = redDora
+        ? -redDora.type
+        : comb[0].tileID;
+
+      if (idMap.has(combID)) return false;
+
+      idMap.set(combID, true);
+      return true;
     });
   }
 
   private _findOrdered(type: number, group: MahjongTile[]): MahjongTile[][] {
-    const orderTypes = [TILE_TYPE.MAN, TILE_TYPE.PIN, TILE_TYPE.SOU] as number[];
-    if (!orderTypes.includes(type)) return [];
+    if (type > TILE_TYPE.SOU) return [];
 
     const combinations = pick(group, 3);
+    const idMap = new Map<number, boolean>();
 
     return combinations.filter(combination => {
-      return combination.every((tile, idx) => {
+      const isOrdered = combination.every((tile, idx) => {
         if (idx === 0) return true;
         const prev = combination[idx - 1];
         return tile.index === prev.index + 1;
       });
+
+      if (!isOrdered) return false;
+
+      const combID = combination.reduce((total, tile) => {
+        const id = tile.isRedDora ? -tile.type : tile.tileID;
+        return total + id;
+      }, 0);
+
+      if (idMap.has(combID)) return false;
+
+      idMap.set(combID, true);
+      return true;
     });
   }
 
   private _findOrderedCandidates(type: number, group: MahjongTile[]): MahjongTile[][] {
-    const orderTypes = [TILE_TYPE.MAN, TILE_TYPE.PIN, TILE_TYPE.SOU] as number[];
-    if (!orderTypes.includes(type)) return [];
+    if (type > TILE_TYPE.SOU) return [];
 
     const combinations = pick(group, 2);
+    const idMap = new Map<number, boolean>();
 
     return combinations.filter(combination => {
       const tile1 = combination[0];
       const tile2 = combination[1];
 
-      return tile1.index !== tile2.index && Math.abs(tile1.index - tile2.index) < 3;
+      const isOrdered = tile1.index !== tile2.index && Math.abs(tile1.index - tile2.index) < 3;
+
+      if (!isOrdered) return false;
+
+      const combID = combination.reduce((total, tile) => {
+        const id = tile.isRedDora ? -tile.type : tile.tileID;
+        return total + id;
+      }, 0);
+
+      if (idMap.has(combID)) return false;
+
+      idMap.set(combID, true);
+      return true;
     });
   }
 }

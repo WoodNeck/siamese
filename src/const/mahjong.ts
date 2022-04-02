@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { range } from "~/util/helper";
 
 export enum TILE_TYPE {
@@ -29,12 +30,30 @@ export enum KANG_TYPE {
   ADDITIVE
 }
 
+export enum ACTION_TYPE {
+  DISCARD,
+  CHI,
+  PON,
+  KANG
+}
+
 export const DATA = {
   MAN: range(9).map(index => ({ type: TILE_TYPE.MAN, index })),
   PIN: range(9).map(index => ({ type: TILE_TYPE.PIN, index })),
   SOU: range(9).map(index => ({ type: TILE_TYPE.SOU, index })),
   KAZE: range(4).map(index => ({ type: TILE_TYPE.KAZE, index })),
   SANGEN: range(3).map(index => ({ type: TILE_TYPE.SANGEN, index }))
+} as const;
+
+const WIND_NAME = ["동", "남", "서", "북"];
+const SANGEN_NAME = ["백", "발", "중"];
+
+export const NAME = {
+  [TILE_TYPE.MAN]: (index: number) => `${index + 1}만`,
+  [TILE_TYPE.PIN]: (index: number) => `${index + 1}통`,
+  [TILE_TYPE.SOU]: (index: number) => `${index + 1}삭`,
+  [TILE_TYPE.KAZE]: (index: number) => WIND_NAME[index],
+  [TILE_TYPE.SANGEN]: (index: number) => SANGEN_NAME[index]
 } as const;
 
 export const EMOJI = {

@@ -19,7 +19,10 @@ import { isYaoChu } from "~/util/mahjong";
 
 export interface MahjongHandsInfo {
   // 현재 손패에 추가되면 날 수 있는 패 ID 목록
-  tenpaiTiles: Set<number>;
+  tenpaiTiles: {
+    tiles: Set<number>;
+    isFuriten: boolean;
+  };
 
   // 리치시 버릴 수 있는 패 목록
   riichiDiscardables: Set<MahjongTile>;
@@ -51,7 +54,7 @@ class MahjongHandsParser {
 
     if (lastTile) {
       // 완성형 패가 가능한 개수에 도달한 경우
-      const isTenpai = tenpaiTiles.size > 0;
+      const isTenpai = tenpaiTiles.tiles.size > 0;
 
       riichiDiscardables = this._parseRiichiDiscardables(hands, isTenpai, validCombinations);
       scoreInfo = this._parseScoreInfo(hands.tiles, validCombinations, hands.game, hands.player, lastTile);
@@ -174,9 +177,15 @@ class MahjongHandsParser {
     return new Set(discardables);
   }
 
-  private _parseTenpaiInfo(hands: MahjongHands, validCombinations: ValidCombination[]): Set<number> {
+  private _parseTenpaiInfo(hands: MahjongHands, validCombinations: ValidCombination[]): {
+    tiles: Set<number>;
+    isFuriten: boolean;
+  } {
     if (validCombinations.length <= 0) {
-      return new Set(ThirteenOrphans.getTenpaiCandidates(hands.tiles));
+      return {
+        tiles: new Set(ThirteenOrphans.getTenpaiCandidates(hands.tiles)),
+        isFuriten: false
+      };
     }
 
     const possibles = validCombinations.map(({ leftover, sevenPairCandidate, hasHead }) => {
@@ -192,7 +201,13 @@ class MahjongHandsParser {
     }).flat(1);
 
     // Remove duplicates
-    return new Set(possibles);
+    const discards = hands.discards;
+    const possibleTiles = new Set(possibles);
+
+    return {
+      tiles: possibleTiles,
+      isFuriten: discards.some(tile => possibleTiles.has(tile.tileID))
+    };
   }
 
   private _getValidCombinations(allTiles: MahjongTile[], cried: boolean, set: MahjongSetInfo) {

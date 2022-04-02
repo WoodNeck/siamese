@@ -4,7 +4,7 @@ import * as MAHJONG from "~/const/mahjong";
 import { shuffle } from "~/util/helper";
 import { TILE_TYPE } from "~/const/mahjong";
 
-class MahjongTiles {
+class MahjongTilePile {
   private _tiles: MahjongTile[];
 
   public get tiles() { return this._tiles; }
@@ -68,4 +68,4 @@ class MahjongTiles {
   }
 }
 
-export default MahjongTiles;
+export default MahjongTilePile;

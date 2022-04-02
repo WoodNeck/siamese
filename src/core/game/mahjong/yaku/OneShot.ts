@@ -8,7 +8,7 @@ import { YAKU } from "~/const/mahjong";
 @staticImplements<Yaku>()
 class OneShot {
   public static check({ player }: MahjongDragon) {
-    return player.riichiTurn > 0 && player.riichiTurn === player.currentTurn - 1
+    return player.isRiichi && player.riichiTurn === player.currentTurn - 4
       ? 1
       : 0;
   }

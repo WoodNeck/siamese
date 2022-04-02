@@ -3,23 +3,25 @@ import Discord, { MessageActionRow, MessageButton, MessageEmbed, ThreadChannel }
 import GameRoom from "../GameRoom";
 
 import MahjongTile from "./MahjongTile";
-import MahjongTiles from "./MahjongTiles";
+import MahjongTilePile from "./MahjongTilePile";
+import MahjongTileSet from "./MahjongTileSet";
 import MahjongPlayer from "./MahjongPlayer";
 import MahjongSetParser from "./MahjongSetParser";
+import MahjongHandsParser from "./MahjongHandsParser";
 import MahjongScoreInfo from "./MahjongScoreInfo";
 import NagashiMangwan from "./yaku/NagashiMangwan";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import { GAME, MAHJONG } from "~/const/command/minigame";
-import { WIND, EMOJI as MAHJONG_EMOJI, KANG_TYPE, BODY_TYPE, SCORE } from "~/const/mahjong";
-import { BUTTON_STYLE, MAX_INTERACTION_DURATION } from "~/const/discord";
+import { WIND, EMOJI as MAHJONG_EMOJI, KANG_TYPE, BODY_TYPE, SCORE, YAKU, ACTION_TYPE } from "~/const/mahjong";
+import { BUTTON_STYLE } from "~/const/discord";
 import { groupBy, shuffle, toEmoji, waitFor } from "~/util/helper";
 import { block } from "~/util/markdown";
 
 class MahjongGame {
   private _threadChannel: ThreadChannel;
-  private _tiles: MahjongTiles;
+  private _tiles: MahjongTilePile;
   private _players: MahjongPlayer[];
 
   private _wind: number;
@@ -58,7 +60,7 @@ class MahjongGame {
     this._round = {
       wind: -1,
       windRepeat: 0,
-      turn: 0,
+      turn: -1,
       doraCount: 1
     };
     this._timeoutFlag = false;
@@ -76,7 +78,7 @@ class MahjongGame {
       return await this._showTimeoutMessage();
     }
 
-    // TODO: 최종 순위 표시
+    return await this._showFinalRank();
   }
 
   public async destroy() {
@@ -102,7 +104,7 @@ class MahjongGame {
 
   public startNewRound(changeWind: boolean) {
     const round = this._round;
-    const tiles = new MahjongTiles();
+    const tiles = new MahjongTilePile();
 
     this._doras = tiles.draw(5);
     this._uraDoras = tiles.draw(5);
@@ -135,35 +137,54 @@ class MahjongGame {
   public async nextTurn(): Promise<boolean> {
     const tiles = this._tiles;
     const currentPlayer = this.currentPlayer;
-    const newTile = currentPlayer.hands.prevTurnKang !== KANG_TYPE.NONE
-      ? this._drawKangTile()
-      : tiles.draw(1)[0];
 
-    currentPlayer.hands.add(newTile);
-    currentPlayer.onTurnStart();
+    if (currentPlayer.lastAction === ACTION_TYPE.KANG) {
+      currentPlayer.hands.add(this._drawKangTile());
+    } else if (currentPlayer.lastAction === ACTION_TYPE.DISCARD) {
+      const newTile = tiles.draw(1)[0];
 
-    await this._showSummary();
-    const handsMsg = await this._showHands();
-    const reconnected = await this._showReconnect();
-    if (!reconnected) return false;
-
-    const discardInfo = await this._listenDiscard(handsMsg as Discord.Message);
-    if (!discardInfo) return false;
+      currentPlayer.hands.add(newTile);
+    }
 
     this._round.turn += 1;
+    currentPlayer.onTurnStart(this._round.turn);
+
+    await this._showSummary();
+
+    if (currentPlayer.shouldReconnect()) {
+      const reconnected = await this._showReconnect([currentPlayer]);
+      if (!reconnected) return false;
+    }
+
+    const handsMsg = await this._showHands();
+
+    const discardInfo = await this._listenDiscard(handsMsg as Discord.Message);
+
+    currentPlayer.onTurnEnd();
 
     if (discardInfo.tsumo) {
       await this._showRoundResult(currentPlayer, currentPlayer.hands.handsInfo!.scoreInfo!);
       return false;
     } else if (discardInfo.kang) {
+      currentPlayer.setAction(ACTION_TYPE.KANG);
       await this._showKang();
+      // TODO: 국사무쌍 안깡 체크
       return true;
     } else {
-      const lastDiscard = await this._showDiscard(discardInfo);
-      const actionInfo = await this._showOthersActionMsg(lastDiscard);
-      if (!actionInfo) {
-        // Pass turn
-        this._currentPlayerIdx = (this._currentPlayerIdx + 1) % 4;
+      currentPlayer.setAction(ACTION_TYPE.DISCARD);
+      const tileDiscarded = await this._showDiscard(discardInfo);
+      const playerActions = await this._getPlayerActions(tileDiscarded);
+
+      if (playerActions.some(({ player }) => player.shouldReconnect())) {
+        const reconnected = await this._showReconnect(playerActions.map(({ player }) => player));
+        if (!reconnected) return false;
+      }
+
+      const playerAction = await this._listenPlayerAction(playerActions);
+      if (!playerAction) {
+        this._passTurnToNextPlayer();
+      } else {
+        await this._doPlayerAction(playerAction, tileDiscarded);
       }
     }
 
@@ -238,12 +259,10 @@ class MahjongGame {
     const currentPlayer = this.currentPlayer;
     const { interaction, hands } = currentPlayer;
 
-    const tiles = hands.holding;
-    const handEmojis = tiles.map(tile => tile.getEmoji());
     const rows = this._getHandButtons(currentPlayer);
 
     const msg = await interaction.followUp({
-      content: handEmojis.join(""),
+      content: hands.toEmoji(),
       components: rows,
       fetchReply: true,
       ephemeral: true
@@ -252,60 +271,76 @@ class MahjongGame {
     return msg;
   }
 
-  private async _showReconnect(): Promise<boolean> {
-    const currentPlayer = this.currentPlayer;
+  private async _showReconnect(players: MahjongPlayer[]): Promise<boolean> {
     const threadChannel = this._threadChannel;
-    const { interaction } = currentPlayer;
 
-    if (Date.now() - interaction.createdTimestamp >= MAX_INTERACTION_DURATION) {
-      const row = new MessageActionRow();
-      const btn = new MessageButton();
-      btn.setLabel(GAME.RECONNECT_LABEL);
-      btn.setStyle(BUTTON_STYLE.SUCCESS);
-      btn.setCustomId(GAME.SYMBOL.RECONNECT);
-      row.addComponents(btn);
+    const row = new MessageActionRow();
+    const btn = new MessageButton();
+    btn.setLabel(GAME.RECONNECT_LABEL);
+    btn.setStyle(BUTTON_STYLE.SUCCESS);
+    btn.setCustomId(GAME.SYMBOL.RECONNECT);
+    row.addComponents(btn);
 
-      const reconnectMsg = await threadChannel.send({
-        content: GAME.RECONNECT_TITLE(currentPlayer.user),
-        components: [row]
+    const playersLeft = [...players];
+    const embed = new MessageEmbed();
+
+    embed.setTitle(GAME.RECONNECT_LIST_TITLE);
+    embed.setDescription(playersLeft.map(player => player.user.toString()).join("\n"));
+
+    const reconnectMsg = await threadChannel.send({
+      content: GAME.RECONNECT_TITLE(players.map(player => player.user)),
+      embeds: [embed],
+      components: [row]
+    });
+
+    const collector = reconnectMsg.createMessageComponentCollector({
+      filter: action => playersLeft.findIndex(player => action.user.id === player.user.id) >= 0,
+      time: 10 * 60 * 1000
+    });
+
+    collector.on("collect", async action => {
+      const pressedPlayer = playersLeft.splice(playersLeft.findIndex(player => player.user.id === action.user.id), 1)[0];
+
+      embed.setDescription(playersLeft.map(player => player.user.toString()).join("\n"));
+      await action.update({
+        embeds: [embed],
+        components: playersLeft.length > 0
+          ? [row]
+          : []
       });
+      pressedPlayer.interaction = action;
 
-      const collector = reconnectMsg.createMessageComponentCollector({
-        filter: action => action.user.id === currentPlayer.user.id,
-        time: 10 * 60 * 1000
-      });
-
-      collector.on("collect", async action => {
-        await action.update({ components: [] });
-        currentPlayer.interaction = action;
+      if (playersLeft.length <= 0) {
         collector.stop(GAME.SYMBOL.RECONNECT);
-      });
+      }
+    });
 
-      return new Promise<boolean>(resolve => {
-        collector.on("end", (_, reason) => {
-          if (reason === GAME.SYMBOL.RECONNECT) {
-            resolve(true);
-          } else {
-            this._timeoutFlag = true;
-            resolve(false);
-          }
-        });
+    return new Promise<boolean>(resolve => {
+      collector.on("end", async (_, reason) => {
+        if (reason === GAME.SYMBOL.RECONNECT) {
+          await threadChannel.send({
+            content: GAME.RECONNECT_COMPLETE
+          });
+          resolve(true);
+        } else {
+          this._timeoutFlag = true;
+          resolve(false);
+        }
       });
-    }
-
-    return true;
+    });
   }
 
   private async _listenDiscard(msg: Discord.Message): Promise<{
     kang: boolean;
     riichi: boolean;
     tsumo: boolean;
-  } | null> {
+  }> {
     const currentPlayer = this.currentPlayer;
     const collector = msg.createMessageComponentCollector({
       filter: () => true,
-      time: 600000 // 10 min
+      time: 300000 // 5 min
     });
+    const roundTurn = this._round.turn;
 
     collector.on("collect", async interaction => {
       currentPlayer.interaction = interaction;
@@ -319,7 +354,7 @@ class MahjongGame {
       if (interaction.customId.startsWith(MAHJONG.SYMBOL.KANG)) {
         const tileID = parseFloat(interaction.customId.slice(MAHJONG.SYMBOL.KANG.length));
 
-        currentPlayer.hands.playKang(tileID);
+        currentPlayer.hands.playClosedKang(tileID);
 
         return collector.stop(MAHJONG.SYMBOL.KANG);
       } else if (interaction.customId === MAHJONG.SYMBOL.TSUMO) {
@@ -341,19 +376,19 @@ class MahjongGame {
     return new Promise(resolve => {
       collector.on("end", (_, reason) => {
         if (
-          reason === MAHJONG.SYMBOL.DISCARD
-          || reason === MAHJONG.SYMBOL.KANG
-          || reason === MAHJONG.SYMBOL.TSUMO
+          reason !== MAHJONG.SYMBOL.DISCARD
+          && reason !== MAHJONG.SYMBOL.KANG
+          && reason !== MAHJONG.SYMBOL.TSUMO
         ) {
-          resolve({
-            kang: reason === MAHJONG.SYMBOL.KANG,
-            riichi: currentPlayer.riichiTurn === currentPlayer.currentTurn,
-            tsumo: reason === MAHJONG.SYMBOL.TSUMO
-          });
-        } else {
-          this._timeoutFlag = true;
-          resolve(null);
+          // 쯔모기리
+          currentPlayer.hands.play(currentPlayer.hands.holding.length - 1);
         }
+
+        resolve({
+          kang: reason === MAHJONG.SYMBOL.KANG,
+          riichi: currentPlayer.riichiTurn === roundTurn,
+          tsumo: reason === MAHJONG.SYMBOL.TSUMO
+        });
       });
     });
   }
@@ -399,40 +434,269 @@ class MahjongGame {
     return lastDiscard;
   }
 
-  private async _showOthersActionMsg(lastTile: MahjongTile): Promise<any> {
+  private async _getPlayerActions(lastTile: MahjongTile): Promise<Array<{
+    player: MahjongPlayer;
+    actions: Array<{
+      tiles: MahjongTile[];
+      order: number;
+      type: string;
+      score?: MahjongScoreInfo;
+    }>;
+  }>> {
     const players = this._players;
     const currentPlayerIdx = this._currentPlayerIdx;
     const otherPlayers = [...players];
-    const parser = new MahjongSetParser();
+    const setParser = new MahjongSetParser();
+    const handParser = new MahjongHandsParser();
 
     otherPlayers.splice(currentPlayerIdx, 1);
 
-    const actions = otherPlayers.map(player => {
-      // TODO: 뻥, 깡, 치 체크
-      const candidates = parser.parseCandidates(player.hands);
+    const playerActions = otherPlayers.map(player => {
+      const candidates = setParser.parseCandidates(player.hands);
+      const canChi = player.playerIdx === (currentPlayerIdx + 1) % 4;
 
-      const ordered = candidates.ordered.filter(tiles => {
-        const tile1 = tiles[0];
-        const tile2 = tiles[1];
-        const indexDiff = Math.abs(tile1.index - tile2.index);
+      const possibleActions: Array<{ tiles: MahjongTile[]; order: number; type: string; score?: MahjongScoreInfo }> = [];
 
-        if (indexDiff === 1) {
-          const minIdx = Math.min(tile1.index, tile2.index);
-          const maxIdx = Math.max(tile1.index, tile2.index);
+      const ordered = canChi
+        ? candidates.ordered.filter(tiles => {
+          const tile1 = tiles[0];
+          const tile2 = tiles[1];
 
-          return lastTile.index === minIdx - 1 || lastTile.index === maxIdx + 1;
-        } else {
-          return Math.abs(lastTile.index - tile1.index) === Math.abs(lastTile.index - tile2.index);
-        }
-      });
+          if (tile1.type !== lastTile.type) return false;
+
+          const indexDiff = Math.abs(tile1.index - tile2.index);
+
+          if (indexDiff === 1) {
+            const minIdx = Math.min(tile1.index, tile2.index);
+            const maxIdx = Math.max(tile1.index, tile2.index);
+
+            return lastTile.index === minIdx - 1 || lastTile.index === maxIdx + 1;
+          } else {
+            return Math.abs(lastTile.index - tile1.index) === Math.abs(lastTile.index - tile2.index);
+          }
+        }) : [];
       const same = candidates.same.filter(tiles => tiles[0].tileID === lastTile.tileID);
       const kang = candidates.kang.filter(tiles => tiles[0].tileID === lastTile.tileID);
 
+      possibleActions.push(...ordered.map(tiles => ({ tiles, order: 5, type: MAHJONG.SYMBOL.CHI })));
+      possibleActions.push(...same.map(tiles => ({ tiles, order: 4, type: MAHJONG.SYMBOL.PON })));
+      possibleActions.push(...kang.map(tiles => ({ tiles, order: 4, type: MAHJONG.SYMBOL.KANG })));
+
       // 론 체크
-      // 뻥/치 중에 해당 세트 + 나머지 패들로 완성 가능할 경우...(스코어 테스트)를 테스트
+      if (player.hands.handsInfo?.tenpaiTiles.tiles.has(lastTile.tileID)) {
+        const { holding, borrows, kang: closedKang } = player.hands;
+        const ronScore = handParser.getScoreInfo([...holding, lastTile], borrows, closedKang, this, player, {
+          tile: lastTile,
+          isTsumo: false,
+          isAdditiveKang: false
+        });
+
+        if (ronScore) {
+          const indexDiff = player.getIndexDiff(this.currentPlayer);
+          possibleActions.push({ tiles: [], order: indexDiff, type: MAHJONG.SYMBOL.RON, score: ronScore });
+        }
+      }
+
+      return {
+        player,
+        actions: possibleActions
+      };
+    }).filter(({ actions }) => actions.length > 0);
+
+    return playerActions;
+  }
+
+  private async _listenPlayerAction(playerActions: Array<{
+    player: MahjongPlayer;
+    actions: Array<{
+      tiles: MahjongTile[];
+      order: number;
+      type: string;
+      score?: MahjongScoreInfo;
+    }>;
+  }>): Promise<{
+      player: MahjongPlayer;
+      action: {
+        tiles: MahjongTile[];
+        order: number;
+        type: string;
+        score?: MahjongScoreInfo;
+      };
+    } | null> {
+    if (playerActions.length <= 0) return null;
+
+    const actionPromises = playerActions.map(async ({ player, actions }) => {
+      const skipBtn = new MessageButton();
+      skipBtn.setLabel(MAHJONG.LABEL.SKIP);
+      skipBtn.setStyle(BUTTON_STYLE.SECONDARY);
+      skipBtn.setCustomId(MAHJONG.SYMBOL.SKIP);
+
+      const actionBtns = actions.map((action, idx) => {
+        const btn = new MessageButton();
+        if (action.type === MAHJONG.SYMBOL.CHI) {
+          const tiles = action.tiles;
+          btn.setLabel(`${MAHJONG.LABEL[action.type]} (${tiles.map(tile => tile.getName()).join("-")})`);
+        } else {
+          btn.setLabel(MAHJONG.LABEL[action.type]);
+        }
+        btn.setStyle(action.type === MAHJONG.SYMBOL.RON ? BUTTON_STYLE.SUCCESS : BUTTON_STYLE.PRIMARY);
+        btn.setCustomId(idx.toString());
+
+        if (action.type === MAHJONG.SYMBOL.RON && player.hands.handsInfo?.tenpaiTiles.isFuriten) {
+          btn.setLabel(`${MAHJONG.LABEL[action.type]}(${MAHJONG.LABEL.FURITEN})`);
+          btn.setDisabled(true);
+        }
+
+        return btn;
+      });
+
+      actionBtns.push(skipBtn);
+
+      const actionRows = groupBy(actionBtns, 5).map(btns => {
+        const row = new MessageActionRow();
+        row.addComponents(...btns);
+        return row;
+      });
+
+      const actionMsg = await player.interaction.followUp({
+        content: player.hands.toEmoji(),
+        components: actionRows,
+        fetchReply: true,
+        ephemeral: true
+      }) as Discord.Message;
+
+      const collector = actionMsg.createMessageComponentCollector({
+        filter: () => true,
+        time: 180000 // 3 min
+      });
+
+      collector.on("collect", async () => {
+        collector.stop();
+      });
+
+      return new Promise<{
+        player: MahjongPlayer;
+        action: {
+          tiles: MahjongTile[];
+          order: number;
+          type: string;
+          score?: MahjongScoreInfo;
+        };
+      } | null>(resolve => {
+        collector.on("end", async collected => {
+          const interaction = collected.first();
+
+          if (!interaction) {
+            return resolve(null);
+          }
+
+          await interaction.update({
+            content: MAHJONG.WAITING_OTHER_PLAYER,
+            components: []
+          });
+          player.interaction = interaction;
+
+          if (interaction.customId === MAHJONG.SYMBOL.SKIP) {
+            return resolve(null);
+          }
+
+          const action = actions[parseFloat(interaction.customId)];
+          resolve({
+            player,
+            action
+          });
+        });
+      });
     });
 
-    return null;
+    const resolvedActions = (await Promise.all(actionPromises)).filter(val => !!val);
+
+    if (resolvedActions.length <= 0) return null;
+
+    resolvedActions.sort((a, b) => a!.action.order - b!.action.order);
+
+    return resolvedActions[0];
+  }
+
+  private async _doPlayerAction(playerAction: {
+    player: MahjongPlayer;
+    action: {
+      tiles: MahjongTile[];
+      order: number;
+      type: string;
+      score?: MahjongScoreInfo;
+    };
+  }, tileDiscarded: MahjongTile): Promise<boolean> {
+    const { player, action } = playerAction;
+
+    if (action.type === MAHJONG.SYMBOL.RON) {
+      await this._showRoundResult(player, action.score!);
+      return false;
+    } else {
+      const tiles = action.tiles;
+      const borrowed = tileDiscarded.borrow();
+      const isAdditiveKang = action.type === MAHJONG.SYMBOL.KANG
+        && tiles.some(tile => tile.borrowed);
+
+      if (isAdditiveKang) {
+        const borrowedTileIdx = tiles.findIndex(tile => tile.borrowed);
+        tiles.splice(borrowedTileIdx, 0, borrowed);
+      } else {
+        const indexDiff = player.getIndexDiff(this.currentPlayer);
+        tiles.splice(indexDiff - 1, 0, borrowed);
+      }
+
+      const newSet = new MahjongTileSet({
+        tiles,
+        type: action.type === MAHJONG.SYMBOL.CHI
+          ? BODY_TYPE.ORDERED
+          : action.type === MAHJONG.SYMBOL.PON
+            ? BODY_TYPE.SAME
+            : BODY_TYPE.KANG,
+        borrowed: true
+      });
+
+      if (action.type === MAHJONG.SYMBOL.CHI) {
+        player.setAction(ACTION_TYPE.CHI);
+      } else if (action.type === MAHJONG.SYMBOL.PON) {
+        player.setAction(ACTION_TYPE.PON);
+      } else if (action.type === MAHJONG.SYMBOL.KANG) {
+        player.setAction(ACTION_TYPE.KANG);
+      }
+
+      player.hands.addBorrowedTileSet(newSet);
+
+      await this._showPlayerAction(player, newSet);
+
+      // TODO: 창깡 체크
+
+      this._currentPlayerIdx = player.playerIdx;
+      this._round.turn += 4; // 일발 등 방지
+
+      return true;
+    }
+  }
+
+  private async _showPlayerAction(player: MahjongPlayer, tileSet: MahjongTileSet) {
+    const threadChannel = this._threadChannel;
+    const embed = new MessageEmbed();
+    const user = player.user;
+
+    embed.setAuthor({
+      name: tileSet.type === BODY_TYPE.ORDERED
+        ? MAHJONG.CHI_TITLE(user)
+        : tileSet.type === BODY_TYPE.SAME
+          ? MAHJONG.PONG_TITLE(user)
+          : MAHJONG.KANG_TITLE(user),
+      iconURL: user.displayAvatarURL()
+    });
+
+    embed.setColor(COLOR.BOT);
+
+    await threadChannel.send({
+      content: tileSet.tiles.map(tile => tile.getEmoji()).join(""),
+      embeds: [embed]
+    });
   }
 
   private async _showKang() {
@@ -480,10 +744,17 @@ class MahjongGame {
     const subscore = scoreInfo.subscore;
     const roundWind = this._round.wind;
     const windRepeat = this._round.windRepeat;
+    const isNagashiMangwan = scoreInfo.scores.some(({ yaku }) => yaku.yakuName === YAKU.NAGASHI_MANGWAN);
 
     const { name: scoreName, score: baseScore } = this._getBaseScore(totalScore, subscore);
 
-    embed.setTitle(isTsumo ? MAHJONG.TSUMO_TITLE(winner.user, last) : MAHJONG.RON_TITLE(winner.user, last));
+    embed.setTitle(
+      isNagashiMangwan
+        ? MAHJONG.NAGASHI_MANGWAN_TITLE(winner.user)
+        : isTsumo
+          ? MAHJONG.TSUMO_TITLE(winner.user, last)
+          : MAHJONG.RON_TITLE(winner.user, last)
+    );
 
     let winnerScore = 0;
     const scoreDiff = players.map(() => 0);
@@ -511,7 +782,27 @@ class MahjongGame {
 
       scoreDiff[winner.playerIdx] = winnerScore;
     } else {
-      // TODO: 론
+      const score = winner.isParent(roundWind)
+        ? 2 * baseScore
+        : baseScore;
+
+      players.forEach((player, playerIdx) => {
+        if (player === winner) return;
+
+        let basePointToDecrease = player.playerIdx === this._currentPlayerIdx
+          ? score
+          : 0;
+
+        basePointToDecrease = Math.ceil(basePointToDecrease / 100) * 100;
+
+        const riichiPoint = player.isRiichi ? 1000 : 0;
+        const pointToDecrease = basePointToDecrease + windRepeat * 100 + riichiPoint;
+
+        scoreDiff[playerIdx] = -pointToDecrease;
+        winnerScore += pointToDecrease;
+      });
+
+      scoreDiff[winner.playerIdx] = winnerScore;
     }
 
     embed.setDescription([scoreName, MAHJONG.POINT(winnerScore)].join(" / "));
@@ -685,6 +976,30 @@ class MahjongGame {
     this.startNewRound(!tenpais[parentIdx]);
   }
 
+  private async _showFinalRank() {
+    const threadChannel = this._threadChannel;
+    const players = this._players;
+    const playersDescendingByPoint = [...players].sort((a, b) => b.point - a.point);
+
+    const embed = new MessageEmbed();
+
+    embed.setTitle(MAHJONG.FINAL_RANK_TITLE);
+    embed.setDescription(
+      playersDescendingByPoint.map((player, idx) => {
+        return `${idx + 1}${EMOJI.KEYCAP} ${player.user.displayName} / ${MAHJONG.POINT(player.point)}`;
+      }).join("\n")
+    );
+
+    embed.setColor(COLOR.BOT);
+
+    await threadChannel.send({
+      embeds: [embed]
+    });
+
+    await threadChannel.setLocked(true).catch(() => void 0);
+    await threadChannel.setArchived(true).catch(() => void 0);
+  }
+
   private _shouldContinueRound() {
     return this._tiles.left > 0;
   }
@@ -774,6 +1089,10 @@ class MahjongGame {
       : pointDiff < 0
         ? block(`${prevScore}\n- ${Math.abs(pointDiff)}`, "diff")
         : block(`${prevScore}`);
+  }
+
+  private _passTurnToNextPlayer() {
+    this._currentPlayerIdx = (this._currentPlayerIdx + 1) % 4;
   }
 }
 

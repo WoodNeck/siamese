@@ -57,6 +57,10 @@ class MahjongTile {
     return toEmoji(emoji.name, emoji.id);
   }
 
+  public getName(): string {
+    return MAHJONG.NAME[this.type](this.index);
+  }
+
   public borrow(): MahjongTile {
     const cloned = new MahjongTile({
       ...this

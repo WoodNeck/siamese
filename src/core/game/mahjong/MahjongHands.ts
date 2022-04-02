@@ -92,43 +92,55 @@ class MahjongHands {
     return tile;
   }
 
-  public playKang(tileID: number) {
-    const borrows = this._borrows;
+  public playClosedKang(tileID: number) {
     const kangTiles = this._holding.filter(tile => tile.tileID === tileID);
 
     this._holding = this._holding.filter(tile => tile.tileID !== tileID);
 
-    if (kangTiles.length === 4) {
-      const redDoraIndex = kangTiles.findIndex(tile => tile.isRedDora);
+    const redDoraIndex = kangTiles.findIndex(tile => tile.isRedDora);
 
-      if (redDoraIndex >= 0) {
-        const redDoraTile = kangTiles.splice(redDoraIndex, 1)[0];
-        kangTiles.splice(1, 0, redDoraTile);
-      }
+    if (redDoraIndex >= 0) {
+      const redDoraTile = kangTiles.splice(redDoraIndex, 1)[0];
+      kangTiles.splice(1, 0, redDoraTile);
+    }
 
-      kangTiles[0].closedKang = true;
-      kangTiles[3].closedKang = true;
+    kangTiles[0].closedKang = true;
+    kangTiles[3].closedKang = true;
 
-      const kangTileSet = new MahjongTileSet({
-        tiles: kangTiles,
-        type: BODY_TYPE.KANG,
-        borrowed: false
+    const kangTileSet = new MahjongTileSet({
+      tiles: kangTiles,
+      type: BODY_TYPE.KANG,
+      borrowed: false
+    });
+
+    this._kang.push(kangTileSet);
+    this._prevTurnKang = KANG_TYPE.CLOSED;
+  }
+
+  public addBorrowedTileSet(tileSet: MahjongTileSet) {
+    const borrows = this._borrows;
+    const addedTiles = tileSet.tiles;
+
+    borrows.push(tileSet);
+
+    if (tileSet.type === BODY_TYPE.KANG) {
+
+      const prevBorrowedSetIdx = borrows.findIndex(set => {
+        const isPon = set.type === BODY_TYPE.SAME;
+        return isPon && set.tiles.some(tile => {
+          return addedTiles.some(added => added.id === tile.id);
+        });
       });
 
-      this._kang.push(kangTileSet);
-      this._prevTurnKang = KANG_TYPE.CLOSED;
-    } else if (kangTiles.length === 3) {
-      // TODO: 대명깡 구현
-    } else if (kangTiles.length === 1) {
-      const singleTile = kangTiles[0];
-      const sameTilesIdx = borrows.findIndex(({ tiles, type }) => tiles[0].tileID === tileID && type === BODY_TYPE.SAME);
-      const { tiles: sameTiles } = borrows.splice(sameTilesIdx, 1)[0];
-
-      // 가깡
-      sameTiles.splice(sameTiles.findIndex(tile => tile.borrowed), 0, singleTile);
-      borrows.push(new MahjongTileSet({ tiles: sameTiles, type: BODY_TYPE.KANG, borrowed: true }));
-
-      this._prevTurnKang = KANG_TYPE.ADDITIVE;
+      if (prevBorrowedSetIdx >= 0) {
+        borrows.splice(prevBorrowedSetIdx, 1);
+        this._prevTurnKang = KANG_TYPE.ADDITIVE;
+      } else {
+        this._holding = this._holding.filter(tile => !addedTiles.includes(tile));
+        this._prevTurnKang = KANG_TYPE.OPEN;
+      }
+    } else {
+      this._holding = this._holding.filter(tile => !addedTiles.includes(tile));
     }
   }
 
@@ -155,7 +167,7 @@ class MahjongHands {
 
   public isTenpai(): boolean {
     if (!this._handsInfo) return false;
-    return this._handsInfo.tenpaiTiles.size > 0;
+    return this._handsInfo.tenpaiTiles.tiles.size > 0;
   }
 
   public isTsumoable(): boolean {
