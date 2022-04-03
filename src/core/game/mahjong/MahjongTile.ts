@@ -13,6 +13,7 @@ class MahjongTile {
   public borrowed: boolean;
   public lent: boolean;
   public isKangTile: boolean; // 왕패
+  public isRiichiTile: boolean; // 리치 버림패
   public closedKang: boolean; // 안깡 표시용
 
   public constructor({
@@ -35,6 +36,7 @@ class MahjongTile {
     this.borrowed = false;
     this.lent = false;
     this.isKangTile = false;
+    this.isRiichiTile = false;
     this.closedKang = false;
   }
 
@@ -42,7 +44,7 @@ class MahjongTile {
     const type = this.type;
     const index = this.index;
 
-    const emojiPool = this.borrowed
+    const emojiPool = this.isRiichiTile || this.borrowed
       ? MAHJONG.EMOJI_ROTATED
       : this.lent
         ? MAHJONG.EMOJI_GRAYSCALE
@@ -58,7 +60,10 @@ class MahjongTile {
   }
 
   public getName(): string {
-    return MAHJONG.NAME[this.type](this.index);
+    const name = MAHJONG.NAME[this.type](this.index);
+    return this.isRedDora
+      ? `${name}(${MAHJONG.RED_DORA_NAME})`
+      : name;
   }
 
   public borrow(): MahjongTile {
@@ -66,6 +71,7 @@ class MahjongTile {
       ...this
     });
 
+    cloned.isRiichiTile = false;
     cloned.borrowed = true;
     this.lent = true;
 

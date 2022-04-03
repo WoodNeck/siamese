@@ -24,4 +24,57 @@ describe("MahjongHands", () => {
       expect(([...hands.handsInfo!.riichiDiscardables.values()][0] as any).name).equals("만3");
     })
   });
+
+  describe("tenpai tiles", () => {
+    it("TC 1", () => {
+      const tiles = [
+        "통2", "통4",
+        "통6", "통7", "통8",
+        "삭4", "삭5", "삭6",
+        "백", "백", "백",
+        "삭2", "삭2", "삭8"
+      ];
+
+      const hands = generator.handsByString(tiles);
+      const pin3 = generator.tilesByString(["통3"])[0];
+      const tenpaiTiles = [...hands.handsInfo!.tenpaiTiles.tiles];
+
+      expect(tenpaiTiles.length).to.equal(1);
+      expect(tenpaiTiles[0]).to.equal(pin3.tileID);
+    });
+
+    it("TC 2", () => {
+      const tiles = [
+        "통1", "통2",
+        "통6", "통7", "통8",
+        "삭4", "삭5", "삭6",
+        "백", "백", "백",
+        "삭2", "삭2", "삭8"
+      ];
+
+      const hands = generator.handsByString(tiles);
+      const pin3 = generator.tilesByString(["통3"])[0];
+      const tenpaiTiles = [...hands.handsInfo!.tenpaiTiles.tiles];
+
+      expect(tenpaiTiles.length).to.equal(1);
+      expect(tenpaiTiles[0]).to.equal(pin3.tileID);
+    });
+
+    it("TC 3", () => {
+      const tiles = [
+        "통8", "통9",
+        "통6", "통7", "통8",
+        "삭4", "삭5", "삭6",
+        "백", "백", "백",
+        "삭2", "삭2", "삭8"
+      ];
+
+      const hands = generator.handsByString(tiles);
+      const pin3 = generator.tilesByString(["통7"])[0];
+      const tenpaiTiles = [...hands.handsInfo!.tenpaiTiles.tiles];
+
+      expect(tenpaiTiles.length).to.equal(1);
+      expect(tenpaiTiles[0]).to.equal(pin3.tileID);
+    });
+  });
 });

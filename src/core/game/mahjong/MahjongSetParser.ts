@@ -71,8 +71,6 @@ class MahjongSetParser {
       ordered.push(...this._findOrderedCandidates(type, groupByType));
     });
 
-    kang.push(...hands.borrows.filter(({ type }) => type === BODY_TYPE.SAME).map(({ tiles }) => tiles));
-
     return {
       ordered,
       same,
@@ -126,26 +124,13 @@ class MahjongSetParser {
     if (type > TILE_TYPE.SOU) return [];
 
     const combinations = pick(group, 3);
-    const idMap = new Map<number, boolean>();
 
     return combinations.filter(combination => {
-      const isOrdered = combination.every((tile, idx) => {
+      return combination.every((tile, idx) => {
         if (idx === 0) return true;
         const prev = combination[idx - 1];
         return tile.index === prev.index + 1;
       });
-
-      if (!isOrdered) return false;
-
-      const combID = combination.reduce((total, tile) => {
-        const id = tile.isRedDora ? -tile.type : tile.tileID;
-        return total + id;
-      }, 0);
-
-      if (idMap.has(combID)) return false;
-
-      idMap.set(combID, true);
-      return true;
     });
   }
 

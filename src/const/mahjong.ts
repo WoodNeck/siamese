@@ -47,6 +47,7 @@ export const DATA = {
 
 const WIND_NAME = ["동", "남", "서", "북"];
 const SANGEN_NAME = ["백", "발", "중"];
+export const RED_DORA_NAME = "적";
 
 export const NAME = {
   [TILE_TYPE.MAN]: (index: number) => `${index + 1}만`,

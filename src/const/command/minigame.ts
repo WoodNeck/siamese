@@ -304,14 +304,15 @@ export const MAHJONG = {
   WAITING_OTHER_PLAYER: "다른 플레이어를 기다리는 중이다냥...",
   YAKU_TITLE: "역",
   DORA_INDICATOR_TITLE: "도라표시패",
-  ROUND_FORMAT: (wind: number, windRepeat: number) => {
-    const roundWind = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
-    const roundWindEmoji = toEmoji(roundWind.name, roundWind.id);
+  ROUND_FORMAT: (wind: number, roundWind: number, windRepeat: number) => {
+    const windEmojiData = MAHJONG_EMOJI[TILE_TYPE.KAZE][wind];
+    const windEmoji = toEmoji(windEmojiData.name, windEmojiData.id);
 
-    return `${roundWindEmoji} 동${wind + 1}국${windRepeat > 0 ? ` ${windRepeat}본장` : ""}`;
+    return `${windEmoji} 동${roundWind + 1}국${windRepeat > 0 ? ` ${windRepeat}본장` : ""}`;
   },
   RESULT_FOOTER: `${EMOJI.STOPWATCH} 10초 뒤 다음 게임을 시작한다냥!`,
   END_ROUND_TITLE: "유국이다냥!",
+  END_BY_KANG_TITLE: "유국이다냥! (사깡산료)",
   RIICHI_BAR: [
     MAHJONG_EMOJI.RIICHI[0],
     MAHJONG_EMOJI.RIICHI[1],
@@ -325,6 +326,7 @@ export const MAHJONG = {
     MAHJONG_EMOJI.RIICHI[0]
   ].map(emoji => toEmoji(emoji.name, emoji.id)).join(""),
   POINT: (point: number) => `${point}점`,
+  TENPAI_TITLE: "현재 대기패",
   LABEL: {
     CHI: "치",
     PON: "퐁",

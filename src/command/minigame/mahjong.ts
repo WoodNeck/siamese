@@ -1,3 +1,4 @@
+import { MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
@@ -31,8 +32,18 @@ export default new Command({
     }
 
     const id = new PhraseGen().generatePhrase();
-    const gameRoom = new GameRoom(ctx, 1, 4);
+    const gameRoom = new GameRoom(ctx, 1, 2);
     const threadChannel = await createGameChannel(ctx, MAHJONG.CMD, [author], id);
+
+    const betaEmbed = new MessageEmbed();
+    betaEmbed.setThumbnail("https://cdn.discordapp.com/attachments/800248063377670145/959327716551823380/TjR0LkT.jpg");
+    betaEmbed.setTitle("마작은 현재 베타테스트 중이다냥!");
+    betaEmbed.setDescription(`플레이 도중 잘못된 동작이나 버그 등이 발견되면 [개발서버](${bot.env.BOT_DEV_SERVER_INVITE})에 알려달라냥!`);
+
+    await threadChannel.send({
+      embeds: [betaEmbed]
+    });
+
     const canStart = await gameRoom.waitForPlayers(MAHJONG.JOIN_MSG_TITLE(author), threadChannel);
 
     if (canStart) {

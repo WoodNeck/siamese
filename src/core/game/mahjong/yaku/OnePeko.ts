@@ -10,6 +10,8 @@ class OnePeko {
   public static check(dragon: MahjongDragon) {
     const { body } = dragon;
 
+    if (dragon.cried) return 0;
+
     const orderedBodies = body.filter(comb => comb.type === BODY_TYPE.ORDERED);
 
     if (orderedBodies.length < 2) return 0;

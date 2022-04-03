@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import { BODY_TYPE } from "../../../../src/const/mahjong";
+import MahjongHandsParser from "../../../../src/core/game/mahjong/MahjongHandsParser";
 import OnePeko from "../../../../src/core/game/mahjong/yaku/OnePeko";
 import MahjongDragonGenerator from "../../../MahjongDragonGenerator";
 
@@ -22,6 +24,34 @@ describe("이페코", () => {
 
     expect(score).to.equal(1);
   });
+
+  it("이페코 - 1판", () => {
+    const hands = generator.handsByString([
+      "만2", "만3", "만4", "통7", "통8", "통9", "백", "백", "통8", "통9"
+    ]);
+    hands.addBorrowedTileSet(generator.tileSetByString(["통1", "통2", "통3"], BODY_TYPE.ORDERED, true));
+
+    console.log(hands.cried);
+
+    const handsParser = new MahjongHandsParser();
+    const scoreInfo = handsParser.getScoreInfo(
+      hands.holding,
+      hands.borrows,
+      [],
+      generator.game,
+      generator.player,
+      {
+        tile: generator.tilesByString(["통7"])[0],
+        isTsumo: false,
+        isAdditiveKang: false
+      }
+    );
+
+    const score = OnePeko.check(scoreInfo!.dragon);
+
+    expect(score).to.equal(0);
+  });
+
 
   it("이페코가 아닌 케이스 (1)", () => {
     const hands = [

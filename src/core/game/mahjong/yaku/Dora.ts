@@ -19,11 +19,14 @@ class Dora {
 
     const bounsTileIDs = doras.map(dora => {
       if (
-        dora.type === TILE_TYPE.SANGEN
-        || dora.type === TILE_TYPE.KAZE
+        dora.type === TILE_TYPE.KAZE
       ) {
         return dora.index === 3
           ? dora.tileID - 3
+          : dora.tileID + 1;
+      } else if (dora.type === TILE_TYPE.SANGEN) {
+        return dora.index === 2
+          ? dora.tileID - 2
           : dora.tileID + 1;
       } else {
         return dora.index === 8

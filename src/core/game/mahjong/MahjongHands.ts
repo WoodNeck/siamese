@@ -92,7 +92,91 @@ class MahjongHands {
     return tile;
   }
 
-  public playClosedKang(tileID: number) {
+  public playKang(tileID: number) {
+    const closedKangTiles = this._holding.filter(tile => tile.tileID === tileID);
+
+    if (closedKangTiles.length >= 4) {
+      return this._playClosedKang(tileID);
+    } else {
+      return this._playAdditiveKang(tileID);
+    }
+  }
+
+  public addBorrowedTileSet(tileSet: MahjongTileSet) {
+    const borrows = this._borrows;
+    const addedTiles = tileSet.tiles;
+
+    borrows.push(tileSet);
+
+    if (tileSet.type === BODY_TYPE.KANG) {
+      this._prevTurnKang = KANG_TYPE.OPEN;
+    }
+
+    this._holding = this._holding.filter(tile => !addedTiles.includes(tile));
+  }
+
+  public getKangableTiles(): MahjongTile[][] {
+    const holding = this._holding;
+    const tilesByID = new Map<number, MahjongTile[]>();
+
+    holding.forEach(tile => {
+      tilesByID.set(tile.tileID, []);
+    });
+
+    holding.forEach(tile => {
+      const tiles = tilesByID.get(tile.tileID)!;
+      tiles.push(tile);
+    });
+
+    return [...tilesByID.values()].filter(tiles => tiles.length === 4);
+  }
+
+  public getAdditiveKangTileSet(): MahjongTileSet | null {
+    const lastTsumo = this._holding[this._holding.length - 1];
+    const sameBorrows = this._borrows.filter(set => set.type === BODY_TYPE.SAME);
+
+    return sameBorrows.find(set => {
+      const setTile = set.tiles[0];
+      return setTile.tileID === lastTsumo.tileID;
+    }) ?? null;
+  }
+
+  public isRiichiable(): boolean {
+    if (!this._handsInfo) return false;
+    return this._handsInfo.riichiDiscardables.size > 0;
+  }
+
+  public isTenpai(): boolean {
+    if (!this._handsInfo) return false;
+    return this._handsInfo.tenpaiTiles.tiles.size > 0;
+  }
+
+  public isTsumoable(): boolean {
+    if (!this._handsInfo) return false;
+    return !!this._handsInfo.scoreInfo;
+  }
+
+  public toEmoji(): string {
+    const holding = this._holding;
+    const kang = this._kang;
+    const borrows = this._borrows;
+
+    const emojis: string[] = [];
+
+    emojis.push(holding.map(tile => tile.getEmoji()).join(""));
+
+    borrows.forEach(({ tiles }) => {
+      emojis.push(tiles.map(tile => tile.getEmoji()).join(""));
+    });
+
+    kang.forEach(({ tiles }) => {
+      emojis.push(tiles.map(tile => tile.getEmoji()).join(""));
+    });
+
+    return emojis.join(EMOJI.TAB_SPACE);
+  }
+
+  private _playClosedKang(tileID: number) {
     const kangTiles = this._holding.filter(tile => tile.tileID === tileID);
 
     this._holding = this._holding.filter(tile => tile.tileID !== tileID);
@@ -117,77 +201,31 @@ class MahjongHands {
     this._prevTurnKang = KANG_TYPE.CLOSED;
   }
 
-  public addBorrowedTileSet(tileSet: MahjongTileSet) {
+  private _playAdditiveKang(tileID: number) {
     const borrows = this._borrows;
-    const addedTiles = tileSet.tiles;
-
-    borrows.push(tileSet);
-
-    if (tileSet.type === BODY_TYPE.KANG) {
-
-      const prevBorrowedSetIdx = borrows.findIndex(set => {
-        const isPon = set.type === BODY_TYPE.SAME;
-        return isPon && set.tiles.some(tile => {
-          return addedTiles.some(added => added.id === tile.id);
-        });
-      });
-
-      if (prevBorrowedSetIdx >= 0) {
-        borrows.splice(prevBorrowedSetIdx, 1);
-        this._prevTurnKang = KANG_TYPE.ADDITIVE;
-      } else {
-        this._holding = this._holding.filter(tile => !addedTiles.includes(tile));
-        this._prevTurnKang = KANG_TYPE.OPEN;
-      }
-    } else {
-      this._holding = this._holding.filter(tile => !addedTiles.includes(tile));
-    }
-  }
-
-  public getKangableTiles(): MahjongTile[][] {
-    const holding = this._holding;
-    const tilesByID = new Map<number, MahjongTile[]>();
-
-    holding.forEach(tile => {
-      tilesByID.set(tile.tileID, []);
+    const tileInHandIndex = this._holding.findIndex(tile => tile.tileID === tileID);
+    const tileInHand = this._holding.splice(tileInHandIndex, 1)[0];
+    const prevBorrowedSetIdx = borrows.findIndex(set => {
+      const isPon = set.type === BODY_TYPE.SAME;
+      const firstTile = set.tiles[0];
+      return isPon && firstTile.tileID === tileID;
     });
 
-    holding.forEach(tile => {
-      const tiles = tilesByID.get(tile.tileID)!;
-      tiles.push(tile);
+    const sameSet = borrows.splice(prevBorrowedSetIdx, 1)[0];
+    const borrowedIdx = sameSet.tiles.findIndex(tile => tile.borrowed);
+
+    const kangTiles = [...sameSet.tiles];
+    tileInHand.borrowed = true;
+    kangTiles.splice(borrowedIdx, 0, tileInHand);
+
+    const kangTileSet = new MahjongTileSet({
+      tiles: kangTiles,
+      type: BODY_TYPE.KANG,
+      borrowed: false
     });
 
-    return [...tilesByID.values()].filter(tiles => tiles.length === 4);
-  }
-
-  public isRiichiable(): boolean {
-    if (!this._handsInfo) return false;
-    return this._handsInfo.riichiDiscardables.size > 0;
-  }
-
-  public isTenpai(): boolean {
-    if (!this._handsInfo) return false;
-    return this._handsInfo.tenpaiTiles.tiles.size > 0;
-  }
-
-  public isTsumoable(): boolean {
-    if (!this._handsInfo) return false;
-    return !!this._handsInfo.scoreInfo;
-  }
-
-  public toEmoji(): string {
-    const holding = this._holding;
-    const borrows = this._borrows;
-
-    const emojis: string[] = [];
-
-    emojis.push(holding.map(tile => tile.getEmoji()).join(""));
-
-    borrows.forEach(({ tiles }) => {
-      emojis.push(tiles.map(tile => tile.getEmoji()).join(""));
-    });
-
-    return emojis.join(EMOJI.TAB_SPACE);
+    this._borrows.push(kangTileSet);
+    this._prevTurnKang = KANG_TYPE.ADDITIVE;
   }
 
   private _updateInfo(lastTile: MahjongDragon["lastTile"] | null) {

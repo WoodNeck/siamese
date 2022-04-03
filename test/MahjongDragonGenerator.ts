@@ -1,12 +1,14 @@
 import MahjongDragon from "../src/core/game/mahjong/MahjongDragon";
 import MahjongTile from "../src/core/game/mahjong/MahjongTile";
-import { TILE_TYPE, WIND } from "../src/const/mahjong";
+import { BODY_TYPE, TILE_TYPE, WIND } from "../src/const/mahjong";
 import MahjongHands from "../src/core/game/mahjong/MahjongHands";
 import MahjongSetParser from "../src/core/game/mahjong/MahjongSetParser";
 import MahjongGame from "../src/core/game/mahjong/MahjongGame";
 
 import MahjongPlayerMock from "./MahjongPlayerMock";
 import MahjongHandsParser from "../src/core/game/mahjong/MahjongHandsParser";
+import MahjongTileSet from "../src/core/game/mahjong/MahjongTileSet";
+import MahjongPlayer from "~/core/game/mahjong/MahjongPlayer";
 
 const availableCharacters = [
   { char: "만", index: 0, offset: 0, type: TILE_TYPE.MAN },
@@ -23,15 +25,17 @@ const availableCharacters = [
 
 class MahjongDragonGenerator {
   public game: MahjongGame;
+  public player: MahjongPlayer;
   public setParser: MahjongSetParser;
   public scoreParser: MahjongHandsParser;
   public hands: MahjongHands;
 
   public constructor() {
     this.game = new MahjongGame([], null as any);
+    this.player = new MahjongPlayerMock(this.game);
     this.setParser = new MahjongSetParser();
     this.scoreParser = new MahjongHandsParser();
-    this.hands = new MahjongHands(new MahjongPlayerMock(this.game), this.game);
+    this.hands = this.player.hands;
   }
 
   public reset(): void {
@@ -61,6 +65,12 @@ class MahjongDragonGenerator {
       }).sort((a, b) => a.id - b.id);
 
     return tiles;
+  }
+
+  public tileSetByString(handStrings: string[], type: BODY_TYPE, borrowed: boolean): MahjongTileSet {
+    const tiles = this.tilesByString(handStrings);
+
+    return new MahjongTileSet({ tiles, type, borrowed });
   }
 
   public handsByString(handStrings: string[]): MahjongHands {

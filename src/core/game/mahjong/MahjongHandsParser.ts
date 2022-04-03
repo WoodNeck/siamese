@@ -68,9 +68,11 @@ class MahjongHandsParser {
   }
 
   public getScoreInfo(holding: MahjongTile[], borrows: MahjongTileSet[], closedKang: MahjongTileSet[], game: MahjongGame, player: MahjongPlayer, lastTile: MahjongDragon["lastTile"]) {
-    const set = new MahjongSetParser().parse(holding, borrows, closedKang);
+    const holdingTiles = [...holding, lastTile.tile];
+
+    const set = new MahjongSetParser().parse(holdingTiles, borrows, closedKang);
     const allTiles = [
-      ...holding,
+      ...holdingTiles,
       ...closedKang.map(({ tiles }) => tiles).flat(1),
       ...borrows.map(({ tiles }) => tiles).flat(1)
     ];
@@ -114,9 +116,19 @@ class MahjongHandsParser {
       };
     });
 
-    const scores = dragons.map(dragon => this._getScore(dragon, game, cried));
-    const subscores = dragons.map((dragon, idx) => this._getSubscore(dragon, game, player, cried, scores[idx]));
-    const totalScores = scores.map(scoreArr => {
+    const scores = dragons.map(dragon => ({
+      dragon,
+      score: this._getScore(dragon, game, cried)
+    })).filter(({ score }) => {
+      // 도라만 있는 경우 폐기
+      if (score.length === 1 && score[0].yaku.yakuName === YAKU.DORA) return false;
+      return true;
+    });
+
+    if (scores.length <= 0) return null;
+
+    const subscores = scores.map(({ dragon, score }) => this._getSubscore(dragon, game, player, cried, score));
+    const totalScores = scores.map(({ score: scoreArr }) => {
       return scoreArr.reduce((total, { score }) => {
         return total + score;
       }, 0);
@@ -133,22 +145,18 @@ class MahjongHandsParser {
       }
     });
 
-    const finalScores = scores[bestScoreIdx];
+    const finalScore = scores[bestScoreIdx];
 
     // 역만을 포함한 케이스
-    if (finalScores.some(({ score }) => score >= 13)) {
-      return {
-        dragon: dragons[bestScoreIdx],
-        scores: finalScores.filter(({ score }) => score >= 13), // 역만만 남김
-        subscore: subscores[bestScoreIdx]
-      };
-    } else {
-      return {
-        dragon: dragons[bestScoreIdx],
-        scores: finalScores,
-        subscore: subscores[bestScoreIdx]
-      };
+    if (finalScore.score.some(({ score }) => score >= 13)) {
+      finalScore.score = finalScore.score.filter(({ score }) => score >= 13); // 역만만 남김
     }
+
+    return {
+      dragon: finalScore.dragon,
+      scores: finalScore.score,
+      subscore: subscores[bestScoreIdx]
+    };
   }
 
   private _parseRiichiDiscardables(hands: MahjongHands, isTenpai: boolean, validCombinations: ValidCombination[]): Set<MahjongTile> {
@@ -269,13 +277,13 @@ class MahjongHandsParser {
     if (tile1.tileID === tile2.tileID) return [tile1.tileID];
 
     // 슌쯔
+    const idBase = tile1.tileID - tile1.index;
     const minIdx = Math.min(tile1.index, tile2.index);
     const maxIdx = Math.max(tile1.index, tile2.index);
 
     if (maxIdx - minIdx === 2) {
-      return [maxIdx - 1]; // 간짱
+      return [idBase + maxIdx - 1]; // 간짱
     } else {
-      const idBase = tile1.tileID - tile1.index;
       const ids: number[] = [];
 
       if (minIdx > 0) ids.push(minIdx - 1);

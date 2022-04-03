@@ -11,7 +11,7 @@ class YakuHai {
   public static check(dragon: MahjongDragon, game: MahjongGame) {
     const { body, player } = dragon;
 
-    const sameBodies = body.filter(comb => comb.type === BODY_TYPE.SAME);
+    const sameBodies = body.filter(comb => comb.type === BODY_TYPE.SAME || comb.type === BODY_TYPE.KANG);
     const points = sameBodies.reduce((allPoints, { tiles }) => {
       const tile = tiles[0];
 

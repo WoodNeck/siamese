@@ -13,8 +13,8 @@ describe("청일색", () => {
     const hands = [
       "만1", "만2", "만3",
       "만4", "만5", "만6",
-      "만7", "만8", "만9",
       "만4", "만5", "만6",
+      "만7", "만8", "만9",
       "만1", "만1"
     ];
     const dragon = generator.dragonBystring(hands);
