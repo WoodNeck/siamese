@@ -145,6 +145,8 @@ class MahjongHandsParser {
       }
     });
 
+    if (totalScores[bestScoreIdx] <= 0) return null;
+
     const finalScore = scores[bestScoreIdx];
 
     // 역만을 포함한 케이스

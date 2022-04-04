@@ -25,13 +25,11 @@ describe("이페코", () => {
     expect(score).to.equal(1);
   });
 
-  it("이페코 - 1판", () => {
+  it("이페코 - 0판", () => {
     const hands = generator.handsByString([
       "만2", "만3", "만4", "통7", "통8", "통9", "백", "백", "통8", "통9"
     ]);
     hands.addBorrowedTileSet(generator.tileSetByString(["통1", "통2", "통3"], BODY_TYPE.ORDERED, true));
-
-    console.log(hands.cried);
 
     const handsParser = new MahjongHandsParser();
     const scoreInfo = handsParser.getScoreInfo(
@@ -47,9 +45,7 @@ describe("이페코", () => {
       }
     );
 
-    const score = OnePeko.check(scoreInfo!.dragon);
-
-    expect(score).to.equal(0);
+    expect(scoreInfo).to.be.null;
   });
 
 

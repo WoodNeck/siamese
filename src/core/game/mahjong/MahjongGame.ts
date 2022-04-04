@@ -755,11 +755,11 @@ class MahjongGame {
       return false;
     }
 
-    if (!playerAction) {
+    if (!playerAction || !playerAction.action.score) {
       return true;
     }
 
-    await this._showRoundResult(playerAction.player, playerAction.action.score!);
+    await this._showRoundResult(playerAction.player, playerAction.action.score);
 
     return false;
   }
