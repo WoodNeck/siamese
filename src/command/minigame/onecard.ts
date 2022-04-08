@@ -374,30 +374,31 @@ class OneCardGame {
       });
     }
 
-    const buttonGroups = groupBy(cardsForButtons, 25).reduce((all, cardGroup) => {
-      const rows = groupBy(cardGroup, 5).map(cardBy5 => {
-        const row  = new MessageActionRow();
-        const cardBtns = cardBy5.map(card => {
-          const btn = new MessageButton();
+    const buttonGroups = groupBy(cardsForButtons, 25)
+      .reduce((all, cardGroup) => {
+        const rows = groupBy(cardGroup, 5).map(cardBy5 => {
+          const row  = new MessageActionRow();
+          const cardBtns = cardBy5.map(card => {
+            const btn = new MessageButton();
 
-          btn.setStyle("PRIMARY");
-          btn.setLabel(card.name);
-          btn.setEmoji(card.emoji);
-          btn.setCustomId(card.id.toString());
+            btn.setStyle("PRIMARY");
+            btn.setLabel(card.name);
+            btn.setEmoji(card.emoji);
+            btn.setCustomId(card.id.toString());
 
-          if (!card.canplay) {
-            btn.setDisabled(true);
-          }
+            if (!card.canplay) {
+              btn.setDisabled(true);
+            }
 
-          return btn;
+            return btn;
+          });
+
+          row.addComponents(...cardBtns);
+          return row;
         });
 
-        row.addComponents(...cardBtns);
-        return row;
-      });
-
-      return [...all, ...rows];
-    }, []);
+        return [...all, ...rows];
+      }, [] as Discord.MessageActionRow[]);
 
     return buttonGroups;
   }

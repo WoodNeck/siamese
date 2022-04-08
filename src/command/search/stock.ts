@@ -171,8 +171,8 @@ const toEnumType = (url: string) => {
 };
 
 const checkers = {
-  [ItemType.DOME_STOCK]: /^\/item/,
-  [ItemType.DOME_SISE]: /^\/sise/,
+  [ItemType.DOME_STOCK]: /domestic\/stock/,
+  [ItemType.DOME_SISE]: /domestic\/index/,
   [ItemType.WORLD_STOCK]: /worldstock\/stock/,
   [ItemType.WORLD_SISE]: /worldstock\/index/
 };
