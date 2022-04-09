@@ -5,7 +5,7 @@ import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import { EMOJI as MAHJONG_EMOJI, TILE_TYPE } from "~/const/mahjong";
 import MahjongTile from "~/core/game/mahjong/MahjongTile";
-import { CardSymbol, CARD_EMOJI } from "~/core/game/PlayingCard";
+import PlayingCard, { CardSymbol, CARD_EMOJI } from "~/core/game/PlayingCard";
 import { range, toEmoji } from "~/util/helper";
 
 export const GAME = {
@@ -194,7 +194,7 @@ export const ONECARD = {
   CARD_LEFT: (count: number) => `남은 카드 수: ${count}`,
   TURN_HEADER: (player: GuildMember) => `${player.toString()}냥, 낼 카드를 선택해달라냥!`,
   CHANGE_HEADER: (player: GuildMember) => `${player.toString()}냥, 바꿀 무늬를 선택해달라냥!`,
-  WINNER_HEADER: (winner: GuildMember) => `${EMOJI.TROPHY} ${winner.displayName}의 승리다냥!`,
+  WINNER_HEADER: (winner: GuildMember, lastCard: PlayingCard) => `${EMOJI.TROPHY} ${winner.displayName}의 승리다냥! (${lastCard.getEmoji()}${lastCard.getName()})`,
   LABEL: {
     DEFEATED: "파산",
     SKIP: (count: number) => `${count}장 먹기`

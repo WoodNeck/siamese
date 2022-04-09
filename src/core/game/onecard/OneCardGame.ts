@@ -350,7 +350,7 @@ class OneCardGame {
     const winner = playersSorted[0];
     const embed = new MessageEmbed();
 
-    embed.setTitle(ONECARD.WINNER_HEADER(winner.user));
+    embed.setTitle(ONECARD.WINNER_HEADER(winner.user, this._lastCard));
     embed.setDescription(
       playersSorted.map((player, idx) => {
         return player.defeated
