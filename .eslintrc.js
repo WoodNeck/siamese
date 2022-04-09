@@ -168,12 +168,14 @@ module.exports = {
           {
             "selector": "classProperty",
             "modifiers": ["static"],
-            "format": ["camelCase", "UPPER_CASE"]
+            "format": ["camelCase", "UPPER_CASE"],
+            "leadingUnderscore": "allow"
           },
           {
             "selector": "classMethod",
             "modifiers": ["static"],
-            "format": ["camelCase", "UPPER_CASE"]
+            "format": ["camelCase", "UPPER_CASE"],
+            "leadingUnderscore": "allow"
           },
           {
             "selector": "property",

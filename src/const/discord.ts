@@ -19,10 +19,10 @@ export const ACTIVITY = {
 export const MSG_RETRIEVE_MAXIMUM = 100;
 export const MAX_INTERACTION_DURATION = 900000 - 30000; // 15min - 30sec
 
-export const BUTTON_STYLE: Record<string, MessageButtonStyleResolvable> = {
+export const BUTTON_STYLE = {
   PRIMARY: "PRIMARY",
   SECONDARY: "SECONDARY",
   DANGER: "DANGER",
   LINK: "LINK",
   SUCCESS: "SUCCESS"
-};
+} as const;

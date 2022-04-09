@@ -5,6 +5,7 @@ import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
 import { EMOJI as MAHJONG_EMOJI, TILE_TYPE } from "~/const/mahjong";
 import MahjongTile from "~/core/game/mahjong/MahjongTile";
+import { CardSymbol, CARD_EMOJI } from "~/core/game/PlayingCard";
 import { range, toEmoji } from "~/util/helper";
 
 export const GAME = {
@@ -51,85 +52,9 @@ export const GAME = {
   }
 };
 
-export const CARD_SYMBOL = {
-  [0]: "A",
-  [10]: "J",
-  [11]: "Q",
-  [12]: "K",
-  JOKER: "JOKER"
-};
-
-export const CARD_URL = {
-  BASE: "https://cdn.discordapp.com/attachments/817765838001668116",
-  SPADE: [
-    "/955447542299131954/ace_of_spades.png",
-    "/955447542504624149/2_of_spades.png",
-    "/955447542735331368/3_of_spades.png",
-    "/955447543108616202/4_of_spades.png",
-    "/955447543477698600/5_of_spades.png",
-    "/955447543695810570/6_of_spades.png",
-    "/955447543905529917/7_of_spades.png",
-    "/955447544127832105/8_of_spades.png",
-    "/955447544337530890/9_of_spades.png",
-    "/955447544564027452/10_of_spades.png",
-    "/955447981245607966/jack_of_spades2.png",
-    "/955447980956192808/queen_of_spades2.png",
-    "/955447980599681054/king_of_spades2.png"
-  ],
-  HEART: [
-    "/955448910007111680/ace_of_hearts.png",
-    "/955448910195871764/2_of_hearts.png",
-    "/955448910384595035/3_of_hearts.png",
-    "/955448910560788510/4_of_hearts.png",
-    "/955448910816620634/5_of_hearts.png",
-    "/955448911022133330/6_of_hearts.png",
-    "/955448911252836393/7_of_hearts.png",
-    "/955448911521259590/8_of_hearts.png",
-    "/955448911814864926/9_of_hearts.png",
-    "/955449218363973632/10_of_hearts.png",
-    "/955449218703699988/jack_of_hearts2.png",
-    "/955449218124902460/queen_of_hearts2.png",
-    "/955449217810305075/king_of_hearts2.png"
-  ],
-  DIAMOND: [
-    "/955449542915022868/ace_of_diamonds.png",
-    "/955449543237971998/2_of_diamonds.png",
-    "/955449543489650688/3_of_diamonds.png",
-    "/955449543934218300/4_of_diamonds.png",
-    "/955449544169119764/5_of_diamonds.png",
-    "/955449544475279390/6_of_diamonds.png",
-    "/955449544827629658/7_of_diamonds.png",
-    "/955449546853466142/8_of_diamonds.png",
-    "/955449547184824380/9_of_diamonds.png",
-    "/955449589668937799/10_of_diamonds.png",
-    "/955449589882822686/jack_of_diamonds2.png",
-    "/955449589471776798/queen_of_diamonds2.png",
-    "/955449589266251796/king_of_diamonds2.png"
-  ],
-  CLUB: [
-    "/955448208304259092/ace_of_clubs.png",
-    "/955448208513966151/2_of_clubs.png",
-    "/955448208774025226/3_of_clubs.png",
-    "/955448209096982548/4_of_clubs.png",
-    "/955448209327656991/5_of_clubs.png",
-    "/955448209705152532/6_of_clubs.png",
-    "/955448210036523008/7_of_clubs.png",
-    "/955448210283958313/8_of_clubs.png",
-    "/955448210648866836/9_of_clubs.png",
-    "/955448208094547988/10_of_clubs.png",
-    "/955448538886709319/jack_of_clubs2.png",
-    "/955448538588909648/queen_of_clubs2.png",
-    "/955448538203054100/king_of_clubs2.png"
-  ],
-  JOKER: [
-    "/955457158491832420/black_joker.png",
-    "/955457158827356180/red_joker.png"
-  ]
-};
-
 export const OTHELLO = {
   CMD: "오셀로",
-  DESC: "오셀로 게임을 플레이한다냥!",
+  DESC: "상대방을 지정해서 오셀로 게임을 한다냥!",
   USAGE: "@대전상대",
   ALIAS: ["리버시"],
   USAGE_SLASH: "대전상대",
@@ -161,7 +86,7 @@ export const OTHELLO = {
 
 export const YACHT = {
   CMD: "요트",
-  DESC: "요트(Yacht) 게임을 플레이한다냥!",
+  DESC: "상대방을 지정해서 요트(Yacht) 게임을 한다냥!",
   USAGE: "@대전상대",
   ALIAS: ["얏찌", "야추"],
   USAGE_SLASH: "대전상대",
@@ -195,7 +120,7 @@ export const YACHT = {
 
 export const CONNECT4 = {
   CMD: "사목",
-  DESC: "사목(Connect 4, Four-in-a-Row) 게임을 플레이한다냥!",
+  DESC: "상대방을 지정해서 사목(Connect 4, Four-in-a-Row) 게임을 한다냥!",
   USAGE: "@대전상대",
   ALIAS: ["4목"],
   USAGE_SLASH: "대전상대",
@@ -226,7 +151,7 @@ export const CONNECT4 = {
 
 export const TICTACTOE = {
   CMD: "틱택토",
-  DESC: "틱택토 게임을 플레이한다냥!",
+  DESC: "상대방을 지정해서 틱택토 게임을 한다냥!",
   USAGE: "@대전상대",
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
@@ -242,17 +167,39 @@ export const TICTACTOE = {
 
 export const ONECARD = {
   CMD: "원카드",
-  DESC: "원카드 게임을 플레이한다냥!",
-  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CARD.JOKER} ${author.displayName}의 원카드 게임`,
-  CANT_PLAY_ANY_CARD: (user: GuildMember, added: number, cardCount: number) => `${user.toString()}의 차례지만 낼 수 있는 카드가 하나도 없다냥! 카드를 ${added}장 추가하고 턴을 넘긴다냥 (현재 카드 수: ${cardCount})`,
+  DESC: "원카드 게임을 한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.JOKER} ${author.displayName}의 원카드`,
   TAKE_PENALTY: (user: GuildMember, added: number, cardCount: number) => `${user.toString()}가 카드를 ${added}장 추가하고 턴을 넘긴다냥 (현재 카드 수: ${cardCount})`,
-  INITIAL_CARD: 7,
+  HELP_TITLE: "원카드 도움말",
+  HELP_DESC: [
+    "들고 있는 카드를 가장 먼저 없애는 사람이 승리한다냥!",
+    "자기 차례에는 같은 무늬나 같은 숫자의 카드만 낼 수 있다냥!",
+    "자기 차례에 낼 카드가 없다면 카드를 한 장 추가해야 한다냥!"
+  ].map(desc => `${EMOJI.MIDDLE_DOT} ${desc}`).join("\n"),
+  HELP_SPECIAL_TITLE: "특수 카드들",
+  HELP_SPECIAL_DESC: [
+    `${CARD_EMOJI[CardSymbol.SPADE]} 숫자 7 - 원하는 무늬로 변경할 수 있다냥`,
+    `${CARD_EMOJI[CardSymbol.SPADE]} J - 한 사람을 건너 뛴다냥`,
+    `${CARD_EMOJI[CardSymbol.SPADE]} Q - 진행 방향을 반대로 변경한다냥`,
+    `${CARD_EMOJI[CardSymbol.JOKER]} 숫자 2, A, Joker - 공격 카드, 상대방의 공격은 더 강한 카드로만 막을 수 있으며, 막을 카드가 없으면 여러 장의 카드를 받게 된다냥 (각각 2장, 3장, 5장 추가)`
+  ].join("\n"),
+  HELP_DEFEAT_TITLE: "파산 조건",
+  HELP_DEFEAT_DESC: [
+    "플레이어 수에 따라 다음 카드 개수 이상의 카드를 보유하게 되면 파산하며, 자동으로 패배한다냥",
+    `${CARD_EMOJI[CardSymbol.DIAMOND]} 2명 - 20장`,
+    `${CARD_EMOJI[CardSymbol.HEART]} 3명 - 19장`,
+    `${CARD_EMOJI[CardSymbol.CLUB]} 4명 - 14장`
+  ].join("\n"),
+  INITIAL_CARD: 5,
   CARD_LEFT: (count: number) => `남은 카드 수: ${count}`,
-  CURRENT_SYMBOL: (symbol: string) => `현재 무늬: ${symbol}`,
+  TURN_HEADER: (player: GuildMember) => `${player.toString()}냥, 낼 카드를 선택해달라냥!`,
   CHANGE_HEADER: (player: GuildMember) => `${player.toString()}냥, 바꿀 무늬를 선택해달라냥!`,
-  SKIP_LABEL: "턴 넘기기",
-  PENALTY_LABEL: (count: number) => `${count}장 먹기`
-};
+  WINNER_HEADER: (winner: GuildMember) => `${EMOJI.TROPHY} ${winner.displayName}의 승리다냥!`,
+  LABEL: {
+    DEFEATED: "파산",
+    SKIP: (count: number) => `${count}장 먹기`
+  }
+} as const;
 
 export const LADDER = {
   CMD: "사다리",

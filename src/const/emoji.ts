@@ -128,10 +128,5 @@ export const LOCKED = "🔒";
 export const LADDER = "🪜";
 export const CURSOR = "|";
 export const MAHJONG = "🀄";
-export const CARD = {
-  SPADE: "♠️",
-  CLUB: "♣️",
-  HEART: "♥️",
-  DIAMOND: "♦️",
-  JOKER: "🃏"
-};
+export const JOKER = "🃏";
+export const BOMB = "💣";

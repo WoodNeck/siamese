@@ -30,6 +30,8 @@ interface EnvVariables {
   STEAM_API_KEY?: string;
   // COIN
   COIN_API_KEY?: string;
+  // CARDS
+  PLAYING_CARDS_DIR?: string;
 }
 
 export default EnvVariables;

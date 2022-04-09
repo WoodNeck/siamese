@@ -16,8 +16,11 @@ export default new Command({
   name: MAHJONG.CMD,
   description: MAHJONG.DESC,
   permissions: [
+    PERMISSION.EMBED_LINKS,
+    PERMISSION.CREATE_PUBLIC_THREADS,
+    PERMISSION.SEND_MESSAGES_IN_THREADS,
     PERMISSION.USE_EXTERNAL_EMOJIS,
-    PERMISSION.EMBED_LINKS
+    PERMISSION.MANAGE_THREADS
   ],
   sendTyping: false,
   cooldown: Cooldown.PER_USER(10),
