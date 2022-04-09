@@ -46,7 +46,7 @@ export default new Command({
     const canStart = await game.waitForPlayers(ONECARD.JOIN_MSG_TITLE(author), threadChannel);
 
     if (canStart) {
-      const oneCard = new OneCardGame([...game.players, ...game.players], threadChannel, bot.env.PLAYING_CARDS_DIR!);
+      const oneCard = new OneCardGame(game.players, threadChannel, bot.env.PLAYING_CARDS_DIR!);
       void oneCard.start();
     }
   }
