@@ -130,3 +130,4 @@ export const CURSOR = "|";
 export const MAHJONG = "🀄";
 export const JOKER = "🃏";
 export const BOMB = "💣";
+export const EMPTY = "<:empty:959746248724869140>";

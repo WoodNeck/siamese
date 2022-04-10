@@ -1,25 +1,17 @@
-import { GuildMember } from "discord.js";
+import { GuildMember, MessageComponentInteraction } from "discord.js";
 
 import CommandContext from "~/core/CommandContext";
 import SlashCommandContext from "~/core/SlashCommandContext";
-import * as ERROR from "~/const/error";
 import { GAME } from "~/const/command/minigame";
 
 export const getOpponent = (ctx: CommandContext | SlashCommandContext, optionKey: string): GuildMember | null => {
-  const { bot, guild } = ctx;
+  const { guild } = ctx;
 
   const mentionedUser = ctx.isSlashCommand()
-    ? ctx.interaction.options.getUser(optionKey, true)
+    ? ctx.interaction.options.getUser(optionKey, false)
     : ctx.msg.mentions.users.first();
 
-  if (!mentionedUser) {
-    void bot.replyError(ctx, ERROR.CMD.MENTION_NEEDED);
-    return null;
-  }
-  if (mentionedUser.bot) {
-    void bot.replyError(ctx, ERROR.CMD.MENTION_NO_BOT);
-    return null;
-  }
+  if (!mentionedUser) return null;
 
   return guild.members.resolve(mentionedUser)!;
 };
@@ -39,22 +31,17 @@ export const createGameChannel = async (ctx: CommandContext | SlashCommandContex
   return threadChannel;
 };
 
+/**
+ * @returns blocked
+ */
+export const blockOtherInteractions = async (interaction: MessageComponentInteraction, playerId: string, opponentId: string): Promise<boolean> => {
+  if (interaction.user.id === playerId) return false;
 
-export const create1vs1GameChannel = async (ctx: CommandContext | SlashCommandContext, gameName: string, players: GuildMember[], id: string) => {
-  const message = ctx.isSlashCommand()
-    ? await ctx.bot.send(ctx, { content: GAME.START_MSG(gameName), fetchReply: true })
-    : ctx.msg;
+  if (interaction.user.id === opponentId) {
+    await interaction.reply({ content: GAME.NOT_YOUR_TURN, ephemeral: true });
+  } else {
+    await interaction.reply({ content: GAME.NOT_IN_GAME, ephemeral: true });
+  }
 
-  const threadChannel = await message!.startThread({
-    name: GAME.THREAD_1VS1_NAME(gameName, players[0].displayName, players[1].displayName, id),
-    autoArchiveDuration: 60 // 1hour
-  });
-
-  await Promise.all([
-    threadChannel.members.add(players[0]),
-    threadChannel.members.add(players[1])
-  ]);
-
-  return threadChannel;
+  return true;
 };
-

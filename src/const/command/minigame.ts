@@ -3,6 +3,7 @@ import Josa from "josa-js";
 
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
+import { BUTTON_STYLE } from "~/const/discord";
 import { EMOJI as MAHJONG_EMOJI, TILE_TYPE } from "~/const/mahjong";
 import MahjongTile from "~/core/game/mahjong/MahjongTile";
 import PlayingCard, { CardSymbol, CARD_EMOJI } from "~/core/game/PlayingCard";
@@ -10,7 +11,6 @@ import { range, toEmoji } from "~/util/helper";
 
 export const GAME = {
   THREAD_NAME: (gameName: string, id: string) => `${EMOJI.JOYSTICK} ${gameName} (ID ${id})`,
-  THREAD_1VS1_NAME: (gameName: string, p1: string, p2: string, id: string) => `${EMOJI.JOYSTICK} ${gameName}: ${p1} VS ${p2} (ID ${id})`,
   START_MSG: (gameName: string) => `${EMOJI.JOYSTICK} ${gameName} 게임을 생성한다냥!`,
   READY: (initiator: GuildMember) => `${initiator.toString()}냥, 게임이 준비됐다냥!`,
   SURRENDER: "항복하기",
@@ -59,7 +59,7 @@ export const OTHELLO = {
   ALIAS: ["리버시"],
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
-  THREAD_NAME: (p1: string, p2: string, id: string) => `${EMOJI.JOYSTICK} 오셀로: ${p1} VS ${p2} (ID ${id})`,
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CIRCLE.BLUE} ${author.displayName}의 오셀로`,
   TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${OTHELLO.DISC[playerIdx]})의 차례다냥!`,
   FIELD_TITLE: (players: GuildMember[]) => `${EMOJI.JOYSTICK} ${players[0].displayName}(${OTHELLO.DISC[0]}) VS ${players[1].displayName}(${OTHELLO.DISC[1]})`,
   FIELD_DESC: (players: GuildMember[], whiteCount: number, blackCount: number) => `${OTHELLO.DISC[0]} ${players[0].displayName}: ${whiteCount}\n${OTHELLO.DISC[1]} ${players[1].displayName}: ${blackCount}`,
@@ -77,11 +77,7 @@ export const OTHELLO = {
   CANDIDATE_MARKERS: [
     ...range(10).map(val => `${val}${EMOJI.KEYCAP}`),
     ...EMOJI.LETTER
-  ],
-  SYMBOL: {
-    NEXT_TURN: "NEXT_TURN",
-    GG: "GG"
-  }
+  ]
 } as const;
 
 export const YACHT = {
@@ -91,6 +87,7 @@ export const YACHT = {
   ALIAS: ["얏찌", "야추"],
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.DICE} ${author.displayName}의 요트`,
   TURN_HEADER: (user: GuildMember) => `${user.toString()}의 차례다냥! 주사위 버튼을 누르면 잠글 수 있다냥!`,
   ALL_LOCKED: "모든 주사위가 잠겨있다냥!",
   NAMES: [
@@ -125,14 +122,11 @@ export const CONNECT4 = {
   ALIAS: ["4목"],
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CIRCLE.RED} ${author.displayName}의 사목`,
   DIRECTIONS: [
     [1, 0], [-1, 0], [0, 1], [0, -1],
     [1, 1], [1, -1], [-1, 1], [-1, -1]
   ],
-  SYMBOL: {
-    NEXT_TURN: "NEXT_TURN",
-    GG: "GG"
-  },
   CIRCLE: {
     [0]: EMOJI.CIRCLE.RED,
     [1]: EMOJI.CIRCLE.YELLOW,
@@ -155,14 +149,16 @@ export const TICTACTOE = {
   USAGE: "@대전상대",
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.OK} ${author.displayName}의 틱택토`,
   MARK: {
-    [0]: EMOJI.OK,
-    [1]: EMOJI.CROSS
+    [0]: "O",
+    [1]: "X"
   },
-  TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${TICTACTOE.MARK[playerIdx]})의 차례다냥!`,
-  SYMBOL: {
-    NEXT_TURN: "NEXT_TURN"
-  }
+  STYLE: {
+    [0]: BUTTON_STYLE.PRIMARY,
+    [1]: BUTTON_STYLE.DANGER
+  },
+  TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${TICTACTOE.MARK[playerIdx]})의 차례다냥!`
 };
 
 export const ONECARD = {

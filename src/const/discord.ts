@@ -1,5 +1,3 @@
-import { MessageButtonStyleResolvable } from "discord.js";
-
 export const MESSAGE_MAX_LENGTH = 1950;
 
 export const FOOTER_MAX_LENGTH = 2048;
