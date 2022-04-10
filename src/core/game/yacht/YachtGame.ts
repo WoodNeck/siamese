@@ -133,8 +133,6 @@ class YachtGame {
       const blocked = await blockOtherInteractions(interaction, players[playerIdx].user.id, players[opponentIdx].user.id);
       if (blocked) return;
 
-      await interaction.deferUpdate();
-
       // Lock / Unlock dice
       if (interaction.customId.startsWith(YACHT.SYMBOL.EYE)) {
         const locked = this._turnInfo.locked;
@@ -162,8 +160,11 @@ class YachtGame {
           }).catch(() => void 0)
         ]);
       } else if (interaction.customId === YACHT.SYMBOL.GG) {
+        await interaction.deferUpdate();
         return collector.stop(YACHT.SYMBOL.GG);
       } else {
+        await interaction.deferUpdate();
+
         // Update Score
         const scoreIndex = interaction.customId;
         this._updateScore(scoreIndex);

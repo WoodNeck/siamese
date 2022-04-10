@@ -155,7 +155,7 @@ export const TICTACTOE = {
     [1]: "X"
   },
   STYLE: {
-    [0]: BUTTON_STYLE.PRIMARY,
+    [0]: BUTTON_STYLE.SUCCESS,
     [1]: BUTTON_STYLE.DANGER
   },
   TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${TICTACTOE.MARK[playerIdx]})의 차례다냥!`
