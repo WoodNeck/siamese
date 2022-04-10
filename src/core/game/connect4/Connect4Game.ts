@@ -4,7 +4,7 @@ import VsGameRoom from "../VsGameRoom";
 
 import * as EMOJI from "~/const/emoji";
 import { GAME, CONNECT4 } from "~/const/command/minigame";
-import { groupBy, isBetween, range } from "~/util/helper";
+import { getRandom, groupBy, isBetween, range } from "~/util/helper";
 import { blockOtherInteractions } from "~/command/minigame/utils";
 
 class Connect4Game {
@@ -15,7 +15,6 @@ class Connect4Game {
   private _lastPlayed: [number, number];
   private _playerIdx: number;
   private _ggFlag: boolean;
-  private _timeoutFlag: boolean;
 
   public constructor(players: VsGameRoom["players"], threadChannel: ThreadChannel) {
     this._players = players;
@@ -25,7 +24,6 @@ class Connect4Game {
     this._lastPlayed = [-1, -1];
     this._playerIdx = Math.round(Math.random());
     this._ggFlag = false;
-    this._timeoutFlag = false;
   }
 
   public async start() {
@@ -34,9 +32,7 @@ class Connect4Game {
       await this._nextTurn();
     }
 
-    if (this._timeoutFlag) {
-      await this._showTimeoutMessage();
-    } else if (this._ggFlag) {
+    if (this._ggFlag) {
       await this._showGGMessage();
     } else {
       const winner = this._getWinner();
@@ -84,35 +80,50 @@ class Connect4Game {
         return collector.stop(GAME.SYMBOL.GG);
       }
 
-      const grid = this._grid;
-      const lastPlayed = this._lastPlayed;
       const colIdx = parseFloat(interaction.customId);
 
-      for (let rowIdx = grid.length - 1; rowIdx >= 0; rowIdx--) {
-        if (grid[rowIdx][colIdx] < 0) {
-          grid[rowIdx][colIdx] = playerIdx;
-          lastPlayed[0] = rowIdx;
-          lastPlayed[1] = colIdx;
-          break;
-        }
-      }
+      this._play(colIdx);
 
       collector.stop(GAME.SYMBOL.NEXT_TURN);
     });
 
     return new Promise<void>(resolve => {
       collector.on("end", async (_, reason) => {
-        if (reason === GAME.SYMBOL.NEXT_TURN) return resolve();
-
         if (reason === GAME.SYMBOL.GG) {
           this._ggFlag = true;
-        } else {
-          this._timeoutFlag = true;
+          resolve();
+        }
+
+        if (reason !== GAME.SYMBOL.NEXT_TURN) {
+          // Pick random col
+          const grid = this._grid;
+          const possibleColumns = range(7).filter(colIdx => {
+            const colFilled = grid.every(row => row[colIdx] >= 0);
+            return !colFilled;
+          });
+
+          const randomCol = getRandom(possibleColumns);
+          this._play(randomCol);
         }
 
         resolve();
       });
     });
+  }
+
+  private _play(colIdx: number) {
+    const grid = this._grid;
+    const lastPlayed = this._lastPlayed;
+    const playerIdx = this._playerIdx;
+
+    for (let rowIdx = grid.length - 1; rowIdx >= 0; rowIdx--) {
+      if (grid[rowIdx][colIdx] < 0) {
+        grid[rowIdx][colIdx] = playerIdx;
+        lastPlayed[0] = rowIdx;
+        lastPlayed[1] = colIdx;
+        break;
+      }
+    }
   }
 
   private _drawBoard() {
@@ -177,7 +188,7 @@ class Connect4Game {
   }
 
   private _isFinished(): boolean {
-    if (this._timeoutFlag || this._ggFlag) return true;
+    if (this._ggFlag) return true;
 
     const grid = this._grid;
     const connected4 = this._findConnected4();
@@ -290,16 +301,6 @@ class Connect4Game {
 
     await threadChannel.send({
       content: GAME.END_BY_SURRENDER(this._players[this._playerIdx].user),
-      embeds: [lastGrid]
-    }).catch(() => void 0);
-  }
-
-  private async _showTimeoutMessage() {
-    const threadChannel = this._threadChannel;
-    const lastGrid = this._drawFinishedBoard(1 - this._playerIdx);
-
-    await threadChannel.send({
-      content: GAME.END_BY_TIME,
       embeds: [lastGrid]
     }).catch(() => void 0);
   }

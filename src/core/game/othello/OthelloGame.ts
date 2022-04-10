@@ -5,7 +5,7 @@ import VsGameRoom from "../VsGameRoom";
 import { GAME, OTHELLO } from "~/const/command/minigame";
 import * as COLOR from "~/const/color";
 import * as EMOJI from "~/const/emoji";
-import { range } from "~/util/helper";
+import { getRandom, range } from "~/util/helper";
 import { blockOtherInteractions } from "~/command/minigame/utils";
 
 class OthelloGame {
@@ -16,7 +16,6 @@ class OthelloGame {
   private _changes: number[][];
   private _playerIdx: number;
   private _ggFlag: boolean;
-  private _timeoutFlag: boolean;
 
   public constructor(players: VsGameRoom["players"], threadChannel: ThreadChannel) {
     this._players = players;
@@ -31,21 +30,18 @@ class OthelloGame {
 
     this._playerIdx = Math.round(Math.random());
     this._ggFlag = false;
-    this._timeoutFlag = false;
   }
 
   public async start() {
     let candidatesInfo = this._calcCandidates();
 
-    while (!candidatesInfo.finished && !this._ggFlag && !this._timeoutFlag) {
+    while (!candidatesInfo.finished && !this._ggFlag) {
       this._playerIdx = 1 - this._playerIdx;
       await this._nextTurn(candidatesInfo);
       candidatesInfo = this._calcCandidates();
     }
 
-    if (this._timeoutFlag) {
-      await this._showTimeoutMessage();
-    } else if (this._ggFlag) {
+    if (this._ggFlag) {
       await this._showGGMessage();
     } else {
       await this._showGameFinishMessage();
@@ -86,9 +82,14 @@ class OthelloGame {
       messages.push(exceedMsg);
     }
 
+    const candidatePositions = candidates.reduce((positions, row, rowIdx) => {
+      const posMapped = row.map((val, colIdx) => val && [rowIdx, colIdx]).filter(val => !!val);
+      return [...positions, ...posMapped];
+    }, []) as Array<[number, number]>;
+
     const collector = threadChannel.createMessageComponentCollector({
       filter: interaction => messages.some(msg => msg.id === interaction.message.id),
-      time: 1000 * 3600, // 1 min
+      time: 60000, // 1 min
       dispose: true
     });
 
@@ -103,11 +104,6 @@ class OthelloGame {
         return;
       }
 
-      const candidatePositions = candidates.reduce((positions, row, rowIdx) => {
-        const posMapped = row.map((val, colIdx) => val && [rowIdx, colIdx]).filter(val => !!val);
-        return [...positions, ...posMapped];
-      }, []);
-
       const [rowIdx, colIdx] = candidatePositions[interaction.customId];
       this._placeAtGrid(rowIdx, colIdx);
 
@@ -116,13 +112,16 @@ class OthelloGame {
 
     return new Promise<void>(resolve => {
       collector.on("end", async (_, reason) => {
-        if (reason === GAME.SYMBOL.NEXT_TURN) return resolve();
-
         if (reason === GAME.SYMBOL.GG) {
           this._ggFlag = true;
-        } else {
-          this._timeoutFlag = true;
+          return resolve();
         }
+
+        if (reason === GAME.SYMBOL.NEXT_TURN) return resolve();
+
+        // Pick random
+        const [rowIdx, colIdx] = getRandom(candidatePositions);
+        this._placeAtGrid(rowIdx, colIdx);
 
         resolve();
       });
@@ -186,7 +185,7 @@ class OthelloGame {
         if (val >= 0) return OTHELLO.DISC[val];
         if (candidates && candidates[rowIdx][colIdx]) return candidates[rowIdx][colIdx];
 
-        return EMOJI.EMPTY;
+        return EMOJI.SMALL_BLACK_SQUARE;
       }).join(" ");
     }).join("\n");
   }
@@ -351,15 +350,6 @@ class OthelloGame {
     await threadChannel.send({
       ...this._drawFinishedGrid(),
       content: GAME.END_BY_SURRENDER(this._players[this._playerIdx].user)
-    }).catch(() => void 0);
-  }
-
-  private async _showTimeoutMessage() {
-    const threadChannel = this._threadChannel;
-
-    await threadChannel.send({
-      ...this._drawFinishedGrid(),
-      content: GAME.END_BY_TIME
     }).catch(() => void 0);
   }
 }

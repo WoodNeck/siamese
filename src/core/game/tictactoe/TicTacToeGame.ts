@@ -4,7 +4,7 @@ import VsGameRoom from "../VsGameRoom";
 
 import { GAME, TICTACTOE } from "~/const/command/minigame";
 import * as EMOJI from "~/const/emoji";
-import { range } from "~/util/helper";
+import { getRandom, range } from "~/util/helper";
 import { blockOtherInteractions } from "~/command/minigame/utils";
 import { BUTTON_STYLE } from "~/const/discord";
 
@@ -14,7 +14,6 @@ class TicTacToeGame {
 
   private _grid: number[][];
   private _playerIdx: number;
-  private _timeoutFlag: boolean;
 
   public constructor(players: VsGameRoom["players"], threadChannel: ThreadChannel) {
     this._players = players;
@@ -23,7 +22,6 @@ class TicTacToeGame {
     this._grid = range(3).map(() => [...range(3).map(() => -1)]);
 
     this._playerIdx = Math.round(Math.random());
-    this._timeoutFlag = false;
   }
 
   public async start() {
@@ -32,12 +30,8 @@ class TicTacToeGame {
       await this._nextTurn();
     }
 
-    if (this._timeoutFlag) {
-      await this._showTimeoutMessage();
-    } else {
-      const winner = this._getWinner();
-      await this._showGameFinishMessage(winner);
-    }
+    const winner = this._getWinner();
+    await this._showGameFinishMessage(winner);
 
     await this.destroy();
   }
@@ -92,7 +86,16 @@ class TicTacToeGame {
       collector.on("end", async (_, reason) => {
         if (reason === GAME.SYMBOL.NEXT_TURN) return resolve();
 
-        this._timeoutFlag = true;
+        // Choose random spot
+        const emptyPositions = grid.reduce((total, row, rowIdx) => {
+          const emptyColumns = row.filter(val => val < 0);
+
+          return [...total, ...emptyColumns.map((col, colIdx) => ({ rowIdx, colIdx }))];
+        }, [] as Array<{ rowIdx: number; colIdx: number }>);
+
+        const randomPos = getRandom(emptyPositions);
+
+        grid[randomPos.rowIdx][randomPos.colIdx] = playerIdx;
 
         resolve();
       });
@@ -236,16 +239,6 @@ class TicTacToeGame {
 
     await threadChannel.send({
       content: GAME.WINNER_HEADER(players.map(({ user }) => user), winner),
-      components: buttons
-    }).catch(() => void 0);
-  }
-
-  private async _showTimeoutMessage() {
-    const threadChannel = this._threadChannel;
-    const buttons = this._createButtons();
-
-    await threadChannel.send({
-      content: GAME.END_BY_TIME,
       components: buttons
     }).catch(() => void 0);
   }
