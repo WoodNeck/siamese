@@ -347,7 +347,7 @@ class MahjongGame {
     const currentPlayer = this.currentPlayer;
     const collector = msg.createMessageComponentCollector({
       filter: () => true,
-      time: 300000 // 5 min
+      time: 60 * 1000 // 1 min
     });
     const roundTurn = this._round.turn;
 
@@ -580,7 +580,7 @@ class MahjongGame {
 
       const collector = actionMsg.createMessageComponentCollector({
         filter: () => true,
-        time: 180000 // 3 min
+        time: 60 * 1000 // 1 min
       });
 
       collector.on("collect", async () => {

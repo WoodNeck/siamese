@@ -272,12 +272,8 @@ class OneCardGame {
           ? parseFloat(interaction.customId)
           : getRandom(symbols);
 
-        const prevSymbol = this._symbolChange
-          ? this._symbolChange.to
-          : lastCard.symbol;
-
         this._symbolChange = {
-          from: prevSymbol,
+          from: lastCard.symbol,
           to: selected
         };
 
@@ -345,7 +341,10 @@ class OneCardGame {
   private async _showGameFinishMessage() {
     const threadChannel = this._threadChannel;
     const playersSorted = [...this._players].sort((a, b) => {
-      return a.cards.length - b.cards.length;
+      const aLen = a.defeated ? Infinity : a.cards.length;
+      const bLen = b.defeated ? Infinity : b.cards.length;
+
+      return aLen - bLen;
     });
     const winner = playersSorted[0];
     const embed = new MessageEmbed();
@@ -384,12 +383,11 @@ class OneCardGame {
     const isJoker = card.symbol === CardSymbol.JOKER;
     const wasJoker = lastCard.symbol === CardSymbol.JOKER;
     const hasSameSymbol = card.symbol === this._getCurrentSymbol();
+    const hasSameNumber = card.index === lastCard.index;
 
     if (wasAttackCard) {
-      return isJoker || (hasSameSymbol && card.index <= lastCard.index);
+      return isJoker || hasSameNumber || (hasSameSymbol && card.index <= lastCard.index);
     }
-
-    const hasSameNumber = card.index === lastCard.index;
 
     return hasSameNumber || hasSameSymbol || isJoker || wasJoker;
   }
