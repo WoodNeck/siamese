@@ -39,6 +39,7 @@ class VsGameRoom {
 
     this._threadChannel = await createGameChannel(ctx, gameName, players.map(({ user }) => user), id);
 
+    if (!this._threadChannel) return false;
     if (players.length >= 2) return true;
 
     const game = new GameRoom(ctx, 2, 2);

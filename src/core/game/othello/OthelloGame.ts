@@ -36,8 +36,8 @@ class OthelloGame {
     let candidatesInfo = this._calcCandidates();
 
     while (!candidatesInfo.finished && !this._ggFlag) {
-      this._playerIdx = 1 - this._playerIdx;
       await this._nextTurn(candidatesInfo);
+      this._playerIdx = 1 - this._playerIdx;
       candidatesInfo = this._calcCandidates();
     }
 
