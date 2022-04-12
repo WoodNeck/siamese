@@ -1,3 +1,4 @@
+import { GuildMember } from "discord.js";
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
@@ -65,6 +66,7 @@ export const VOTE = {
 			각자 가장 마지막에 클릭한 이모지가 최종 투표 항목이 된다냥!`,
   RESULT_DESC: (name: string, votes: number) => `${strong(name)}${Josa.c(name, "이/가")} ${strong(votes.toString())}표로 가장 높은 표를 기록했다냥!`,
   RESULT_DESC_TIE: (options: string[], vote: number) => `${options.map(strong).join(", ")}${Josa.c(options[options.length - 1], "이/가")} ${vote}표로 동점이다냥!`,
+  DEFAULT_TITLE: (author: GuildMember) => `${author.displayName}의 투표`,
   TITLE: (title: string) => `${EMOJI.BALLOT_BOX} ${title}`,
   FOOTER: (name: string, time: number) => `${name}의 투표 (${EMOJI.STOPWATCH}${time}m)`,
   COUNT: (cnt: number) => `${cnt}표`,

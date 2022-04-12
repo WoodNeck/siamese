@@ -37,10 +37,7 @@ export default new Command({
       ? ctx.interaction.options.getString(VOTE.USAGE, true)
       : ctx.content;
 
-    if (!content) {
-      await bot.replyError(ctx, ERROR.CMD.EMPTY_CONTENT(VOTE.TARGET));
-      return;
-    }
+    const voteTitle = content || VOTE.DEFAULT_TITLE(author);
 
     // Start gathering detailed info
     const conversation = new Conversation(ctx);
@@ -70,8 +67,7 @@ export default new Command({
     conversation.add({
       content: durationDialogue,
       // Should in between 1 and DURATION_MAX
-      checker: message => /^([1-9]\d*|0)$/.test(message.content)
-				&& isBetween(parseInt(message.content, 10), VOTE.DURATION_MIN, VOTE.DURATION_MAX),
+      checker: message => isBetween(parseInt(message.content, 10), VOTE.DURATION_MIN, VOTE.DURATION_MAX),
       errMsg: VOTE.ERROR.DURATION_SHOULD_CLAMPED(VOTE.DURATION_MAX)
     });
 
@@ -87,7 +83,7 @@ export default new Command({
 
     const voteCreated = new Date();
     const voteEmbed = new MessageEmbed()
-      .setTitle(VOTE.TITLE(content))
+      .setTitle(VOTE.TITLE(voteTitle))
       .setFooter({ text: VOTE.FOOTER(author.displayName, durationMinute), iconURL: author.user.displayAvatarURL() })
       .setColor(COLOR.BOT)
       .setTimestamp(voteCreated);
@@ -208,7 +204,7 @@ export default new Command({
       });
 
       const voteResultEmbed = new MessageEmbed()
-        .setTitle(VOTE.TITLE(content))
+        .setTitle(VOTE.TITLE(voteTitle))
         .setDescription(EMOJI.ZERO_WIDTH_SPACE)
         .setColor(COLOR.BOT)
         .setFooter({ text: VOTE.FOOTER(author.displayName, durationMinute), iconURL: author.user.displayAvatarURL() })
