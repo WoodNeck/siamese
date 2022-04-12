@@ -47,7 +47,7 @@ export default new Command({
       cx: bot.env.GOOGLE_SEARCH_ENGINE_ID
     }).then(res => res.data.items) as SearchResult[];
 
-    if (searchResult.length <= 0) {
+    if (!searchResult || searchResult.length <= 0) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(SEARCH.TARGET));
     }
 
