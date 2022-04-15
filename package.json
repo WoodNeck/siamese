@@ -9,6 +9,7 @@
     "start": "node ./bin/index.js",
     "lint": "eslint 'src/**/*.ts'",
     "log": "cat siamese.log",
+    "cmdlog": "cat command.log",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register 'test/suites/**/*.spec.ts'"
   },
   "repository": {

@@ -1,3 +1,4 @@
+
 import Discord, { MessageEmbed } from "discord.js";
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import { joinVoiceChannel } from "@discordjs/voice";
@@ -45,6 +46,7 @@ class Siamese extends Discord.Client {
   private _boomBoxes: Discord.Collection<string, BoomBox>;
   private _logger: ChannelLogger | ConsoleLogger;
   private _fileLogger: pino.Logger;
+  private _commandLogger: pino.Logger;
 
   public get env() { return this._env; }
   public get prefix() { return this._env.BOT_DEFAULT_PREFIX; }
@@ -75,6 +77,7 @@ class Siamese extends Discord.Client {
     this._msgCounts = new Discord.Collection();
     this._boomBoxes = new Discord.Collection();
     this._fileLogger = logger;
+    this._commandLogger = pino({ prettyPrint: { translateTime: "SYS:standard" } }, pino.destination("./command.log"));
   }
 
   public async setup() {
@@ -449,6 +452,7 @@ class Siamese extends Discord.Client {
         await ctx.channel.sendTyping();
       }
 
+      this._commandLogger.info(`CMD: ${cmdName} ${ctx.content}`);
       await cmd.execute(ctx);
     } catch (err) {
       await this.handleError(ctx, cmd, err);
@@ -521,6 +525,7 @@ class Siamese extends Discord.Client {
     if (isOnCoolDown) return;
 
     try {
+      this._commandLogger.info(`SLASH: ${ctx.command.name} ${ctx.interaction.options.data.map(option => option.value).join(" / ")}`);
       await cmd.execute(ctx);
     } catch (err) {
       console.error(err);
