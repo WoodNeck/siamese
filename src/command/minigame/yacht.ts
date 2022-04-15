@@ -48,6 +48,6 @@ export default new Command({
     if (!canStart) return;
 
     const game = new YachtGame(room.players, room.threadChannel);
-    void game.start();
+    await game.start();
   }
 });

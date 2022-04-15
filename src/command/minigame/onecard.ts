@@ -47,7 +47,7 @@ export default new Command({
 
     if (canStart) {
       const oneCard = new OneCardGame(game.players, threadChannel, bot.env.PLAYING_CARDS_DIR!);
-      void oneCard.start();
+      await oneCard.start();
     }
   }
 });

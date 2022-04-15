@@ -51,7 +51,7 @@ export default new Command({
 
     if (canStart) {
       const game = new MahjongGame(gameRoom.players, threadChannel);
-      void game.start();
+      await game.start();
     }
   }
 });

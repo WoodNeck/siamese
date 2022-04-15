@@ -49,6 +49,6 @@ export default new Command({
     if (!canStart) return;
 
     const game = new Connect4Game(room.players, room.threadChannel);
-    void game.start();
+    await game.start();
   }
 });
