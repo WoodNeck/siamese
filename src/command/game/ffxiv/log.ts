@@ -146,7 +146,7 @@ const showLog = async (ctx: CommandContext | SlashCommandContext, {
     return embed;
   });
 
-  const menu = new Menu(ctx);
+  const menu = new Menu(ctx, { maxWaitTime: 180 }); // 3min
 
   menu.setPages(zoneEmbeds);
 
