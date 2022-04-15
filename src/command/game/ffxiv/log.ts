@@ -121,7 +121,6 @@ const showLog = async (ctx: CommandContext | SlashCommandContext, {
     const embed = new MessageEmbed();
 
     embed.setDescription(`**${zone.name}**\n${summary}`);
-    embed.setURL(`${link}?zone=${zone.id}`);
 
     if (jobThumb) {
       embed.setAuthor({
@@ -139,8 +138,10 @@ const showLog = async (ctx: CommandContext | SlashCommandContext, {
     embed.setThumbnail(FFXIV.LOG.ZONE_THUMB_URL(zone.id));
 
     bosses.forEach(boss => {
-      embed.addField(boss.name, `${boss.bestJob} / 최고: ${boss.bestScore} / 평균: ${boss.med}\nRDPS: ${boss.rdps} / ${EMOJI.SKULL}: ${boss.kills} / ${EMOJI.STOPWATCH}: ${boss.fastest}`);
+      embed.addField(boss.name, `${boss.bestJob} / 최고 %: ${boss.bestScore} / 평균 %: ${boss.med}\nRDPS: ${boss.rdps} / ${EMOJI.SKULL}: ${boss.kills} / ${EMOJI.STOPWATCH}: ${boss.fastest}`);
     });
+
+    embed.setFooter({ text: FFXIV.LOG.ZONE_INFO_FOOTER });
 
     return embed;
   });

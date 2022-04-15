@@ -40,6 +40,7 @@ export const LOOP = "🔁";
 export const SHUFFLE = "🔀";
 export const ROTATE = "🔄";
 export const SKIP = "⏭️";
+export const INFO = "ℹ️";
 export const HOURGLASS_NOT_DONE = "⏳";
 export const DOLLAR = "💵";
 export const BOOKS = "📚";

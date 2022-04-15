@@ -1,3 +1,5 @@
+import * as EMOJI from "~/const/emoji";
+
 export const FFXIV = {
   CMD: "파판",
   DESC: "파이널 판지 14 관련 정보들을 조회할 수 있는 명령어들이다냥!",
@@ -31,6 +33,7 @@ export const FFXIV = {
     PERSON_ICON_URL: "https://cdn.discordapp.com/attachments/817765838001668116/964539996184903780/All-Rounder_Icon_1.png",
     ZONE_THUMB_URL: (id: string) => `https://assets.rpglogs.com/img/ff/zones/zone-${id}.png`,
     ZONE_INFO_URL: (zoneID: string, charID: string) => `https://ko.fflogs.com/character/rankings-zone/${charID}/dps/3/${zoneID}/0/5000/0/-1/Any/rankings/0/0`,
+    ZONE_INFO_FOOTER: `${EMOJI.SMALL_ORANGE_DIAMOND} 정규 파티 / rdps 기준`,
     COLOR: {
       artifact: "#e5cc80",
       legendary: "#ff8000",
