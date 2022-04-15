@@ -17,5 +17,29 @@ export const FFXIV = {
     },
     HQ_ITEM_FOOTER: "*는 HQ 아이템일때의 정보를 뜻한다냥",
     HQ_ITEM_IMAGE: "https://image.ff14.co.kr/html2/guide/img/item_hq_icon.png"
+  },
+  LOG: {
+    CMD: "로그",
+    DESC: "파이널 판타지 14 유저의 로그 정보를 검색한다냥!",
+    USAGE: "유저",
+    USAGE_DESC: "검색할 유저 이름을 달라냥!",
+    CHAR_SEARCH_ENDPOINT: "https://ko.fflogs.com/search/autocomplete",
+    REQUEST_HEADERS: {
+      referer: "https://ko.fflogs.com"
+    },
+    CHAR_TYPE: "캐릭터",
+    PERSON_ICON_URL: "https://cdn.discordapp.com/attachments/817765838001668116/964539996184903780/All-Rounder_Icon_1.png",
+    ZONE_THUMB_URL: (id: string) => `https://assets.rpglogs.com/img/ff/zones/zone-${id}.png`,
+    ZONE_INFO_URL: (zoneID: string, charID: string) => `https://ko.fflogs.com/character/rankings-zone/${charID}/dps/3/${zoneID}/0/5000/0/-1/Any/rankings/0/0`,
+    COLOR: {
+      artifact: "#e5cc80",
+      legendary: "#ff8000",
+      astounding: "#e268a8",
+      magnificent: "#be8200",
+      epic: "#a335ee",
+      rare: "#0070ff",
+      uncommon: "#1eff00",
+      common: "#666666"
+    }
   }
 } as const;
