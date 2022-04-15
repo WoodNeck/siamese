@@ -1,6 +1,7 @@
 import { GuildMember } from "discord.js";
 import chalk from "chalk";
 import Josa from "josa-js";
+import styles from "ansi-styles";
 
 import { dedent } from "~/util/helper";
 import { block, strong } from "~/util/markdown";
@@ -241,7 +242,7 @@ export const SPELLING = {
   },
   RESULT_TITLE_OKAY: `${EMOJI.GREEN_CHECK} 맞춤법에 문제가 없다냥!`,
   RESULT_TITLE: `${EMOJI.MEMO} 교정 결과다냥!`,
-  RESULT_DESC: block(dedent`${EMOJI.MIDDLE_DOT} ${chalk.red("맞춤법")}   ${EMOJI.MIDDLE_DOT} ${chalk.yellow("표준어의심")}
-    ${EMOJI.MIDDLE_DOT} ${chalk.green("띄어쓰기")} ${EMOJI.MIDDLE_DOT} ${chalk.blue("통계적교정")}`, "ansi"),
+  RESULT_DESC: block(dedent`${EMOJI.MIDDLE_DOT} ${styles.color.red.open}맞춤법${styles.color.red.close}   ${EMOJI.MIDDLE_DOT} ${styles.color.yellow.open}표준어의심${styles.color.yellow.close}
+    ${EMOJI.MIDDLE_DOT} ${styles.color.green.open}띄어쓰기${styles.color.green.close} ${EMOJI.MIDDLE_DOT} ${styles.color.blue.open}통계적교정${styles.color.blue.close}`, "ansi"),
   RESULT_FOOTER: "윈도우에서만 정상적으로 확인 가능하다냥!"
 } as const;

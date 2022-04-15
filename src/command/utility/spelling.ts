@@ -3,7 +3,7 @@ import { MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import axios from "axios";
 import * as cheerio from "cheerio";
-import chalk from "chalk";
+import styles from "ansi-styles";
 
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
@@ -85,13 +85,13 @@ const parseSpellingHTML = (html: string) => {
     const element = $(el);
 
     if (element.hasClass("red_text")) {
-      element.text(chalk.red(element.text()));
+      element.text(`${styles.color.red.open}${element.text()}${styles.color.red.close}`);
     } else if (element.hasClass("green_text")) {
-      element.text(chalk.green(element.text()));
+      element.text(`${styles.color.green.open}${element.text()}${styles.color.green.close}`);
     } else if (element.hasClass("blue_text")) {
-      element.text(chalk.blue(element.text()));
+      element.text(`${styles.color.blue.open}${element.text()}${styles.color.blue.close}`);
     } else if (element.hasClass("violet_text")) {
-      element.text(chalk.yellow(element.text()));
+      element.text(`${styles.color.yellow.open}${element.text()}${styles.color.yellow.close}`);
     }
   });
 
