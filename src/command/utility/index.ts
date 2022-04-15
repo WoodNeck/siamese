@@ -5,6 +5,7 @@ import Say from "./say";
 import Vote from "./vote";
 import Translate from "./translate";
 import Calculator from "./calculator";
+import Spelling from "./spelling";
 
 import Category from "~/core/Category";
 import { UTILITY } from "~/const/category";
@@ -18,7 +19,8 @@ category.add(
   Say,
   Vote,
   Translate,
-  Calculator
+  Calculator,
+  Spelling
 );
 
 export default category;

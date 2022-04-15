@@ -1,4 +1,5 @@
 import { GuildMember } from "discord.js";
+import chalk from "chalk";
 import Josa from "josa-js";
 
 import { dedent } from "~/util/helper";
@@ -223,4 +224,24 @@ export const TRANSLATE = {
 export const CALCULATOR = {
   CMD: "계산기",
   DESC: "계산기를 표시한다냥!"
+} as const;
+
+export const SPELLING = {
+  CMD: "맞춤법",
+  DESC: "맞춤법을 검사한다냥!",
+  USAGE: "문장",
+  USAGE_DESC: "검사할 문장이다냥!",
+  API_URL: "https://m.search.naver.com/p/csearch/ocontent/util/SpellerProxy",
+  COMMON_PARAMS: {
+    where: "nexearch",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    color_blindness: 0,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _: 1650025851254
+  },
+  RESULT_TITLE_OKAY: `${EMOJI.GREEN_CHECK} 맞춤법에 문제가 없다냥!`,
+  RESULT_TITLE: `${EMOJI.MEMO} 교정 결과다냥!`,
+  RESULT_DESC: block(dedent`${EMOJI.MIDDLE_DOT} ${chalk.red("맞춤법")}   ${EMOJI.MIDDLE_DOT} ${chalk.yellow("표준어의심")}
+    ${EMOJI.MIDDLE_DOT} ${chalk.green("띄어쓰기")} ${EMOJI.MIDDLE_DOT} ${chalk.blue("통계적교정")}`, "ansi"),
+  RESULT_FOOTER: "윈도우에서만 정상적으로 확인 가능하다냥!"
 } as const;
