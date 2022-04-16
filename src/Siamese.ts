@@ -1,7 +1,6 @@
 
 import Discord, { MessageEmbed } from "discord.js";
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
-import { joinVoiceChannel } from "@discordjs/voice";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import pino from "pino";
@@ -14,7 +13,6 @@ import CommandContext from "~/core/CommandContext";
 import SlashCommandContext from "~/core/SlashCommandContext";
 import ChannelLogger from "~/core/ChannelLogger";
 import ConsoleLogger from "~/core/ConsoleLogger";
-import BoomBox from "~/core/sound/BoomBox";
 import CommandCategories from "~/command";
 import * as ERROR from "~/const/error";
 import * as COLOR from "~/const/color";
@@ -25,9 +23,7 @@ import * as EMOJI from "~/const/emoji";
 import { HELP } from "~/const/command/bot";
 import { ACTIVITY, DISCORD_ERROR_CODE } from "~/const/discord";
 import EnvVariables from "~/type/EnvVariables";
-import logMessage from "~/database/logMessage";
 import checkImageCommand from "~/database/checkImageCommand";
-import GuildConfig, { GuildConfigDocument } from "~/model/GuildConfig";
 import checkActiveRole from "~/util/checkActiveRole";
 
 class Siamese extends Discord.Client {
@@ -43,7 +39,6 @@ class Siamese extends Discord.Client {
   // Least permission for a bot is defined already
   private _permissions: Readonly<Discord.BitField<Discord.PermissionString, bigint>>;
   private _msgCounts: Discord.Collection<string, number>;
-  private _boomBoxes: Discord.Collection<string, BoomBox>;
   private _logger: ChannelLogger | ConsoleLogger;
   private _fileLogger: pino.Logger;
   private _commandLogger: pino.Logger;
@@ -53,7 +48,6 @@ class Siamese extends Discord.Client {
   public get categories() { return this._categories; }
   public get commands() { return this._commands; }
   public get msgCounts() { return this._msgCounts; }
-  public get boomBoxes() { return this._boomBoxes; }
   public get database() { return this._database; }
   public get permissions() { return this._permissions; }
   public get logger() { return this._logger; }
@@ -75,7 +69,6 @@ class Siamese extends Discord.Client {
     this._commands = new Discord.Collection();
     this._cooldowns = new Discord.Collection();
     this._msgCounts = new Discord.Collection();
-    this._boomBoxes = new Discord.Collection();
     this._fileLogger = logger;
     this._commandLogger = pino({ prettyPrint: { translateTime: "SYS:standard" } }, pino.destination("./command.log"));
   }
@@ -180,36 +173,6 @@ class Siamese extends Discord.Client {
     const userAsMember = guild.members.cache.get(user.id);
 
     return userAsMember ? userAsMember.displayName : user.username;
-  }
-
-  public async getBoomBox(ctx: CommandContext | SlashCommandContext): Promise<BoomBox | null> {
-    const { guild } = ctx;
-    const boomBoxes = this._boomBoxes;
-
-    if (boomBoxes.has(guild.id)) {
-      return boomBoxes.get(guild.id) as BoomBox;
-    } else {
-      // Create new player
-      const connection = await this._joinVoiceChannel(ctx);
-      if (!connection) return null;
-
-      const guildConfig = await GuildConfig.findOne({ guildID: guild.id }).lean() as GuildConfigDocument;
-
-      const boomBox = new BoomBox(connection, Boolean(!guildConfig || guildConfig.voiceAutoOut));
-      boomBox.on("end", () => {
-        boomBoxes.delete(guild.id);
-      });
-      boomBox.on("error", async err => {
-        await this.logger.error(err);
-        await this.replyError(ctx, ERROR.SOUND.FAILED_TO_PLAY);
-
-        boomBox.destroy();
-      });
-
-      boomBoxes.set(guild.id, boomBox);
-
-      return boomBox;
-    }
   }
 
   public async handleError(ctx: CommandContext, cmd: Command, err: Error) {
@@ -375,8 +338,6 @@ class Siamese extends Discord.Client {
     const iconPrefix = this._env.BOT_ICON_PREFIX;
 
     if (msg.channel.type === "DM") return;
-
-    void logMessage(this, msg);
 
     if (msg.author.bot) return;
     if (msg.content.startsWith(iconPrefix)) return await checkImageCommand(this, msg);
@@ -562,45 +523,6 @@ class Siamese extends Discord.Client {
 
     await this._logger.warn(msg);
   };
-
-  private async _joinVoiceChannel(ctx: CommandContext | SlashCommandContext) {
-    const { bot, author, guild } = ctx;
-    const voiceChannel = author.voice.channel;
-    const boomBoxes = this._boomBoxes;
-
-    if (!voiceChannel) {
-      return await this.replyError(ctx, ERROR.SOUND.JOIN_VOICE_CHANNEL_FIRST);
-    }
-
-    // Connection already exists
-    if (!voiceChannel.joinable) {
-      return await this.replyError(ctx, ERROR.SOUND.NO_PERMISSION_GRANTED);
-    }
-    if (voiceChannel.full) {
-      return await this.replyError(ctx, ERROR.SOUND.VOICE_CHANNEL_IS_FULL);
-    }
-
-    const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
-      guildId: guild.id,
-      adapterCreator: guild.voiceAdapterCreator as any
-    });
-
-    const stopBoomBox = () => {
-      if (boomBoxes.has(guild.id)) {
-        boomBoxes.get(guild.id)!.destroy();
-      }
-    };
-
-    connection.on("error", async err => {
-      await this.replyError(ctx, ERROR.SOUND.VOICE_CONNECTION_HAD_ERROR);
-      await bot.logger.error(err, ctx);
-
-      stopBoomBox();
-    });
-
-    return connection;
-  }
 
   private async _checkCooldown(ctx: CommandContext | SlashCommandContext, cmd: Command): Promise<boolean> {
     const cooldown = cmd.cooldown;

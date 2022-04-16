@@ -1,5 +1,4 @@
 import { GuildMember } from "discord.js";
-import chalk from "chalk";
 import Josa from "josa-js";
 import styles from "ansi-styles";
 
