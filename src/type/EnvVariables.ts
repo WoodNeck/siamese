@@ -30,6 +30,9 @@ interface EnvVariables {
   STEAM_API_KEY?: string;
   // COIN
   COIN_API_KEY?: string;
+  // BATTLE.NET
+  BLIZZARD_ID?: string;
+  BLIZZARD_SECRET?: string;
   // CARDS
   PLAYING_CARDS_DIR?: string;
 }

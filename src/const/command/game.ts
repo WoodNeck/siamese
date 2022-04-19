@@ -46,3 +46,33 @@ export const FFXIV = {
     }
   }
 } as const;
+
+export const BLIZZARD = {
+  TOKEN_ENDPOINT: "https://kr.battle.net/oauth/token"
+} as const;
+
+export const HEARTHSTONE = {
+  CMD: "하스스톤",
+  DESC: "하스스톤 관련 정보들을 조회할 수 있는 명령어들이다냥!",
+  ALIAS: ["돌"],
+  CARD: {
+    CMD: "카드",
+    DESC: "하스스톤 카드를 검색한다냥!",
+    USAGE: "키워드",
+    USAGE_DESC: "검색할 카드 이름이나 키워드를 달라냥!",
+    ENDPOINT: "https://kr.api.blizzard.com/hearthstone/cards",
+    DEFAULT_PARAMS: {
+      locale: "ko_KR"
+    },
+    RARITY_COLOR: {
+      [0]: "#9d9d9d",
+      [1]: "#ffffff",
+      [2]: "#1eff00",
+      [3]: "#0070dd",
+      [4]: "#a335ee",
+      [5]: "#ff8000",
+      [6]: "#e6cc80",
+      [7]: "#e6cc80"
+    }
+  }
+} as const;
