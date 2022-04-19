@@ -10,4 +10,3 @@ category.add(
 );
 
 export default category;
-

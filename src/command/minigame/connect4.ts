@@ -1,3 +1,4 @@
+import { DiscordAPIError } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
 import { getOpponent } from "./utils";
@@ -9,6 +10,7 @@ import Connect4Game from "~/core/game/connect4/Connect4Game";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { CONNECT4 } from "~/const/command/minigame";
+import { DISCORD_ERROR_CODE } from "~/const/discord";
 
 export default new Command({
   name: CONNECT4.CMD,
@@ -48,7 +50,13 @@ export default new Command({
     const canStart = await room.waitForPlayers(CONNECT4.CMD, CONNECT4.JOIN_MSG_TITLE(author));
     if (!canStart) return;
 
-    const game = new Connect4Game(room.players, room.threadChannel);
-    await game.start();
+    try {
+      const game = new Connect4Game(room.players, room.threadChannel);
+      await game.start();
+    } catch (err) {
+      if (!(err instanceof DiscordAPIError) || err.code !== DISCORD_ERROR_CODE.UNKNOWN_CHANNEL) {
+        throw err;
+      }
+    }
   }
 });

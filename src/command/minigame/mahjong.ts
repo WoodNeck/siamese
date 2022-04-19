@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { DiscordAPIError, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
@@ -6,11 +6,12 @@ import { createGameChannel } from "./utils";
 
 import Command from "~/core/Command";
 import GameRoom from "~/core/game/GameRoom";
+import MahjongGame from "~/core/game/mahjong/MahjongGame";
 import Cooldown from "~/core/Cooldown";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { MAHJONG } from "~/const/command/minigame";
-import MahjongGame from "~/core/game/mahjong/MahjongGame";
+import { DISCORD_ERROR_CODE } from "~/const/discord";
 
 export default new Command({
   name: MAHJONG.CMD,
@@ -48,10 +49,15 @@ export default new Command({
     });
 
     const canStart = await gameRoom.waitForPlayers(MAHJONG.JOIN_MSG_TITLE(author), threadChannel);
+    if (!canStart) return;
 
-    if (canStart) {
+    try {
       const game = new MahjongGame(gameRoom.players, threadChannel);
       await game.start();
+    } catch (err) {
+      if (!(err instanceof DiscordAPIError) || err.code !== DISCORD_ERROR_CODE.UNKNOWN_CHANNEL) {
+        throw err;
+      }
     }
   }
 });

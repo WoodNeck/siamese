@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import Discord, { DiscordAPIError } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import PhraseGen from "korean-random-words";
 
@@ -7,12 +7,13 @@ import { createGameChannel } from "./utils";
 import Siamese from "~/Siamese";
 import Command from "~/core/Command";
 import Cooldown from "~/core/Cooldown";
+import GameRoom from "~/core/game/GameRoom";
+import OneCardGame from "~/core/game/onecard/OneCardGame";
 import * as COLOR from "~/const/color";
 import * as ERROR from "~/const/error";
 import * as PERMISSION from "~/const/permission";
 import { ONECARD } from "~/const/command/minigame";
-import GameRoom from "~/core/game/GameRoom";
-import OneCardGame from "~/core/game/onecard/OneCardGame";
+import { DISCORD_ERROR_CODE } from "~/const/discord";
 
 export default new Command({
   name: ONECARD.CMD,
@@ -44,10 +45,15 @@ export default new Command({
     await showRules(threadChannel);
 
     const canStart = await game.waitForPlayers(ONECARD.JOIN_MSG_TITLE(author), threadChannel);
+    if (!canStart) return;
 
-    if (canStart) {
+    try {
       const oneCard = new OneCardGame(game.players, threadChannel, bot.env.PLAYING_CARDS_DIR!);
       await oneCard.start();
+    } catch (err) {
+      if (!(err instanceof DiscordAPIError) || err.code !== DISCORD_ERROR_CODE.UNKNOWN_CHANNEL) {
+        throw err;
+      }
     }
   }
 });

@@ -42,7 +42,7 @@ export default new Command({
 
     const result = await axios.get(SPELLING.API_URL, {
       params: {
-        q: content,
+        q: content.slice(0, 500),
         ...SPELLING.COMMON_PARAMS
       }
     }).then(res => res?.data?.message?.result) as {
