@@ -300,7 +300,7 @@ export const CONNECT5 = {
   USAGE: "@대전상대",
   USAGE_SLASH: "대전상대",
   DESC_SLASH: "대전상대를 지정한다냥!",
-  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CIRCLE.RED} ${author.displayName}의 사목`,
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CIRCLE.WHITE} ${author.displayName}의 오목`,
   DIRECTIONS: [
     [1, 0], [-1, 0], [0, 1], [0, -1],
     [1, 1], [1, -1], [-1, 1], [-1, -1]

@@ -87,8 +87,10 @@ class Connect5Game {
         await interaction.update({ components: [] });
 
         this._play(...cursor);
-        collector.stop(GAME.SYMBOL.NEXT_TURN);
+        return collector.stop(GAME.SYMBOL.NEXT_TURN);
       } else {
+        await interaction.deferUpdate();
+
         const direction = CONNECT5.DIRECTIONS[interaction.customId];
 
         cursor[0] += direction[0];

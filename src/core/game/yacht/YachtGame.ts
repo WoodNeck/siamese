@@ -368,7 +368,8 @@ class YachtGame {
   }
 
   private _isFinished(): boolean {
-    return [...this._singles, ...this.specials].every(([v1, v2]) => v1 >= 0 && v2 >= 0);
+    return [...this._singles, ...this.specials].every(([v1, v2]) => v1 >= 0 && v2 >= 0)
+      || this._timeoutFlag || this._ggFlag;
   }
 
   private _getWinner(): number {
