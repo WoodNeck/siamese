@@ -293,3 +293,44 @@ export const MAHJONG = {
     SKIP: "SKIP"
   }
 } as const;
+
+export const CONNECT5 = {
+  CMD: "오목",
+  DESC: "상대방을 지정해서 오목을 한다냥!",
+  USAGE: "@대전상대",
+  USAGE_SLASH: "대전상대",
+  DESC_SLASH: "대전상대를 지정한다냥!",
+  JOIN_MSG_TITLE: (author: GuildMember) => `${EMOJI.CIRCLE.RED} ${author.displayName}의 사목`,
+  DIRECTIONS: [
+    [1, 0], [-1, 0], [0, 1], [0, -1],
+    [1, 1], [1, -1], [-1, 1], [-1, -1]
+  ],
+  DIR_INDEX_MAP: {
+    [0]: 7,
+    [1]: 1,
+    [2]: 6,
+    [3]: 3,
+    [4]: 2,
+    [5]: 5,
+    [6]: 0,
+    [7]: 4
+  },
+  PIECE: {
+    [-1]: EMOJI.DOT,
+    [0]: EMOJI.SMALL_ORANGE_DIAMOND,
+    [1]: EMOJI.SMALL_BLUE_DIAMOND,
+    [2]: EMOJI.LARGE_ORANGE_DIAMOND,
+    [3]: EMOJI.LARGE_BLUE_DIAMOND
+  },
+  CURSOR: {
+    [-1]: EMOJI.ROUND_PUSH_PIN,
+    [0]: EMOJI.CIRCLE.ORAGNE,
+    [1]: EMOJI.CIRCLE.BLUE
+  },
+  COLOR: {
+    [-1]: COLOR.BLACK,
+    [0]: COLOR.ORANGE,
+    [1]: COLOR.BLUE
+  },
+  TURN_HEADER: (user: GuildMember, playerIdx: number) => `${user.toString()}(${CONNECT5.PIECE[playerIdx]})의 차례다냥!`
+};

@@ -63,6 +63,16 @@ export const HEART = {
   YELLOW: "💛",
   BLUE: "💙"
 };
+export const ARROW = {
+  NW: "↖️",
+  N: "⬆️",
+  NE: "↗️",
+  W: "⬅️",
+  E: "➡️",
+  SW: "↙️",
+  S: "⬇️",
+  SE: "↘️"
+};
 export const VIDEO_GAME = "🎮";
 export const JOYSTICK = "🕹️";
 export const PEOPLE = "👥";
@@ -102,6 +112,7 @@ export const PICTURE = "🖼️";
 export const MEMO = "📝";
 export const WHITE_FLOWER = "💮";
 export const PUSH_PIN = "📌";
+export const ROUND_PUSH_PIN = "📍";
 export const ENVELOPE_WITH_ARROW = "📩";
 export const LINK = "🔗";
 export const CROWN = "👑";
@@ -133,3 +144,4 @@ export const JOKER = "🃏";
 export const BOMB = "💣";
 export const SKULL = "💀";
 export const EMPTY = "<:empty:959746248724869140>";
+export const DOT = "<:dot:966674623800414238>";

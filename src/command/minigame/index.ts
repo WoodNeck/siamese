@@ -5,6 +5,7 @@ import TicTacToe from "./tictactoe";
 import OneCard from "./onecard";
 import Ladder from "./ladder";
 import Mahjong from "./mahjong";
+import Connect5 from "./connect5";
 
 import Category from "~/core/Category";
 import { MINIGAME } from "~/const/category";
@@ -18,7 +19,8 @@ category.add(
   TicTacToe,
   OneCard,
   Ladder,
-  Mahjong
+  Mahjong,
+  Connect5
 );
 
 export default category;
