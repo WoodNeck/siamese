@@ -145,6 +145,18 @@ const Utility = () => {
         번역 가능한 언어 목록을 표시합니다.
       </CommandDesc>
     </CommandItem>
+    <CommandItem command={UTILITY.SPELLING}>
+      <ChatContainer>
+        <ChatBubble position="right">샴 맞춤법 왜않된데?</ChatBubble>
+        <ChatBubble author={siamese} position="left">
+          <div>📝 교정 결과다냥!</div>
+          <div>왜 안 된대?</div>
+        </ChatBubble>
+      </ChatContainer>
+      <CommandDesc>
+        번역 가능한 언어 목록을 표시합니다.
+      </CommandDesc>
+    </CommandItem>
   </>
 }
 

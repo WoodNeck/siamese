@@ -1,18 +1,13 @@
-import { useSelector } from "react-redux";
-
 import CommandItem from "../../component/command/CommandItem";
 import ChatBubble from "../../component/command/ChatBubble";
 import ChatContainer from "../../component/command/ChatContainer";
 import CommandDesc from "../../component/command/CommandDesc";
-import EmbedHeader from "../../component/embed/EmbedHeader";
 import EmbedMenu from "../../component/embed/EmbedMenu";
 
-import { RootState } from "../../redux/reducers";
 import * as HISTORY from "~/const/command/history";
 import * as EMOJI from "~/const/emoji";
 
 const History = () => {
-  const user = useSelector((state: RootState) => state.user);
   const siamese = {
     name: "샴고양이",
     avatar: `${process.env.PUBLIC_URL}/logo20.png`
@@ -20,20 +15,6 @@ const History = () => {
   window.scrollTo(0, 0);
 
   return <>
-    <CommandItem command={HISTORY.RANDOM}>
-      <ChatContainer>
-        <ChatBubble position="right">샴 랜덤</ChatBubble>
-        <ChatBubble author={siamese} position="left">
-          <EmbedHeader author={(user && user.id) ? { name: user.username, avatar: user.avatarURL } : siamese} />
-          <div>대충 채널의 예전 메시지 내용</div>
-          <a href="https://github.com/WoodNeck/siamese" target="_blank" rel="noreferrer">원본 메시지 {EMOJI.SPEECH_BUBBLE}</a>
-        </ChatBubble>
-      </ChatContainer>
-      <CommandDesc>
-        <div>현재 채널의 예전 메시지들 중 하나를 무작위로 가져와 표시합니다.</div>
-        <div>메시지는 샴고양이가 서버에 참가한 시점부터 기록되기 때문에, 샴고양이가 참가하기 전 메시지는 가져올 수 없습니다.</div>
-      </CommandDesc>
-    </CommandItem>
     <CommandItem command={HISTORY.DISCHARGE}>
       <ChatContainer>
         <ChatBubble position="right">샴 전역일 WN</ChatBubble>

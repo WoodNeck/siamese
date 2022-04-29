@@ -11,8 +11,6 @@ import Sidebar from "./component/Sidebar";
 import Home from "./pages/Home";
 import Icon from "./pages/Icon";
 import Command from "./pages/Command";
-import Setting from "./pages/Setting";
-import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 import { setUser } from "./redux/actions";
@@ -49,8 +47,6 @@ const Main = () => {
           <Switch>
             <Route path="/icon" component={Icon} />
             <Route path="/command" component={Command} />
-            <Route path="/setting" component={Setting} />
-            <Route path="/privacy" component={Privacy} />
             <Route path="/" exact component={Home} />
             <Route path="*" component={NotFound} />
           </Switch>
