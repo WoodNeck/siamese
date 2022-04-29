@@ -80,17 +80,15 @@ class Connect5Game {
       if (blocked) return;
 
       if (interaction.customId === GAME.SYMBOL.GG) {
-        await interaction.update({ components: [] });
+        await interaction.update({ components: [] }).catch(() => void 0);
 
         return collector.stop(GAME.SYMBOL.GG);
       } else if (interaction.customId === GAME.SYMBOL.SELECT) {
-        await interaction.update({ components: [] });
+        await interaction.update({ components: [] }).catch(() => void 0);
 
         this._play(...cursor);
         return collector.stop(GAME.SYMBOL.NEXT_TURN);
       } else {
-        await interaction.deferUpdate();
-
         const direction = CONNECT5.DIRECTIONS[interaction.customId];
 
         cursor[0] += direction[0];
@@ -99,7 +97,7 @@ class Connect5Game {
         await interaction.update({
           embeds: [this._drawBoard(cursor)],
           components: this._createButtons(cursor)
-        });
+        }).catch(() => void 0);
       }
     });
 

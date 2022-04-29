@@ -1,4 +1,4 @@
-import { GuildMember, MessageComponentInteraction } from "discord.js";
+import Discord, { GuildMember, MessageComponentInteraction } from "discord.js";
 
 import CommandContext from "~/core/CommandContext";
 import SlashCommandContext from "~/core/SlashCommandContext";
@@ -21,7 +21,7 @@ export const createGameChannel = async (ctx: CommandContext | SlashCommandContex
     ? await ctx.bot.send(ctx, { content: GAME.START_MSG(gameName), fetchReply: true })
     : ctx.msg;
 
-  const threadChannel = await message!.startThread({
+  const threadChannel = await (message as Discord.Message).startThread({
     name: GAME.THREAD_NAME(gameName, id),
     autoArchiveDuration: 60 // 1hour
   });
