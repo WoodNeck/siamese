@@ -2,7 +2,7 @@ import * as EMOJI from "~/const/emoji";
 
 export const FFXIV = {
   CMD: "파판",
-  DESC: "파이널 판지 14 관련 정보들을 조회할 수 있는 명령어들이다냥!",
+  DESC: "파이널 판타지 14 관련 정보들을 조회할 수 있는 명령어들이다냥!",
   ITEM: {
     CMD: "아이템",
     DESC: "파이널 판타지 14 아이템 정보를 검색한다냥!",

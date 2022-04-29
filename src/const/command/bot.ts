@@ -33,15 +33,6 @@ export const HELP = {
   WEB_PRIVACY_LINK: "http://para.n-e.kr/#/privacy"
 } as const;
 
-export const DEV_SERVER = {
-  CMD: "개발서버",
-  DESC: "개발 서버로 올 수 있는 초대 링크를 준다냥!",
-  INVITE_LINK: (botName: string, inviteLink: string) => dedent`
-    ${botName}의 개발 서버 초대 링크다냥!
-    와서 사용/개발에 관한 질문, 기능요청, 버그제보 등을 할 수 있다냥!
-    ${inviteLink}`
-} as const;
-
 export const INFO = {
   CMD: "정보",
   DESC: "봇과 관련된 정보를 볼 수 있다냥!",

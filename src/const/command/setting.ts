@@ -4,14 +4,6 @@ import Josa from "josa-js";
 import Siamese from "~/Siamese";
 import { roleMention } from "~/util/helper";
 
-export const AUTO_OUT = {
-  CMD: "자동퇴출",
-  DESC: "음성관련 명령어(예: tts)를 수행한 이후에 자동으로 음성채널에서 나갈지를 설정한다냥!",
-  ALIAS: ["바로나가기", "자동퇴장"],
-  SET: "음성 명령을 재생한 후에 바로 음성채널을 나가겠다냥!",
-  UNSET: "음성 명령을 재생한 후에도 음성채널에 남아있도록 하겠다냥! 단, 30분 뒤에는 알아서 나간다냥!"
-};
-
 export const ROLE_RESTRICT = {
   CMD: "역할제한",
   DESC: "봇을 사용할 수 있는 역할을 제한한다냥!",
