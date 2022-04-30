@@ -231,25 +231,33 @@ class Connect5Game {
     if (x < 0 || y < 0) return [];
 
     const playerIdx = grid[x][y];
+    const directionSets = [
+      [CONNECT5.DIRECTIONS[0], CONNECT5.DIRECTIONS[1]],
+      [CONNECT5.DIRECTIONS[2], CONNECT5.DIRECTIONS[3]],
+      [CONNECT5.DIRECTIONS[4], CONNECT5.DIRECTIONS[7]],
+      [CONNECT5.DIRECTIONS[5], CONNECT5.DIRECTIONS[6]]
+    ];
 
-    for (const direction of CONNECT5.DIRECTIONS) {
-      const pos = [x + direction[0], y + direction[1]];
-      let connectCount = 1;
+    for (const directions of directionSets) {
+      const connected = directions.reduce((total, direction) => {
+        const pos = [x + direction[0], y + direction[1]];
+        const connects: Array<[number, number]> = [];
 
-      while (
-        isBetween(pos[0], 0, grid.length - 1)
-        && isBetween(pos[1], 0, grid.length - 1)
-        && grid[pos[0]][pos[1]] === playerIdx
-      ) {
-        connectCount += 1;
-        pos[0] += direction[0];
-        pos[1] += direction[1];
-      }
+        while (
+          isBetween(pos[0], 0, grid.length - 1)
+          && isBetween(pos[1], 0, grid.length - 1)
+          && grid[pos[0]][pos[1]] === playerIdx
+        ) {
+          connects.push([pos[0], pos[1]]);
+          pos[0] += direction[0];
+          pos[1] += direction[1];
+        }
+
+        return [...total, ...connects];
+      }, [[x, y]]);
 
       // Win by connect 5
-      if (connectCount >= 5) return range(connectCount).map(idx => {
-        return [x + direction[0] * idx, y + direction[1] * idx];
-      });
+      if (connected.length >= 5) return connected;
     }
 
     return [];
