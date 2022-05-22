@@ -68,9 +68,15 @@ export default new Command({
 
         const metatags = result.pagemap?.metatags?.[0];
         if (metatags) {
-          embed.setColor(
-            rgbaToHex(metatags["theme-color"] || metatags["msapplication-tilecolor"] || COLOR.BOT)
-          ).setFooter({
+          const color = metatags["theme-color"] || metatags["msapplication-tilecolor"];
+
+          if (color && !color.includes("\n")) {
+            embed.setColor(rgbaToHex(color));
+          } else {
+            embed.setColor(COLOR.BOT);
+          }
+
+          embed.setFooter({
             text: metatags["og:site_name"]
             || metatags["application-name"]
             || metatags["msapplication-tooltip"]
