@@ -26,6 +26,8 @@ interface EnvVariables {
   // NAVER
   NAVER_ID?: string;
   NAVER_SECRET?: string;
+  // KAKAO
+  KAKAO_REST_KEY?: string;
   // STEAM
   STEAM_API_KEY?: string;
   // COIN

@@ -219,3 +219,24 @@ export const EXCHANGE = {
     WRONG_UNIT: (unit: string) => `${Josa.r(unit, "은/는")} 모르는 단위다냥!`
   }
 };
+
+export const BOOK = {
+  CMD: "책",
+  DESC: "도서를 검색한다냥!",
+  USAGE: "이름",
+  TARGET: "책",
+  DESC_SLASH: "검색할 책 이름을 달라냥!",
+  ITEMS_PER_PAGE: 5,
+  SEARCH_URL: "https://dapi.kakao.com/v3/search/book?target=title",
+  SEARCH_PARAMS: (query: string) => ({
+    query
+  }),
+  INFO_TITLE: "책 소개",
+  AUTHOR: "저자",
+  TRANSLATOR: "역자",
+  DATETIME: "출판일",
+  PUBLISHER: "출판사",
+  PRICE: "정가",
+  SALE_PRICE: "판매가",
+  PRICE_UNIT: "원"
+} as const;

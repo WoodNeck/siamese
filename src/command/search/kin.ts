@@ -40,8 +40,6 @@ export default new Command({
       ? ctx.interaction.options.getString(KIN.USAGE, true)
       : ctx.content;
 
-    if (ctx.isSlashCommand()) return;
-
     if (!content) {
       return bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }

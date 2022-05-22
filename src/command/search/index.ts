@@ -7,6 +7,7 @@ import Search from "./search";
 import Stock from "./stock";
 import Coin from "./coin";
 import Exchange from "./exchange";
+import Book from "./book";
 
 import Category from "~/core/Category";
 import { SEARCH } from "~/const/category";
@@ -22,7 +23,8 @@ category.add(
   Search,
   Stock,
   Coin,
-  Exchange
+  Exchange,
+  Book
 );
 
 export default category;
