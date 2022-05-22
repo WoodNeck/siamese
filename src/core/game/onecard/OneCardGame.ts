@@ -144,7 +144,12 @@ class OneCardGame {
     const currentPlayer = this._currentPlayer;
     const playerBtns = this._getPlayerButtons(currentPlayer);
 
-    const choiceMsg = await currentPlayer.interaction.followUp({
+    const playerInteraction = currentPlayer.interaction;
+    const send = playerInteraction.replied || playerInteraction.deferred
+      ? playerInteraction.followUp.bind(playerInteraction)
+      : playerInteraction.reply.bind(playerInteraction);
+
+    const choiceMsg = await send({
       content: ONECARD.TURN_HEADER(currentPlayer.user),
       components: playerBtns,
       ephemeral: true,
