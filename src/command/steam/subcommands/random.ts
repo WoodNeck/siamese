@@ -9,7 +9,6 @@ import * as PERMISSION from "~/const/permission";
 import { STEAM, RANDOM } from "~/const/command/steam";
 import { getRandom } from "~/util/helper";
 
-
 export default new Command({
   name: RANDOM.CMD,
   description: RANDOM.DESC,
@@ -17,7 +16,7 @@ export default new Command({
   permissions: [
     PERMISSION.EMBED_LINKS
   ],
-  cooldown: Cooldown.PER_USER(5),
+  cooldown: Cooldown.PER_USER(1),
   execute: async ctx => {
     const { bot } = ctx;
 

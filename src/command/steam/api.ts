@@ -4,9 +4,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import axios from "axios";
+import NodeCache from "node-cache";
 
 import Siamese from "~/Siamese";
 import { STEAM } from "~/const/command/steam";
+
+// 1 hour
+const userGameCache = new NodeCache({ stdTTL: 60 * 60, useClones: false });
 
 interface SteamUser {
   personaname: string;
@@ -112,19 +116,28 @@ export const getFriendList = async (bot: Siamese, userId: string): Promise<any[]
 ).then(body => body.data.friendslist.friends)
   .catch(() => null);
 
-export const getOwningGames = async (bot: Siamese, userId: string): Promise<SteamGame[] | null> => await axios.get(
-  STEAM.OWNING_GAME_URL,
-  { params: STEAM.OWNING_GAME_PARAMS(bot.env, userId) }
-).then(body => {
-  if (body.data.response) {
-    const owningGames = body.data.response;
-    // sort by playtime desc
-    owningGames.games = owningGames.games
-      .sort((game1, game2) => game2.playtime_forever - game1.playtime_forever);
-    return owningGames.games;
+export const getOwningGames = async (bot: Siamese, userId: string): Promise<SteamGame[] | null> => {
+  if (userGameCache.has(userId)) {
+    return userGameCache.get<SteamGame[]>(userId)!;
+  } else {
+    return await axios.get(
+      STEAM.OWNING_GAME_URL,
+      { params: STEAM.OWNING_GAME_PARAMS(bot.env, userId) }
+    ).then(body => {
+      if (body.data.response) {
+        const owningGames = body.data.response;
+        // sort by playtime desc
+        owningGames.games = owningGames.games
+          .sort((game1, game2) => game2.playtime_forever - game1.playtime_forever);
+
+        userGameCache.set<SteamGame[]>(userId, owningGames.games);
+
+        return owningGames.games;
+      }
+      return null;
+    }).catch(() => null);
   }
-  return null;
-}).catch(() => null);
+};
 
 export const getCurrentPlayers = async (bot: Siamese, appid: string): Promise<string> => await axios.get(
   STEAM.CURRENT_PLAYERS_URL,
