@@ -39,7 +39,9 @@ export const shuffle = <T>(arr: T[]) => {
 export const toValidURL = (url: string) => {
   if (url.startsWith("//")) return `https:${url}`;
   else if (url.startsWith("/")) return "";
-  return url;
+  return url.startsWith("http:") || url.startsWith("https:")
+    ? url
+    : "";
 };
 
 export const rgbaToHex = (val: string): `#${string}` | [number, number, number] => {
