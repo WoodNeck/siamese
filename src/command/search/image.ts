@@ -67,7 +67,7 @@ export default new Command({
         return idx;
       })
       .catch(({ response }) => {
-        if (Math.floor(response.status / 100) === 3) return idx;
+        if (response && Math.floor(response.status / 100) === 3) return idx;
         return -1;
       });
     const results = await Promise.all(images.map(testImage));
