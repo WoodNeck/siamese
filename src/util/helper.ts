@@ -1,3 +1,5 @@
+import * as COLOR from "~/const/color";
+
 // Dedent from string, useful for multiline string template
 export const dedent = (callSite: TemplateStringsArray, ...args: any[]) => {
   const format = (str: string) => {
@@ -48,6 +50,8 @@ export const rgbaToHex = (val: string): `#${string}` | [number, number, number] 
   const regex = /^rgba?\((\d{1,3})\s?,\s?(\d{1,3})\s?,\s?(\d{1,3})(?:,\s?\d.?\d*)?\s?\)$/;
   const matched = regex.exec(val);
   if (!matched) {
+    if (val.startsWith("hsl")) return COLOR.BOT;
+
     return val.startsWith("#")
       ? val as `#${string}`
       : `#${val}`;

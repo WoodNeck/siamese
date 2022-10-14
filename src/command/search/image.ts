@@ -66,7 +66,10 @@ export default new Command({
         if (res.status !== 200) return -1;
         return idx;
       })
-      .catch(() => -1);
+      .catch(({ response }) => {
+        if (Math.floor(response.status / 100) === 3) return idx;
+        return -1;
+      });
     const results = await Promise.all(images.map(testImage));
 
     menu.updatePages(

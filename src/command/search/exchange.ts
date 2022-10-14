@@ -63,7 +63,7 @@ export default new Command({
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_CONTENT);
     }
 
-    const result = /^(\d+)(\D+)$/.exec(content);
+    const result = /^(\d+(?:\.\d+)?)(\D+)$/.exec(content);
 
     if (!result) {
       return await bot.replyError(ctx, EXCHANGE.ERROR.WRONG_FORM);
