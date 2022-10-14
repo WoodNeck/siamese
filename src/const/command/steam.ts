@@ -16,6 +16,8 @@ export const STEAM = {
   FRIEND_URL: "http://api.steampowered.com/ISteamUser/GetFriendList/v1",
   OWNING_GAME_URL: "http://api.steampowered.com/IPlayerService/GetOwnedGames/v1",
   CURRENT_PLAYERS_URL: "http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1",
+  TOP_PLAYERS_URL: "https://api.steampowered.com/ISteamChartsService/GetGamesByConcurrentPlayers/v1",
+  GAME_INFO_URL: "https://store.steampowered.com/api/appdetails",
   ICON_URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png",
   PROFILE_GAME_URL: baseUrl => `${baseUrl}games/?tab=all`,
   GAME_IMG_URL: (appid, url) => `http://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${url}.jpg`,
@@ -56,6 +58,11 @@ export const STEAM = {
     steamid: id,
     key: env.STEAM_API_KEY,
     relationship: "friend"
+  }),
+  GAME_INFO_PARAMS: (id: string) => ({
+    appids: id,
+    cc: "us",
+    l: "en"
   }),
   PLAYTIME: (minute: number) => `총 플레이 시간: ${minute ? (minute / 60).toFixed(1) : 0}시간`,
   PLAYTIME_SHORT: (minute: number) => `${minute ? (minute / 60).toFixed(1) : 0}시간`,
@@ -156,9 +163,9 @@ export const PLAYERS = {
 export const TOP = {
   CMD: "동접순위",
   DESC: "현재 동접순위를 확인한다냥!",
-  SEARCH_URL: "https://store.steampowered.com/stats/Steam-Game-and-Player-Statistics?l=koreana",
+  SEARCH_URL: "https://store.steampowered.com/charts/mostplayed",
   GAMES_PER_PAGE: 10,
   FORMAT_INFO: "동접순위 (현재 / 최고)",
-  GAME_TITLE: (idx: number, game: string[]) => `${idx}. ${strong(game[2])}`,
-  GAME_STATISTICS: (game: string[]) => `${EMOJI.MIDDLE_DOT} ${game[0]}명 / ${game[1]}명`
+  GAME_TITLE: (idx: number, game: string) => `${idx}. ${strong(game)}`,
+  GAME_STATISTICS: (current: string, peak: string) => `${EMOJI.MIDDLE_DOT} ${current}명 / ${peak}명`
 } as const;

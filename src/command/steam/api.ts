@@ -145,3 +145,11 @@ export const getCurrentPlayers = async (bot: Siamese, appid: string): Promise<st
 ).then(body => body.data.response
   ? body.data.response.player_count
   : "N/A").catch(() => "N/A");
+
+export const getGameName = async (appid: string): Promise<string> => await axios.get(
+  STEAM.GAME_INFO_URL,
+  { params: STEAM.GAME_INFO_PARAMS(appid) }
+).then(body => {
+  const appData = body.data[appid];
+  return appData.success ? appData.data.name : "??";
+});
