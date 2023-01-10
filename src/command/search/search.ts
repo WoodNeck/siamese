@@ -83,7 +83,7 @@ export default new Command({
             || metatags["al:android:app_name"]
             || metatags["al:ios:app_name"]
             || "",
-            iconURL: toValidURL(metatags["msapplication-tileimage"] || "")
+            iconURL: toValidURL(metatags["msapplication-tileimage"] || "") || undefined
           });
         }
 

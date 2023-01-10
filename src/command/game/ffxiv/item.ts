@@ -78,7 +78,7 @@ export default new Command({
         if (itemName && iconURL) {
           page.setAuthor({
             name: itemName,
-            iconURL: toValidURL(iconURL)
+            iconURL: toValidURL(iconURL) || undefined
           });
         }
 
