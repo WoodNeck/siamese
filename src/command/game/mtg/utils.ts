@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import * as Scry from "scryfall-sdk";
 
+import * as COLOR from "~/const/color";
 import { MTG } from "~/const/command/game";
 import { toEmoji } from "~/util/helper";
 
@@ -19,6 +20,7 @@ export const cardToEmbed = (card: Scry.Card) => {
   embed.setFooter({
     text: card.printed_name ?? card.name
   });
+  embed.setColor(COLOR.BOT);
 
   if (card.mana_cost) {
     embed.addField(MTG.CARD.FIELD.COST, parseEmoji(card.mana_cost), true);
