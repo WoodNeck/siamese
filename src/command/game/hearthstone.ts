@@ -12,7 +12,7 @@ export default new Command({
   subcommands: [
     Card
   ],
-  beforeRegister: (bot: Siamese) => bot.env.NAVER_ID != null && bot.env.NAVER_SECRET != null,
+  beforeRegister: (bot: Siamese) => bot.env.BLIZZARD_ID != null && bot.env.BLIZZARD_SECRET != null,
   slashData: new SlashCommandBuilder()
     .setName(HEARTHSTONE.CMD)
     .setDescription(HEARTHSTONE.DESC)

@@ -87,6 +87,7 @@
     "husky": "^4.3.0",
     "mocha": "^9.2.2",
     "pino-pretty": "^4.3.0",
+    "scryfall-sdk": "^3.2.1",
     "ts-node": "^9.1.1",
     "tsc-alias": "^1.2.6",
     "tsconfig-paths": "^3.9.0",
