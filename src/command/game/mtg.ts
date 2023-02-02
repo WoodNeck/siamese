@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 
 import Card from "./mtg/card";
 import Random from "./mtg/random";
+import Quiz from "./mtg/quiz";
 
 import Command from "~/core/Command";
 import { MTG } from "~/const/command/game";
@@ -11,7 +12,8 @@ export default new Command({
   alias: MTG.ALIAS,
   subcommands: [
     Card,
-    Random
+    Random,
+    Quiz
   ],
   slashData: new SlashCommandBuilder()
     .setName(MTG.CMD)

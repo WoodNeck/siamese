@@ -3,7 +3,7 @@
     "module": "CommonJS",
     "target": "ES2017",
     "moduleResolution": "node",
-    "lib": ["es2015"],
+    "lib": ["ESNext"],
     "sourceMap": true,
     "strictNullChecks": true,
     "downlevelIteration": true,

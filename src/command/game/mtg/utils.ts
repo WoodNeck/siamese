@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import * as Scry from "scryfall-sdk";
 
+import * as EMOJI from "~/const/emoji";
 import * as COLOR from "~/const/color";
 import { MTG } from "~/const/command/game";
 import { toEmoji } from "~/util/helper";
@@ -25,7 +26,39 @@ export const cardToEmbed = (card: Scry.Card) => {
   if (card.mana_cost) {
     embed.addField(MTG.CARD.FIELD.COST, parseEmoji(card.mana_cost), true);
   }
-  embed.addField(MTG.CARD.FIELD.TYPE, card.printed_type_line ?? card.type_line, true);
+
+  const type = card.printed_type_line ?? card.type_line;
+  if (type) {
+    embed.addField(MTG.CARD.FIELD.TYPE, type, true);
+  }
+  embed.addField(MTG.CARD.FIELD.SET, card.set_name, true);
+
+  return embed;
+};
+
+export const cardToQuizEmbed = (card: Scry.Card) => {
+  const embed = new MessageEmbed();
+
+  const name = card.printed_name ?? card.name;
+  const desc = card.printed_text ?? card.oracle_text;
+
+  if (desc) {
+    embed.setDescription(parseEmoji(desc).replaceAll(name, EMOJI.QUESTION_MARK.repeat(3)));
+  }
+
+  embed.setFooter({
+    text: MTG.QUIZ.FOOTER
+  });
+  embed.setColor(COLOR.BOT);
+
+  if (card.mana_cost) {
+    embed.addField(MTG.CARD.FIELD.COST, parseEmoji(card.mana_cost), true);
+  }
+
+  const type = card.printed_type_line ?? card.type_line;
+  if (type) {
+    embed.addField(MTG.CARD.FIELD.TYPE, type, true);
+  }
   embed.addField(MTG.CARD.FIELD.SET, card.set_name, true);
 
   return embed;
@@ -41,3 +74,7 @@ export const parseEmoji = (text: string): string => {
     }
   });
 };
+
+export const blurCardName = (name: string) => name
+  .replaceAll(" ", "")
+  .replaceAll("-", "");

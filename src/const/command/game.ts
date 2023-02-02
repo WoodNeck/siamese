@@ -96,6 +96,14 @@ export const MTG = {
     CMD: "랜덤",
     DESC: "무작위 매직 더 개더링 카드를 검색한다냥!"
   },
+  QUIZ: {
+    CMD: "퀴즈",
+    DESC: "무작위 매직 더 개더링 카드를 제시할테니 이름을 맞춰보라냥!",
+    MAX_TIME: 30,
+    FOOTER: `이 카드의 이름을 ${EMOJI.ALARM}30초 안에 맞춰보라냥!`,
+    NO_TEXT: (name: string) => `${EMOJI.CROSS} 틀렸다냥! 정답은 **"${name}"**이다냥`,
+    OK_TEXT: `${EMOJI.OK} 정답이다냥!`
+  },
   EMOJI: {
     B: { name: "B_", id: "1070378700505370634" },
     G: { name: "G_", id: "1070378703177138197" },

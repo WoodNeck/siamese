@@ -29,8 +29,8 @@ export const HELP = {
   CMD: "도움",
   DESC: "명령어 목록을 보여준다냥!",
   ALIAS: ["help", "도움말"],
-  WEB_CATEGORY_INVITE_LINK: "https://para.n-e.kr/#/command/bot",
-  WEB_PRIVACY_LINK: "http://para.n-e.kr/#/privacy"
+  WEB_LINK: "https://para.n-e.kr/#/command/bot",
+  WEB_BTN_LABEL: "웹에서 보기"
 } as const;
 
 export const INFO = {
