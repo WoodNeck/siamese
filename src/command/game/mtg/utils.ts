@@ -76,5 +76,6 @@ export const parseEmoji = (text: string): string => {
 };
 
 export const blurCardName = (name: string) => name
+  .toLowerCase()
   .replaceAll(" ", "")
   .replaceAll("-", "");

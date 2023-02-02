@@ -101,6 +101,7 @@ export const MTG = {
     DESC: "무작위 매직 더 개더링 카드를 제시할테니 이름을 맞춰보라냥!",
     MAX_TIME: 30,
     FOOTER: `이 카드의 이름을 ${EMOJI.ALARM}30초 안에 맞춰보라냥!`,
+    QUERY_RES: "not:funny -t:conspiracy -t:scheme not:token",
     NO_TEXT: (name: string) => `${EMOJI.CROSS} 틀렸다냥! 정답은 **"${name}"**이다냥`,
     OK_TEXT: `${EMOJI.OK} 정답이다냥!`
   },

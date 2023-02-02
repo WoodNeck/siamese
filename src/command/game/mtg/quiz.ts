@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import Discord, { MessageEmbed } from "discord.js";
 import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import * as Scry from "scryfall-sdk";
 
@@ -27,7 +27,7 @@ export default new Command({
     let card: Scry.Card | null = null;
 
     while (!card) {
-      card = await Scry.Cards.random();
+      card = await (Scry.Cards as any).query("cards/random", { q: MTG.QUIZ.QUERY_RES }) as Scry.Card;
       const desc = card.printed_text ?? card.oracle_text;
       if (!desc) card = null;
     }
@@ -46,15 +46,19 @@ export default new Command({
     });
 
     const origName = card.printed_name ?? card.name;
+    const image = card.image_uris ? card.image_uris.large : null;
 
     collector.on("end", async collected => {
       const msg = collected.first();
       const isCorrectAnswer = msg && blurCardName(msg.content) === blurCardName(origName);
-      if (isCorrectAnswer) {
-        await bot.send(ctx, { content: MTG.QUIZ.OK_TEXT });
-      } else {
-        await bot.send(ctx, { content: MTG.QUIZ.NO_TEXT(origName) });
+      const resultEmbed = new MessageEmbed();
+
+      resultEmbed.setTitle(isCorrectAnswer ? MTG.QUIZ.OK_TEXT : MTG.QUIZ.NO_TEXT(origName));
+      if (image) {
+        resultEmbed.setImage(image);
       }
+
+      await bot.send(ctx, { embeds: [resultEmbed] });
     });
   }
 });
