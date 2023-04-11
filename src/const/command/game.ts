@@ -102,7 +102,7 @@ export const MTG = {
     MAX_TIME: 30,
     FOOTER: `이 카드의 이름을 ${EMOJI.ALARM}30초 안에 맞춰보라냥!`,
     QUERY_RES: "not:funny -t:conspiracy -t:scheme not:token",
-    NO_TEXT: (name: string) => `${EMOJI.CROSS} 틀렸다냥! 정답은 **"${name}"**이다냥`,
+    NO_TEXT: (name: string) => `${EMOJI.CROSS} 틀렸다냥! 정답은 **"${name}"** 이다냥!`,
     OK_TEXT: `${EMOJI.OK} 정답이다냥!`
   },
   EMOJI: {

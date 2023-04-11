@@ -178,35 +178,19 @@ const checkers = {
 };
 
 const fetchDomesticStockData = async (item: Item): Promise<StockData> => {
-  const getHeaderInfo = axios.get(STOCK.DOME_STOCK_HEADER_URL(item.id)).then((res: AxiosResponse<{
-    result: {
-      al: string;
-      aq: number;
-      cd: string;
-      cr: number;
-      cv: number;
-      hv: number;
-      lv: number;
-      ms: string;
-      mt: string;
-      my: number;
-      nm: string;
-      nt: number;
-      nv: number;
-      nyn: string;
-      pcv: number;
-      rf: string;
-      time: number;
-      tyn: string;
-    };
+  const getHeaderInfo = axios.get(STOCK.DOME_BASIC_URL(item.id)).then((res: AxiosResponse<{
+    closePrice: string;
+    stockName: string;
+    compareToPreviousClosePrice: string;
+    fluctuationsRatio: string;
   }>) => {
-    const data = res.data.result;
+    const data = res.data;
 
     return {
-      name: data.nm,
-      price: data.nv,
-      change: data.cv,
-      changePct: data.cr
+      name: data.stockName,
+      price: parseFloat(data.closePrice.replace(/,/g, "")),
+      change: parseFloat(data.compareToPreviousClosePrice.replace(/,/g, "")),
+      changePct: parseFloat(data.fluctuationsRatio)
     };
   });
   const getMainInfo = axios.get(STOCK.DOME_STOCK_INFO_URL(item.id)).then(res => {
