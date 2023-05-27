@@ -63,7 +63,14 @@ export default new Command({
           .setURL(toValidURL(result.link));
 
         if (result.snippet) {
-          embed.setDescription(result.snippet);
+          const snippet = result.snippet;
+          const dateChecker = /\d+\. \d+\. \d+\./;
+          const dateRes = dateChecker.exec(snippet);
+          if (!dateRes) {
+            embed.setDescription(result.snippet);
+          } else {
+            embed.setDescription(snippet.slice(dateRes[0].length));
+          }
         }
 
         const metatags = result.pagemap?.metatags?.[0];
