@@ -44,6 +44,7 @@
     "fuse.js": "^6.4.6",
     "gif-encoder-2": "^1.0.5",
     "googleapis": "^67.0.0",
+    "googlethis": "^1.8.0",
     "hangul-js": "^0.2.6",
     "html-entities": "^2.3.3",
     "ip": "^1.1.5",

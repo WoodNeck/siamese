@@ -12,19 +12,14 @@ export const IMAGE = {
   TARGET: "이미지",
   DESC_OPTION: "검색할 이미지 키워드를 달라냥!",
   SEARCH_URL: "https://www.google.com/search",
-  SEARCH_PARAMS: (query, isSafeSearch) =>
+  SEARCH_PARAMS: (isSafeSearch: boolean) =>
     // nfpr: disable auto query correction(ex: museuk -> museum)
     // safe: enable safe searching
     isSafeSearch
       ? {
-        q: query,
-        tbm: "isch",
-        nfpr: "1",
-        safe: "active"
+        nfpr: "1"
       }
       : {
-        q: query,
-        tbm: "isch",
         nfpr: "1",
         pws: "0",
         gl: "us",
