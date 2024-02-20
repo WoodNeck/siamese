@@ -15,8 +15,22 @@ import Menu, { MENU_END_REASON } from "~/core/Menu";
 import { strong } from "~/util/markdown";
 
 interface ItemSearchResult {
-  query: string[];
-  items: string[][][];
+  isSuccess: boolean;
+  detailCode: string;
+  message: string;
+  result: {
+    query: string;
+    items: Array<{
+      code: string;
+      name: string;
+      typeCode: string;
+      typeName: string;
+      url: string;
+      reutersCode: string;
+      nationCode: string;
+      nationName: string;
+    }>;
+  };
 }
 
 interface Item {
@@ -89,18 +103,18 @@ export default new Command({
     }
 
     const result = await axios.get(STOCK.URL(content)) as AxiosResponse<ItemSearchResult>;
-    const stockItems = result.data.items.reduce((items, item) => {
-      const typedItems = item.reduce((total, typed) => {
-        const url = typed[3][0];
-        const enumType = toEnumType(url);
+    const stockItems = result.data.result.items.map(item => {
+      const enumType = toEnumType(item.url);
+      if (enumType == null) return null;
 
-        if (enumType == null) return total;
-
-        return [...total, toItem(typed, enumType)];
-      }, [] as Item[]);
-
-      return [...items, ...typedItems];
-    }, [] as Item[]);
+      return {
+        name: item.name,
+        type: item.typeName,
+        id: item.code,
+        url: item.url,
+        enumType
+      };
+    }).filter(val => !!val) as Item[];
 
     if (stockItems.length <= 0) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(STOCK.TARGET));
@@ -149,14 +163,6 @@ const fetchItem = async (ctx: CommandContext, item: Item) => {
     await showWorldData(ctx, item, data);
   }
 };
-
-const toItem = (raw: string[], enumType: ItemType) => ({
-  name: raw[1][0],
-  type: raw[2][0],
-  id: raw[4][0],
-  url: raw[3][0],
-  enumType
-});
 
 const toEnumType = (url: string) => {
   const types = Object.keys(checkers);

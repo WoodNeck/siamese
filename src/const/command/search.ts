@@ -179,7 +179,7 @@ export const STOCK = {
   TARGET: "검색 결과",
   ALIAS: ["증권"],
   DESC_OPTION: "검색할 주식/증권 항목을 달라냥!",
-  URL: (query: string) => `https://ac.finance.naver.com/ac?q=${encodeURIComponent(query)}&q_enc=euc-kr&t_koreng=1&st=111&r_lt=111`,
+  URL: (query: string) => `https://m.stock.naver.com/front-api/v1/search/autoComplete?query=${encodeURIComponent(query)}&target=stock`,
   DOME_STOCK_HEADER_URL: (id: string) => `https://m.stock.naver.com/api/item/getOverallHeaderItem.nhn?code=${id}`,
   DOME_STOCK_INFO_URL: (id: string) => `https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${id}`,
   DOME_BASIC_URL: (id: string) => `https://m.stock.naver.com/api/stock/${id}/basic`,
