@@ -37,7 +37,10 @@ export const IMAGE = {
   },
   FAKE_HEADER: {
     "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36 Edg/91.0.864.64"
-  }
+  },
+  EXCLUDE_RESULT: [
+    /^https?:\/\/i.namu.wiki/
+  ]
 } as const;
 
 export const YOUTUBE = {

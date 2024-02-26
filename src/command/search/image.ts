@@ -58,29 +58,6 @@ export default new Command({
     menu.setPages(pages);
 
     await menu.start();
-
-
-    // Check image avaialability
-    const testImage = (imageURL: string, idx: number): Promise<number> => axios.head(imageURL, { maxRedirects: 0 })
-      .then(res => {
-        if (res.status !== 200) return -1;
-        return idx;
-      })
-      .catch(error => {
-        if (!error.response) return -1;
-        if (Math.floor(error.response.status / 100) === 3) return idx;
-
-        return -1;
-      });
-    const results = await Promise.all(images.map(testImage));
-    const resultChanged = results.some(idx => idx < 0);
-
-    if (resultChanged) {
-      menu.updatePages(
-        results.filter(idx => idx >= 0).map(idx => new MessageEmbed().setImage(images[idx])),
-        results.map((_, arrIdx) => arrIdx).filter(idx => results[idx] < 0)
-      );
-    }
   }
 });
 
@@ -92,34 +69,32 @@ const searchSFWImages = async (searchText: string) => {
   });
 
   const $ = cheerio.load(body.data);
-  const containsNonLatinCodepoints = /[^\u0000-\u00ff]/;
 
   return $(".islrtb").toArray()
-    .slice(0, 10)
     .map(el => el.attribs["data-ou"])
-    .filter(url => {
-      try {
-        const decoded = decodeURIComponent(url);
-        return !containsNonLatinCodepoints.test(decoded);
-      } catch (err) {
-        return false;
-      }
-    }) as string[];
+    .filter(filterImage) as string[];
 };
 
 const searchNSFWImages = async (searchText: string) => {
   const images = await gis(searchText, { query: IMAGE.SEARCH_PARAMS(searchText, false)});
-  const containsNonLatinCodepoints = /[^\u0000-\u00ff]/;
 
   return images
-    .slice(0, 10)
     .map(img => img.url)
-    .filter(url => {
-      try {
-        const decoded = decodeURIComponent(url);
-        return !containsNonLatinCodepoints.test(decoded);
-      } catch (err) {
-        return false;
-      }
-    });
+    .filter(filterImage);
+};
+
+const containsNonLatinCodepoints = /[^\u0000-\u00ff]/;
+const filterImage = (url: string) => {
+  const inBlacklist = IMAGE.EXCLUDE_RESULT.some(regex => {
+    return regex.test(url);
+  });
+
+  if (inBlacklist) return false;
+
+  try {
+    const decoded = decodeURIComponent(url);
+    return !containsNonLatinCodepoints.test(decoded);
+  } catch (err) {
+    return false;
+  }
 };
