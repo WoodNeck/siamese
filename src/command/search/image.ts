@@ -44,9 +44,7 @@ export default new Command({
     }
 
     const searchText = content;
-    const images = channel.nsfw
-      ? (await searchNSFWImages(searchText))
-      : (await searchSFWImages(searchText));
+    const images = await searchImages(searchText, channel.nsfw);
 
     if (!images.length) {
       return await bot.replyError(ctx, ERROR.SEARCH.EMPTY_RESULT(IMAGE.TARGET));
@@ -61,22 +59,8 @@ export default new Command({
   }
 });
 
-
-const searchSFWImages = async (searchText: string) => {
-  const body = await axios.get(IMAGE.SEARCH_URL, {
-    params: IMAGE.SEARCH_PARAMS(searchText, true),
-    headers: IMAGE.FAKE_HEADER
-  });
-
-  const $ = cheerio.load(body.data);
-
-  return $(".islrtb").toArray()
-    .map(el => el.attribs["data-ou"])
-    .filter(filterImage) as string[];
-};
-
-const searchNSFWImages = async (searchText: string) => {
-  const images = await gis(searchText, { query: IMAGE.SEARCH_PARAMS(searchText, false)});
+const searchImages = async (searchText: string, nsfw: boolean) => {
+  const images = await gis(searchText, { query: IMAGE.SEARCH_PARAMS(searchText, !nsfw)});
 
   return images
     .map(img => img.url)
