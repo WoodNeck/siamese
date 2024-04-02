@@ -4,7 +4,8 @@
   "dependencies": {
     "@siamese/util": "0.0.0",
     "@vitalets/google-translate-api": "^9.2.0",
-    "async-g-i-s": "^1.5.2",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
     "youtubei.js": "^9.1.0"
   },
   "main": "src/index.ts",

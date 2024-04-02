@@ -1,7 +1,10 @@
-export const IMAGE_SEARCH_PARAMS = (isSafeSearch: boolean) => {
+export const IMAGE_SEARCH_URL = "https://www.google.com/search";
+export const IMAGE_SEARCH_PARAMS = (query: string, isSafeSearch: boolean) => {
   const commonParams = {
+    q: query,
     // nfpr: disable auto query correction(ex: museuk -> museum)
-    nfpr: "1"
+    nfpr: "1",
+    udm: "2"
   };
 
   // safe: enable safe searching

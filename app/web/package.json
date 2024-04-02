@@ -1,7 +1,6 @@
 {
   "name": "@siamese/web",
   "version": "0.0.0",
-  "types": "module",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -52,5 +51,6 @@
     "start": "react-app-rewired start",
     "test": "react-scripts test"
   },
-  "type": "module"
+  "type": "module",
+  "types": "module"
 }
