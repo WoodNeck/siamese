@@ -38,7 +38,7 @@ abstract class Command {
   /**
    * 실행 가능 여부
    *
-   * 서브커맨드만 사용할 경우 `true`로 설정해야 함
+   * 서브커맨드만 사용할 경우 `false`로 설정해야 함
    */
   public readonly executable: boolean;
   /**

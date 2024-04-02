@@ -33,20 +33,18 @@ class Help extends Command {
 
         const commands = allCommands.filter(cmd => {
           const inCategory = cmd.category.ID === category.ID;
+          if (!inCategory) return false;
 
-          if (inCategory) {
-            const isDevonly = cmd.preconditions.find(condition => condition === DevOnly);
-
-            return !isDevonly;
-          } else {
-            return cmd.executable;
-          }
+          const isDevonly = cmd.preconditions.find(condition => condition === DevOnly);
+          return !isDevonly;
         });
 
         commands.forEach(cmd => {
-          const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name}`);
-          const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, formatUsage(cmd.usage)].filter(str => str).join(" ");
-          embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description || "")}`);
+          if (cmd.executable) {
+            const commandTitle = strong(`${EMOJI.SMALL_BLUE_DIAMOND} ${cmd.name}`);
+            const commandUsage = [EMOJI.ARROW_SHADED_RIGHT, `${prefix}${cmd.name}`, formatUsage(cmd.usage)].filter(str => str).join(" ");
+            embed.addField(commandTitle, `${commandUsage}\n${block(cmd.description || "")}`);
+          }
 
           if (cmd.subcommands) {
             cmd.subcommands.forEach(subcmd => {
