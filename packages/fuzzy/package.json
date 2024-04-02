@@ -1,0 +1,7 @@
+{
+  "name": "@siamese/fuzzy",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

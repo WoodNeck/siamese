@@ -1,0 +1,18 @@
+{
+  "name": "@siamese/minigame",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/button": "0.0.0",
+    "@siamese/color": "0.0.0",
+    "@siamese/core": "0.0.0",
+    "@siamese/emoji": "0.0.0",
+    "common-tags": "^1.8.2",
+    "discord.js": "^14.14.1",
+    "gif-encoder-2": "^1.0.5",
+    "josa-js": "^0.0.2",
+    "korean-random-words": "^1.0.3"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@siamese/log",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/color": "0.0.0",
+    "@siamese/embed": "0.0.0",
+    "common-tags": "^1.8.2",
+    "discord.js": "^14.14.1",
+    "pino": "^8.19.0"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

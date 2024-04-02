@@ -1,8 +1,5 @@
-/build/**
-/coverage/**
-/docs/**
-/jsdoc/**
-/templates/**
-/tmp/**
-/lib/util/unicode/is-combining-character.js
-!.eslintrc.js
+node_modules
+dist
+out
+build
+.gitignore

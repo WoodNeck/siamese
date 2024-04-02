@@ -1,27 +1,5 @@
 {
-  "compilerOptions": {
-    "module": "CommonJS",
-    "target": "ES2017",
-    "moduleResolution": "node",
-    "lib": ["ESNext"],
-    "sourceMap": true,
-    "strictNullChecks": true,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "bin",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "src/*"
-      ]
-    }
-  },
-  "include": [
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
+  "extends": [
+    "@env/tsconfig"
   ]
 }

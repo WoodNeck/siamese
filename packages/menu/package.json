@@ -1,0 +1,13 @@
+{
+  "name": "@siamese/menu",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/color": "0.0.0",
+    "@siamese/core": "0.0.0",
+    "@siamese/emoji": "0.0.0",
+    "discord.js": "^14.14.1"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

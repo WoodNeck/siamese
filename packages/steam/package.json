@@ -1,0 +1,12 @@
+{
+  "name": "@siamese/steam",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/env": "0.0.0",
+    "axios": "^1.6.8",
+    "node-cache": "^5.1.2"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

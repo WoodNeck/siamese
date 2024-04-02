@@ -1,0 +1,11 @@
+export enum MENU_END_REASON {
+  CONTINUE = "CONTINUE",
+  END = "END",
+  DELETE_ALL = "DELETE_ALL"
+}
+
+export const MENU_DEFAULT_BTN_ID = {
+  PREV: "MENU_BTN_PREV",
+  NEXT: "MENU_BTN_NEXT",
+  DELETE: "MENU_BTN_DELETE"
+} as const;

@@ -1,0 +1,12 @@
+{
+  "name": "@siamese/ffxiv",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/util": "0.0.0",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,45 @@
+{
+  "versionGroups": [
+    {
+      "label": "내부 패키지 버젼은 0.0.0으로 항상 고정",
+      "packages": [
+        "**"
+      ],
+      "dependencies": [
+        "@siamese/**",
+        "@env/**"
+      ],
+      "pinVersion": "0.0.0"
+    },
+    {
+      "label": "discord.js 버젼 고정",
+      "packages": [
+        "**"
+      ],
+      "dependencies": [
+        "discord.js"
+      ],
+      "pinVersion": "^14.14.1"
+    },
+    {
+      "label": "typescript 버젼 고정",
+      "packages": [
+        "**"
+      ],
+      "dependencies": [
+        "typescript"
+      ],
+      "pinVersion": "^5.3.3"
+    },
+    {
+      "label": "버젼 충돌시 가장 높은 버젼을 기본적으로 사용",
+      "dependencies": [
+        "**"
+      ],
+      "packages": [
+        "**"
+      ],
+      "preferVersion": "highestSemver"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@siamese/time",
+  "version": "0.0.0",
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

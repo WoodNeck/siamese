@@ -1,0 +1,45 @@
+{
+  "name": "@siamese/bot",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/battlenet": "0.0.0",
+    "@siamese/button": "0.0.0",
+    "@siamese/color": "0.0.0",
+    "@siamese/core": "0.0.0",
+    "@siamese/db": "0.0.0",
+    "@siamese/embed": "0.0.0",
+    "@siamese/emoji": "0.0.0",
+    "@siamese/env": "0.0.0",
+    "@siamese/ffxiv": "0.0.0",
+    "@siamese/fuzzy": "0.0.0",
+    "@siamese/google": "0.0.0",
+    "@siamese/log": "0.0.0",
+    "@siamese/markdown": "0.0.0",
+    "@siamese/menu": "0.0.0",
+    "@siamese/minigame": "0.0.0",
+    "@siamese/mtg": "0.0.0",
+    "@siamese/naver": "0.0.0",
+    "@siamese/sharding": "0.0.0",
+    "@siamese/util": "0.0.0",
+    "ansi-styles": "^6.2.1",
+    "colorette": "^2.0.20",
+    "common-tags": "^1.8.2",
+    "dayjs": "^1.11.10",
+    "discord.js": "^14.14.1",
+    "josa-js": "^0.0.2"
+  },
+  "devDependencies": {
+    "@types/common-tags": "^1.8.4",
+    "pino-pretty": "^10.3.1"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "dev": "bun src/bot.ts",
+    "lint": "eslint 'src/**/*.ts'",
+    "log": "cat siamese.log | pino-pretty",
+    "start": "bun src/bot.ts",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register 'test/suites/**/*.spec.ts'"
+  },
+  "type": "module"
+}

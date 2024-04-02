@@ -1,0 +1,14 @@
+{
+  "name": "@siamese/embed",
+  "version": "0.0.0",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "valid-url": "^1.0.9"
+  },
+  "devDependencies": {
+    "@types/valid-url": "^1.0.7"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

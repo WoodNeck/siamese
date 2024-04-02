@@ -1,0 +1,13 @@
+{
+  "name": "@siamese/google",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/util": "0.0.0",
+    "@vitalets/google-translate-api": "^9.2.0",
+    "async-g-i-s": "^1.5.2",
+    "youtubei.js": "^9.1.0"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

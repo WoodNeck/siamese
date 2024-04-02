@@ -1,0 +1,12 @@
+{
+  "name": "@siamese/db",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/log": "0.0.0",
+    "colorette": "^2.0.20",
+    "mongoose": "^8.2.1"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

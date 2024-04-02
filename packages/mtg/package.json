@@ -1,0 +1,12 @@
+{
+  "name": "@siamese/mtg",
+  "version": "0.0.0",
+  "dependencies": {
+    "@siamese/env": "0.0.0",
+    "axios": "^1.6.8",
+    "scryfall-sdk": "^4.2.2"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

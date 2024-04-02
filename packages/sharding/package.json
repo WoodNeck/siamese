@@ -1,0 +1,10 @@
+{
+  "name": "@siamese/sharding",
+  "version": "0.0.0",
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  },
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module"
+}

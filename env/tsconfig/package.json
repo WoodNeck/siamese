@@ -1,0 +1,10 @@
+{
+  "name": "@env/tsconfig",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./tsconfig.json",
+    "./test": "./tsconfig.test.json"
+  },
+  "private": true,
+  "type": "module"
+}
