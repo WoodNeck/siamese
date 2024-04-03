@@ -13,7 +13,8 @@ export const ERROR = {
   INITIATOR_CANT_LEAVE: "게임 주최자는 취소할 수 없다냥!",
   ONLY_FOR_INITIATOR: "게임 주최자만 할 수 있다냥!",
   MISSING_PLAYERS: "게임을 시작하기 위한 최소 인원수에 도달하지 못했다냥!",
-  UNKNOWN: `${EMOJI.CROSS} 게임 진행중 에러가 발생했다냥! 에러가 계속 발생할 경우 개발서버에 문의해달라냥!`
+  UNKNOWN: `${EMOJI.CROSS} 게임 진행중 에러가 발생했다냥! 에러가 계속 발생할 경우 개발서버에 문의해달라냥!`,
+  RECONNECT_FAILED: "플레이어가 재접속하지 않아 게임이 종료되었다냥!"
 };
 
 export const GAME = {
@@ -55,6 +56,7 @@ export const GAME = {
     SELECT: "SELECT",
     PENALTY: "PENALTY",
     GG: "GG",
-    RECONNECT: "RECONNECT"
+    RECONNECT: "RECONNECT",
+    RECONNECT_FAILED: "RECONNECT_FAILED"
   }
 };

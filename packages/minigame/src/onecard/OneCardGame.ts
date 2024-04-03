@@ -1,9 +1,14 @@
+import { ButtonBuilder } from "@siamese/button";
 import { COLOR } from "@siamese/color";
 import { EmbedBuilder } from "@siamese/embed";
 import { EMOJI } from "@siamese/emoji";
 import { env } from "@siamese/env";
+import { InteractionSender, type MessageSender } from "@siamese/sender";
+import { getRandom } from "@siamese/util";
+import { ButtonStyle } from "discord.js";
 
 import PartyGameLogic from "../PartyGameLogic";
+import { GAME } from "../const";
 
 import OneCardCanvas from "./OneCardCanvas";
 import OneCardPlayer from "./OneCardPlayer";
@@ -12,8 +17,7 @@ import PlayingCardDeck from "./PlayingCardDeck";
 import { ONECARD } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams, PlayerFinalActionParams } from "../types";
-import type { TextSender } from "@siamese/sender";
+import type { PartyPlayerActionParams, PartyPlayerFinalActionParams } from "../types";
 
 class OneCardGame extends PartyGameLogic {
   public declare players: OneCardPlayer[];
@@ -67,36 +71,53 @@ class OneCardGame extends PartyGameLogic {
     });
   }
 
-  public override async showCurrentBoard(): Promise<TextSender[]> {
+  public override async showCurrentBoard(): Promise<MessageSender> {
     const sender = this.sender;
     const board = await this._canvas.draw(this);
 
-    const boardMsg = await sender.sendObject({
+    // 현재 보드 표시
+    await sender.sendObject({
       files: [{
         name: "board.gif",
         attachment: board
       }]
     });
 
-    return [boardMsg];
+    // 현재 손패 표시
+    return await this._showCurrentHand();
   }
 
-  public override async onPlayerAction(params: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ stop, sender }: PartyPlayerActionParams): Promise<void> {
+    const playerBtns = this._getPlayerButtons(this.currentPlayer, true);
 
+    await sender.editObject({
+      components: playerBtns.build()
+    });
+
+    stop(GAME.SYMBOL.NEXT_TURN, { deleteButtons: false });
   }
 
-  public override async onPlayerFinalAction(params: PlayerFinalActionParams): Promise<void> {
+  public override async onPlayerFinalAction({ id }: PartyPlayerFinalActionParams): Promise<void> {
+    if (id === GAME.SYMBOL.SKIP) {
+      await this._applyPenalty();
+    } else {
+      const currentPlayer = this.currentPlayer;
+      const cardID = parseFloat(id);
+      const cards = currentPlayer.cards;
+      const selectedCard = cards.splice(cards.findIndex(card => card.id === cardID), 1)[0];
 
+      await this._play(selectedCard);
+    }
   }
 
   public override async onPlayerAFK(): Promise<void> {
-
+    // 스킵한걸로 처리
+    await this._applyPenalty();
   }
 
   public override isRoundFinished(): boolean {
     const hasWinner = this.players.some(player => player.cards.length <= 0);
-
-    if (hasWinner) return false;
+    if (hasWinner) return true;
 
     const playersLeft = this.players.filter(player => {
       return !player.defeated;
@@ -106,7 +127,7 @@ class OneCardGame extends PartyGameLogic {
   }
 
   public override async showRoundFinishMessage(): Promise<void> {
-
+    // 단판임, DO_NOTHING
   }
 
   public override async showGameFinishMessage(): Promise<void> {
@@ -133,8 +154,8 @@ class OneCardGame extends PartyGameLogic {
     await sender.send(embed);
   }
 
-  public override updateCurrentPlayer(): void {
-
+  public override updateRoundFirstPlayer(): void {
+    // DO_NOTHING
   }
 
   public getMaxCardCount() {
@@ -146,97 +167,23 @@ class OneCardGame extends PartyGameLogic {
     return maximumCardCount;
   }
 
-  private async _nextTurn() {
-    await this._showBoard();
+  private async _showCurrentHand() {
+    const currentPlayer = this.currentPlayer;
+    const playerBtns = this._getPlayerButtons(currentPlayer, false);
 
-    const connected = await this._showReconnectMessage();
-    if (!connected) return;
+    const playerInteraction = currentPlayer.interaction!;
+    const handSender = new InteractionSender(playerInteraction, true);
 
-    await this._listenPlayerAction();
-  }
-
-  private async _showBoard() {
-    const threadChannel = this._threadChannel;
-    const board = await this._canvas.draw(this);
-
-    await threadChannel.send({
-      files: [{
-        name: "board.gif",
-        attachment: board
-      }]
-    });
-  }
-
-  private async _showReconnectMessage(): Promise<boolean> {
-    const currentPlayer = this._currentPlayer;
-    const threadChannel = this._threadChannel;
-    const reconnector = this._reconnector;
-
-    if (!reconnector.shouldReconnect(currentPlayer)) return true;
-
-    const connected = await reconnector.run(threadChannel, [currentPlayer]);
-
-    if (!connected) {
-      this._timeoutFlag = true;
-    }
-
-    return connected;
-  }
-
-  private async _listenPlayerAction(): Promise<void> {
-    const currentPlayer = this._currentPlayer;
-    const playerBtns = this._getPlayerButtons(currentPlayer);
-
-    const playerInteraction = currentPlayer.interaction;
-    const send = playerInteraction.replied || playerInteraction.deferred
-      ? playerInteraction.followUp.bind(playerInteraction)
-      : playerInteraction.reply.bind(playerInteraction);
-
-    const choiceMsg = await send({
+    const choiceMsg = await handSender.sendObject({
       content: ONECARD.TURN_HEADER(currentPlayer.user),
-      components: playerBtns,
-      ephemeral: true,
-      fetchReply: true
-    }) as Discord.Message;
-
-    const collector = choiceMsg.createMessageComponentCollector({
-      time: 60 * 1000 // 1 min
+      components: playerBtns.build()
     });
 
-    return new Promise<void>(resolve => {
-      collector.on("collect", async interaction => {
-        await interaction.update({ components: [] }).catch(() => void 0);
-
-        currentPlayer.interaction = interaction;
-
-        const id = interaction.customId;
-
-        if (id !== GAME.SYMBOL.SKIP) {
-          const cardID = parseFloat(id);
-          const cards = currentPlayer.cards;
-          const selectedCard = cards.splice(cards.findIndex(card => card.id === cardID), 1)[0];
-
-          await this._play(selectedCard);
-          collector.stop(GAME.SYMBOL.NEXT_TURN);
-        } else {
-          collector.stop();
-        }
-      });
-
-      collector.on("end", async (_, reason) => {
-        if (reason === GAME.SYMBOL.NEXT_TURN) {
-          resolve();
-        } else {
-          // Apply penalty also for the timeout
-          await this._applyPenalty();
-          resolve();
-        }
-      });
-    });
+    return choiceMsg;
   }
 
   private async _applyPenalty() {
-    const currentPlayer = this._currentPlayer;
+    const currentPlayer = this.currentPlayer;
     const penalty = this._getCurrentPanelty();
     const maxCardCount = this.getMaxCardCount();
 
@@ -246,7 +193,7 @@ class OneCardGame extends PartyGameLogic {
       currentPlayer.defeat(this._deck);
     }
 
-    // Reset attack card sum
+    // 공격량 합계를 초기화
     this._attackSum = 0;
 
     this._passTurnToNextPlayer(false);
@@ -276,65 +223,56 @@ class OneCardGame extends PartyGameLogic {
   }
 
   private async _listenSymbolChange(lastCard: PlayingCard): Promise<void> {
-    const currentPlayer = this._currentPlayer;
+    const currentPlayer = this.currentPlayer;
     const symbols = [
       CardSymbol.SPADE,
       CardSymbol.HEART,
       CardSymbol.DIAMOND,
       CardSymbol.CLUB
     ];
-    const symbolBtns = symbols.map(symbol => {
-      const btn = new MessageButton();
 
-      btn.setCustomId(symbol.toString());
-      btn.setEmoji(CARD_EMOJI[symbol]);
-      btn.setStyle(BUTTON_STYLE.SECONDARY);
-
-      return btn;
+    const symbolBtns = new ButtonBuilder();
+    symbols.forEach(symbol => {
+      symbolBtns.addButton({
+        id: symbol.toString(),
+        emoji: CARD_EMOJI[symbol],
+        style: ButtonStyle.Secondary
+      });
     });
-    const buttonRow = new MessageActionRow().addComponents(...symbolBtns);
 
-    const choiceMsg = await currentPlayer.interaction.followUp({
+    const choiceSender = new InteractionSender(currentPlayer.interaction!, true);
+
+    const choiceMsg = await choiceSender.sendObject({
       content: ONECARD.CHANGE_HEADER(currentPlayer.user),
-      components: [buttonRow],
-      ephemeral: true,
-      fetchReply: true
-    }) as Discord.Message;
-
-    const collector = choiceMsg.createMessageComponentCollector({
-      time: 60 * 1000 // 1 min
+      components: symbolBtns.build()
     });
 
-    return new Promise<void>(resolve => {
-      collector.on("collect", async interaction => {
-        await interaction.update({ components: [] }).catch(() => void 0);
-
-        currentPlayer.interaction = interaction;
-
+    const { collected } = await choiceMsg.watchBtnClick({
+      filter: () => true,
+      maxWaitTime: 60, // 1분,
+      onCollect: async ({ interaction, sender, collector }) => {
+        await sender.editObject({ components: [] }).catch(() => void 0);
+        currentPlayer.setInteraction(interaction);
         collector.stop();
-      });
-
-      collector.on("end", async collected => {
-        const interaction = collected.first();
-        const selected = interaction
-          ? parseFloat(interaction.customId)
-          : getRandom(symbols);
-
-        this._symbolChange = {
-          from: lastCard.symbol,
-          to: selected
-        };
-
-        resolve();
-      });
+      }
     });
+
+    const interaction = collected.first();
+    const selected = interaction
+      ? parseFloat(interaction.customId)
+      : getRandom(symbols); // AFK
+
+    this._symbolChange = {
+      from: lastCard.symbol,
+      to: selected
+    };
   }
 
   private _passTurnToNextPlayer(isJump: boolean) {
-    const currentPlayer = this._currentPlayer;
-    const playersLeft = this._players.filter(player => !player.defeated);
+    const currentPlayer = this.currentPlayer;
+    const playersLeft = this.players.filter(player => !player.defeated);
     const players = currentPlayer.defeated
-      ? [...playersLeft, currentPlayer].sort((a, b) => a.playerIndex - b.playerIndex)
+      ? [...playersLeft, currentPlayer].sort((a, b) => a.index - b.index)
       : playersLeft;
 
     const absIndexIncrease = isJump ? 2 : 1;
@@ -345,37 +283,33 @@ class OneCardGame extends PartyGameLogic {
       ? (currentIndex + indexDiff) % playerCount
       : currentIndex + indexDiff + playerCount;
 
-    this._currentPlayer = players[nextPlayerIdx];
+    this.currentPlayer = players[nextPlayerIdx];
   }
 
-  private _getPlayerButtons(player: OneCardPlayer) {
-    const cardBtns = player.cards.map(card => {
-      const btn = new MessageButton();
+  private _getPlayerButtons(player: OneCardPlayer, disabled: boolean) {
+    const buttons = new ButtonBuilder();
 
-      btn.setCustomId(card.id.toString());
-      btn.setStyle(BUTTON_STYLE.SECONDARY);
-      btn.setEmoji(card.getEmoji());
-      btn.setLabel(card.getName());
-
-      if (!this._canPlay(card)) {
-        btn.setDisabled(true);
-      }
-
-      return btn;
+    player.cards.forEach(card => {
+      buttons.addButton({
+        id: card.id.toString(),
+        style: ButtonStyle.Secondary,
+        emoji: card.getEmoji(),
+        label: card.getName(),
+        disabled: disabled || !this._canPlay(card)
+      });
     });
 
     const penalty = this._getCurrentPanelty();
-    const skipBtn = new MessageButton();
-    skipBtn.setCustomId(GAME.SYMBOL.SKIP);
-    skipBtn.setStyle(BUTTON_STYLE.DANGER);
-    skipBtn.setEmoji(EMOJI.BOMB);
-    skipBtn.setLabel(ONECARD.LABEL.SKIP(penalty));
 
-    const rows = groupBy([...cardBtns, skipBtn], 5).map(btns => {
-      return new MessageActionRow().addComponents(...btns);
+    buttons.addButton({
+      id: GAME.SYMBOL.SKIP,
+      style: ButtonStyle.Danger,
+      emoji: EMOJI.BOMB,
+      label: ONECARD.LABEL.SKIP(penalty),
+      disabled
     });
 
-    return rows;
+    return buttons;
   }
 
   private _canPlay(card: PlayingCard) {
@@ -388,7 +322,11 @@ class OneCardGame extends PartyGameLogic {
     const hasSameNumber = card.index === lastCard.index;
 
     if (wasAttackCard) {
-      return isJoker || hasSameNumber || (hasSameSymbol && card.index <= lastCard.index);
+      if (wasJoker) {
+        return isJoker;
+      } else {
+        return isJoker || hasSameNumber || (hasSameSymbol && card.index <= lastCard.index);
+      }
     }
 
     return hasSameNumber || hasSameSymbol || isJoker || wasJoker;
@@ -418,4 +356,4 @@ class OneCardGame extends PartyGameLogic {
   }
 }
 
-export { OneCardGame };
+export { OneCardGame, CARD_EMOJI, CardSymbol };

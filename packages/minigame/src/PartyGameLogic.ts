@@ -1,12 +1,13 @@
 import { error } from "@siamese/log";
-import { InteractionSender, type TextSender, type ThreadSender } from "@siamese/sender";
+import { InteractionSender, type MessageSender, type ThreadSender } from "@siamese/sender";
 import { shuffle } from "@siamese/util";
 
+import Reconnector from "./Reconnector";
 import { ERROR, GAME } from "./const";
 
 import type { GameContext } from "./GameContext";
 import type { GamePlayer } from "./GamePlayer";
-import type { ActionStopOptions, PlayerActionParams, PlayerFinalActionParams } from "./types";
+import type { ActionStopOptions, PartyPlayerActionParams, PartyPlayerFinalActionParams } from "./types";
 import type { Bot } from "@siamese/core";
 import type { ThreadChannel } from "discord.js";
 
@@ -29,6 +30,8 @@ abstract class PartyGameLogic {
   public maxWaitTime: number;
   public maxRounds: number;
 
+  private _reconnector: Reconnector;
+
   public constructor({ ctx, shufflePlayers, maxWaitTime, maxRounds }: PartyGameLogicOptions) {
     const players = shufflePlayers
       ? shuffle(ctx.players)
@@ -45,16 +48,18 @@ abstract class PartyGameLogic {
     this.players.forEach((player, index) => {
       player.setIndex(index);
     });
+
+    this._reconnector = new Reconnector();
   }
 
-  public abstract showCurrentBoard(): Promise<TextSender[]>;
-  public abstract onPlayerAction(params: PlayerActionParams): Promise<void>;
-  public abstract onPlayerFinalAction(params: PlayerFinalActionParams): Promise<void>;
+  public abstract showCurrentBoard(): Promise<MessageSender>;
+  public abstract onPlayerAction(params: PartyPlayerActionParams): Promise<void>;
+  public abstract onPlayerFinalAction(params: PartyPlayerFinalActionParams): Promise<void>;
   public abstract onPlayerAFK(): Promise<void>;
   public abstract isRoundFinished(): boolean;
   public abstract showRoundFinishMessage(): Promise<void>;
   public abstract showGameFinishMessage(): Promise<void>;
-  public abstract updateCurrentPlayer(): void;
+  public abstract updateRoundFirstPlayer(): void;
 
   public async destroy() {
     const threadChannel = this.channel;
@@ -75,13 +80,20 @@ abstract class PartyGameLogic {
         await this.beforeRound();
         await this.startRound();
         await this.afterRound();
+
+        // 선턴을 잡는 플레이어 변경
+        this.updateRoundFirstPlayer();
       }
 
       await this.showGameFinishMessage();
 
       await this.cleanup();
     } catch (err) {
-      await this._sendErrorMessage(err);
+      if (err === GAME.SYMBOL.RECONNECT_FAILED) {
+        await this._sendReconnectFailedMessage();
+      } else {
+        await this._sendErrorMessage(err);
+      }
     } finally {
       await this.destroy();
     }
@@ -116,9 +128,9 @@ abstract class PartyGameLogic {
   }
 
   public async startRound() {
-    while (this.isRoundFinished()) {
-      // 플레이어 변경
-      this.updateCurrentPlayer();
+    while (!this.isRoundFinished()) {
+      // 재접속이 필요한지 확인하고, 필요시 플레이어 재접속
+      await this._reconnectPlayers();
 
       // 현재 보드 상태를 사용자에게 표시
       const boardMsgs = await this.showCurrentBoard();
@@ -130,32 +142,24 @@ abstract class PartyGameLogic {
     await this.showRoundFinishMessage();
   }
 
-  public async listenPlayerActions(messages: TextSender[]): Promise<void> {
-    const playerID = this.currentPlayer.user.id;
-    const { reason, collected } = await this.sender.watchBtnClick({
+  public async listenPlayerActions(message: MessageSender): Promise<void> {
+    const currentPlayer = this.currentPlayer;
+    const playerID = currentPlayer.user.id;
+    const { reason, collected } = await message.watchBtnClick({
       filter: interaction => {
-        return !interaction.user.bot
-          && !!messages.find(msg => msg.message.id === interaction.message.id);
+        return interaction.user.id === playerID;
       },
       maxWaitTime: this.maxWaitTime,
       onCollect: async ({ interaction, collector }) => {
-        // 플레이어가 아닌 인터랙션 차단
-        if (interaction.user.id !== playerID) {
-          const errorSender = new InteractionSender(interaction, true);
-
-          if (this.players.some(player => player.user.id === interaction.user.id)) {
-            return await errorSender.replyError(GAME.NOT_YOUR_TURN);
-          } else {
-            return await errorSender.replyError(GAME.NOT_IN_GAME);
-          }
-        }
-
         const sender = new InteractionSender(interaction, false);
+
+        // 최신 인터랙션으로 교체
+        currentPlayer.setInteraction(interaction);
+
         return await this.onPlayerAction({
           id: interaction.customId,
           interaction,
           sender,
-          messages,
           stop: (reason: string, {
             deleteButtons = true
           }: Partial<ActionStopOptions> = {}) => {
@@ -177,11 +181,20 @@ abstract class PartyGameLogic {
       await this.onPlayerFinalAction({
         id: lastInteraction.customId,
         interaction: lastInteraction,
-        messages,
         sender: new InteractionSender(lastInteraction, false)
       });
     } else {
       await this.onPlayerAFK();
+    }
+  }
+
+  private async _reconnectPlayers() {
+    const players = this.players;
+    const reconnector = this._reconnector;
+
+    const reconnectRequiredPlayers = players.filter(player => reconnector.shouldReconnect(player));
+    if (reconnectRequiredPlayers.length > 0) {
+      await reconnector.reconnectPlayers(this.sender, reconnectRequiredPlayers);
     }
   }
 
@@ -191,6 +204,14 @@ abstract class PartyGameLogic {
       await this.sender.send(ERROR.UNKNOWN);
     } catch (err) {
       error(new Error(`오류 정보 전송중 에러 발생: ${err}`));
+    }
+  }
+
+  private async _sendReconnectFailedMessage() {
+    try {
+      await this.sender.send(ERROR.RECONNECT_FAILED);
+    } catch (err) {
+      error(new Error(`재접속 오류 정보 전송중 에러 발생: ${err}`));
     }
   }
 }

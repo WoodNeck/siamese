@@ -2,6 +2,7 @@
   "name": "@siamese/minigame",
   "version": "0.0.0",
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.51",
     "@siamese/button": "0.0.0",
     "@siamese/color": "0.0.0",
     "@siamese/core": "0.0.0",

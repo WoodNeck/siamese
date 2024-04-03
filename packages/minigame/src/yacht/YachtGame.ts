@@ -14,7 +14,7 @@ import TextDice from "./TextDice";
 import { YACHT } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams, PlayerFinalActionParams } from "../types";
+import type { VSPlayerActionParams, VSPlayerFinalActionParams } from "../types";
 
 class YachtGame extends VSGameLogic {
   private _singles: Array<[number, number]>;
@@ -95,7 +95,7 @@ class YachtGame extends VSGameLogic {
     return [boardMsg, diceMsg];
   }
 
-  public override async onPlayerAction({ id, sender, interaction, messages, stop }: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ id, sender, interaction, messages, stop }: VSPlayerActionParams): Promise<void> {
     if (id.startsWith(YACHT.SYMBOL.EYE)) {
       const locked = this._turnInfo.locked;
       const diceIdx = parseFloat(interaction.customId.substring(YACHT.SYMBOL.EYE.length));
@@ -128,7 +128,7 @@ class YachtGame extends VSGameLogic {
     }
   }
 
-  public override async onPlayerFinalAction({ id }: PlayerFinalActionParams): Promise<void> {
+  public override async onPlayerFinalAction({ id }: VSPlayerFinalActionParams): Promise<void> {
     this._updateScore(parseFloat(id));
 
     this._turnInfo = this._newTurn();

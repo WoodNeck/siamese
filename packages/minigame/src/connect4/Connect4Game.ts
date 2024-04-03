@@ -10,7 +10,7 @@ import { GAME } from "../const";
 import { CONNECT4 } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams, PlayerFinalActionParams } from "../types";
+import type { VSPlayerActionParams, VSPlayerFinalActionParams } from "../types";
 
 class Connect4Game extends VSGameLogic {
   private _grid: number[][];
@@ -68,11 +68,11 @@ class Connect4Game extends VSGameLogic {
     })];
   }
 
-  public override async onPlayerAction({ stop }: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ stop }: VSPlayerActionParams): Promise<void> {
     stop(GAME.SYMBOL.NEXT_TURN);
   }
 
-  public override async onPlayerFinalAction({ id }: PlayerFinalActionParams): Promise<void> {
+  public override async onPlayerFinalAction({ id }: VSPlayerFinalActionParams): Promise<void> {
     const colIdx = parseFloat(id);
     this._play(colIdx);
   }

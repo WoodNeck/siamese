@@ -10,7 +10,7 @@ import { GAME } from "../const";
 import { CONNECT5 } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams } from "../types";
+import type { VSPlayerActionParams } from "../types";
 import type { TextSender } from "@siamese/sender";
 
 class Connect5Game extends VSGameLogic {
@@ -50,7 +50,7 @@ class Connect5Game extends VSGameLogic {
     return [boardMsg];
   }
 
-  public override async onPlayerAction({ id, sender, stop }: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ id, sender, stop }: VSPlayerActionParams): Promise<void> {
     if (id === GAME.SYMBOL.SELECT) {
       return stop(GAME.SYMBOL.NEXT_TURN);
     } else {

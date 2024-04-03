@@ -3,7 +3,7 @@ import { Command, CommandContext, Cooldown, GuildTextOnly } from "@siamese/core"
 import { EmbedBuilder } from "@siamese/embed";
 import { createGameRoom, OneCardGame } from "@siamese/minigame";
 
-import { MINIGAME_PERMISSIONS, ONECARD } from "../const";
+import { MINIGAME_PERMISSIONS, ONECARD } from "./const";
 
 import type { GameContext } from "@siamese/minigame/src/GameContext";
 
@@ -32,7 +32,6 @@ class Onecard extends Command {
 
     const game = new OneCardGame(gameCtx);
 
-    await game.prepare();
     await game.start();
   }
 

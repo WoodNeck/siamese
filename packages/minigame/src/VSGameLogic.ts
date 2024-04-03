@@ -7,7 +7,7 @@ import { ERROR, GAME } from "./const";
 
 import type { GameContext } from "./GameContext";
 import type { GamePlayer } from "./GamePlayer";
-import type { ActionStopOptions, PlayerActionParams, PlayerFinalActionParams } from "./types";
+import type { ActionStopOptions, VSPlayerActionParams, VSPlayerFinalActionParams } from "./types";
 import type { Bot } from "@siamese/core";
 import type { ThreadChannel } from "discord.js";
 
@@ -45,8 +45,8 @@ abstract class VSGameLogic {
   }
 
   public abstract showCurrentBoard(): Promise<TextSender[]>;
-  public abstract onPlayerAction(params: PlayerActionParams): Promise<void>;
-  public abstract onPlayerFinalAction(params: PlayerFinalActionParams): Promise<void>;
+  public abstract onPlayerAction(params: VSPlayerActionParams): Promise<void>;
+  public abstract onPlayerFinalAction(params: VSPlayerFinalActionParams): Promise<void>;
   public abstract onPlayerAFK(): Promise<void>;
   /**
    * 게임이 종료되었는지 여부를 체크합니다

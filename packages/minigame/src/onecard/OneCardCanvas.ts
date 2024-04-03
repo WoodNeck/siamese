@@ -1,7 +1,7 @@
 import path from "path";
 
+import { Canvas, createCanvas, Image, loadImage } from "@napi-rs/canvas";
 import { range } from "@siamese/util";
-import { Canvas, createCanvas, Image, loadImage } from "canvas";
 import GIFEncoder from "gif-encoder-2";
 
 import { OneCardGame } from "./OneCardGame";
@@ -71,7 +71,7 @@ class OneCardCanvas {
     encoder.start();
 
     frames.forEach(frameIdx => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx["clearRect"](0, 0, canvas.width, canvas.height);
       ctx.drawImage(bgCanvas, 0, 0, bgCanvas.width, bgCanvas.height);
 
       players.forEach((player, idx) => {
@@ -167,30 +167,30 @@ class OneCardCanvas {
   private _drawSlash(x: number, y: number, width: number, height: number) {
     const ctx = this._bgCtx;
 
-    ctx.save();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "#3b324a";
-    ctx.beginPath();
-    ctx.moveTo(x + width, y);
-    ctx.lineTo(x, y + height);
-    ctx.stroke();
-    ctx.restore();
+    ctx["save"]();
+    ctx["lineWidth"] = 3;
+    ctx["strokeStyle"] = "#3b324a";
+    ctx["beginPath"]();
+    ctx["moveTo"](x + width, y);
+    ctx["lineTo"](x, y + height);
+    ctx["stroke"]();
+    ctx["restore"]();
   }
 
   private _drawX(x: number, y: number, width: number, height: number) {
     const ctx = this._bgCtx;
 
-    ctx.save();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "#3b324a";
-    ctx.beginPath();
-    ctx.moveTo(x + width, y);
-    ctx.lineTo(x, y + height);
-    ctx.stroke();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + width, y + height);
-    ctx.stroke();
-    ctx.restore();
+    ctx["save"]();
+    ctx["lineWidth"] = 3;
+    ctx["strokeStyle"] = "#3b324a";
+    ctx["beginPath"]();
+    ctx["moveTo"](x + width, y);
+    ctx["lineTo"](x, y + height);
+    ctx["stroke"]();
+    ctx["moveTo"](x, y);
+    ctx["lineTo"](x + width, y + height);
+    ctx["stroke"]();
+    ctx["restore"]();
   }
 
   private _drawNumber(count: number, x: number, y: number) {

@@ -11,7 +11,7 @@ import { GAME } from "../const";
 import { OTHELLO } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams, PlayerFinalActionParams } from "../types";
+import type { VSPlayerActionParams, VSPlayerFinalActionParams } from "../types";
 import type { TextSender } from "@siamese/sender";
 
 class OthelloGame extends VSGameLogic {
@@ -56,11 +56,11 @@ class OthelloGame extends VSGameLogic {
     return await Promise.all(messages);
   }
 
-  public override async onPlayerAction({ stop }: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ stop }: VSPlayerActionParams): Promise<void> {
     stop(GAME.SYMBOL.NEXT_TURN);
   }
 
-  public override async onPlayerFinalAction({ id }: PlayerFinalActionParams): Promise<void> {
+  public override async onPlayerFinalAction({ id }: VSPlayerFinalActionParams): Promise<void> {
     const candidatePositions = this._getCandidatePositions();
 
     const [rowIdx, colIdx] = candidatePositions[parseFloat(id)];

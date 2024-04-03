@@ -10,7 +10,7 @@ import { GAME } from "../const";
 import { TICTACTOE } from "./const";
 
 import type { GameContext } from "../GameContext";
-import type { PlayerActionParams, PlayerFinalActionParams } from "../types";
+import type { VSPlayerActionParams, VSPlayerFinalActionParams } from "../types";
 
 class TictactoeGame extends VSGameLogic {
   private _grid: number[][];
@@ -37,7 +37,7 @@ class TictactoeGame extends VSGameLogic {
     return [boardMsg];
   }
 
-  public override async onPlayerAction({ interaction, stop }: PlayerActionParams): Promise<void> {
+  public override async onPlayerAction({ interaction, stop }: VSPlayerActionParams): Promise<void> {
     const updater = new InteractionSender(interaction, false);
     const buttons = this._createButtons(true);
 
@@ -48,7 +48,7 @@ class TictactoeGame extends VSGameLogic {
     stop(GAME.SYMBOL.NEXT_TURN, { deleteButtons: false });
   }
 
-  public override async onPlayerFinalAction({ id }: PlayerFinalActionParams): Promise<void> {
+  public override async onPlayerFinalAction({ id }: VSPlayerFinalActionParams): Promise<void> {
     const grid = this._grid;
     const playerIdx = this.currentPlayer.index;
     const [rowIdx, colIdx] = id.split("/").map(val => parseFloat(val));

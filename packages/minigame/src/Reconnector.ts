@@ -1,7 +1,7 @@
 import { ButtonBuilder } from "@siamese/button";
 import { EmbedBuilder } from "@siamese/embed";
 import { ThreadSender } from "@siamese/sender";
-import { ButtonStyle, MessageComponentInteraction, ThreadChannel } from "discord.js";
+import { ButtonStyle } from "discord.js";
 
 import { GAME } from "./const";
 
@@ -10,11 +10,13 @@ import type { GamePlayer } from "./GamePlayer";
 export const MAX_INTERACTION_DURATION = 900000 - 30000; // 15min - 30sec
 
 class Reconnector {
-  public shouldReconnect(player: { interaction: MessageComponentInteraction }): boolean {
-    return Date.now() - player.interaction.createdTimestamp >= MAX_INTERACTION_DURATION;
+  public shouldReconnect({ interaction }: GamePlayer): boolean {
+    if (!interaction) return true;
+
+    return Date.now() - interaction.createdTimestamp >= MAX_INTERACTION_DURATION;
   }
 
-  public async run(channel: ThreadChannel, players: GamePlayer[]) {
+  public async reconnectPlayers(sender: ThreadSender, players: GamePlayer[]) {
     const buttons = new ButtonBuilder();
 
     buttons.addButton({
@@ -29,7 +31,6 @@ class Reconnector {
     embed.setTitle(GAME.RECONNECT_LIST_TITLE);
     embed.setDescription(playersLeft.map(player => player.user.toString()).join("\n"));
 
-    const sender = new ThreadSender(channel);
     const reconnectMsg = await sender.sendObject({
       content: GAME.RECONNECT_TITLE(players.map(player => player.user)),
       embeds: [embed.build()],
@@ -60,10 +61,9 @@ class Reconnector {
 
     if (reason === GAME.SYMBOL.RECONNECT) {
       await sender.send(GAME.RECONNECT_COMPLETE);
-
-      return true;
     } else {
-      return false;
+      // 에러스택 생성하지 않고 string을 throw
+      throw GAME.SYMBOL.RECONNECT_FAILED;
     }
   }
 }

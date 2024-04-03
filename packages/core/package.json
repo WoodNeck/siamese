@@ -6,7 +6,6 @@
     "@siamese/embed": "0.0.0",
     "@siamese/emoji": "0.0.0",
     "@siamese/sender": "0.0.0",
-    "canvas": "^2.9.1",
     "colorette": "^2.0.20",
     "common-tags": "^1.8.2",
     "discord.js": "^14.14.1",
