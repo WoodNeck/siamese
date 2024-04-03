@@ -26,10 +26,6 @@ export interface MenuOptions {
    */
   senderOverride?: MessageSender;
   /**
-   * 메시지를 개인만 볼 수 있게 할지 여부
-   */
-  ephemeral?: boolean;
-  /**
    * 메뉴가 종료되기까지의 대기 시간, 초 단위
    * @default 9.5 * 60 // 9분 30초
    */
@@ -53,14 +49,13 @@ export interface MenuOptions {
 
 export interface MenuPage {
   content?: string;
-  embed?: EmbedBuilder;
+  embed?: Discord.EmbedBuilder;
 }
 
 class Menu {
   // 옵션
   private _ctx: MenuOptions["ctx"];
   private _senderOverride: MenuOptions["senderOverride"];
-  private _ephemeral: NonNullable<MenuOptions["ephemeral"]>;
   private _maxWaitTime: NonNullable<MenuOptions["maxWaitTime"]>;
   private _defaultColor: NonNullable<MenuOptions["defaultColor"]>;
   private _circular: NonNullable<MenuOptions["circular"]>;
@@ -74,7 +69,6 @@ class Menu {
   public constructor({
     ctx,
     senderOverride,
-    ephemeral = false,
     maxWaitTime = 9.5 * 60,
     defaultColor = COLOR.BOT,
     circular = true,
@@ -82,7 +76,6 @@ class Menu {
   }: MenuOptions) {
     this._ctx = ctx;
     this._senderOverride = senderOverride;
-    this._ephemeral = ephemeral;
     this._maxWaitTime = maxWaitTime;
     this._defaultColor = defaultColor;
     this._circular = circular;
@@ -111,18 +104,16 @@ class Menu {
       const buttons = this._getButtons();
 
       const msg = await sender.sendObject({
-        embeds: firstPage.embed && [firstPage.embed.build()],
+        embeds: firstPage.embed && [firstPage.embed],
         content: firstPage.content,
-        components: buttons,
-        ephemeral: this._ephemeral
+        components: buttons
       });
 
       await this._listenReaction(msg);
     } else {
       // 메시지 전송 후 바로 종료
       await sender.sendObject({
-        embeds: firstPage.embed && [firstPage.embed.build()],
-        ephemeral: this._ephemeral
+        embeds: firstPage.embed && [firstPage.embed]
       });
     }
   }
@@ -150,7 +141,7 @@ class Menu {
       }
     });
 
-    this._pages = pages.map(embed => ({ embed }));
+    this._pages = pages.map(embed => ({ embed: embed.build() }));
   }
 
   public addButton(button: MenuButton, index?: number) {
@@ -242,7 +233,7 @@ class Menu {
     try {
       await sender.editObject({
         content: page.content,
-        embeds: page.embed && [page.embed.build()]
+        embeds: page.embed && [page.embed]
       });
     } catch (err) {
       const logger = this._ctx.bot.logger;
