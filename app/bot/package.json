@@ -44,8 +44,7 @@
     "dev": "node --import tsx --env-file ../../.env src/bot.ts",
     "lint": "eslint 'src/**/*.ts'",
     "log": "cat siamese.log | pino-pretty",
-    "start": "bun src/bot.ts",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register 'test/suites/**/*.spec.ts'"
+    "start": "node --import tsx --env-file ../../.env src/bot.ts"
   },
   "type": "module"
 }

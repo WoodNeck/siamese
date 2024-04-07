@@ -11,6 +11,9 @@ import type Bot from "../Bot";
 const onTTSMessage = async (bot: Bot, msg: Message) => {
   if (!msg.content.startsWith(env.BOT_TTS_PREFIX)) return;
 
+  // prefix 다음에 빈 공간이 있을 경우 무시
+  if (msg.content.charAt(env.BOT_TTS_PREFIX.length) === " ") return;
+
   const cmd = bot.commands.get("TTS")!;
   const ctx = new TextCommandContext(bot, cmd, msg, env.BOT_TTS_PREFIX.length);
 
