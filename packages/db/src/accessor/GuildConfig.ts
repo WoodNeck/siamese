@@ -13,7 +13,7 @@ class GuildConfig {
     const document = await GuildConfig.findByGuildID(guildID);
     if (!document) return [];
 
-    return document.activeRoles;
+    return (document.activeRoles ?? []);
   }
 
   public static async update(guildID: string, options: Partial<GuildConfigDocument>): Promise<void> {

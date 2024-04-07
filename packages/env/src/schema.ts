@@ -6,6 +6,7 @@ const schema = {
   BOT_DEFAULT_PREFIX: z.string(),
   BOT_ICON_PREFIX: z.string(),
   BOT_HELP_CMD: z.string(),
+  BOT_TTS_PREFIX: z.string(),
   // API 서버
   BOT_CLIENT_ID: z.string(),
   BOT_CLIENT_SECRET: z.string(),
@@ -25,6 +26,8 @@ const schema = {
   // API-NAVER
   NAVER_ID: z.string(),
   NAVER_SECRET: z.string(),
+  NAVER_AI_ID: z.string(),
+  NAVER_AI_SECRET: z.string(),
   // API-KAKAO
   KAKAO_REST_KEY: z.string(),
   // API-STEAM

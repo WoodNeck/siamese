@@ -1,6 +1,7 @@
 import AdminOnly from "./AdminOnly";
 import Cooldown from "./Cooldown";
 import DevOnly from "./DevOnly";
+import GuildOnly from "./GuildOnly";
 import GuildTextOnly from "./GuildTextOnly";
 import createPrecondition from "./createPrecondition";
 
@@ -10,6 +11,7 @@ export {
   AdminOnly,
   Cooldown,
   DevOnly,
+  GuildOnly,
   GuildTextOnly,
   createPrecondition
 };

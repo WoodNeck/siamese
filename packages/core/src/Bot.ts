@@ -4,6 +4,7 @@ import { env, isProduction } from "@siamese/env";
 import { DiscordChannelLogger, error } from "@siamese/log";
 import { bold, red } from "colorette";
 import * as Discord from "discord.js";
+import fg from "fast-glob";
 
 import { DEFAULT_PERMISSIONS, type Permission } from "./const/permission";
 import onAutocomplete from "./event/autocomplete";
@@ -13,6 +14,7 @@ import onIconMessage from "./event/iconMessage";
 import onInteractionCreate from "./event/interactionCreate";
 import onMessage from "./event/message";
 import onReady from "./event/ready";
+import onTTSMessage from "./event/ttsMessage";
 import onWarn from "./event/warn";
 
 import type Command from "./Command";
@@ -111,6 +113,7 @@ class Bot {
     this.client.on(Discord.Events.GuildCreate, onGuildJoin.bind(void 0, this));
     this.client.on(Discord.Events.MessageCreate, onMessage.bind(void 0, this));
     this.client.on(Discord.Events.MessageCreate, onIconMessage.bind(void 0, this));
+    this.client.on(Discord.Events.MessageCreate, onTTSMessage.bind(void 0, this));
     this.client.on(Discord.Events.InteractionCreate, onInteractionCreate.bind(void 0, this));
     this.client.on(Discord.Events.InteractionCreate, onAutocomplete.bind(void 0, this));
     this.client.on(Discord.Events.Error, onError.bind(void 0, this));
@@ -118,14 +121,29 @@ class Bot {
   }
 
   private async _collectInstances<T>(dir: string): Promise<T[]> {
-    const glob = new Bun.Glob("**/!sub/!const.ts");
-    const files = await Array.fromAsync(glob.scan(dir));
+    // TODO: Bun dgram 구현시 아래로 교체
+    // const glob = new Bun.Glob("**/!sub/!const.ts");
+    // const files = await Array.fromAsync(glob.scan(dir));
 
-    return await Array.fromAsync(files.map(async file => {
+    // return await Array.fromAsync(files.map(async file => {
+    //   const CmdConstructor = (await import(path.join(dir, file))).default;
+
+    //   return new CmdConstructor() as T;
+    // }));
+
+    const files = await fg("**/*.ts", {
+      cwd: dir,
+      ignore: [
+        "**/const.ts",
+        "**/sub/**/*"
+      ]
+    });
+
+    return await Promise.all(Array.from(files.map(async file => {
       const CmdConstructor = (await import(path.join(dir, file))).default;
 
       return new CmdConstructor() as T;
-    }));
+    })));
   }
 }
 

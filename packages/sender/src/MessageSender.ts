@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "@siamese/embed";
 
 import type InteractionSender from "./InteractionSender";
-import type { BaseMessageOptions, ButtonInteraction, Collection, CollectorFilter, InteractionCollector, MessageEditOptions } from "discord.js";
+import type { AnySelectMenuInteraction, BaseMessageOptions, ButtonInteraction, Collection, CollectorFilter, InteractionCollector, MessageEditOptions } from "discord.js";
 
 interface MessageSender {
   /**
@@ -67,6 +67,19 @@ interface MessageSender {
   }): Promise<{
     sender: MessageSender;
     collected: Collection<string, ButtonInteraction>;
+    reason: string
+  }>;
+  watchMenuSelect(options: {
+    filter: CollectorFilter<[AnySelectMenuInteraction]>;
+    maxWaitTime: number;
+    onCollect: (props: {
+      sender: InteractionSender;
+      interaction: AnySelectMenuInteraction;
+      collector: InteractionCollector<AnySelectMenuInteraction>;
+    }) => void;
+  }): Promise<{
+    sender: MessageSender;
+    collected: Collection<string, AnySelectMenuInteraction>;
     reason: string
   }>;
   /**

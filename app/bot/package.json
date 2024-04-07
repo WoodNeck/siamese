@@ -19,23 +19,29 @@
     "@siamese/minigame": "0.0.0",
     "@siamese/mtg": "0.0.0",
     "@siamese/naver": "0.0.0",
+    "@siamese/select": "0.0.0",
     "@siamese/sharding": "0.0.0",
     "@siamese/util": "0.0.0",
+    "@siamese/voice": "0.0.0",
     "ansi-styles": "^6.2.1",
     "colorette": "^2.0.20",
     "common-tags": "^1.8.2",
     "dayjs": "^1.11.10",
     "discord.js": "^14.14.1",
-    "josa-js": "^0.0.2"
+    "josa-js": "e-/Josa.js#master"
   },
   "devDependencies": {
+    "@swc-node/register": "^1.9.0",
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.4.12",
     "@types/common-tags": "^1.8.4",
-    "pino-pretty": "^10.3.1"
+    "pino-pretty": "^10.3.1",
+    "tsx": "^4.7.2"
   },
   "main": "src/index.ts",
   "private": true,
   "scripts": {
-    "dev": "bun src/bot.ts",
+    "dev": "node --import tsx --env-file ../../.env src/bot.ts",
     "lint": "eslint 'src/**/*.ts'",
     "log": "cat siamese.log | pino-pretty",
     "start": "bun src/bot.ts",

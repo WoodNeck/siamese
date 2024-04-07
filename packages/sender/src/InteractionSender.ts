@@ -6,9 +6,9 @@ import { DM_ERROR_FOOTER } from "./const";
 import { sendDM, toMessageOptions } from "./utils";
 
 import type { MessageSender } from "./MessageSender";
-import type { ButtonInteraction, CollectorFilter, InteractionEditReplyOptions, InteractionReplyOptions, ChatInputCommandInteraction, InteractionCollector, ModalSubmitInteraction, MessageComponentInteraction, Collection } from "discord.js";
+import type { ButtonInteraction, CollectorFilter, InteractionEditReplyOptions, InteractionReplyOptions, ChatInputCommandInteraction, InteractionCollector, ModalSubmitInteraction, MessageComponentInteraction, Collection, AnySelectMenuInteraction } from "discord.js";
 
-type RepliableInteraction = ChatInputCommandInteraction | ButtonInteraction | ModalSubmitInteraction;
+type RepliableInteraction = ChatInputCommandInteraction | ButtonInteraction | ModalSubmitInteraction | AnySelectMenuInteraction;
 
 class InteractionSender<T extends RepliableInteraction = RepliableInteraction> implements MessageSender {
   public readonly interaction: T;
@@ -90,7 +90,7 @@ class InteractionSender<T extends RepliableInteraction = RepliableInteraction> i
     const interaction = this.interaction;
 
     try {
-      if (interaction.isButton()) {
+      if (interaction.isButton() || interaction.isAnySelectMenu()) {
         if (!interaction.replied) {
           await interaction.update(options);
         } else {
@@ -176,6 +176,60 @@ class InteractionSender<T extends RepliableInteraction = RepliableInteraction> i
     return new Promise<{
       sender: MessageSender;
       collected: Collection<string, ButtonInteraction>;
+      reason: string
+    }>(resolve => {
+      collector.on("end", (collected, reason) => {
+        const lastInteraction = collected.last();
+
+        resolve({
+          sender: lastInteraction
+            ? new InteractionSender(lastInteraction, this._ephemeral)
+            : this,
+          collected,
+          reason
+        });
+      });
+    });
+  }
+
+  public watchMenuSelect({
+    filter,
+    maxWaitTime,
+    onCollect
+  }: {
+    filter: CollectorFilter<[AnySelectMenuInteraction]>;
+    maxWaitTime: number;
+    onCollect: (props: {
+      sender: InteractionSender;
+      interaction: AnySelectMenuInteraction;
+      collector: InteractionCollector<AnySelectMenuInteraction>;
+    }) => void;
+  }) {
+    const channel = this.interaction.channel;
+    if (!channel) {
+      throw new Error("인터랙션에 채널이 존재하지 않아 컴포넌트 콜렉터를 생성할 수 없음");
+    }
+
+    const collector = channel.createMessageComponentCollector({
+      filter: interaction => {
+        if (!interaction.isAnySelectMenu()) return false;
+
+        return filter(interaction);
+      },
+      time: maxWaitTime * 1000
+    }) as InteractionCollector<AnySelectMenuInteraction>;
+
+    collector.on("collect", interaction => {
+      onCollect({
+        sender: new InteractionSender(interaction, this._ephemeral),
+        interaction,
+        collector
+      });
+    });
+
+    return new Promise<{
+      sender: MessageSender;
+      collected: Collection<string, AnySelectMenuInteraction>;
       reason: string
     }>(resolve => {
       collector.on("end", (collected, reason) => {

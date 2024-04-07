@@ -23,7 +23,8 @@ export const BOT = {
 
 export const ERROR = {
   SLASH_ONLY_CMD: "이 명령어는 슬래시(/) 명령어로만 사용할 수 있다냥!",
-  GUILD_ONLY_CMD: "이 명령어는 길드 채널에서만 사용할 수 있다냥!",
+  GUILD_ONLY_CMD: "이 명령어는 서버 안에서만 사용할 수 있다냥!",
+  GUILD_TEXT_ONLY_CMD: "이 명령어는 서버의 텍스트 채널에서만 사용할 수 있다냥!",
   NSFW_ONLY_CMD: "이 명령어는 후방주의 채널에서만 사용할 수 있다냥!",
   USER_SHOULD_BE_ADMIN: "이 명령어는 관리자 권한이 있는 사용자만 쓸 수 있다냥!",
   NO_ACTIVE_ROLE: "명령어를 사용할 수 있는 역할이 배정되어 있지 않다냥!",
@@ -76,7 +77,8 @@ export const ERROR = {
     }
   },
   CMD_FAIL_CMD: (content: string) => `이 명령어를 실행중이었다냥: ${strong(content)}`,
-  CMD_FAIL_DESC: (error: unknown) => `${(error && (error as Error).stack) ? (error as Error).stack : ""}`
+  CMD_FAIL_DESC: (error: unknown) => `${(error && (error as Error).stack) ? (error as Error).stack : ""}`,
+  CMD_FAIL_TTS: (content: string) => `이 TTS 메시지를 재생하고 있었다냥: ${strong(content)}`
 };
 
 export const CMD = {

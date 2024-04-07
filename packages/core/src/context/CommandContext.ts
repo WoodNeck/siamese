@@ -34,6 +34,10 @@ abstract class CommandContext {
    * 명령어가 수행된 서버의 ID를 반환
    */
   public abstract getGuildID: () => string | null;
+  /**
+   * 명령어가 수행된 서버를 반환
+   */
+  public abstract getGuild: () => Guild | null;
   public abstract getParams: <T extends Usage[]>() => UsageOptionType<T>;
   /**
    * 자기 자신을 리턴, 분해 할당을 통해 사용하기 편하도록

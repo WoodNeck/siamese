@@ -49,6 +49,10 @@ class SlashCommandContext extends CommandContext {
       : null;
   };
 
+  public getGuild = () => {
+    return this.interaction.guild;
+  };
+
   public getParams = <T extends Usage[]>(): UsageOptionType<T> => {
     return this.command.usage.map(usage => usage.getInteractionValue(this.interaction)) as UsageOptionType<T>;
   };

@@ -6,7 +6,7 @@ import { DM_ERROR_FOOTER } from "./const";
 import { isValidOptions, sendDM, toMessageOptions } from "./utils";
 
 import type { MessageSender } from "./MessageSender";
-import type { ButtonInteraction, Collection, CollectorFilter, InteractionCollector, Message, MessageCreateOptions, MessageEditOptions } from "discord.js";
+import type { AnySelectMenuInteraction, ButtonInteraction, Collection, CollectorFilter, InteractionCollector, Message, MessageCreateOptions, MessageEditOptions } from "discord.js";
 
 class TextSender implements MessageSender {
   public readonly message: Message;
@@ -142,6 +142,55 @@ class TextSender implements MessageSender {
 
         resolve({
           sender: lastInteraction ? new InteractionSender(lastInteraction, false) : this,
+          collected,
+          reason
+        });
+      });
+    });
+  }
+
+  public watchMenuSelect({
+    filter,
+    maxWaitTime,
+    onCollect
+  }: {
+    filter: CollectorFilter<[AnySelectMenuInteraction]>;
+    maxWaitTime: number;
+    onCollect: (props: {
+      sender: InteractionSender;
+      interaction: AnySelectMenuInteraction;
+      collector: InteractionCollector<AnySelectMenuInteraction>;
+    }) => void;
+  }) {
+    const collector = this.message.createMessageComponentCollector({
+      filter: interaction => {
+        if (!interaction.isAnySelectMenu()) return false;
+
+        return filter(interaction);
+      },
+      time: maxWaitTime * 1000
+    }) as InteractionCollector<AnySelectMenuInteraction>;
+
+    collector.on("collect", interaction => {
+      onCollect({
+        sender: new InteractionSender(interaction, false),
+        interaction,
+        collector
+      });
+    });
+
+    return new Promise<{
+      sender: MessageSender;
+      collected: Collection<string, AnySelectMenuInteraction>;
+      reason: string
+    }>(resolve => {
+      collector.on("end", (collected, reason) => {
+        const lastInteraction = collected.last();
+
+        resolve({
+          sender: lastInteraction
+            ? new InteractionSender(lastInteraction, false)
+            : this,
           collected,
           reason
         });

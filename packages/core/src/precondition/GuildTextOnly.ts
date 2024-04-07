@@ -15,7 +15,7 @@ const GuildTextOnly = createPrecondition({
     return !!channel && channel.type === ChannelType.GuildText;
   },
   onFail: async ctx => {
-    await ctx.sender.replyError(ERROR.GUILD_ONLY_CMD);
+    await ctx.sender.replyError(ERROR.GUILD_TEXT_ONLY_CMD);
   }
 });
 

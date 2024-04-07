@@ -143,5 +143,16 @@ export const MAHJONG = "🀄";
 export const JOKER = "🃏";
 export const BOMB = "💣";
 export const SKULL = "💀";
+export const HAPPY = "😊";
+export const FLAGS = {
+  KOR: "🇰🇷",
+  USA: "🇺🇸",
+  JPN: "🇯🇵",
+  CHN: "🇨🇳",
+  TWN: "🇹🇼",
+  SPN: "🇪🇸"
+};
+
+// 커스텀
 export const EMPTY = "<:empty:959746248724869140>";
 export const DOT = "<:dot:966674623800414238>";

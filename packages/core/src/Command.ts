@@ -1,5 +1,6 @@
+import { EMOJI } from "@siamese/emoji";
 import { warn } from "@siamese/log";
-import { yellow } from "colorette";
+import { green, red, yellow } from "colorette";
 import { PermissionsBitField, SlashCommandBuilder } from "discord.js";
 
 import { CMD } from "./const/message";
@@ -177,6 +178,13 @@ abstract class Command {
     if (!canRegister) {
       warn(yellow(CMD.PRE_REGISTER_FAILED(this)));
       return;
+    }
+
+    if (bot.commands.has(this.name)) {
+      // 개발 단계에서 확인 가능하므로 콘솔로만 표시
+      console.warn(yellow(`${EMOJI.WARNING} 동일한 이름의 커맨드를 등록하려고 시도: ${this.name}`));
+      console.warn(red(`- 기존에 등록된 커맨드: ${bot.commands.get(this.name)!.constructor.name}`));
+      console.warn(green(`- 새로 등록하려는 커맨드: ${this.constructor.name}`));
     }
 
     bot.commands.set(this.name, this);

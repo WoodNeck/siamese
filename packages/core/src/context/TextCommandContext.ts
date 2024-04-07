@@ -51,6 +51,10 @@ class TextCommandContext extends CommandContext {
       : null;
   };
 
+  public getGuild = () => {
+    return this.msg.guild;
+  };
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   public getParams = <T extends Usage[]>(): UsageOptionType<T> => {
     const msg = this.msg;

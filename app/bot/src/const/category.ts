@@ -33,12 +33,6 @@ export const CATEGORY = {
     DESC: "스팀에서 여러가지 정보를 검색한다냥!",
     EMOJI: EMOJI.MONEY_WITH_WINGS
   },
-  ICON: {
-    ID: "icon",
-    NAME: "아이콘",
-    DESC: "아이콘 관련 명령어들을 모아놨다냥!",
-    EMOJI: EMOJI.PICTURE
-  },
   SETTING: {
     ID: "setting",
     NAME: "설정",
@@ -56,5 +50,17 @@ export const CATEGORY = {
     NAME: "게임",
     DESC: "각종 게임 관련 정보를 검색할 수 있는 명령어들이다냥!",
     EMOJI: EMOJI.VIDEO_GAME
+  },
+  VOICE: {
+    ID: "voice",
+    NAME: "음성",
+    DESC: "음성 채널에서 사용할 수 있는 명령어들이다냥!",
+    EMOJI: EMOJI.HEADPHONES
   }
+  // ICON: {
+  //   ID: "icon",
+  //   NAME: "아이콘",
+  //   DESC: "아이콘 관련 명령어들을 모아놨다냥!",
+  //   EMOJI: EMOJI.PICTURE
+  // },
 } satisfies Record<string, Category>;

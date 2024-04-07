@@ -10,7 +10,7 @@
     "common-tags": "^1.8.2",
     "discord.js": "^14.14.1",
     "gif-encoder-2": "^1.0.5",
-    "josa-js": "^0.0.2",
+    "josa-js": "e-/Josa.js#master",
     "korean-random-words": "^1.0.3"
   },
   "main": "src/index.ts",

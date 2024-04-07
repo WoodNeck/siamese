@@ -9,7 +9,8 @@
     "colorette": "^2.0.20",
     "common-tags": "^1.8.2",
     "discord.js": "^14.14.1",
-    "josa-js": "^0.0.2",
+    "fast-glob": "^3.3.2",
+    "josa-js": "e-/Josa.js#master",
     "node-cache": "^5.1.2",
     "pino": "^8.19.0",
     "scryfall-sdk": "^4.2.2"

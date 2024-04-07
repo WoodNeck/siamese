@@ -1,7 +1,7 @@
 import { StringUsage, type CommandOptions } from "@siamese/core";
 import { EMOJI } from "@siamese/emoji";
 import { strong } from "@siamese/markdown";
-import { Dayjs } from "dayjs";
+import { type Dayjs } from "dayjs";
 
 import { CATEGORY } from "../../const/category";
 
